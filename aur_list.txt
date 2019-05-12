@@ -1,0 +1,3 @@
+powerline-fonts-git
+spotify
+popcorntime-bin

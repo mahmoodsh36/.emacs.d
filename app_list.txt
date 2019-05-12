@@ -1,0 +1,13 @@
+feh
+chromium
+tmux
+playerctl
+python-virtualenv
+xclip
+terminator
+transmission-gtk
+ctags
+xreader
+python-django
+gvim
+python-pip

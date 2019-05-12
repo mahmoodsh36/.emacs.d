@@ -1,0 +1,81 @@
+[global_config]
+[keybindings]
+  broadcast_all = None
+  broadcast_group = None
+  broadcast_off = None
+  close_term = None
+  close_window = None
+  copy = None
+  cycle_next = None
+  cycle_prev = None
+  edit_tab_title = None
+  edit_terminal_title = None
+  edit_window_title = None
+  full_screen = None
+  go_down = None
+  go_left = None
+  go_next = None
+  go_prev = None
+  go_right = None
+  go_up = None
+  group_all = None
+  group_tab = None
+  help = None
+  hide_window = None
+  insert_number = None
+  insert_padded = None
+  layout_launcher = None
+  line_down = None
+  line_up = None
+  move_tab_left = None
+  move_tab_right = None
+  new_tab = None
+  new_terminator = None
+  new_window = None
+  next_profile = None
+  next_tab = None
+  page_down = None
+  page_down_half = None
+  page_up = None
+  page_up_half = None
+  paste = None
+  prev_tab = None
+  reset = None
+  reset_clear = None
+  resize_down = None
+  resize_left = None
+  resize_right = None
+  resize_up = None
+  rotate_ccw = None
+  rotate_cw = None
+  scaled_zoom = None
+  search = None
+  split_horiz = None
+  split_vert = None
+  toggle_scrollbar = None
+  toggle_zoom = None
+  ungroup_all = None
+  ungroup_tab = None
+  zoom_in = None
+  zoom_normal = None
+  zoom_out = None
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
+[profiles]
+  [[default]]
+    allow_bold = False
+    background_darkness = 0.6
+    background_type = transparent
+    cursor_color = "#aaaaaa"
+    font = Source Code Pro for Powerline 9
+    scrollback_infinite = True
+    scrollbar_position = hidden
+    show_titlebar = False
+    use_system_font = False
