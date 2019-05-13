@@ -12,3 +12,4 @@ python-django
 gvim
 python-pip
 pulseaudio                                 
+emacs
