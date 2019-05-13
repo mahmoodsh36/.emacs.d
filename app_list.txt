@@ -11,3 +11,4 @@ xreader
 python-django
 gvim
 python-pip
+pulseaudio                                 

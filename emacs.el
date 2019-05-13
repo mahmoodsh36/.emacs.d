@@ -4,18 +4,23 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ace-window-display-mode t)
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
  '(blink-cursor-alist nil)
  '(blink-cursor-mode nil)
+ '(custom-enabled-themes (quote (spacemacs-dark)))
  '(custom-safe-themes
    (quote
-    ("c616e584f7268aa3b63d08045a912b50863a34e7ea83e35fcab8537b75741956" "66aea5b7326cf4117d63c6694822deeca10a03b98135aaaddb40af99430ea237" "a94f1a015878c5f00afab321e4fef124b2fc3b823c8ddd89d360d710fc2bddfc" "0cd56f8cd78d12fc6ead32915e1c4963ba2039890700458c13e12038ec40f6f5" "251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" "01e067188b0b53325fc0a1c6e06643d7e52bc16b6653de2926a480861ad5aa78" "73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd" "8d5f22f7dfd3b2e4fc2f2da46ee71065a9474d0ac726b98f647bc3c7e39f2819" "721bb3cb432bb6be7c58be27d583814e9c56806c06b4077797074b009f322509" "946e871c780b159c4bb9f580537e5d2f7dba1411143194447604ecbaf01bd90c" "b59d7adea7873d58160d368d42828e7ac670340f11f36f67fa8071dbf957236a" default)))
+    ()))
  '(delete-selection-mode t)
  '(eshell-output-filter-functions
    (quote
     (eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt)))
  '(package-selected-packages
    (quote
-    (exwm expand-region use-package telephone-line spaceline smart-mode-line linum-relative idle-highlight-mode hl-fill-column helm gruvbox-theme goto-chg elpy command-log-mode airline-themes ace-window))))
+    (spacemacs-theme exwm expand-region use-package linum-relative idle-highlight-mode helm goto-chg command-log-mode airline-themes)))
+ '(pixel-scroll-mode t)
+ '(scroll-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -35,6 +40,8 @@
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 10000) ;; i think this line fixes the random jumps
+(setq auto-window-vscroll nil)
 
 ;; setting up use-package
 ;; keep links in http protocol not https, https causes emacs trouble no idea why
@@ -53,19 +60,19 @@
 
 ;; gruvbox theme
 (use-package gruvbox-theme
-  :ensure t
-  :config
-  (load-theme 'gruvbox t))
+  :ensure t)
+  ;; :config
+  ;;(load-theme 'gruvbox t))
 
 ;; ace-window
-(use-package ace-window
-  :ensure t
-  :config
-  (global-set-key (kbd "M-o") 'ace-window)
-  (ace-window-display-mode)
-  (setq aw-dispatch-always t))
+;; (use-package ace-window
+;;   :ensure t
+;;   :config
+;;   (global-set-key (kbd "M-o") 'ace-window)
+;;   (ace-window-display-mode)
+;;   (setq aw-dispatch-always t))
 
-;; helm
+;; helm7
 (use-package helm
   :ensure t
   :config
@@ -96,10 +103,10 @@
         '(emacs-lisp-mode-hook js2-mode-hook ruby-mode-hook objc-mode-hook)))
 
 (use-package airline-themes
-  :ensure t
-  :config
-  (require 'airline-themes)
-  (load-theme 'airline-kolor))
+  :ensure t)
+  ;; :config
+  ;; (require 'airline-themes)
+  ;; (load-theme 'airline-kolor))
 
 (use-package expand-region
   :ensure t
@@ -112,7 +119,38 @@
   :config
   (require 'exwm)
   (setq exwm-workspace-number 4)
+  ;; start media keys config
+  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command  "amixer set Master 10%+" nil
+                                                      "amixer set Master 10%+")))
+  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command  "amixer set Master 10%-" nil
+                                                      "amixer set Master 10%-")))
+  (exwm-input-set-key (kbd "<XF86AudioPlay>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command  "playerctl play-pause" nil
+                                                      "playerctl play-pause")))
+  (exwm-input-set-key (kbd "<XF86AudioNext>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command  "playerctl next" nil
+                                                      "playerctl next")))
+  (exwm-input-set-key (kbd "<XF86AudioPrev>")
+                      (lambda ()
+                        (interactive)
+                        (start-process-shell-command  "playerctl previous" nil
+                                                      "playerctl previous")))
+  ;; end media keys config
   (setq exwm-input-global-keys `(
+                                 ([?\s-l] . windmove-right)
+                                 ([?\s-h] . windmove-left)
+                                 ([?\s-k] . windmove-up)
+                                 ([?\s-j] . windmove-down)
                                  ([?\s-r] . exwm-reset)
                                  ([?\s-w] . exwm-workspace-switch)
                                  ,@(mapcar (lambda (i)
@@ -140,24 +178,43 @@
         ([?\C-k] . [S-end delete])))
   (exwm-enable))
 
+;; xelb for exwm
+(use-package xelb
+  :ensure t
+  :config
+  (require 'xelb))
+
 ;; (use-package evil
 ;;   :ensure t
 ;;   :config
 ;;   (require 'evil)
 ;;   (evil-mode 1))
 
+(use-package spacemacs-theme
+  :ensure t
+  :defer t ;; dont require spacemacs-theme, it doesn't exist
+  :init
+  (load-theme 'spacemacs-dark t)
+  (powerline-reset))
+
+(use-package spaceline
+  :ensure t
+  :config
+  (require 'spaceline-config)
+  (spaceline-spacemacs-theme))
+
 ;; enable parenthases coloring and matching
 (show-paren-mode 1)
 ;; highlight current line
 (global-hl-line-mode +1)
 ;; save state on exit
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 ;; zap up to char without char
 (global-set-key "\M-z" 'zap-up-to-char)
 ;; overwrite selection on yanking or whatever
 (delete-selection-mode)
 ;; insert newlines if the point is at the end of the buffer
-(setq next-line-add-newlines t)
+;; (setq next-line-add-newlines t)
 
 ;; use only spaces, screw tabs
 (setq-default indent-tabs-mode nil)

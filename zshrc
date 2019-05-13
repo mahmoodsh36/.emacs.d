@@ -97,7 +97,6 @@ source $ZSH/oh-my-zsh.sh
 # aliases
 alias tmux="tmux -u" # start tmux with utf-8 encoding
 
-alias E="SUDO_EDITOR=\"emacsclient\" sudo -e"
 export EDITOR="emacsclient"
 
 LANG=en_US.UTF-8
@@ -115,3 +114,6 @@ LC_TELEPHONE="en_US.UTF-8"
 LC_MEASUREMENT="en_US.UTF-8"
 LC_IDENTIFICATION="en_US.UTF-8"
 LC_ALL=en_US.UTF-8
+
+# swap escape with caps lock
+setxkbmap -option caps:swapescape
