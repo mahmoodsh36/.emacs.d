@@ -10,6 +10,9 @@
    (quote
     ("c616e584f7268aa3b63d08045a912b50863a34e7ea83e35fcab8537b75741956" "66aea5b7326cf4117d63c6694822deeca10a03b98135aaaddb40af99430ea237" "a94f1a015878c5f00afab321e4fef124b2fc3b823c8ddd89d360d710fc2bddfc" "0cd56f8cd78d12fc6ead32915e1c4963ba2039890700458c13e12038ec40f6f5" "251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" "01e067188b0b53325fc0a1c6e06643d7e52bc16b6653de2926a480861ad5aa78" "73a13a70fd111a6cd47f3d4be2260b1e4b717dbf635a9caee6442c949fad41cd" "8d5f22f7dfd3b2e4fc2f2da46ee71065a9474d0ac726b98f647bc3c7e39f2819" "721bb3cb432bb6be7c58be27d583814e9c56806c06b4077797074b009f322509" "946e871c780b159c4bb9f580537e5d2f7dba1411143194447604ecbaf01bd90c" "b59d7adea7873d58160d368d42828e7ac670340f11f36f67fa8071dbf957236a" default)))
  '(delete-selection-mode t)
+ '(eshell-output-filter-functions
+   (quote
+    (eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt)))
  '(package-selected-packages
    (quote
     (exwm expand-region use-package telephone-line spaceline smart-mode-line linum-relative idle-highlight-mode hl-fill-column helm gruvbox-theme goto-chg elpy command-log-mode airline-themes ace-window))))
@@ -108,7 +111,6 @@
   :ensure t
   :config
   (require 'exwm)
-  (exwm-init)
   (setq exwm-workspace-number 4)
   (setq exwm-input-global-keys `(
                                  ([?\s-r] . exwm-reset)
@@ -146,8 +148,8 @@
 
 ;; enable parenthases coloring and matching
 (show-paren-mode 1)
-;; highlight current line
-(global-hl-line-mode +1)
+;; highlight current line, it interferes with the shell prompt of Emacs
+;; (global-hl-line-mode +1)
 ;; save state on exit
 (desktop-save-mode 1)
 ;; zap up to char without char
@@ -163,6 +165,7 @@
 ;; screw gui buttons, remove all accessories
 (menu-bar-mode -1)
 (menu-bar-no-scroll-bar)
+(tool-bar-mode -1)
 
 ;; keybindings to scroll screen without cursor
 (global-set-key "\M-n" "\C-u1\C-v")
@@ -177,3 +180,4 @@
       (interactive)
       (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
       (delete-other-windows))
+(put 'erase-buffer 'disabled nil)
