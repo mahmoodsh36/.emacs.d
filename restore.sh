@@ -47,3 +47,7 @@ sudo pacman -S `cat app_list.txt | paste -sd" "` --noconfirm
 
 # switch to user because yay doesnt work with root permissions
 sudo --user $USER yay -S `cat aur_list.txt | paste -sd" "` --noconfirm
+
+# prepare for exwm
+sudo systemctl disable lightdm
+sudo ln -sf $PWD/grub /etc/default/grub
