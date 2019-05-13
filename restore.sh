@@ -15,6 +15,7 @@ ln -sf $PWD/zshrc ~/.zshrc
 ln -sf $PWD/inputrc ~/.inputrc
 ln -sf $PWD/mimeapps.list ~/.config/mimeapps.list
 ln -sf $PWD/profile ~/.profile
+ln -sf $PWD/zprofile ~/.zprofile
 
 # map caps lock to escape key
 setxkbmap -option caps:swapescape

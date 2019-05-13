@@ -148,8 +148,8 @@
 
 ;; enable parenthases coloring and matching
 (show-paren-mode 1)
-;; highlight current line, it interferes with the shell prompt of Emacs
-;; (global-hl-line-mode +1)
+;; highlight current line
+(global-hl-line-mode +1)
 ;; save state on exit
 (desktop-save-mode 1)
 ;; zap up to char without char
@@ -181,3 +181,14 @@
       (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
       (delete-other-windows))
 (put 'erase-buffer 'disabled nil)
+
+;; clear eshell terminal screen
+(defun eshell-clear-buffer ()
+  "Clear terminal"
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
+(add-hook 'eshell-mode-hook
+      '(lambda()
+          (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
