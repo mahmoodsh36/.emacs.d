@@ -14,10 +14,7 @@ ln -sf $PWD/emacs.el ~/.emacs
 ln -sf $PWD/zshrc ~/.zshrc
 ln -sf $PWD/inputrc ~/.inputrc
 ln -sf $PWD/mimeapps.list ~/.config/mimeapps.list
+ln -sf $PWD/profile ~/.profile
 
-# restore setup
-dconf load /org/gnome/terminal/legacy/profiles:/ < gnome_terminal_profiles.dconf 
-
-# restore apps
-
- sudo xdg-settings set default-web-browser opera.desktop
+# map caps lock to escape key
+setxkbmap -option caps:swapescape
