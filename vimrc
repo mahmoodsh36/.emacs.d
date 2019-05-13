@@ -27,7 +27,7 @@ Plugin 'edkolev/tmuxline.vim'
 Plugin 'morhetz/gruvbox'
 
 " tagbar plugin to visually show present tags
-Plugin 'majutsushi/tagbar'
+" Plugin 'majutsushi/tagbar'
 
 " surround
 Plugin 'tpope/vim-surround'
@@ -94,8 +94,3 @@ let g:gitgutter_map_keys = 0 " no need for map keys.. yet i guess?
 
 " enable italic font
 let g:sublimemonokai_term_italic = 1
-
-nmap <F8> :TagbarToggle<CR>
-
-" open tagbar by default when vim opens
-autocmd FileType * call tagbar#autoopen(0)
