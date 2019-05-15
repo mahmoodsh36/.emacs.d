@@ -49,5 +49,5 @@ sudo pacman -S `cat app_list.txt | paste -sd" "` --noconfirm
 sudo --user $USER yay -S `cat aur_list.txt | paste -sd" "` --noconfirm
 
 # prepare for exwm
-sudo systemctl disable lightdm
-sudo ln -sf $PWD/grub /etc/default/grub
+# sudo systemctl disable lightdm
+# sudo cp $PWD/grub /etc/default/grub

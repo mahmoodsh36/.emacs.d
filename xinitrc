@@ -18,3 +18,6 @@ xset r rate 200 60
 
 # Finally start Emacs
 exec emacs
+
+# switch caps with escape key
+exec setxkbmap -option caps:swapescape

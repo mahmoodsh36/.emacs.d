@@ -29,7 +29,7 @@ alias ls="ls --color"
 alias grep="grep --color"
 
 # my logo
-/home/mahmood/codee/scripts/logo.sh
+/home/mahmooz/codee/scripts/logo.sh
 
 # those variables helped fix tmux with airline
 LANG="en_US.UTF-8"

@@ -38,7 +38,7 @@
   page_down_half = None
   page_up = None
   page_up_half = None
-  paste = None
+  paste = <Primary>y
   prev_tab = None
   reset = None
   reset_clear = None
