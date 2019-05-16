@@ -1,56 +1,4 @@
 ;; automatic configuration
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ace-window-display-mode t)
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
- '(blink-cursor-alist nil)
- '(blink-cursor-mode nil)
- '(custom-enabled-themes (quote (spacemacs-dark)))
- '(custom-safe-themes
-   (quote
-    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476")))
- '(delete-selection-mode t)
- '(eshell-output-filter-functions
-   (quote
-    (eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt)))
- '(hl-todo-keyword-faces
-   (quote
-    (("TODO" . "#dc752f")
-     ("NEXT" . "#dc752f")
-     ("THEM" . "#2d9574")
-     ("PROG" . "#4f97d7")
-     ("OKAY" . "#4f97d7")
-     ("DONT" . "#f2241f")
-     ("FAIL" . "#f2241f")
-     ("DONE" . "#86dc2f")
-     ("NOTE" . "#b1951d")
-     ("KLUDGE" . "#b1951d")
-     ("HACK" . "#b1951d")
-     ("TEMP" . "#b1951d")
-     ("FIXME" . "#dc752f")
-     ("XXX" . "#dc752f")
-     ("XXXX" . "#dc752f")
-     ("???" . "#dc752f"))))
- '(package-selected-packages
-   (quote
-    (ace-window projectile magit spaceline spacemacs-theme exwm expand-region use-package linum-relative idle-highlight-mode helm goto-chg command-log-mode airline-themes)))
- '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e")))
- '(pixel-scroll-mode t)
- '(scroll-bar-mode nil)
- '(spacemacs-theme-comment-bg nil)
- '(spacemacs-theme-comment-italic t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#282828" :foreground "#fdf4c1" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 75 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 ;; change file backup directory
 (setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
@@ -83,12 +31,6 @@
   :ensure t
   :config
   (powerline-center-theme))
-
-;; gruvbox theme
-;; (use-package gruvbox-theme
-  ;; :ensure t)
-  ;; :config
-  ;;(load-theme 'gruvbox t))
 
 ;; helm
 (use-package helm
@@ -212,6 +154,9 @@
   :ensure t
   :defer t ;; dont require spacemacs-theme, it doesn't exist
   :init
+  (setq spacemacs-theme-comment-italic t)
+  (setq spacemacs-theme-keyword-italic t)
+  (setq spacemacs-theme-comment-bg nil)
   (load-theme 'spacemacs-dark t)
   (powerline-reset))
 
@@ -230,6 +175,10 @@
   (projectile-mode +1)
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
+;; org-mode, finally!
+(use-package org
+  :ensure t)
 
 ;; enable parenthases coloring and matching
 (show-paren-mode 1)
@@ -256,6 +205,8 @@
 ;;(modify-syntax-entry ?- "w")
 ;; fringe minimal mode
 (fringe-mode 1)
+;; kill current buffer without prompt
+(global-set-key [(control x) (k)] 'kill-this-buffer)
 
 ;; keybindings to scroll screen without cursor
 (global-set-key "\M-n" "\C-u1\C-v")
@@ -281,3 +232,13 @@
       (delete-other-windows))
 (put 'erase-buffer 'disabled nil)
 
+(defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
+
+;; face config
+;; set font height
+(set-face-attribute 'default nil :height 80)
