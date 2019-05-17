@@ -5,14 +5,9 @@
 (use-package monokai-theme
   :ensure t)
 #+END_SRC
-*** darktooth theme
-#+BEGIN_SRC emacs-lisp
-(use-package darktooth-theme
-  :ensure t)
-#+END_SRC
 *** load the theme
 #+BEGIN_SRC emacs-lisp
-(load-theme 'darktooth)
+(load-theme 'monokai)
 #+END_SRC
 ** git
 *** magit
@@ -59,10 +54,10 @@
 *** airline-themes
 #+BEGIN_SRC emacs-lisp
 (use-package airline-themes
- :ensure t
- :config
- (require 'airline-themes)
- (load-theme 'airline-kolor))
+  :ensure t
+  :config
+  (require 'airline-themes)
+  (load-theme 'airline-kolor))
 #+END_SRC
 ** highlighting
 *** idle-highlight-mode
@@ -132,6 +127,8 @@
 (fringe-mode 1)
 ;; set font height
 (set-face-attribute 'default nil :height 80)
+;; set cursor to not blink
+(blink-cursor-mode -1)
 #+END_SRC
 * editing-tweeks
 #+BEGIN_SRC emacs-lisp
@@ -153,6 +150,7 @@
 (global-set-key "\C-c\h" 'windmove-left)
 ;; start server when emacs loads
 (server-start)
+;; always follow symbolic links
 #+END_SRC
 * general-functions
 #+BEGIN_SRC emacs-lisp
