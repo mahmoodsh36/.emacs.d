@@ -21,7 +21,8 @@ rm -r                           /home/$USER/Pictures
 ln -sf $PWD/Pictures            /home/$USER/
 mkdir -p                        /home/$USER/.config/terminator
 ln -sf $PWD/terminator_config   /home/$USER/.config/terminator/config
-ln -sf $PWD/emacs               /home/$USER/.emacs
+mkdir ~/.emacs.d/
+ln -sf $PWD/config.org          /home/$USER/.emacs.d/config.org
 ln -sf $PWD/emacs.el            /home/$USER/.emacs
 ln -sf $PWD/zshrc               /home/$USER/.zshrc
 ln -sf $PWD/inputrc             /home/$USER/.inputrc
