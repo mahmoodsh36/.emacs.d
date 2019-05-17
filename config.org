@@ -1,0 +1,192 @@
+* packages
+** themes
+*** monokai theme
+#+BEGIN_SRC emacs-lisp
+(use-package monokai-theme
+  :ensure t)
+#+END_SRC
+*** darktooth theme
+#+BEGIN_SRC emacs-lisp
+(use-package darktooth-theme
+  :ensure t)
+#+END_SRC
+*** load the theme
+#+BEGIN_SRC emacs-lisp
+(load-theme 'darktooth)
+#+END_SRC
+** git
+*** magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t)
+#+END_SRC
+** projectile
+#+BEGIN_SRC emacs-lisp
+(message "sweet projectile")
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+#+END_SRC
+** org
+#+BEGIN_SRC emacs-lisp
+(message "sweet org mode")
+(use-package org
+  :ensure t
+  :config
+  ;; fix org mode editing indentation
+  (setq org-src-preserve-indentation nil 
+      org-edit-src-content-indentation 0))
+#+END_SRC
+** expand-region
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+  :ensure t
+  :config
+  (require 'expand-region)
+  (global-set-key (kbd "C-;") 'er/expand-region))
+#+END_SRC
+** powerline
+*** powerline
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+  :ensure t
+  :config
+  (powerline-center-theme))
+#+END_SRC
+*** airline-themes
+#+BEGIN_SRC emacs-lisp
+(use-package airline-themes
+ :ensure t
+ :config
+ (require 'airline-themes)
+ (load-theme 'airline-kolor))
+#+END_SRC
+** highlighting
+*** idle-highlight-mode
+#+BEGIN_SRC emacs-lisp
+(use-package idle-highlight-mode
+  :ensure t
+  :config ;; last lines of this config i don't understand
+  (require 'idle-highlight-mode)
+  (setq idle-highlight-idle-time 0.1)
+  (defun idle-highlight-hook () (idle-highlight-mode t))
+  (mapc (lambda (m) (add-hook m 'idle-highlight-hook))
+        '(emacs-lisp-mode-hook js2-mode-hook ruby-mode-hook objc-mode-hook)))
+#+END_SRC
+** relative-number
+#+BEGIN_SRC emacs-lisp
+(use-package linum-relative
+  :ensure t
+  :config
+  (require 'linum-relative)
+  (linum-relative-mode))
+#+END_SRC
+** helm
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :ensure t
+  :config
+  (require 'helm-config)
+  (helm-mode 1)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files))
+#+END_SRC
+* file-settings
+** file-backup
+#+BEGIN_SRC emacs-lisp
+(message "sweet filing")
+;; set backup directory
+(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+#+END_SRC
+* smooth-scrolling
+#+BEGIN_SRC emacs-lisp
+(message "scweet scrolling")
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 10000) ;; i think this line fixes the random jumps
+(setq auto-window-vscroll nil)
+;; keybindings to scroll screen without cursor
+(global-set-key "\M-n" "\C-u1\C-v")
+(global-set-key "\M-p" "\C-u1\M-v")
+#+END_SRC
+* visuals
+#+BEGIN_SRC emacs-lisp
+(message "visuals")
+;; show matching parenthases
+(show-paren-mode 1)
+;; highlight current line
+(global-hl-line-mode 1)
+;; show line numbers
+(global-linum-mode t)
+;; screw gui buttons, remove all accessories
+(menu-bar-mode -1)
+(menu-bar-no-scroll-bar)
+(tool-bar-mode -1)
+;; fringe minimal mode
+(fringe-mode 1)
+;; set font height
+(set-face-attribute 'default nil :height 80)
+#+END_SRC
+* editing-tweeks
+#+BEGIN_SRC emacs-lisp
+;; zap up to char without char
+(global-set-key "\M-z" 'zap-up-to-char)
+;; overwrite selection on yanking or whatever
+(delete-selection-mode)
+;; use only spaces, screw tabs
+(setq-default indent-tabs-mode nil)
+;; kill current buffer without prompt
+(global-set-key [(control x) (k)] 'kill-this-buffer)
+;; kill window and buffer
+(global-set-key "\C-x\S-k" 'kill-buffer-and-window)
+;; keybindings to switch between windows
+(global-set-key "\M-n" "\C-u1\C-v")
+(global-set-key "\C-c\l" 'windmove-right)
+(global-set-key "\C-c\k" 'windmove-up)
+(global-set-key "\C-c\j" 'windmove-down)
+(global-set-key "\C-c\h" 'windmove-left)
+;; start server when emacs loads
+(server-start)
+#+END_SRC
+* general-functions
+#+BEGIN_SRC emacs-lisp
+;; function that kills all buffers and windows except current one
+(defun kill-other-windows ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
+      (delete-other-windows))
+(put 'erase-buffer 'disabled nil)
+
+(defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
+#+END_SRC
+* transparency
+#+BEGIN_SRC emacs-lisp
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c t") 'toggle-transparency)
+#+END_SRC
