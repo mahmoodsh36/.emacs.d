@@ -1,41 +1,4 @@
 * packages
-** exwm
-#+BEGIN_SRC emacs-lisp
-(use-package exwm
-  :config
-  (require 'exwm)
-  (require 'exwm-config)
-  (setq exwm-workspace-number 4)
-  (setq exwm-input-global-keys
-     `(([?\s-r] . exwm-reset)
-       ([?\s-w] . exwm-workspace-switch)
-       ([?\s-h] . windmove-left)
-       ([?\s-l] . windmove-right)
-       ([?\s-k] . windmove-up)
-       ([?\s-j] . windmove-down)
-       ,@(mapcar (lambda (i)
-                   `(,(kbd (format "s-%d" i)) .
-                     (lambda ()
-                       (interactive)
-                       (exwm-workspace-switch-create ,i))))
-                 (number-sequence 0 9))
-       ([?\s-&] . (lambda (command)
-		     (interactive (list (read-shell-command "$ ")))
-		     (start-process-shell-command command nil command)))))
-  (setq exwm-input-simulation-keys
-        '(([?\C-b] . [left])
-          ([?\C-f] . [right])
-          ([?\C-p] . [up])
-          ([?\C-n] . [down])
-          ([?\C-s] . [C-f])
-          ([?\C-a] . [home])
-          ([?\C-e] . [end])
-          ([?\M-v] . [prior])
-          ([?\C-v] . [next])
-          ([?\C-d] . [delete])
-          ([?\C-k] . [S-end delete])))
-  (exwm-enable))
-#+END_SRC
 ** themes
 *** zenburn-theme
 #+BEGIN_SRC emacs-lisp
@@ -189,7 +152,6 @@
 #+END_SRC
 * delimeter-functions
 #+BEGIN_SRC emacs-lisp
-(defun change-in-parenthases )
 #+END_SRC
 * transparency
 #+BEGIN_SRC emacs-lisp
