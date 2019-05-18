@@ -17,7 +17,10 @@ xset r rate 200 60
 #export CLUTTER_IM_MODULE=xim
 
 # Finally start Emacs
-exec emacs
+exec emacs && setxkbmap -option caps:swapescape
 
 # switch caps with escape key
 exec setxkbmap -option caps:swapescape
+
+# helps with screen locking i think?
+xss-lock -- slock &
