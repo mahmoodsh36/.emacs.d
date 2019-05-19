@@ -10,6 +10,7 @@ rmdir /home/$USER/Templates
 rmdir /home/$USER/Music
 rmdir /home/$USER/Public
 
+echo "user is $USER"
 # restore configs
 ln -sf $PWD/bashrc              /home/$USER/.bashrc
 ln -sf $PWD/vimrc               /home/$USER/.vimrc
@@ -21,7 +22,7 @@ rm -r                           /home/$USER/Pictures
 ln -sf $PWD/Pictures            /home/$USER/
 mkdir -p                        /home/$USER/.config/terminator
 ln -sf $PWD/terminator_config   /home/$USER/.config/terminator/config
-mkdir ~/.emacs.d/
+mkdir /home/$USER/.emacs.d/
 ln -sf $PWD/config.org          /home/$USER/.emacs.d/config.org
 ln -sf $PWD/emacs.el            /home/$USER/.emacs
 ln -sf $PWD/zshrc               /home/$USER/.zshrc
@@ -30,9 +31,6 @@ ln -sf $PWD/mimeapps.list       /home/$USER/.config/mimeapps.list
 ln -sf $PWD/profile             /home/$USER/.profile
 ln -sf $PWD/zprofile            /home/$USER/.zprofile
 ln -sf $PWD/xinitrc             /home/$USER/.xinitrc
-
-# map caps lock to escape key
-setxkbmap -option caps:swapescape
 
 # install vundle
 git clone https://github.com/VundleVim/Vundle.vim.git /home/$USER/.vim/bundle/Vundle.vim
