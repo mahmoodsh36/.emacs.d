@@ -31,6 +31,7 @@ ln -sf $PWD/mimeapps.list       /home/$USER/.config/mimeapps.list
 ln -sf $PWD/profile             /home/$USER/.profile
 ln -sf $PWD/zprofile            /home/$USER/.zprofile
 ln -sf $PWD/xinitrc             /home/$USER/.xinitrc
+ln -sf $PWD/awesome             /home/$USER/.config/
 
 # install vundle
 git clone https://github.com/VundleVim/Vundle.vim.git /home/$USER/.vim/bundle/Vundle.vim
@@ -39,7 +40,7 @@ git clone https://github.com/VundleVim/Vundle.vim.git /home/$USER/.vim/bundle/Vu
 sudo pacman -Syu --noconfirm
 
 # install oh my zsh
-# sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 sudo pacman -R vim --noconfirm
 sudo pacman -S `cat app_list.txt | paste -sd" "` --noconfirm

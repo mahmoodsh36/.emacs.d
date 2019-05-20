@@ -74,6 +74,41 @@
   (global-company-mode)
   (global-set-key "\C-c\c" 'company-complete))
 #+END_SRC
+** meghanda
+#+BEGIN_SRC emacs-lisp
+(use-package meghanada
+  :config
+  (require 'meghanada)
+  (add-hook 'java-mode-hook
+            (lambda ()
+              ;; meghanada-mode on
+              (meghanada-mode t)
+              (flycheck-mode +1)
+              (setq c-basic-offset 2)
+              ;; use code format
+              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+  (cond
+   ((eq system-type 'windows-nt)
+    (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+    (setq meghanada-maven-path "mvn.cmd"))
+   (t
+    (setq meghanada-java-path "java")
+    (setq meghanada-maven-path "mvn"))))
+#+END_SRC
+** flycheck
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+#+END_SRC
+** treemacs
+#+BEGIN_SRC emacs-lisp
+(use-package treemacs
+  :config
+  (treemacs-resize-icons 7)
+  (setq treemacs-width 35)
+  (treemacs))
+#+END_SRC
 * file-settings
 ** file-backup
 #+BEGIN_SRC emacs-lisp
@@ -108,8 +143,6 @@
 (tool-bar-mode -1)
 ;; fringe minimal mode
 (fringe-mode 1)
-;; set font height
-(set-face-attribute 'default nil :height 80)
 ;; set cursor to not blink
 (blink-cursor-mode -1)
 #+END_SRC
@@ -158,9 +191,7 @@
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
 (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-(add-to-list 'default-frame-alist '(alpha . (85 . 50))))
-
-
+(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 
 (defun toggle-transparency ()
   (interactive)

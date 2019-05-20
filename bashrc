@@ -15,14 +15,14 @@ export END=$'\e[0m'
 export MYSCRIPTS=~/codee/scripts/
 
 # enable vi mode in terminal
-set -o vi
+set -o emacs
 # enable vim with tmux
 export TERM="xterm-256color"
 # make vim default editor
 export EDITOR="vim"
 export VISUAL="vim"
-export TERMINAL="gnome-terminal"
-export BROWSER="chromium"
+export TERMINAL="terminator"
+export BROWSER="firefox"
 
 # aliases
 alias ls="ls --color"
@@ -40,3 +40,5 @@ LC_MONETARY="en_US.UTF-8"
 LC_NUMERIC="en_US.UTF-8"
 LC_TIME="en_US.UTF-8"
 LC_ALL="en_US.UTF-8"
+
+setxkbmap -option caps:escape

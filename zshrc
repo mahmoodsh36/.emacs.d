@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-  export ZSH="/home/mahmood/.oh-my-zsh"
+export ZSH="/home/mahmooz/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -97,7 +97,7 @@ source $ZSH/oh-my-zsh.sh
 # aliases
 alias tmux="tmux -u" # start tmux with utf-8 encoding
 
-export EDITOR="emacsclient"
+export EDITOR="vim"
 
 LANG=en_US.UTF-8
 LANGUAGE=en
@@ -115,5 +115,5 @@ LC_MEASUREMENT="en_US.UTF-8"
 LC_IDENTIFICATION="en_US.UTF-8"
 LC_ALL=en_US.UTF-8
 
-# swap escape with caps lock
-setxkbmap -option caps:swapescape
+setxkbmap -option caps:escape
+set -o emacs

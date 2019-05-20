@@ -47,7 +47,7 @@
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (company company-mode zenburn-theme solarized-theme dracula-theme telephone-line helm linum-relative idle-highlight-mode airline-themes powerline expand-region projectile magit darktooth-theme monokai-theme use-package)))
+    (treemacs neotree meghanada meghanda company company-mode zenburn-theme solarized-theme dracula-theme telephone-line helm linum-relative idle-highlight-mode airline-themes powerline expand-region projectile magit darktooth-theme monokai-theme use-package)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(scroll-bar-mode nil)
@@ -89,7 +89,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:inherit nil :stipple nil :background "#292b2e" :foreground "#b2b2b2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 75 :width normal :foundry "ADBO" :family "Source Code Pro")))))
 
 (require 'package)
 (setq package-enable-at-startup nil)
