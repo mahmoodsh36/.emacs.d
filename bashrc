@@ -15,7 +15,7 @@ export END=$'\e[0m'
 export MYSCRIPTS=~/codee/scripts/
 
 # enable vi mode in terminal
-set -o emacs
+set -o vi
 # enable vim with tmux
 export TERM="xterm-256color"
 # make vim default editor
