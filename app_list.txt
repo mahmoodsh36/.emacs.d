@@ -13,3 +13,4 @@ python-pip
 pulseaudio                                 
 emacs
 rofi
+compton
