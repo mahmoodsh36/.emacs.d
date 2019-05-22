@@ -116,4 +116,4 @@ LC_IDENTIFICATION="en_US.UTF-8"
 LC_ALL=en_US.UTF-8
 
 setxkbmap -option caps:escape
-set -o emacs
+set -o vi

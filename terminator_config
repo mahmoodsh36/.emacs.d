@@ -74,7 +74,7 @@
     background_darkness = 0.6
     background_type = transparent
     cursor_color = "#aaaaaa"
-    font = Source Code Pro for Powerline 9
+    font = Inconsolata-g for Powerline Medium 8
     scrollback_infinite = True
     scrollbar_position = hidden
     show_titlebar = False
