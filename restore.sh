@@ -39,15 +39,12 @@ git clone https://github.com/VundleVim/Vundle.vim.git /home/$USER/.vim/bundle/Vu
 # now update the system
 sudo pacman -Syu --noconfirm
 
-# install oh my zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
 sudo pacman -R vim --noconfirm
 sudo pacman -S `cat app_list.txt | paste -sd" "` --noconfirm
 
 # switch to user because yay doesnt work with root permissions
 sudo --user $USER yay -S `cat aur_list.txt | paste -sd" "` --noconfirm
 
-# prepare for exwm
-# sudo systemctl disable lightdm
-# sudo cp $PWD/grub /etc/default/grub
+# install oh my zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
