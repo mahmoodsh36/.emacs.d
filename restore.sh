@@ -31,7 +31,8 @@ ln -sf $PWD/mimeapps.list       /home/$USER/.config/mimeapps.list
 ln -sf $PWD/profile             /home/$USER/.profile
 ln -sf $PWD/zprofile            /home/$USER/.zprofile
 ln -sf $PWD/xinitrc             /home/$USER/.xinitrc
-ln -sf $PWD/awesome             /home/$USER/.config/
+ln -sf $PWD/i3status            /home/$USER/.config/i3status
+ln -sf $PWD/i3/                 /home/$USER/.config/i3
 
 # install vundle
 git clone https://github.com/VundleVim/Vundle.vim.git /home/$USER/.vim/bundle/Vundle.vim

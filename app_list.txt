@@ -1,5 +1,4 @@
 feh
-chromium
 tmux
 playerctl
 python-virtualenv
