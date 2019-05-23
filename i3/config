@@ -2,7 +2,7 @@
 set $mod Mod4
 
 # set font
-font pango:Terminus 11px
+font pango: Noto Sans 8
 
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
@@ -335,7 +335,7 @@ bar {
 }
 
 # window rules, you can find the window class using xprop
-for_window [class=".*"] border pixel 4
+for_window [class=".*"] border pixel 2
 assign [class=URxvt] 1
 assign [class=Firefox|Transmission-gtk] 2
 assign [class=Thunar|File-roller] 3
@@ -363,6 +363,15 @@ bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
 # app shortcuts
-bindsym Ctrl+Mod1+w exec --no-startup-id chromium
+bindsym Ctrl+Mod1+w exec --no-startup-id vivaldi
 bindsym Ctrl+Mod1+s exec --no-startup-id spotify
 bindsym Ctrl+Mod1+e exec --no-startup-id emacs
+
+#change volume
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
+bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
+bindsym XF86AudioMute exec amixer set Master toggle
+
+# screen locer
+exec --no-startup-id xss-lock i3lock
+

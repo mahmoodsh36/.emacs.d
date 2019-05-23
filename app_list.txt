@@ -17,3 +17,8 @@ pulseaudio
 emacs
 rofi
 compton
+playerctl
+alsamixer
+pamixer
+alsa-utils
+pavucontrol

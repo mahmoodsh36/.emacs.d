@@ -33,6 +33,8 @@ ln -sf $PWD/zprofile            /home/$USER/.zprofile
 ln -sf $PWD/xinitrc             /home/$USER/.xinitrc
 ln -sf $PWD/i3status            /home/$USER/.config/i3status
 ln -sf $PWD/i3/                 /home/$USER/.config/i3
+ln -sf $PWD/fonts               /home/$USER/.fonts
+ln -sf $PWD/Xresources          /home/$USER/.Xresources
 
 # install vundle
 git clone https://github.com/VundleVim/Vundle.vim.git /home/$USER/.vim/bundle/Vundle.vim

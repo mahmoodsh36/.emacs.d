@@ -1,4 +1,5 @@
-powerline-fonts-git
+vivaldi
 spotify
 popcorntime-bin
-vivaldi
+powerline-fonts-git
+discord
