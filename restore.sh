@@ -4,11 +4,11 @@
 USER="mahmooz"
 
 # remove unnecessary directories
-rmdir /home/$USER/Desktop
-rmdir /home/$USER/Documents
-rmdir /home/$USER/Templates
-rmdir /home/$USER/Music
-rmdir /home/$USER/Public
+# rmdir /home/$USER/Desktop
+# rmdir /home/$USER/Documents
+# rmdir /home/$USER/Templates
+# rmdir /home/$USER/Music
+# rmdir /home/$USER/Public
 
 echo "user is $USER"
 # restore configs
@@ -43,8 +43,13 @@ sudo pacman -Syu --noconfirm
 sudo pacman -R vim --noconfirm
 sudo pacman -S `cat app_list.txt | paste -sd" "` --noconfirm
 
+# install yay
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
 # switch to user because yay doesnt work with root permissions
-sudo --user $USER yay -S `cat aur_list.txt | paste -sd" "` --noconfirm
+# sudo --user $USER yay -S `cat aur_list.txt | paste -sd" "` --noconfirm
 
 # install oh my zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"

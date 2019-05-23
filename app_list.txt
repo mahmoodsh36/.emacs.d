@@ -1,3 +1,6 @@
+zsh
+i3
+i3status
 feh
 tmux
 playerctl
