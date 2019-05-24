@@ -321,17 +321,18 @@ set_from_resource $term_color15    color15
 # panel
 bar {
 	colors {
-        background #2f343f
-        statusline #2f343f
-        separator #4b5262
+      background #2f343f
+      statusline #2f343f
+      separator #4b5262
 
 		# colour of border, background, and text
-        focused_workspace	#2f343f	#bf616a	#d8dee8
-        active_workspace	#2f343f	#2f343f	#d8dee8
-        inactive_workspace	#2f343f	#2f343f	#d8dee8
-        urgent_workspace	#2f343f	#ebcb8b	#2f343f
+      focused_workspace	#2f343f	#bf616a	#d8dee8
+      active_workspace	#2f343f	#2f343f	#d8dee8
+      inactive_workspace	#2f343f	#2f343f	#d8dee8
+      urgent_workspace	#2f343f	#ebcb8b	#2f343f
     }
-        status_command i3status
+  # status_command i3status
+  status_command i3blocks -c ~/.config/i3/i3blocks.conf
 }
 
 # window rules, you can find the window class using xprop

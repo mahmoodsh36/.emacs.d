@@ -17,16 +17,16 @@ export MYSCRIPTS=~/codee/scripts/
 # enable vi mode in terminal
 set -o vi
 # enable vim with tmux
-export TERM="terminator"
+# export TERM="terminator"
 # make vim default editor
 export EDITOR="vim"
 export VISUAL="vim"
 export TERMINAL="terminator"
 export BROWSER="firefox"
 
-# aliases
-alias ls="ls --color"
-alias grep="grep --color"
+if [[ ! $TERM =~ screen ]]; then
+  exec tmux
+fi
 
 # my logo
 /home/mahmooz/codee/scripts/logo.sh

@@ -16,6 +16,7 @@ Plugin 'AlessandroYorba/Alduin'
 Plugin 'liuchengxu/space-vim-dark'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-surround'
+Plugin 'anned20/vimsence'
 
 call vundle#end()            " required
 filetype plugin indent on    " required for vundle
@@ -28,7 +29,9 @@ set shiftwidth=2
 set expandtab
 syntax on
 
-colorscheme space-vim-dark
+let g:gruvbox_contrast_dark='hard'
+colorscheme gruvbox
+set bg=dark
 
 set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
 
@@ -37,12 +40,12 @@ set timeout timeoutlen=5000 ttimeoutlen=100
 
 set cursorline
 set cursorcolumn
-highlight CursorLine ctermbg=234 ctermfg=None
-autocmd InsertLeave * highlight CursorLine ctermbg=234 ctermfg=None
+highlight CursorLine ctermbg=235 ctermfg=None
+autocmd InsertLeave * highlight CursorLine ctermbg=235 ctermfg=None
 autocmd InsertEnter * highlight CursorLine ctermbg=233 ctermfg=None
-highlight CursorColumn ctermbg=234 ctermfg=None
+highlight CursorColumn ctermbg=235 ctermfg=None
 autocmd InsertEnter * highlight CursorColumn ctermbg=233 ctermfg=None
-autocmd InsertLeave * highlight CursorColumn ctermbg=234 ctermfg=None
+autocmd InsertLeave * highlight CursorColumn ctermbg=235 ctermfg=None
 
 " to enable recursive file finding
 set path+=**
@@ -51,4 +54,6 @@ set path+=**
 set encoding=utf-8
 let g:airline_powerline_fonts=1
 let g:Powerline_symbols='unicode'
-let g:airline_theme='zenburn'
+let g:airline_theme='wombat'
+
+nnoremap Y y$

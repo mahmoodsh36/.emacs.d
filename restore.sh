@@ -13,6 +13,7 @@ USER="mahmooz"
 echo "user is $USER"
 # restore configs
 ln -sf $PWD/bashrc              /home/$USER/.bashrc
+ln -sf $PWD/bashrc              /home/$USER/.bash_profile
 ln -sf $PWD/vimrc               /home/$USER/.vimrc
 ln -sf $PWD/Xmodmap             /home/$USER/.Xmodmap
 ln -sf $PWD/tmux.conf           /home/$USER/.tmux.conf
@@ -54,5 +55,5 @@ makepkg -si
 # sudo --user $USER yay -S `cat aur_list.txt | paste -sd" "` --noconfirm
 
 # install oh my zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
