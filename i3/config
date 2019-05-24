@@ -2,7 +2,7 @@
 set $mod Mod4
 
 # set font
-font pango: Noto Sans 8
+font pango: Noto Sans 9
 
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
@@ -30,6 +30,7 @@ bindsym $mod+Shift+q kill
 
 # start program launcher
 bindsym $mod+d exec --no-startup-id rofi -show drun
+bindsym $mod+Shift+d exec --no-startup-id rofi -show run
 
 # launch categorized menu
 bindsym $mod+z exec --no-startup-id morc_menu
@@ -285,7 +286,7 @@ exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 
 # my startup stuff
-exec --no-startup-id feh --bg-fill ~/Pictures/wallpaper.png
+exec --no-startup-id feh --bg-fill ~/Pictures/sea.jpg
 
 # Color palette used for the terminal ( ~/.Xresources file )
 # Colors are gathered based on the documentation:
@@ -332,6 +333,7 @@ bar {
       urgent_workspace	#2f343f	#ebcb8b	#2f343f
     }
   # status_command i3status
+  position top
   status_command i3blocks -c ~/.config/i3/i3blocks.conf
 }
 
