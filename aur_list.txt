@@ -1,5 +1,0 @@
-vivaldi
-spotify
-popcorntime-bin
-powerline-fonts-git
-discord

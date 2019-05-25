@@ -377,4 +377,5 @@ bindsym XF86AudioMute exec amixer set Master toggle
 
 # screen locer
 exec --no-startup-id xss-lock i3lock
+exec --no-startup-id start_spotify_tracker
 
