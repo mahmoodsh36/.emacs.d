@@ -24,12 +24,12 @@ export VISUAL="vim"
 export TERMINAL="terminator"
 export BROWSER="firefox"
 
-if [[ ! $TERM =~ screen ]]; then
-  exec tmux
-fi
+# if [[ ! $TERM =~ screen ]]; then
+#   exec tmux
+# fi
 
 # my logo
-/home/mahmooz/codee/scripts/logo.sh
+# /home/mahmooz/codee/scripts/logo.sh
 
 # those variables helped fix tmux with airline
 LANG="en_US.UTF-8"
@@ -46,3 +46,5 @@ alias grep="grep --color"
 alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -exec sleep 3 \;"
 
 setxkbmap -option caps:swapescape
+
+cd ~
