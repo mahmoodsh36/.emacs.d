@@ -286,7 +286,7 @@ exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 
 # my startup stuff
-exec --no-startup-id feh --bg-fill ~/Pictures/sea.jpg
+exec --no-startup-id feh --bg-fill ~/pictures/seeds.jpg
 
 # Color palette used for the terminal ( ~/.Xresources file )
 # Colors are gathered based on the documentation:
@@ -366,7 +366,7 @@ bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
 # app shortcuts
-bindsym Ctrl+Mod1+w exec --no-startup-id vivaldi
+bindsym Ctrl+Mod1+w exec --no-startup-id vivaldi-stable
 bindsym Ctrl+Mod1+s exec --no-startup-id spotify
 bindsym Ctrl+Mod1+e exec --no-startup-id emacs
 
@@ -378,4 +378,3 @@ bindsym XF86AudioMute exec amixer set Master toggle
 # screen locer
 exec --no-startup-id xss-lock i3lock
 exec --no-startup-id start_spotify_tracker
-

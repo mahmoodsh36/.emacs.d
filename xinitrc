@@ -1,1 +1,2 @@
-exec i3 && setxkbmap -option caps:escape
+exec dwm & sleep 100d
+setxkbmap -option "esc:swapcaps"

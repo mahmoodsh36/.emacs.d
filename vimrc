@@ -16,7 +16,7 @@ Plugin 'AlessandroYorba/Alduin'
 Plugin 'liuchengxu/space-vim-dark'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-surround'
-Plugin 'anned20/vimsence'
+Plugin 'Valloric/YouCompleteMe'
 
 call vundle#end()            " required
 filetype plugin indent on    " required for vundle
