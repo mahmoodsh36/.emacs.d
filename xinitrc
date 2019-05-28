@@ -1,2 +1,34 @@
 exec dwm & sleep 100d
 setxkbmap -option "esc:swapcaps"
+
+while [ true ]
+do
+  total_mem=`free -h | head -2 | tail -1 | awk '{ print $2 }'`
+  used_mem=`free -h | head -2 | tail -1 | awk '{ print $3 }'`
+  date=" `date "+%y/%m/%d %H:%M"`"
+  volume=" $(amixer get Master | tail -1 | cut -d"[" -f2 | cut -d"]" -f1)"
+  mem=" $used_mem / $total_mem"
+
+  # disk
+  root_partition=`lsblk -r | grep " /" | cut -d" " -f1`
+  root_space=`df "/dev/$root_partition" -h | tail -1 | awk '{ print $2 }'`
+  used_root_space=`df "/dev/$root_partition" -h | tail -1 | awk '{ print $3 }'`
+  space=" $used_root_space / $root_space"
+
+  # spotify
+  artist=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$`
+  title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
+  spotify=" $title - $artist"
+
+  if [ -z "$spotify" ]
+  then
+    xsetroot -name "  $mem  |  $space  |  $volume |  $date  "
+  else
+    xsetroot -name "  $spotify  |  $mem  |  $space  |  $volume |  $date  "
+  fi
+
+  sleep 5
+done &
+
+xsetroot -name "hi there"
+exec dwm
