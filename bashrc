@@ -22,7 +22,7 @@ set -o vi
 export EDITOR="vim"
 export VISUAL="vim"
 export TERMINAL="terminator"
-export BROWSER="firefox"
+export BROWSER="chromium"
 
 # if [[ ! $TERM =~ screen ]]; then
 #   exec tmux

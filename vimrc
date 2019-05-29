@@ -16,9 +16,10 @@ Plugin 'liuchengxu/space-vim-dark'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-surround'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/nerdtree'
 
-call vundle#end()            " required
-filetype plugin indent on    " required for vundle
+call vundle#end()
+filetype plugin indent on
 
 set smartindent
 set number
@@ -38,14 +39,18 @@ set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
 " fix delay on esc+shift+o
 set timeout timeoutlen=5000 ttimeoutlen=100
 
-" set cursorline
-" set cursorcolumn
-" highlight CursorLine ctermbg=235 ctermfg=None
-" autocmd InsertLeave * highlight CursorLine ctermbg=235 ctermfg=None
-" autocmd InsertEnter * highlight CursorLine ctermbg=233 ctermfg=None
-" highlight CursorColumn ctermbg=235 ctermfg=None
-" autocmd InsertEnter * highlight CursorColumn ctermbg=233 ctermfg=None
-" autocmd InsertLeave * highlight CursorColumn ctermbg=235 ctermfg=None
+set cursorline
+set cursorcolumn
+highlight CursorLine ctermfg=None cterm=bold term=bold
+" autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
+autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold
+autocmd InsertEnter * highlight CursorLine ctermfg=None cterm=italic term=italic
+highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=none
+autocmd InsertEnter * highlight CursorColumn ctermfg=None cterm=italic term=italic
+autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold
+
+" make comments in italic font
+hi comment term=italic cterm=italic
 
 " to enable recursive file finding
 set path+=**
@@ -57,3 +62,10 @@ let g:Powerline_symbols='unicode'
 let g:airline_theme='atomic'
 
 nnoremap Y y$
+
+" C-n to start nerdtree
+map <C-n> :NERDTreeToggle<CR>
+" start nerdtree when vim starts
+" autocmd vimenter * NERDTree
+" exit vim if the only window left open is nerdtree's
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif

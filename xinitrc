@@ -28,7 +28,7 @@ do
     xsetroot -name "  $spotify  |  $mem  |  $space  |  $volume |  $date  "
   fi
 
-  sleep 0.2
+  sleep 0.5
 done &
 
 feh --bg-fill ~/pictures/purple_flowers.jpg &
