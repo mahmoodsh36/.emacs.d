@@ -65,6 +65,13 @@ nnoremap Y y$
 
 " C-n to start nerdtree
 map <C-n> :NERDTreeToggle<CR>
+" relative numbers for nerdtree
+" enable line numbers
+let NERDTreeShowLineNumbers=1
+" make sure relative line numbers are used
+autocmd FileType nerdtree setlocal relativenumber
+" use tab instead of enter, its easier to reach
+autocmd FileType nerdtree nmap <buffer> <Tab> <Enter>
 " start nerdtree when vim starts
 " autocmd vimenter * NERDTree
 " exit vim if the only window left open is nerdtree's
