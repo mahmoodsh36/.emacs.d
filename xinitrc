@@ -21,17 +21,18 @@ do
   title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$` || echo "spotify hasnt been launched"
   spotify=" $title - $artist"
 
-  if [ -z "$spotify" ]
-  then
-    xsetroot -name "  $mem  |  $space  |  $volume |  $date  "
-  else
-    xsetroot -name "  $spotify  |  $mem  |  $space  |  $volume |  $date  "
-  fi
+  # network
+  net_interface=`nmcli -f DEVICE d | grep -v "DEVICE" | head -1`
+  net_ssid=`nmcli connection show | grep $net_interface | cut -d" " -f1`
+  net=" $net_ssid"
+
+  xsetroot -name "  $spotify  |  $mem  |  $space  |  $volume |  $net  |  $date  "
 
   sleep 0.5
 done &
 
 feh --bg-fill ~/pictures/purple_flowers.jpg &
 start_spotify_tracker &
+xss-lock -- i3lock -i ~/pictures/wallpaper.png
 
 exec dwm & sleep 100d
