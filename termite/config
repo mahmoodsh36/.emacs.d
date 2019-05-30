@@ -2,7 +2,7 @@
 allow_bold = true
 browser = chromium
 clickable_url = true
-font = Inconsolata 10 
+font = Inconsolata 10
 
 [colors]
 # special
