@@ -35,4 +35,5 @@ function c () {
 }
 
 setxkbmap -option caps:swapescape
-# cd `cat ~/.last_dir`
+
+cd ~

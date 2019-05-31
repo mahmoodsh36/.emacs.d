@@ -32,7 +32,7 @@ syntax on
 let g:gruvbox_contrast_dark='hard'
 " colorscheme gruvbox
 " set bg=dark
-color default
+color zellner
 
 set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
 
@@ -50,7 +50,8 @@ autocmd InsertEnter * highlight CursorColumn ctermfg=None cterm=italic term=ital
 autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold
 
 " change visual mode highlight color
-hi Visual term=reverse cterm=reverse guibg=Grey
+hi Visual term=reverse ctermbg=234 guibg=Grey
+hi Search term=reverse ctermbg=234 guibg=Grey
 
 " make comments in italic font
 hi comment term=italic cterm=italic
@@ -62,7 +63,7 @@ set path+=**
 set encoding=utf-8
 let g:airline_powerline_fonts=1
 let g:Powerline_symbols='unicode'
-let g:airline_theme='atomic'
+let g:airline_theme='angr'
 
 nnoremap Y y$
 
