@@ -33,6 +33,6 @@ done &
 feh --bg-fill ~/pictures/purple_flowers.jpg &
 /home/mahmooz/workspace/spotify_tracker/spotify_tracker.py /home/mahmooz/mydata/track_data.json &
 xss-lock -- i3lock -i ~/pictures/wallpaper.png &
-setxkbmap -layout us -option ctrl:nocaps
+setxkbmap -option caps:swapescape
 
 exec dwm & sleep 100d

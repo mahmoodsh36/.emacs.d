@@ -9,7 +9,7 @@ export END=$'\e[0m'
 
 export MYSCRIPTS=~/codee/scripts/
 
-set -o emacs
+set -o vi
 export EDITOR="vim"
 export VISUAL="vim"
 export TERMINAL="terminator"
@@ -31,8 +31,8 @@ alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -
 
 function c () {
   cd "$@" && ls
-  pwd | tr -d "\n" > ~/.last_dir
+  # pwd | tr -d "\n" > ~/.last_dir
 }
 
-setxkbmap -layout us -option ctrl:nocaps
-cd `cat ~/.last_dir`
+setxkbmap -option caps:swapescape
+# cd `cat ~/.last_dir`
