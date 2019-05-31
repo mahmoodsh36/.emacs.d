@@ -49,6 +49,9 @@ highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=none
 autocmd InsertEnter * highlight CursorColumn ctermfg=None cterm=italic term=italic
 autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold
 
+" change visual mode highlight color
+hi Visual term=reverse cterm=reverse guibg=Grey
+
 " make comments in italic font
 hi comment term=italic cterm=italic
 
@@ -75,4 +78,4 @@ autocmd FileType nerdtree nmap <buffer> <Tab> <Enter>
 " start nerdtree when vim starts
 " autocmd vimenter * NERDTree
 " exit vim if the only window left open is nerdtree's
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd BufEnter * nested if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif

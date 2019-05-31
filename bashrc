@@ -1,8 +1,3 @@
-# this is all my config
-# if [ -d ~/codee/scripts ] ; then
-#   export PATH="$PATH:~/codee/scripts"
-# fi
-
 # colors
 export RED=$'\e[1;31m'
 export GRN=$'\e[1;32m'
@@ -14,22 +9,11 @@ export END=$'\e[0m'
 
 export MYSCRIPTS=~/codee/scripts/
 
-# enable vi mode in terminal
-set -o vi
-# enable vim with tmux
-# export TERM="terminator"
-# make vim default editor
+set -o emacs
 export EDITOR="vim"
 export VISUAL="vim"
 export TERMINAL="terminator"
 export BROWSER="chromium"
-
-# if [[ ! $TERM =~ screen ]]; then
-#   exec tmux
-# fi
-
-# my logo
-# /home/mahmooz/codee/scripts/logo.sh
 
 # those variables helped fix tmux with airline
 LANG="en_US.UTF-8"
@@ -45,6 +29,10 @@ alias ls="ls --color"
 alias grep="grep --color"
 alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -exec sleep 3 \;"
 
-setxkbmap -option caps:swapescape
+function c () {
+  cd "$@" && ls
+  pwd | tr -d "\n" > ~/.last_dir
+}
 
-cd ~
+setxkbmap -layout us -option ctrl:nocaps
+cd `cat ~/.last_dir`

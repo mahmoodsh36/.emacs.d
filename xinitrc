@@ -1,4 +1,3 @@
-setxkbmap -option "esc:swapcaps"
 compton --config ~/.config/compton.conf &
 
 while [ true ]
@@ -11,7 +10,7 @@ do
 
 
   # disk
-  root_partition=`lsblk -r | grep " /" | cut -d" " -f1`
+  root_partition=`lsblk -r | grep " /$" | cut -d" " -f1`
   root_space=`df "/dev/$root_partition" -h | tail -1 | awk '{ print $2 }'`
   used_root_space=`df "/dev/$root_partition" -h | tail -1 | awk '{ print $3 }'`
   space=" $used_root_space / $root_space"
@@ -32,7 +31,8 @@ do
 done &
 
 feh --bg-fill ~/pictures/purple_flowers.jpg &
-start_spotify_tracker &
-xss-lock -- i3lock -i ~/pictures/wallpaper.png
+/home/mahmooz/workspace/spotify_tracker/spotify_tracker.py /home/mahmooz/mydata/track_data.json &
+xss-lock -- i3lock -i ~/pictures/wallpaper.png &
+setxkbmap -layout us -option ctrl:nocaps
 
 exec dwm & sleep 100d
