@@ -15,7 +15,7 @@ Plugin 'AlessandroYorba/Alduin'
 Plugin 'liuchengxu/space-vim-dark'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-surround'
-Plugin 'Valloric/YouCompleteMe'
+" Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdtree'
 
 call vundle#end()
@@ -30,9 +30,8 @@ set expandtab
 syntax on
 
 let g:gruvbox_contrast_dark='hard'
-" colorscheme gruvbox
-" set bg=dark
-color zellner
+colorscheme gruvbox
+set bg=dark
 
 set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
 
@@ -41,17 +40,17 @@ set timeout timeoutlen=5000 ttimeoutlen=100
 
 set cursorline
 set cursorcolumn
-highlight CursorLine ctermfg=None cterm=bold term=bold
+highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
 " autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
-autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold
-autocmd InsertEnter * highlight CursorLine ctermfg=None cterm=italic term=italic
-highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=none
-autocmd InsertEnter * highlight CursorColumn ctermfg=None cterm=italic term=italic
-autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold
+autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
+autocmd InsertEnter * highlight CursorLine ctermfg=None ctermbg=233
+highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
+autocmd InsertEnter * highlight CursorColumn ctermfg=None ctermbg=233
+autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
 
 " change visual mode highlight color
-hi Visual term=reverse ctermbg=234 guibg=Grey
-hi Search term=reverse ctermbg=234 guibg=Grey
+" hi Visual term=reverse ctermbg=234 guibg=Grey
+" hi Search term=reverse ctermbg=234 guibg=Grey
 
 " make comments in italic font
 hi comment term=italic cterm=italic
@@ -66,6 +65,8 @@ let g:Powerline_symbols='unicode'
 let g:airline_theme='angr'
 
 nnoremap Y y$
+inoremap <C-e> <Esc><C-e>a
+inoremap <C-y> <Esc><C-y>a
 
 " C-n to start nerdtree
 map <C-n> :NERDTreeToggle<CR>
@@ -74,9 +75,14 @@ map <C-n> :NERDTreeToggle<CR>
 let NERDTreeShowLineNumbers=1
 " make sure relative line numbers are used
 autocmd FileType nerdtree setlocal relativenumber
-" use tab instead of enter, its easier to reach
+" nerd tree key mapping
 autocmd FileType nerdtree nmap <buffer> <Tab> <Enter>
+autocmd FileType nerdtree nmap <buffer> dd mdy
+
 " start nerdtree when vim starts
 " autocmd vimenter * NERDTree
 " exit vim if the only window left open is nerdtree's
 autocmd BufEnter * nested if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+set background=dark
+set t_Co=256
