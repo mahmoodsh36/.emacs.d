@@ -1,0 +1,75 @@
+* packages
+** treemacs
+#+BEGIN_SRC emacs-lisp
+(use-package treemacs
+  :config
+  (treemacs-resize-icons 12)
+  (setq treemacs-width 23)
+  (treemacs))
+
+(use-package treemacs-evil
+  :after treemacs evil
+  :ensure t)
+
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+#+END_SRC
+** theme
+#+BEGIN_SRC emacs-lisp
+(use-package gruvbox-theme
+  :config
+  (load-theme 'gruvbox))
+#+END_SRC
+** evil
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :config
+  (require 'evil)
+  (evil-mode 1)
+  (global-set-key (kbd "M-x") 'helm-M-x))
+#+END_SRC
+** linum-relative
+#+BEGIN_SRC emacs-lisp
+(use-package linum-relative
+  :config
+  (require 'linum-relative)
+
+  ;; Use `display-line-number-mode` as linum-mode's backend
+  ;; for smooth performance
+  (setq linum-relative-backend 'display-line-numbers-mode)
+
+  (linum-relative-global-mode))
+#+END_SRC
+** magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit)
+(use-package evil-magit)
+#+END_SRC
+* bindings
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+#+END_SRC
+* tweaks
+#+BEGIN_SRC emacs-lisp
+(setq tab-width 2)
+(setq js-indent-level 2)
+(setq default-tab-width 2)
+(defvaralias 'c-basic-offset 'tab-width)
+(defvaralias 'cperl-indent-level 'tab-width)
+(setq-default indent-tabs-mode nil)
+(show-paren-mode 1)
+;; highlight current line
+(global-hl-line-mode)
+;; set backup directory
+(setq backup-directory-alist '(("." . "~/MyEmacsBackups")))
+#+END_SRC
