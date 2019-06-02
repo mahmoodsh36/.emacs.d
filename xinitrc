@@ -2,9 +2,9 @@ compton --config ~/.config/compton.conf &
 
 while [ true ]
 do
-  total_mem=`free -h | head -2 | tail -1 | awk '{ print $2 }'`
-  used_mem=`free -h | head -2 | tail -1 | awk '{ print $3 }'`
-  date=" `date "+%y/%m/%d %H:%M"`"
+  total_mem=`free -h | head -2 | tail -1 | awk '{ print $2 }' | tr -d "i"`
+  used_mem=`free -h | head -2 | tail -1 | awk '{ print $3 }' | tr -d "i"`
+  date=" `date "+%A %y/%m/%d %H:%M"`"
   volume=" $(amixer get Master | tail -1 | cut -d"[" -f2 | cut -d"]" -f1)"
   mem=" $used_mem / $total_mem"
 
@@ -30,9 +30,11 @@ do
   sleep 0.5
 done &
 
-feh --bg-fill ~/pictures/purple_flowers.jpg &
-/home/mahmooz/workspace/spotify_tracker/spotify_tracker.py /home/mahmooz/mydata/track_data.json &
+feh --bg-fill ~/pictures/purple_pink_flowers.jpg &
+/home/mahmooz/workspace/spotify_monitor/spotify_tracker.py /home/mahmooz/mydata/track_data.json &
 xss-lock -- i3lock -i ~/pictures/wallpaper.png &
 setxkbmap -option caps:swapescape
 
 exec dwm & sleep 100d
+
+cd ~
