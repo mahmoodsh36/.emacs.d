@@ -37,3 +37,12 @@ function c () {
 setxkbmap -option caps:swapescape
 
 cd ~
+
+# fix intellij having white blank screen
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# finally, start tmux
+# if [[ ! $TERM =~ screen ]]; then
+#     exec tmux
+# fi
+
