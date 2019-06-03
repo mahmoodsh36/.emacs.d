@@ -9,7 +9,7 @@ font = Inconsolata 10
 foreground      = #f8f8f2
 foreground_bold = #f8f8f2
 cursor          = #ffffff
-background      = rgba(60, 20, 61, 0.8)
+background      = rgba(12, 28, 56, 0.8)
 
 # black
 color0  = #000000
