@@ -29,18 +29,18 @@ set shiftwidth=2
 set expandtab
 syntax on
 
-" let g:gruvbox_contrast_dark='hard'
-" colorscheme gruvbox
-" set bg=dark
-" set cursorline
-" set cursorcolumn
-" highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
-" " autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
-" autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
-" autocmd InsertEnter * highlight CursorLine ctermfg=None ctermbg=233
-" highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
-" autocmd InsertEnter * highlight CursorColumn ctermfg=None ctermbg=233
-" autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
+let g:gruvbox_contrast_dark='hard'
+colorscheme gruvbox
+set bg=dark
+set cursorline
+set cursorcolumn
+highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
+" autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
+autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
+autocmd InsertEnter * highlight CursorLine ctermfg=None ctermbg=233
+highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
+autocmd InsertEnter * highlight CursorColumn ctermfg=None ctermbg=233
+autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
 
 set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
 
