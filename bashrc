@@ -34,6 +34,9 @@ function c () {
   # pwd | tr -d "\n" > ~/.last_dir
 }
 
+# PS1 prompt customizing
+export PS1="\033[0;34m [\w] \033[0m"
+
 setxkbmap -option caps:swapescape
 
 cd ~
