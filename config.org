@@ -71,5 +71,5 @@
 ;; highlight current line
 (global-hl-line-mode)
 ;; set backup directory
-(setq backup-directory-alist '(("." . "~/MyEmacsBackups")))
+(setq backup-directory-alist '(("." . "~/.emacs_backup")))
 #+END_SRC
