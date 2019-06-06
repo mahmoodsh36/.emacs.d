@@ -1,0 +1,7 @@
+anydesk
+discord
+popcorntime-bin
+powerline-fonts-git
+spotify
+ttf-ms-fonts
+yay

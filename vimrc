@@ -11,11 +11,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim' 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'AlessandroYorba/Alduin'
-Plugin 'liuchengxu/space-vim-dark'
 Plugin 'morhetz/gruvbox'
-Plugin 'tpope/vim-surround'
-" Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdtree'
 
 call vundle#end()

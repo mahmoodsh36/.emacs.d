@@ -26,6 +26,7 @@ LC_TIME="en_US.UTF-8"
 LC_ALL="en_US.UTF-8"
 
 alias ls="ls --color"
+alias l="ls --color=none"
 alias grep="grep --color"
 alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -exec sleep 3 \;"
 
@@ -35,7 +36,19 @@ function c () {
 }
 
 # PS1 prompt customizing
-export PS1="\033[0;34m [\w] \033[0m"
+function getDirName () {
+  dir=`pwd`
+  if [ "$dir" == "/" ]; then
+    echo $dir
+  elif [ "$dir" == "~" ]; then
+    echo "$dir"
+  elif [ "$dir" == "${HOME}" ]; then
+    echo "~"
+  else
+    echo $dir | rev | cut -d "/" -f 1 | rev
+  fi
+}
+export PS1="\[\033[0;34m\] [\$(getDirName)]\[\033[0m\] "
 
 setxkbmap -option caps:swapescape
 
