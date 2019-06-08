@@ -28,6 +28,7 @@ syntax on
 set ignorecase
 " exit buffer without closing window
 nnoremap <C-c> :bp\|bd #<CR>
+set incsearch
 
 let g:gruvbox_contrast_dark='hard'
 colorscheme gruvbox
