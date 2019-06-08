@@ -48,7 +48,11 @@ function getDirName () {
     echo $dir | rev | cut -d "/" -f 1 | rev
   fi
 }
-export PS1="\[\033[0;34m\] [\$(getDirName)]\[\033[0m\] "
+if [[ $EUID -ne 0 ]]; then
+    export PS1="\[\033[0;34m\] [\$(getDirName)]\[\033[0m\] "
+else
+    export PS1="\[\033[0;34m\] (\$(getDirName))\[\033[0m\] "
+fi
 
 setxkbmap -option caps:swapescape
 
