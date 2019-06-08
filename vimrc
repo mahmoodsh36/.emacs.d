@@ -20,10 +20,14 @@ filetype plugin indent on
 set smartindent
 set number
 set relativenumber
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set expandtab
 syntax on
+" set smartcase " search will be case sensitive if it contains uppercase
+set ignorecase
+" exit buffer without closing window
+nnoremap <C-c> :bp\|bd #<CR>
 
 let g:gruvbox_contrast_dark='hard'
 colorscheme gruvbox
