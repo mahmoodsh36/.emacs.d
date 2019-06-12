@@ -13,6 +13,9 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'morhetz/gruvbox'
 Plugin 'scrooloose/nerdtree'
+Plugin 'majutsushi/tagbar'
+Plugin 'tpope/vim-surround'
+Plugin 'AlessandroYorba/Alduin'
 
 call vundle#end()
 filetype plugin indent on
@@ -30,18 +33,18 @@ set ignorecase
 nnoremap <C-c> :bp\|bd #<CR>
 set incsearch
 
-let g:gruvbox_contrast_dark='hard'
-colorscheme gruvbox
-set bg=dark
+" let g:gruvbox_contrast_dark='hard'
+colorscheme alduin
+" set bg=dark
 set cursorline
-set cursorcolumn
+" set cursorcolumn
 highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
 " autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
 autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
 autocmd InsertEnter * highlight CursorLine ctermfg=None ctermbg=233
-highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
-autocmd InsertEnter * highlight CursorColumn ctermfg=None ctermbg=233
-autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
+" highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
+" autocmd InsertEnter * highlight CursorColumn ctermfg=None ctermbg=233
+" autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
 
 set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
 
@@ -86,3 +89,15 @@ autocmd BufEnter * nested if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDT
 
 set background=dark
 set t_Co=256
+
+" tagbar
+nmap <C-s> :TagbarToggle<CR>
+" make sure relative line numbers are used
+autocmd FileType tagbar setlocal relativenumber
+" tagbar tree key mapping
+autocmd FileType tagbar nmap <buffer> <Tab> <Enter>
+autocmd FileType tagbar nmap <buffer> dd mdy
+
+" java specific macros
+" print macro
+let @p = 'ISystem.out.println(A);==:w'
