@@ -56,7 +56,7 @@ set timeout timeoutlen=5000 ttimeoutlen=100
 " hi Search term=reverse ctermbg=234 guibg=Grey
 
 " make comments in italic font
-hi comment term=italic cterm=italic
+" hi comment term=italic cterm=italic
 
 " to enable recursive file finding
 set path+=**
@@ -65,9 +65,11 @@ set path+=**
 set encoding=utf-8
 let g:airline_powerline_fonts=1
 let g:Powerline_symbols='unicode'
-let g:airline_theme='angr'
+let g:airline_theme='alduin'
 
 nnoremap Y y$
+nnoremap <C-h> :cprev<Return>
+nnoremap <C-l> :cnext<Return>
 inoremap <C-e> <Esc><C-e>a
 inoremap <C-y> <Esc><C-y>a
 
