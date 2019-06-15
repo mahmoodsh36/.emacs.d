@@ -29,8 +29,9 @@ alias ls="ls --color"
 alias l="ls --color=none"
 alias grep="grep --color"
 alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -exec sleep 3 \;"
+alias c="clear"
 
-function c () {
+function d () {
   cd "$@" && ls
   # pwd | tr -d "\n" > ~/.last_dir
 }
@@ -49,9 +50,9 @@ function getDirName () {
   fi
 }
 if [[ $EUID -ne 0 ]]; then
-    export PS1="\[\033[0;34m\] [\$(getDirName)]\[\033[0m\] "
+    export PS1="\[\033[0;34m\][\$(getDirName)]\[\033[0m\] "
 else
-    export PS1="\[\033[0;34m\] (\$(getDirName))\[\033[0m\] "
+    export PS1="\[\033[0;34m\](\$(getDirName))\[\033[0m\] "
 fi
 
 setxkbmap -option caps:swapescape
