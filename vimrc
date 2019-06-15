@@ -103,3 +103,5 @@ autocmd FileType tagbar nmap <buffer> dd mdy
 " java specific macros
 " print macro
 let @p = 'ISystem.out.println(A);==:w'
+
+highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
