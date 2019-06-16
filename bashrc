@@ -63,6 +63,6 @@ cd ~
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 # finally, start tmux
-if [[ ! $TERM =~ screen ]]; then
-  exec tmux
-fi
+# if [[ ! $TERM =~ screen ]]; then
+#   exec tmux
+# fi
