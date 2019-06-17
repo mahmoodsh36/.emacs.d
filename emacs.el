@@ -5,10 +5,13 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
+    ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
  '(package-selected-packages
    (quote
-    (doom-modeline doom-line helm htlm linum-relative use-package))))
+    (spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
+ '(spacemacs-theme-comment-bg nil)
+ '(spacemacs-theme-comment-italic 1)
+ '(spacemacs-theme-keyword-italic t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -45,6 +48,10 @@
 (setq vc-follow-symlinks t)
 ;; y-or-n instead of yes-or-no
 (defalias 'yes-or-no-p 'y-or-n-p)
+;; all backups to one folder
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+;; kill current buffer without prompt
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
 
 ;; evil-mode
 (use-package evil
@@ -70,11 +77,13 @@
   :config
   (linum-relative-mode))
 
-;; doom themes
-(use-package doom-themes
+;; theme
+(setq spacemacs-theme-comment-bg nil)
+(setq spacemacs-theme-comment-italic 1)
+(use-package spacemacs-theme
   :ensure t
-  :config
-  (load-theme 'doom-peacock t))
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
 
 ;; helm
 (use-package helm
@@ -84,5 +93,57 @@
   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") #'helm-find-files))
 
-;; kill current buffer without prompt
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+;; treemacs
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (treemacs-resize-icons 15)
+  (setq treemacs-width 25)
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+(use-package treemacs-evil
+  :after treemacs evil
+  :ensure t)
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
+
+;; magit
+(use-package magit
+  :ensure t)
+(use-package evil-magit
+  :ensure t
+  :config
+  (require 'evil-magit)
+  (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
+
+;; projectile
+(use-package projectile
+  :ensure t
+  :config
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-project-search-path '("~/workspace/"))
+  (projectile-mode +1)
+  ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
+;; ivy for projectile
+(use-package ivy
+  :ensure t)
