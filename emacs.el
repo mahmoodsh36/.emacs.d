@@ -8,7 +8,7 @@
     ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
  '(package-selected-packages
    (quote
-    (spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
+    (evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
  '(spacemacs-theme-comment-bg nil)
  '(spacemacs-theme-comment-italic 1)
  '(spacemacs-theme-keyword-italic t))
@@ -31,8 +31,9 @@
 
 (require 'use-package)
 
-;; set tabs to 4 spaces
+;; set tabs to 4 spaces, 2 for javascript
 (setq-default tab-width 4)
+(setq js-indent-level 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
 (global-linum-mode 1)
@@ -57,13 +58,7 @@
 (use-package evil
   :ensure t
   :config
-  (evil-mode 1)
-  (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
-  (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
-  (define-key evil-insert-state-map (kbd "C-u")
-    (lambda ()
-      (interactive)
-      (evil-delete (point-at-bol) (point)))))
+  (evil-mode 1))
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -75,7 +70,9 @@
 (use-package linum-relative
   :ensure t
   :config
-  (linum-relative-mode))
+  (linum-relative-mode)
+  ;; show current line number not '0'
+  (setq linum-relative-current-symbol ""))
 
 ;; theme
 (setq spacemacs-theme-comment-bg nil)
@@ -147,3 +144,19 @@
 ;; ivy for projectile
 (use-package ivy
   :ensure t)
+
+;; eyebrowse for workspaces
+(use-package eyebrowse
+  :ensure t
+  :config
+  (eyebrowse-mode t))
+
+;; evil-surround for evil mode
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
+
+;; clear the eshell buffer.
+(defun eshell/clear ()      
+   (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer)))
