@@ -8,7 +8,7 @@
     ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
  '(package-selected-packages
    (quote
-    (fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
+    (evil-numbers fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
  '(spacemacs-theme-comment-bg nil)
  '(spacemacs-theme-comment-italic 1)
  '(spacemacs-theme-keyword-italic t))
@@ -160,6 +160,13 @@
 ;; fuzzy finder for emacs
 (use-package fzf
   :ensure t)
+
+;; vim-like increase and decrease numbers
+(use-package evil-numbers
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
+  (global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt))
 
 ;; clear the eshell buffer.
 (defun eshell/clear ()      
