@@ -6,12 +6,14 @@
  '(custom-safe-themes
    (quote
     ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
+ '(global-company-mode t)
  '(package-selected-packages
    (quote
-    (company evil-numbers fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
+    (gruvbox-theme zenburn-theme company evil-numbers fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
  '(spacemacs-theme-comment-bg nil)
  '(spacemacs-theme-comment-italic 1)
- '(spacemacs-theme-keyword-italic t))
+ '(spacemacs-theme-keyword-italic t)
+ '(which-function-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -75,12 +77,16 @@
   (setq linum-relative-current-symbol ""))
 
 ;; theme
-(setq spacemacs-theme-comment-bg nil)
-(setq spacemacs-theme-comment-italic 1)
-(use-package spacemacs-theme
+;; (setq spacemacs-theme-comment-bg nil)
+;; (setq spacemacs-theme-comment-italic 1)
+;; (use-package spacemacs-theme
+;;   :ensure t
+;;   :defer t
+;;   :init (load-theme 'spacemacs-dark t))
+(use-package gruvbox-theme
   :ensure t
-  :defer t
-  :init (load-theme 'spacemacs-dark t))
+  :config
+  (load-theme 'gruvbox t))
 
 ;; helm
 (use-package helm
