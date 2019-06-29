@@ -63,6 +63,8 @@
 (defun underscore-part-of-word-hook ()
   (modify-syntax-entry ?_ "w"))
 (add-hook 'prog-mode-hook 'underscore-part-of-word-hook)
+;; kill buffer and window shortcut
+(global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
 ;; evil-mode
 (use-package evil
