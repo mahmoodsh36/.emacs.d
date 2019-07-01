@@ -4,11 +4,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-        (quote
-         ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
+   (quote
+    ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
  '(package-selected-packages
-        (quote
-         (evil-collection flycheck powerline gruvbox-theme rainbow-delimiters rainbow-delimeters zenburn-theme company evil-numbers fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
+   (quote
+    (skewer-mode evil-collection flycheck powerline gruvbox-theme rainbow-delimiters rainbow-delimeters zenburn-theme company evil-numbers fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
  '(spacemacs-theme-comment-bg nil)
  '(spacemacs-theme-comment-italic 1)
  '(spacemacs-theme-keyword-italic t))
@@ -65,6 +65,8 @@
 (add-hook 'prog-mode-hook 'underscore-part-of-word-hook)
 ;; kill buffer and window shortcut
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
+;; highlight current line
+(global-hl-line-mode)
 
 ;; evil-mode
 (use-package evil
@@ -195,11 +197,6 @@
   :ensure t
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-
-(use-package powerline
-  :ensure t
-  :config
-  (powerline-center-theme))
 
 (use-package evil-collection
     :ensure t
