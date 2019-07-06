@@ -68,6 +68,12 @@
 ;; highlight current line
 (global-hl-line-mode)
 
+;; shortcuts
+(defun open-config-file ()
+  (interactive)
+  (find-file user-init-file))
+(global-set-key (kbd "C-c e") 'open-config-file)
+
 ;; evil-mode
 (use-package evil
   :ensure t
@@ -76,7 +82,7 @@
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-progressive-speed nil) ;; don"t accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 
@@ -154,7 +160,7 @@
   :ensure t
   :config
   (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/workspace/"))
+  (setq projectile-project-search-path '("~/workspace/" "~/"))
   (projectile-mode +1)
   ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
@@ -199,9 +205,9 @@
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package evil-collection
-    :ensure t
-    :config
-    (evil-collection-init))
+  :ensure t
+  :config
+  (evil-collection-init))
 
 ;; clear command to clear the eshell buffer.
 (defun eshell/clear ()
@@ -220,3 +226,23 @@
         (e (if mark-active (max (point) (mark)) (point-max))))
     (shell-command-on-region b e
      "python -mjson.tool" (current-buffer) t)))
+
+;; transparency
+ (defun toggle-transparency ()
+   (interactive)
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(85 . 50) '(100 . 100)))))
+ (global-set-key (kbd "C-c t") 'toggle-transparency)
+
+;; Set transparency of emacs
+(defun transparency (value)
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nTransparency Value 0 - 100 opaque:")
+  (set-frame-parameter (selected-frame) 'alpha value))
