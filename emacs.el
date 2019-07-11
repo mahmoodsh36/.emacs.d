@@ -1,23 +1,3 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "151bde695af0b0e69c3846500f58d9a0ca8cb2d447da68d7fbf4154dcf818ebc" default)))
- '(package-selected-packages
-   (quote
-    (skewer-mode evil-collection flycheck powerline gruvbox-theme rainbow-delimiters rainbow-delimeters zenburn-theme company evil-numbers fzf evil-surround eyebrowse spacemacs-theme dracula-theme ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs doom-modeline doom-line helm htlm linum-relative use-package)))
- '(spacemacs-theme-comment-bg nil)
- '(spacemacs-theme-comment-italic 1)
- '(spacemacs-theme-keyword-italic t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; install use-package if not installed
 ;; package archives
@@ -67,12 +47,27 @@
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 ;; highlight current line
 (global-hl-line-mode)
+;; try awesomewm config
+(defun try-awesome-config ()
+  (interactive)
+  (shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
 
 ;; shortcuts
 (defun open-config-file ()
   (interactive)
   (find-file user-init-file))
 (global-set-key (kbd "C-c e") 'open-config-file)
+
+;; handling large files, not very helpful tbh, still slow when loading images
+(defun my-find-file-check-make-large-file-read-only-hook ()
+  "If a file is over a given size, make the buffer read only."
+  (when (> (buffer-size) 100000)
+    (message "File is large, entering read-only mode")
+    (setq buffer-read-only t)
+    (setq-default bidi-display-reordering nil)
+    (buffer-disable-undo)))
+;; (fundamental-mode)))
+(add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
 
 ;; evil-mode
 (use-package evil
@@ -209,6 +204,20 @@
   :config
   (evil-collection-init))
 
+;; dunno if async is useful for me tbh
+(use-package async
+  :ensure t
+  :config
+  (autoload 'dired-async-mode "dired-async.el" nil t)
+  (dired-async-mode 1)
+  (async-bytecomp-package-mode 1))
+
+(use-package lua-mode
+  :ensure t)
+
+
+;; eshell
+
 ;; clear command to clear the eshell buffer.
 (defun eshell/clear ()
   (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer)))
@@ -218,6 +227,10 @@
     (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer))))
 (add-hook 'eshell-load-hook #'eshell-define-clear-command)
 
+;; aliases
+(defalias 'open 'find-file)
+(defalias 'openo 'find-file-other-window)
+(defalias 'try-awesome-config '(shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
 
 ;; function to refactor json files
 (defun beautify-json ()
