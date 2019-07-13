@@ -213,7 +213,9 @@
   (async-bytecomp-package-mode 1))
 
 (use-package lua-mode
-  :ensure t)
+  :ensure t
+  :config
+  (setq lua-indent-level 2))
 
 
 ;; eshell

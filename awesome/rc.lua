@@ -20,8 +20,8 @@ require("awful.hotkeys_popup.keys")
 
 function msg(str)
    naughty.notify({ preset = naughty.config.presets.critical,
-      title = "debug",
-      text = str })
+                    title = "debug",
+                    text = str })
 end
 
 -- {{{ Error handling
@@ -35,7 +35,7 @@ end
 
 -- Handle runtime errors after startup
 do
-    local in_error = false
+   local in_error = false
     awesome.connect_signal("debug::error", function (err)
         -- Make sure we don't go into an endless error loop
         if in_error then return end
@@ -99,10 +99,10 @@ myawesomemenu = {
    { "quit", function() awesome.quit() end },
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
+mymainmenu = awful.menu({ items = {
+                            { "awesome", myawesomemenu, beautiful.awesome_icon },
+                            { "open terminal", terminal }
+                       }})
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
@@ -218,7 +218,7 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            mylauncher,
+            -- mylauncher,
             s.mytaglist,
             s.mypromptbox,
         },
@@ -226,8 +226,41 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,
-            wibox.widget.systray(),
-            -- mytextclock,
+            -- wibox.widget.systray(),
+            -- spotify
+            awful.widget.watch("dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'", 0.1,
+              function(widget, stdout)
+                local songArtist, songName
+                local reachedArtist, reachedAfterArtist, reachedName
+                for line in stdout:gmatch('[^\r\n]+') do
+                  -- song name
+                  if line:match('xesam:title') then
+                    reachedName = true
+                  else
+                    if reachedName and not songName then
+                      local quotedSongName
+                      quotedSongName = line:match('string \"[%w%s%p]+$'):sub(8)
+                      songName = quotedSongName:sub(2, quotedSongName:len() - 1)
+                    end
+                  end
+
+                  if line:match('xesam:artist') then
+                    reachedArtist = true
+                  else
+                    if reachedArtist and not reachedAfterArtist then
+                      reachedAfterArtist = true
+                    else
+                      if reachedAfterArtist and not songArtist then
+                        local quotedArtistName
+                        quotedArtistName = line:match('string \"[%w%s%p]+$'):sub(8)
+                        songArtist = quotedArtistName:sub(2, quotedArtistName:len() - 1)
+                      end
+                    end
+                  end
+                end
+                widget:set_markup_silently(' [ <span foreground="#20b020">' .. songName .. ' - ' .. songArtist .. '</span> ]')
+              end
+            ),
             -- memory usage
             awful.widget.watch("free -h", 1,
                function(widget, stdout)
@@ -250,10 +283,10 @@ awful.screen.connect_for_each_screen(function(s)
                      end
                      i = i + 1
                   end
-                  widget:set_text(' [ ' .. used_mem .. ' / ' .. total_mem)
+                  widget:set_markup_silently(' [ <span foreground="#Ff8c00">' .. used_mem .. ' / ' .. total_mem .. '</span>')
                end
             ),
-            -- disk
+            -- disk usage
             awful.widget.watch('df -h', 5,
                function(widget, stdout)
                   local i, k
@@ -273,23 +306,24 @@ awful.screen.connect_for_each_screen(function(s)
                      end
                      i = i + 1
                   end
-                  widget:set_text(' ] [ ' .. used_space .. ' / ' .. total_space)
+                  widget:set_markup_silently(' ] [ <span foreground="#3050ff">' .. used_space .. ' / ' .. total_space .. '</span>')
                end
             ),
+            -- volume precentage
             awful.widget.watch('amixer get Master', 0.3,
                function(widget, stdout)
                   local result = string.match(stdout, "%[[%d][%d]?[%d]?%%%]")
                   local sound  = string.sub(result, 2, string.len(result) - 1)
-                  widget:set_text(' ] [ ' .. sound .. ' ] ')
+                  widget:set_markup_silently(' ] [<span foreground="#008b8b"> ' .. sound .. '</span> ] ')
                end
             ),
+            -- date and time
             awful.widget.watch('date "+%A %d/%m/%y %H:%M"', 1,
                function(widget, stdout)
-                  local out = '[ ' .. stdout:match('[^\r\n]+') .. ' ] '
-                  widget:set_text(out)
+                  local out = stdout:match('[^\r\n]+')
+                  widget:set_markup_silently('[ <span foreground="#Fa8072">' .. out .. '</span> ] ')
                end
             ),
-            -- spotify
             -- to be done
             -- awful.widget.watch('
             -- network
@@ -395,9 +429,8 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("playerctl play-pause") end),
     awful.key({ }, "XF86AudioNext", function () awful.util.spawn("playerctl next") end),
     awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("playerctl previous") end),
-    awful.key({ }, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer -c 0 set Master 1dB+") end),
-    awful.key({ }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer -c 0 set Master 1dB-") end),
-    awful.key({ }, "XF86AudioMute", function () awful.util.spawn("amixer -c 0 set Master toggle") end),    -- Prompt
+    awful.key({ }, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer set Master 5%+") end),
+    awful.key({ }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer set Master 5%-") end),
 
     -- awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
     --          {description = "run prompt", group = "launcher"}),
