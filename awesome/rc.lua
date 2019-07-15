@@ -2,6 +2,8 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+local dpi   = require("beautiful.xresources").apply_dpi
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -173,7 +175,130 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+function powerline_rl(cr, width, height)
+    local arrow_depth, offset = height/2, 0
 
+    -- Avoid going out of the (potential) clip area
+    if arrow_depth < 0 then
+        width  =  width + 2*arrow_depth
+        offset = -arrow_depth
+    end
+
+    cr:move_to(offset + arrow_depth         , 0        )
+    cr:line_to(offset + width               , 0        )
+    cr:line_to(offset + width - arrow_depth , height/2 )
+    cr:line_to(offset + width               , height   )
+    cr:line_to(offset + arrow_depth         , height   )
+    cr:line_to(offset                       , height/2 )
+
+    cr:close_path()
+end
+
+local function pl(widget, bgcolor, padding)
+    return wibox.container.background(wibox.container.margin(widget, dpi(16), dpi(16)), bgcolor, powerline_rl)
+end
+
+local spotify_widget = awful.widget.watch("dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'", 0.1,
+              function(widget, stdout)
+                local songArtist, songName
+                local reachedArtist, reachedAfterArtist, reachedName
+                for line in stdout:gmatch('[^\r\n]+') do
+                  -- song name
+                  if line:match('xesam:title') then
+                    reachedName = true
+                  else
+                    if reachedName and not songName then
+                      local quotedSongName
+                      quotedSongName = line:match('string \"[%w%s%p]+$'):sub(8)
+                      songName = quotedSongName:sub(2, quotedSongName:len() - 1)
+                    end
+                  end
+
+                  if line:match('xesam:artist') then
+                    reachedArtist = true
+                  else
+                    if reachedArtist and not reachedAfterArtist then
+                      reachedAfterArtist = true
+                    else
+                      if reachedAfterArtist and not songArtist then
+                        local quotedArtistName
+                        quotedArtistName = line:match('string \"[%w%s%p]+$'):sub(8)
+                        songArtist = quotedArtistName:sub(2, quotedArtistName:len() - 1)
+                      end
+                    end
+                  end
+                end
+                widget:set_markup_silently('<span weight="ultrabold" size="large" foreground="#000000">' .. songName .. ' - ' .. songArtist .. '</span>')
+                collectgarbage()
+              end
+)
+
+local memory_widget = awful.widget.watch("free -h", 1,
+               function(widget, stdout)
+                  local i, k
+                  local total_mem
+                  local used_mem
+                  i = 0
+                  k = 0
+                  for line in stdout:gmatch('[^\r\n]+') do
+                     if i == 1 then
+                        for word in line:gmatch('[^%si]+') do
+                           if k == 1 then
+                              total_mem = word
+                           end
+                           if k == 2 then
+                              used_mem = word
+                           end
+                           k = k + 1
+                        end
+                     end
+                     i = i + 1
+                  end
+                  widget:set_markup_silently('<span weight="ultrabold" size="large" foreground="#000000">' .. used_mem .. ' / ' .. total_mem .. '</span>')
+                  collectgarbage()
+               end
+)
+
+local disk_widget = awful.widget.watch('df -h', 5,
+               function(widget, stdout)
+                  local i, k
+                  i, k = 0, 0
+                  local total_space, used_space
+                  for line in stdout:gmatch('[^\r\n]+') do
+                     if line:match('/$') then
+                        for word in line:gmatch('[^%s]+') do
+                           if k == 1 then
+                              total_space = word
+                           end
+                           if k == 2 then
+                              used_space = word
+                           end
+                           k = k + 1
+                        end
+                     end
+                     i = i + 1
+                  end
+                  widget:set_markup_silently('<span weight="ultrabold" size="large" foreground="#000000">' .. used_space .. ' / ' .. total_space .. '</span>')
+                  collectgarbage()
+               end
+)
+
+local volume_widget = awful.widget.watch('amixer get Master', 0.3,
+               function(widget, stdout)
+                  local result = string.match(stdout, "%[[%d][%d]?[%d]?%%%]")
+                  local sound  = string.sub(result, 2, string.len(result) - 1)
+                  widget:set_markup_silently('<span weight="ultrabold" size="large" foreground="#000000">' .. sound .. '</span>')
+                  collectgarbage()
+               end
+)
+
+local date_widget = awful.widget.watch('date "+%A %d/%m/%y %H:%M"', 1,
+               function(widget, stdout)
+                  local out = stdout:match('[^\r\n]+')
+                  widget:set_markup_silently('<span weight="ultrabold" size="large" foreground="#000000">' .. out .. '</span>')
+                  collectgarbage()
+               end
+)
 
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
@@ -227,107 +352,11 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,
             -- wibox.widget.systray(),
-            -- spotify
-            awful.widget.watch("dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'", 0.1,
-              function(widget, stdout)
-                local songArtist, songName
-                local reachedArtist, reachedAfterArtist, reachedName
-                for line in stdout:gmatch('[^\r\n]+') do
-                  -- song name
-                  if line:match('xesam:title') then
-                    reachedName = true
-                  else
-                    if reachedName and not songName then
-                      local quotedSongName
-                      quotedSongName = line:match('string \"[%w%s%p]+$'):sub(8)
-                      songName = quotedSongName:sub(2, quotedSongName:len() - 1)
-                    end
-                  end
-
-                  if line:match('xesam:artist') then
-                    reachedArtist = true
-                  else
-                    if reachedArtist and not reachedAfterArtist then
-                      reachedAfterArtist = true
-                    else
-                      if reachedAfterArtist and not songArtist then
-                        local quotedArtistName
-                        quotedArtistName = line:match('string \"[%w%s%p]+$'):sub(8)
-                        songArtist = quotedArtistName:sub(2, quotedArtistName:len() - 1)
-                      end
-                    end
-                  end
-                end
-                widget:set_markup_silently(' [ <span foreground="#20b020">' .. songName .. ' - ' .. songArtist .. '</span> ]')
-              end
-            ),
-            -- memory usage
-            awful.widget.watch("free -h", 1,
-               function(widget, stdout)
-                  local i, k
-                  local total_mem
-                  local used_mem
-                  i = 0
-                  k = 0
-                  for line in stdout:gmatch('[^\r\n]+') do
-                     if i == 1 then
-                        for word in line:gmatch('[^%si]+') do
-                           if k == 1 then
-                              total_mem = word
-                           end
-                           if k == 2 then
-                              used_mem = word
-                           end
-                           k = k + 1
-                        end
-                     end
-                     i = i + 1
-                  end
-                  widget:set_markup_silently(' [ <span foreground="#Ff8c00">' .. used_mem .. ' / ' .. total_mem .. '</span>')
-               end
-            ),
-            -- disk usage
-            awful.widget.watch('df -h', 5,
-               function(widget, stdout)
-                  local i, k
-                  i, k = 0, 0
-                  local total_space, used_space
-                  for line in stdout:gmatch('[^\r\n]+') do
-                     if line:match('/$') then
-                        for word in line:gmatch('[^%s]+') do
-                           if k == 1 then
-                              total_space = word
-                           end
-                           if k == 2 then
-                              used_space = word
-                           end
-                           k = k + 1
-                        end
-                     end
-                     i = i + 1
-                  end
-                  widget:set_markup_silently(' ] [ <span foreground="#3050ff">' .. used_space .. ' / ' .. total_space .. '</span>')
-               end
-            ),
-            -- volume precentage
-            awful.widget.watch('amixer get Master', 0.3,
-               function(widget, stdout)
-                  local result = string.match(stdout, "%[[%d][%d]?[%d]?%%%]")
-                  local sound  = string.sub(result, 2, string.len(result) - 1)
-                  widget:set_markup_silently(' ] [<span foreground="#008b8b"> ' .. sound .. '</span> ] ')
-               end
-            ),
-            -- date and time
-            awful.widget.watch('date "+%A %d/%m/%y %H:%M"', 1,
-               function(widget, stdout)
-                  local out = stdout:match('[^\r\n]+')
-                  widget:set_markup_silently('[ <span foreground="#Fa8072">' .. out .. '</span> ] ')
-               end
-            ),
-            -- to be done
-            -- awful.widget.watch('
-            -- network
-            -- to be done
+            pl(wibox.widget { nil, spotify_widget, layout = wibox.layout.align.horizontal }, "#30b020"),
+            pl(wibox.widget { nil, memory_widget, layout = wibox.layout.align.horizontal }, "#6B2B71"),
+            pl(wibox.widget { nil, disk_widget, layout = wibox.layout.align.horizontal }, "#CB755B"),
+            pl(wibox.widget { nil, volume_widget, layout = wibox.layout.align.horizontal }, "#8DAA9A"),
+            pl(wibox.widget { nil, date_widget, layout = wibox.layout.align.horizontal }, "#C0C0A2"),
             s.mylayoutbox,
         },
     }
@@ -432,8 +461,8 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer set Master 5%+") end),
     awful.key({ }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer set Master 5%-") end),
 
-    -- awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
-    --          {description = "run prompt", group = "launcher"}),
+    awful.key({ modkey, "Shift" }, "r", function () awful.screen.focused().mypromptbox:run() end,
+             {description = "run prompt", group = "launcher"}),
 
     awful.key({ modkey }, "x",
               function ()
