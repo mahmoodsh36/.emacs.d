@@ -4,7 +4,8 @@
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
+             '("melpa" . "http://melpa.milkbox.net/packages/")
+             '("gnu" . "http://elpa.gnu.org/packages/"))
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -51,6 +52,9 @@
 (defun try-awesome-config ()
   (interactive)
   (shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
+
+;; js2-mode as major mode for javascript
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;; shortcuts
 (defun open-config-file ()
@@ -217,6 +221,21 @@
   :config
   (setq lua-indent-level 2))
 
+(use-package emmet-mode
+  :ensure t
+  :config
+  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+  (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
+
+(use-package skewer-mode
+  :ensure t
+  :config
+  (add-hook 'js2-mode-hook 'skewer-mode)
+  (add-hook 'css-mode-hook 'skewer-css-mode)
+  (add-hook 'html-mode-hook 'skewer-html-mode))
+
+;; (use-package rainbow-mode
+;;   :ensure t)
 
 ;; eshell
 
@@ -230,7 +249,7 @@
 (add-hook 'eshell-load-hook #'eshell-define-clear-command)
 
 ;; aliases
-(defalias 'open 'find-file)
+(defalias 'e 'find-file)
 (defalias 'openo 'find-file-other-window)
 (defalias 'try-awesome-config '(shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
 
@@ -261,3 +280,17 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (rainbow-mode emmet-mode zenburn-theme use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil spacemacs-theme skewer-mode rainbow-delimiters powerline lua-mode linum-relative ivy helm gruvbox-theme fzf flycheck eyebrowse evil-surround evil-numbers evil-magit evil-collection dracula-theme doom-themes doom-modeline company))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
