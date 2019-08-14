@@ -198,7 +198,7 @@ local function pl(widget, bgcolor, padding)
     return wibox.container.background(wibox.container.margin(widget, dpi(16), dpi(16)), bgcolor, powerline_rl)
 end
 
-local spotify_widget = awful.widget.watch("dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'", 0.1,
+local spotify_widget = awful.widget.watch("dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'", 1,
               function(widget, stdout)
                 local songArtist, songName
                 local reachedArtist, reachedAfterArtist, reachedName
@@ -283,7 +283,7 @@ local disk_widget = awful.widget.watch('df -h', 5,
                end
 )
 
-local volume_widget = awful.widget.watch('amixer get Master', 0.3,
+local volume_widget = awful.widget.watch('amixer get Master', 0.1,
                function(widget, stdout)
                   local result = string.match(stdout, "%[[%d][%d]?[%d]?%%%]")
                   local sound  = string.sub(result, 2, string.len(result) - 1)

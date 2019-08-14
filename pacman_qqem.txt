@@ -1,0 +1,12 @@
+anydesk
+beaker-browser-bin
+brave-bin
+discord
+mopidy-spotify
+nwjs-bin
+popcorntime-bin
+powerline-fonts-git
+spotify
+teamviewer
+ttf-ms-fonts
+yay

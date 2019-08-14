@@ -1,4 +1,3 @@
-
 ;; install use-package if not installed
 ;; package archives
 (require 'package)
@@ -52,20 +51,41 @@
 (defun try-awesome-config ()
   (interactive)
   (shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
+;; shortcut to open new eshell buffer
+(global-set-key (kbd "C-c s") 'eshell)
+;; zap-up-to-char not zap-to-char
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+;; reload file automatically
+(global-auto-revert-mode t)
 
-;; js2-mode as major mode for javascript
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; window switching
+(defun define-window-switching-keys ()
+  (interactive)
+  (global-set-key (kbd "C-c C-w l") 'windmove-right)
+  (global-set-key (kbd "C-c C-w k") 'windmove-up)
+  (global-set-key (kbd "C-c C-w j") 'windmove-down)
+  (global-set-key (kbd "C-c C-w h") 'windmove-left))
+(define-window-switching-keys)
+
+;; js2-mode as major mode for javascript - disabled some keybindings idk why
+;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; (add-hook 'js2-mode-hook 'js2-mode-hide-warnings-and-errors)
+;; (add-hook 'js2-mode-hook 'define-window-switching-keys)
 
 ;; shortcuts
 (defun open-config-file ()
   (interactive)
   (find-file user-init-file))
 (global-set-key (kbd "C-c e") 'open-config-file)
+(defun open-awesomewm-config-file ()
+  (interactive)
+  (find-file "~/workspace/config/awesome/rc.lua"))
+(global-set-key (kbd "C-c a") 'open-awesomewm-config-file)
 
 ;; handling large files, not very helpful tbh, still slow when loading images
 (defun my-find-file-check-make-large-file-read-only-hook ()
   "If a file is over a given size, make the buffer read only."
-  (when (> (buffer-size) 100000)
+  (when (> (buffer-size) 1000000)
     (message "File is large, entering read-only mode")
     (setq buffer-read-only t)
     (setq-default bidi-display-reordering nil)
@@ -73,7 +93,7 @@
 ;; (fundamental-mode)))
 (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
 
-;; evil-mode
+;; ;; evil-mode
 (use-package evil
   :ensure t
   :config
@@ -84,6 +104,8 @@
 (setq mouse-wheel-progressive-speed nil) ;; don"t accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 10000)
+(setq auto-window-vscroll nil)
 
 ;; relative numbering
 (use-package linum-relative
@@ -96,6 +118,7 @@
 ;; theme
 ;; (setq spacemacs-theme-comment-bg nil)
 ;; (setq spacemacs-theme-comment-italic 1)
+;; (setq spacemacs-theme-keyword-italic 1)
 ;; (use-package spacemacs-theme
 ;;   :ensure t
 ;;   :defer t
@@ -118,8 +141,7 @@
   :ensure t
   :defer t
   :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  (global-set-key (kbd "C-0") 'treemacs-select-window)
   :config
   (treemacs-resize-icons 15)
   (setq treemacs-width 25)
@@ -151,8 +173,8 @@
 (use-package evil-magit
   :ensure t
   :config
-  (require 'evil-magit)
-  (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
+  (require 'evil-magit))
+  ;; (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
 
 ;; projectile
 (use-package projectile
@@ -162,7 +184,8 @@
   (setq projectile-project-search-path '("~/workspace/" "~/"))
   (projectile-mode +1)
   ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-globally-ignored-files (append '("*.py" "*.o" "*.so") projectile-globally-ignored-files)))
 
 ;; ivy for projectile
 (use-package ivy
@@ -196,17 +219,18 @@
   :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode)
-  (global-set-key (kbd "C-c c") 'company-complete))
+  (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
+  (setq company-idle-delay 2))
 
 (use-package rainbow-delimiters
   :ensure t
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-(use-package evil-collection
-  :ensure t
-  :config
-  (evil-collection-init))
+;; (use-package evil-collection
+;;   :ensure t
+;;   :config
+;;   (evil-collection-init))
 
 ;; dunno if async is useful for me tbh
 (use-package async
@@ -234,16 +258,62 @@
   (add-hook 'css-mode-hook 'skewer-css-mode)
   (add-hook 'html-mode-hook 'skewer-html-mode))
 
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
+
+;; C/C++ packages
+(use-package irony
+  :ensure t)
+(use-package company-irony
+  :ensure t)
+(use-package flycheck-irony
+  :ensure t)
+(use-package company-irony-c-headers
+  :ensure t)
+
 ;; (use-package rainbow-mode
 ;;   :ensure t)
+
+;; (use-package centaur-tabs
+;;   :ensure t
+;;   :config
+;;   (centaur-tabs-mode t)
+;;   :bind
+;;   ("C-j" . centaur-tabs-backward)
+;;   ("C-k" . centaur-tabs-forward))
+
+(use-package expand-region
+  :ensure t
+  :config
+  (global-set-key (kbd "C-=") 'er/expand-region))
+
+(use-package popwin
+  :ensure t
+  :config
+  (require 'popwin)
+  (popwin-mode 1)
+  (push '(dired-mode :position top) popwin:special-display-config)
+  (push '("*eshell*" :position bottom :stick non-nil) popwin:special-display-config))
+
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+(use-package evil-org
+  :ensure t)
+
+(use-package smartparens
+  :ensure t)
 
 ;; eshell
 
 ;; clear command to clear the eshell buffer.
 (defun eshell/clear ()
+  "Command to clear current eshell buffer."
   (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer)))
 (defun eshell-define-clear-command ()
-  (interactive)
+  "Function to define the command clear in the current mode."
   (defun eshell/clear ()
     (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer))))
 (add-hook 'eshell-load-hook #'eshell-define-clear-command)
@@ -255,6 +325,7 @@
 
 ;; function to refactor json files
 (defun beautify-json ()
+  "Function to beautify current buffer considering it is in json format."
   (interactive)
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
         (e (if mark-active (max (point) (mark)) (point-max))))
@@ -280,17 +351,20 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (rainbow-mode emmet-mode zenburn-theme use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil spacemacs-theme skewer-mode rainbow-delimiters powerline lua-mode linum-relative ivy helm gruvbox-theme fzf flycheck eyebrowse evil-surround evil-numbers evil-magit evil-collection dracula-theme doom-themes doom-modeline company))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(transparency 95)
+
+;; converting lines to printing statements
+(defun convert-line-to-print-statement (print-function-name)
+  (interactive)
+  (back-to-indentation)
+  (insert print-function-name)
+  (insert "(")
+  (end-of-line)
+  (insert ")"))
+(defun define-convert-line-to-print-statement (print-function-name)
+  (defvar-local my-print-function-name print-function-name)
+  (local-set-key (kbd "C-c l") (lambda () (interactive)
+                                 (convert-line-to-print-statement my-print-function-name))))
+
+(add-hook 'python-mode-hook (lambda () (interactive)
+                              (define-convert-line-to-print-statement "print")))
