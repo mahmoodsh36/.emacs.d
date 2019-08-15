@@ -382,18 +382,46 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
 
-    awful.key({ modkey,           }, "j",
-        function ()
-            awful.client.focus.byidx( 1)
-        end,
-        {description = "focus next by index", group = "client"}
-    ),
-    awful.key({ modkey,           }, "k",
-        function ()
-            awful.client.focus.byidx(-1)
-        end,
-        {description = "focus previous by index", group = "client"}
-    ),
+    -- By direction client focus
+    awful.key({ modkey }, "j",
+      function()
+        awful.client.focus.global_bydirection("down")
+        if client.focus then client.focus:raise() end
+      end,
+      {description = "focus down", group = "client"}),
+    awful.key({ modkey }, "k",
+      function()
+        awful.client.focus.global_bydirection("up")
+        if client.focus then client.focus:raise() end
+      end,
+      {description = "focus up", group = "client"}),
+    awful.key({ modkey }, "h",
+      function()
+        awful.client.focus.global_bydirection("left")
+        if client.focus then client.focus:raise() end
+      end,
+      {description = "focus left", group = "client"}),
+    awful.key({ modkey }, "l",
+      function()
+        awful.client.focus.global_bydirection("right")
+        if client.focus then client.focus:raise() end
+      end,
+      {description = "focus right", group = "client"}),
+    awful.key({ modkey,           }, "w", function () awful.util.mymainmenu:show() end,
+      {description = "show main menu", group = "awesome"}),
+
+    -- awful.key({ modkey,           }, "j",
+    --     function ()
+    --         awful.client.focus.byidx( 1)
+    --     end,
+    --     {description = "focus next by index", group = "client"}
+    -- ),
+    -- awful.key({ modkey,           }, "k",
+    --     function ()
+    --         awful.client.focus.byidx(-1)
+    --     end,
+    --     {description = "focus previous by index", group = "client"}
+    -- ),
     awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
@@ -425,9 +453,9 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
+    awful.key({ altkey, "Shift"   }, "l",     function () awful.tag.incmwfact( 0.05)          end,
               {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
+    awful.key({ altkey, "Shift"   }, "h",     function () awful.tag.incmwfact(-0.05)          end,
               {description = "decrease master width factor", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
               {description = "increase the number of master clients", group = "layout"}),
