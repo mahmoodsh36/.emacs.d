@@ -30,6 +30,8 @@ alias l="ls --color=none"
 alias grep="grep --color"
 alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -exec sleep 3 \;"
 alias c="clear"
+alias v="feh --auto-zoom --scale-down"
+
 
 function d () {
   cd "$@" && ls

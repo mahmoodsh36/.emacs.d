@@ -1,3 +1,5 @@
+;; fix undo-tree package not found error
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 ;; install use-package if not installed
 ;; package archives
 (require 'package)
@@ -57,6 +59,11 @@
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 ;; reload file automatically
 (global-auto-revert-mode t)
+;; enable all disabled commands
+(setq disabled-command-function nil)
+
+(global-set-key (kbd "C-c r") '(lambda () (interactive)
+                                 (call-process-shell-command (concat "termite --directory=" (projectile-project-root)) nil 0)))
 
 ;; window switching
 (defun define-window-switching-keys ()
@@ -116,17 +123,17 @@
   (setq linum-relative-current-symbol ""))
 
 ;; theme
-;; (setq spacemacs-theme-comment-bg nil)
-;; (setq spacemacs-theme-comment-italic 1)
-;; (setq spacemacs-theme-keyword-italic 1)
-;; (use-package spacemacs-theme
-;;   :ensure t
-;;   :defer t
-;;   :init (load-theme 'spacemacs-dark t))
-(use-package gruvbox-theme
+(setq spacemacs-theme-comment-bg nil)
+(setq spacemacs-theme-comment-italic 1)
+(setq spacemacs-theme-keyword-italic 1)
+(use-package spacemacs-theme
   :ensure t
-  :config
-  (load-theme 'gruvbox t))
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
+;; (use-package gruvbox-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'gruvbox t))
 
 ;; helm
 (use-package helm
@@ -220,7 +227,8 @@
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
-  (setq company-idle-delay 2))
+  (setq company-idle-delay 0)
+  (setq company-require-match nil))
 
 (use-package rainbow-delimiters
   :ensure t
@@ -288,13 +296,13 @@
   :config
   (global-set-key (kbd "C-=") 'er/expand-region))
 
-(use-package popwin
-  :ensure t
-  :config
-  (require 'popwin)
-  (popwin-mode 1)
-  (push '(dired-mode :position top) popwin:special-display-config)
-  (push '("*eshell*" :position bottom :stick non-nil) popwin:special-display-config))
+;; (use-package popwin
+;;   :ensure t
+;;   :config
+;;   (require 'popwin)
+;;   (popwin-mode 1)
+;;   (push '(dired-mode :position top) popwin:special-display-config)
+;;   (push '("*eshell*" :position bottom :stick non-nil) popwin:special-display-config))
 
 (use-package org-bullets
   :ensure t
@@ -305,6 +313,28 @@
 
 (use-package smartparens
   :ensure t)
+
+(use-package lsp-mode
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'lsp))
+
+(use-package company-lsp
+  :ensure t)
+
+(use-package lsp-java
+  :ensure t)
+
+(use-package lsp-ui
+  :ensure t)
+
+(use-package hydra
+  :ensure t)
+
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
 
 ;; eshell
 
@@ -368,3 +398,23 @@
 
 (add-hook 'python-mode-hook (lambda () (interactive)
                               (define-convert-line-to-print-statement "print")))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" default)))
+ '(package-selected-packages
+   (quote
+    (spacemacs-theme monokai-theme lsp-ui meghanada lsp-java company-lsp lsp-mode smartparens evil-org org-bullets popwin expand-region company-irony-c-headers flycheck-irony company-irony irony skewer-mode emmet-mode lua-mode rainbow-delimiters company evil-numbers fzf evil-surround eyebrowse ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs helm gruvbox-theme linum-relative evil use-package))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#282828" :foreground "#fdf4c1" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "ADBO" :family "MerriweatherSans-Italic")))))
+
+;; start server
+(server-start)

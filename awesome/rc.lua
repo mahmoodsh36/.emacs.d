@@ -198,6 +198,13 @@ local function pl(widget, bgcolor, padding)
     return wibox.container.background(wibox.container.margin(widget, dpi(16), dpi(16)), bgcolor, powerline_rl)
 end
 
+local wifi_widget = awful.widget.watch('bash -c \'nmcli | grep "\\sconnected" | tr -s " " | cut -d " " -f4\'', 1,
+                                       function(widget, stdout)
+                                         widget:set_markup_silently('<span weight="ultrabold" size="large" foreground="#000000">' .. stdout .. '</span>')
+                                       end
+)
+
+
 local spotify_widget = awful.widget.watch("dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'", 1,
               function(widget, stdout)
                 local songArtist, songName
@@ -353,6 +360,7 @@ awful.screen.connect_for_each_screen(function(s)
             -- mykeyboardlayout,
             -- wibox.widget.systray(),
             pl(wibox.widget { nil, spotify_widget, layout = wibox.layout.align.horizontal }, "#30b020"),
+            pl(wibox.widget { nil, wifi_widget, layout = wibox.layout.align.horizontal }, "#507060"),
             pl(wibox.widget { nil, memory_widget, layout = wibox.layout.align.horizontal }, "#6B2B71"),
             pl(wibox.widget { nil, disk_widget, layout = wibox.layout.align.horizontal }, "#CB755B"),
             pl(wibox.widget { nil, volume_widget, layout = wibox.layout.align.horizontal }, "#8DAA9A"),
