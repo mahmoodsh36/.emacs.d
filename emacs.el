@@ -123,17 +123,17 @@
   (setq linum-relative-current-symbol ""))
 
 ;; theme
-(setq spacemacs-theme-comment-bg nil)
-(setq spacemacs-theme-comment-italic 1)
-(setq spacemacs-theme-keyword-italic 1)
-(use-package spacemacs-theme
-  :ensure t
-  :defer t
-  :init (load-theme 'spacemacs-dark t))
-;; (use-package gruvbox-theme
+;; (setq spacemacs-theme-comment-bg nil)
+;; (setq spacemacs-theme-comment-italic 1)
+;; (setq spacemacs-theme-keyword-italic 1)
+;; (use-package spacemacs-theme
 ;;   :ensure t
-;;   :config
-;;   (load-theme 'gruvbox t))
+;;   :defer t
+;;   :init (load-theme 'spacemacs-dark t))
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox t))
 
 ;; helm
 (use-package helm
@@ -228,7 +228,11 @@
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
   (setq company-idle-delay 0)
-  (setq company-require-match nil))
+  (setq company-require-match nil)
+  (eval-after-load 'company
+    '(progn
+       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+       (define-key company-active-map [tab] 'company-complete-selection))))
 
 (use-package rainbow-delimiters
   :ensure t
@@ -268,7 +272,8 @@
 
 (use-package flycheck
   :config
-  (global-flycheck-mode))
+  (global-flycheck-mode)
+  (setq flycheck-checker-error-threshold 4000))
 
 ;; C/C++ packages
 (use-package irony
@@ -311,13 +316,16 @@
 (use-package evil-org
   :ensure t)
 
-(use-package smartparens
-  :ensure t)
+;; (use-package smartparens
+;;   :ensure t
+;;   :config
+;;   (smartparens-global-mode))
 
 (use-package lsp-mode
   :ensure t
   :config
-  (add-hook 'prog-mode-hook #'lsp))
+  (add-hook 'prog-mode-hook #'lsp)
+  (remove-hook 'html-mode-hook #'lsp))
 
 (use-package company-lsp
   :ensure t)
@@ -325,8 +333,11 @@
 (use-package lsp-java
   :ensure t)
 
-(use-package lsp-ui
-  :ensure t)
+;; annoying widgets...
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :config
+;;   (setq lsp-ui-doc-delay 10))
 
 (use-package hydra
   :ensure t)
@@ -381,7 +392,7 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-(transparency 95)
+(transparency 87)
 
 ;; converting lines to printing statements
 (defun convert-line-to-print-statement (print-function-name)
