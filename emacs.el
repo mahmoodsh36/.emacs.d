@@ -331,7 +331,10 @@
   :ensure t)
 
 (use-package lsp-java
-  :ensure t)
+  :ensure t
+  :config
+  (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
+  (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
 
 ;; annoying widgets...
 ;; (use-package lsp-ui
@@ -346,6 +349,11 @@
   :ensure t
   :config
   (yas-global-mode 1))
+
+(use-package avy
+  :ensure t
+  :config
+  (global-set-key (kbd "C-;") 'avy-goto-char))
 
 ;; eshell
 
@@ -409,14 +417,26 @@
 
 (add-hook 'python-mode-hook (lambda () (interactive)
                               (define-convert-line-to-print-statement "print")))
+
+;; start server
+(server-start)
+
+;; my hooks
+(defun compile-project ()
+    "compile the project using compile script compile.sh"
+    (interactive)
+    (call-process-shell-command (concat "cd " (projectile-project-root) " && sh compile.sh") nil 0))
+(add-hook 'after-save-hook 'compile-project)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#3c3836" "#fb4934" "#b8bb26" "#fabd2f" "#83a598" "#d3869b" "#8ec07c" "#ebdbb2"])
  '(custom-safe-themes
    (quote
-    ("a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" default)))
+    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" "a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" default)))
  '(package-selected-packages
    (quote
     (spacemacs-theme monokai-theme lsp-ui meghanada lsp-java company-lsp lsp-mode smartparens evil-org org-bullets popwin expand-region company-irony-c-headers flycheck-irony company-irony irony skewer-mode emmet-mode lua-mode rainbow-delimiters company evil-numbers fzf evil-surround eyebrowse ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs helm gruvbox-theme linum-relative evil use-package))))
@@ -425,7 +445,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#282828" :foreground "#fdf4c1" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "ADBO" :family "MerriweatherSans-Italic")))))
+ '(default ((t (:inherit nil :stipple nil :background "#282828" :foreground "#fdf4c1" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "ADBO" :family "MerriweatherSans-Italic"))))
+ '(hl-line ((t (:background "#3c3836")))))
 
-;; start server
-(server-start)
+;; change region highlight color
+(set-face-attribute 'region nil :background "#000")

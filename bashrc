@@ -32,6 +32,7 @@ alias try_wallpaper="find *jpg *png -exec feh --bg-fill {} \; -exec echo {} \; -
 alias c="clear"
 alias v="feh --auto-zoom --scale-down"
 alias e="emacsclient"
+alias up=". up"
 
 
 function d () {
@@ -53,9 +54,9 @@ function getDirName () {
   fi
 }
 if [[ $EUID -ne 0 ]]; then
-    export PS1="\[\033[0;35m\][\$(getDirName)]\[\033[0m\] "
+    export PS1="\[\033[0;32m\][\$(getDirName)]\[\033[0m\] "
 else
-    export PS1="\[\033[0;35m\](\$(getDirName))\[\033[0m\] "
+    export PS1="\[\033[0;32m\](\$(getDirName))\[\033[0m\] "
 fi
 
 setxkbmap -option caps:swapescape
