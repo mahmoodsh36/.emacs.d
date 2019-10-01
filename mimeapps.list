@@ -1,1 +1,23 @@
-/home/mahmooz/.config/mimeapps.list
+
+[Default Applications]
+text/html=chromium.desktop
+x-scheme-handler/http=chromium.desktop
+x-scheme-handler/https=chromium.desktop
+x-scheme-handler/about=chromium.desktop
+x-scheme-handler/unknown=chromium.desktop
+inode/directory=vifm.desktop
+image/png=feh.desktop
+image/jpeg=feh.desktop
+text/plain=emacsclient.desktop
+application/octet-stream=emacsclient.desktop
+application/json=emacsclient.desktop
+Cargo.lock=emacsclient.desktop
+Cargo.toml=emacsclient.desktop
+contrib=emacsclient.desktop
+LICENCE=emacsclient.desktop
+README.md=emacsclient.desktop
+rust-toolchain.org=emacsclient.desktop
+snap=emacsclient.desktop
+src=emacsclient.desktop
+target=emacsclient.desktop
+inode/x-empty=emacsclient.desktop
