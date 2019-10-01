@@ -105,3 +105,6 @@ autocmd FileType tagbar nmap <buffer> dd mdy
 let @p = 'ISystem.out.println(A);==:w'
 
 highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
+
+" use system clipboard register by default, copy and paste from it by default
+set clipboard=unnamedplus

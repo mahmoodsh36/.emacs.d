@@ -1,3 +1,5 @@
+;; get rid of the stupid startup screen
+(setq inhibit-startup-screen t)
 ;; fix undo-tree package not found error
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 ;; install use-package if not installed
@@ -336,6 +338,11 @@
   (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
   (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
 
+;; (use-package ranger
+;;   :ensure t
+;;   :config
+;;   (add-hook 'dired-mode-hook 'ranger-mode))
+
 ;; annoying widgets...
 ;; (use-package lsp-ui
 ;;   :ensure t
@@ -431,3 +438,17 @@
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
 (set-frame-font "Inconsolata 11" nil t)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (ranger yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil skewer-mode rainbow-delimiters org-bullets lua-mode lsp-java linum-relative ivy helm gruvbox-theme fzf flycheck-irony eyebrowse expand-region evil-surround evil-org evil-numbers evil-magit emmet-mode company-lsp company-irony-c-headers company-irony))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((((class color) (min-colors 16777215)) (:background "#282828" :foreground "#fdf4c1")) (((class color) (min-colors 255)) (:background "#262626" :foreground "#ffffaf")))))
