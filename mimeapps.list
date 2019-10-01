@@ -21,3 +21,7 @@ snap=emacsclient.desktop
 src=emacsclient.desktop
 target=emacsclient.desktop
 inode/x-empty=emacsclient.desktop
+application/x-bittorrent=transmission-gtk.desktop
+video/x-matroska=vlc.desktop
+text/x-shellscript=emacsclient.desktop
+text/x-lisp=emacsclient.desktop

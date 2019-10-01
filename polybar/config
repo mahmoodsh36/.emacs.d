@@ -48,7 +48,7 @@ font-3 = FontAwesome5Brands:style=Regular:size=14;4
 modules-left = bspwm i3
 ;modules-center = mpd
 ;modules-center = xwindow
-modules-right = xkeyboard xbacklight volume wifi fs-root memory cpu date
+modules-right = spotify xkeyboard xbacklight volume wifi fs-root memory cpu date
 
 tray-position = right
 tray-padding = 4
@@ -192,14 +192,15 @@ label-visible-padding = ${module/bspwm.label-empty-padding}
 [module/cpu]
 type = internal/cpu
 interval = 2
-label = %percentage%%
+label = %percentage:02:4%%
+label-maxlen = 9
 format-prefix = " "
 format-prefix-foreground = #00ffe5
 
 [module/memory]
 type = internal/memory
 interval = 2
-label = %percentage_used%%
+label = %percentage_used:02:4%%
 format-prefix = " "
 format-prefix-foreground = #fc030b
 
@@ -233,6 +234,7 @@ format-prefix-foreground = #ffd900
 date = %Y-%m-%d
 time = %H:%M
 interval = 5
+label-padding-right = 2
 
 [module/xbacklight]
 type = internal/xbacklight
@@ -392,3 +394,11 @@ format = <counter>
 interval = 0.1
 
 ; vim:ft=dosini
+
+[module/spotify]
+type = custom/script
+interval = 0.2
+exec = "title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | sed -n '/title/{n;p}' | cut -d '"' -f 2` && artist=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$) && echo $title - $artist"
+format = <label>
+format-prefix = " "
+format-prefix-foreground = #4bba06

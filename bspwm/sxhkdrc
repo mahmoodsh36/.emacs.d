@@ -185,8 +185,8 @@ super + r
       notify-send -t 5000 -a system "launched $program_to_run" && \
       $program_to_run
 
-super + o ; {e,w,s,m,h}
-      {emacs,chromium,spotify,thunderbird,rofi -show ssh}
+super + o ; {e,w,s,m,h,f}
+      {emacs,chromium,spotify,thunderbird,rofi -show ssh,st -e zsh -c "vifm"}
 
 XF86Audio{Mute,RaiseVolume,LowerVolume}
       amixer set Master {0, \
