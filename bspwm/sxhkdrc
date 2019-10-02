@@ -181,7 +181,7 @@ super + x
       /home/mahmooz/workspace/scripts/rofi.sh
 
 super + r
-      program_to_run=`ls --color=none /usr/bin | rofi -dmenu -p run:` && \
+      program_to_run=`ls --color=none /usr/bin | rofi -dmenu -p run` && \
       notify-send -t 5000 -a system "launched $program_to_run" && \
       $program_to_run
 

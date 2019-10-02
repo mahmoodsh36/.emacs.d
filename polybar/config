@@ -40,15 +40,15 @@ padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = MerriWeatherSans:size=12;2
-font-1 = FontAwesome5Free:style=Solid:size=14;4
-font-2 = FontAwesome5Free:style=Regular:size=14;4
-font-3 = FontAwesome5Brands:style=Regular:size=14;4
+font-0 = MerriWeatherSans:size=11;3
+font-1 = FontAwesome5Free:style=Solid:size=13;4
+font-2 = FontAwesome5Free:style=Regular:size=13;4
+font-3 = FontAwesome5Brands:style=Regular:size=13;4
 
 modules-left = bspwm i3
 ;modules-center = mpd
 ;modules-center = xwindow
-modules-right = spotify xkeyboard xbacklight volume wifi fs-root memory cpu date
+modules-right = spotify cpu xkeyboard xbacklight volume wifi fs-root memory date
 
 tray-position = right
 tray-padding = 4

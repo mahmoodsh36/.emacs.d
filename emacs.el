@@ -200,13 +200,6 @@
 (use-package ivy
   :ensure t)
 
-;; eyebrowse for workspaces
-(use-package eyebrowse
-  :ensure t
-  :config
-  (eyebrowse-mode t)
-  (eyebrowse-setup-opinionated-keys))
-
 ;; evil-surround for evil mode
 (use-package evil-surround
   :ensure t
@@ -362,6 +355,11 @@
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char))
 
+(use-package doom-modeline
+      :ensure t
+      :config
+      (doom-modeline-mode))
+
 ;; eshell
 
 ;; clear command to clear the eshell buffer.
@@ -438,17 +436,20 @@
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
 (set-frame-font "Inconsolata 11" nil t)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (ranger yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil skewer-mode rainbow-delimiters org-bullets lua-mode lsp-java linum-relative ivy helm gruvbox-theme fzf flycheck-irony eyebrowse expand-region evil-surround evil-org evil-numbers evil-magit emmet-mode company-lsp company-irony-c-headers company-irony))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 16777215)) (:background "#282828" :foreground "#fdf4c1")) (((class color) (min-colors 255)) (:background "#262626" :foreground "#ffffaf")))))
+
+;; ;; workspaces
+;; (setq current-workspace-index 1)
+;; (setq workspaces '())
+;; (defun switch-to-workspace (workspace-index)
+;;   "switch to a workspace"
+;;   (interactive)
+;;   (let (workspace) (nth workspace-index workspaces)
+;;         (progn
+;;           (setcar (nthcdr current-workspace-index workspaces) (current-window-configuration))
+;;           (setq current-workspace-index workspace-index)
+;;           (if (window-configuration-p workspace)
+;;               (set-window-configuration workspace)
+;;             (delete-other-windows)))))
+
+
+;; (switch-to-workspace 2)
