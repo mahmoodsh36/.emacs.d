@@ -12,8 +12,8 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'morhetz/gruvbox'
-Plugin 'scrooloose/nerdtree'
-Plugin 'majutsushi/tagbar'
+" Plugin 'scrooloose/nerdtree'
+" Plugin 'majutsushi/tagbar'
 Plugin 'tpope/vim-surround'
 Plugin 'AlessandroYorba/Alduin'
 
@@ -33,20 +33,22 @@ set ignorecase
 nnoremap <C-c> :bp\|bd #<CR>
 set incsearch
 
+color desert
 " let g:gruvbox_contrast_dark='hard'
-colorscheme alduin
+" colorscheme alduin
 " set bg=dark
-set cursorline
+" set cursorline
 " set cursorcolumn
-highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=233
-autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
-autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
-autocmd InsertEnter * highlight CursorLine ctermfg=None ctermbg=233
+" highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=233
+" autocmd InsertLeave * highlight CursorLine ctermbg=53 ctermfg=None cterm=bold term=bold
+" autocmd InsertLeave * highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
+" autocmd InsertEnter * highlight CursorLine ctermfg=None ctermbg=233
 " highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
 " autocmd InsertEnter * highlight CursorColumn ctermfg=None ctermbg=233
 " autocmd InsertLeave * highlight CursorColumn ctermfg=None cterm=bold term=bold ctermbg=235
 
-set guifont=Source\ Code\ Pro\ for\ Powerline\ Regular
+set guifont=Inconsolata
+set guioptions=""
 
 " fix delay on esc+shift+o
 set timeout timeoutlen=5000 ttimeoutlen=100

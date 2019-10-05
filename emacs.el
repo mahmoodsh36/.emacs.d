@@ -2,6 +2,7 @@
 (setq inhibit-startup-screen t)
 ;; fix undo-tree package not found error
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq package-check-signature nil)
 ;; install use-package if not installed
 ;; package archives
 (require 'package)
@@ -325,11 +326,11 @@
 (use-package company-lsp
   :ensure t)
 
-(use-package lsp-java
-  :ensure t
-  :config
-  (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
-  (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
+;; (use-package lsp-java
+;;   :ensure t
+;;   :config
+;;   (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
+;;   (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
 
 ;; (use-package ranger
 ;;   :ensure t
@@ -453,3 +454,4 @@
 
 
 ;; (switch-to-workspace 2)
+

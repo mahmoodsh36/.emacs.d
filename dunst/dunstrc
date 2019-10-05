@@ -210,10 +210,10 @@
     urgency = critical
     format  = "%s "%b""
 
-[music]
-    appname = Amarok
+[Spotify]
+    appname = Spotify
     summary = "Now playing"
-    urgency = low
+    urgency = normal
 
 #[twitter]
 #    appname = Pidgin
