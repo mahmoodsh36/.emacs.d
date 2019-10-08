@@ -126,17 +126,17 @@
   (setq linum-relative-current-symbol ""))
 
 ;; theme
-;; (setq spacemacs-theme-comment-bg nil)
-;; (setq spacemacs-theme-comment-italic 1)
-;; (setq spacemacs-theme-keyword-italic 1)
-;; (use-package spacemacs-theme
-;;   :ensure t
-;;   :defer t
-;;   :init (load-theme 'spacemacs-dark t))
-(use-package gruvbox-theme
+(setq spacemacs-theme-comment-bg nil)
+(setq spacemacs-theme-comment-italic 1)
+(setq spacemacs-theme-keyword-italic 1)
+(use-package spacemacs-theme
   :ensure t
-  :config
-  (load-theme 'gruvbox t))
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
+;; (use-package gruvbox-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'gruvbox t))
 
 ;; helm
 (use-package helm
@@ -455,3 +455,17 @@
 
 ;; (switch-to-workspace 2)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (dracula-theme spacemacs-theme yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil skewer-mode rainbow-delimiters org-bullets lua-mode lsp-java linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region evil-surround evil-org evil-numbers evil-magit emmet-mode doom-modeline company-lsp company-irony-c-headers company-irony))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
