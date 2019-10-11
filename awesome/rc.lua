@@ -74,18 +74,21 @@ local modkey       = "Mod4"
 local altkey       = "Mod1"
 local terminal     = "st"
 local editor       = os.getenv("EDITOR") or "vim"
-local browser      = "firefox"
+local browser      = "chromium"
 local guieditor    = "emacs"
 local scrlocker    = "slock"
 
 awful.util.terminal = terminal
-awful.util.tagnames = { "1", "2", "3", "4", "5" }
+awful.util.tagnames = { "code", "music", "web", "term", "any" }
 awful.layout.layouts = {
-    awful.layout.suit.floating,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
+    awful.layout.suit.tile,
+    awful.layout.suit.tile,
+    awful.layout.suit.tile,
+    awful.layout.suit.tile,
+    -- awful.layout.suit.tile.left,
+    -- awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.top,
     --awful.layout.suit.fair,
     --awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
@@ -235,14 +238,11 @@ root.buttons(my_table.join(
 
 -- {{{ Key bindings
 globalkeys = my_table.join(
-    -- Take a screenshot
-    -- https://github.com/lcpz/dots/blob/master/bin/screenshot
-    awful.key({ altkey }, "p", function() os.execute("screenshot") end,
-              {description = "take a screenshot", group = "hotkeys"}),
-
-    -- X screen locker
-    awful.key({ altkey, "Control" }, "l", function () os.execute(scrlocker) end,
-              {description = "lock screen", group = "hotkeys"}),
+  awful.key({ modkey, }, "d",
+    function()
+      naughty.destroy_all_notifications()
+    end,
+    {description = "destroy all notifications", group="notifications"}),
 
     -- Hotkeys
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -392,20 +392,6 @@ globalkeys = my_table.join(
     awful.key({ modkey, }, "z", function () awful.screen.focused().quake:toggle() end,
               {description = "dropdown application", group = "launcher"}),
 
-    -- Widgets popups
-    awful.key({ altkey, }, "c", function () if beautiful.cal then beautiful.cal.show(7) end end,
-              {description = "show calendar", group = "widgets"}),
-    awful.key({ altkey, }, "h", function () if beautiful.fs then beautiful.fs.show(7) end end,
-              {description = "show filesystem", group = "widgets"}),
-    awful.key({ altkey, }, "w", function () if beautiful.weather then beautiful.weather.show(7) end end,
-              {description = "show weather", group = "widgets"}),
-
-    -- Brightness
-    awful.key({ }, "XF86MonBrightnessUp", function () os.execute("xbacklight -inc 10") end,
-              {description = "+10%", group = "hotkeys"}),
-    awful.key({ }, "XF86MonBrightnessDown", function () os.execute("xbacklight -dec 10") end,
-              {description = "-10%", group = "hotkeys"}),
-
     awful.key({ }, "XF86AudioRaiseVolume",
       function ()
         os.execute("amixer -c 1 set Speaker 3%+")
@@ -424,13 +410,13 @@ globalkeys = my_table.join(
     awful.key({ }, "XF86AudioPrev",
       function ()
         os.execute('playerctl previous')
-        naughty.notify({text = 'went back'})
+        naughty.notify({text = 'went back', title="System Media"})
       end,
       {description = "change to previous track", group = "hotkeys"}),
     awful.key({ }, "XF86AudioNext",
       function ()
         os.execute('playerctl next')
-        naughty.notify({text = 'skipped'})
+        naughty.notify({title="System Media", text = 'skipped'})
       end,
       {description = "change to next track", group = "hotkeys"}),
     awful.key({ }, "XF86AudioPlay",
@@ -438,10 +424,10 @@ globalkeys = my_table.join(
         os.execute([[ bash -c '
             if [ `playerctl status` == 'Playing' ]; then
               playerctl pause
-              echo "require(\"naughty\").notify({text=\"paused\"})" | awesome-client
+              echo "require(\"naughty\").notify({text=\"paused\", title=\"System Media\"})" | awesome-client
             else
               playerctl play
-              echo "require(\"naughty\").notify({text=\"played\"})" | awesome-client
+              echo "require(\"naughty\").notify({text=\"played\", title=\"System Media\"})" | awesome-client
             fi' &
         ]])
       end,
@@ -459,11 +445,6 @@ globalkeys = my_table.join(
     awful.key({ modkey }, "v", function () awful.spawn.with_shell("xsel -b | xsel") end,
               {description = "copy gtk to terminal", group = "hotkeys"}),
 
-    -- User programs
-    -- awful.key({ modkey }, "q", function () awful.spawn(browser) end,
-    --           {description = "run browser", group = "launcher"}),
-    -- awful.key({ modkey }, "a", function () awful.spawn(guieditor) end,
-    --           {description = "run gui editor", group = "launcher"}),
 
     -- Default
     --[[ Menubar
@@ -502,8 +483,35 @@ globalkeys = my_table.join(
                     history_path = awful.util.get_cache_dir() .. "/history_eval"
                   }
               end,
-              {description = "lua execute prompt", group = "awesome"})
-    --]]
+              {description = "lua execute prompt", group = "awesome"}),
+
+    awful.key({modkey}, "o",
+    function ()
+        local programkeys
+        programkeys = {
+            ['e'] = { 'emacs', 'Launched <span foreground="#f0f">Emacs</span>' },
+            ['w'] = { 'chromium', 'Launched <span foreground="#22f">Chromium</span>\nHappy browsing' },
+            ['f'] = { 'st -e zsh -c "vifm"', 'Launched <span foreground="#fcba03">Vifm</span>'},
+            ['s'] = { 'spotify', 'Launched <span foreground="#0f0">Spotify</span>\nWooh! it\'s music time!' }
+        }
+        local kg
+        kg = awful.keygrabber.run(
+        function(mod, key, event)
+            if event == "release" then
+                return
+            end
+            for command_key, command in pairs(programkeys) do
+                if key == command_key then
+                    awful.spawn(command[1])
+                    naughty.notify({ title = "System", text = command[2] })
+                    awful.keygrabber.stop(kg)
+                end
+            end
+            awful.keygrabber.stop(kg)
+        end
+        )
+    end,
+    {description = "app launcher", group = "app"})
 )
 
 clientkeys = my_table.join(
@@ -634,8 +642,8 @@ awful.rules.rules = {
     },
 
     -- Titlebars
-    -- { rule_any = { type = { "dialog", "normal" } },
-    --   properties = { titlebars_enabled = true } },
+    { rule_any = { type = { "dialog", "normal" } },
+      properties = { titlebars_enabled = false } },
 
     -- Set Firefox to always map on the first tag on screen 1.
     { rule = { class = "Firefox" },
@@ -659,11 +667,11 @@ client.connect_signal("manage", function (c)
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
-    if c.floating or c.first_tag.layout.name == "floating" then
-        awful.titlebar.show(c)
-    else
-        awful.titlebar.hide(c)
-    end
+    -- if c.floating or c.first_tag.layout.name == "floating" then
+    --     awful.titlebar.show(c)
+    -- else
+    --     awful.titlebar.hide(c)
+    -- end
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
@@ -722,16 +730,16 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
-tag.connect_signal("property::layout", function(t)
-    local clients = t:clients()
-    for k,c in pairs(clients) do
-        if c.floating or c.first_tag.layout.name == "floating" then
-            awful.titlebar.show(c)
-        else
-            awful.titlebar.hide(c)
-        end
-    end
-end)
+-- tag.connect_signal("property::layout", function(t)
+--     local clients = t:clients()
+--     for k,c in pairs(clients) do
+--         if c.floating or c.first_tag.layout.name == "floating" then
+--             awful.titlebar.show(c)
+--         else
+--             awful.titlebar.hide(c)
+--         end
+--     end
+-- end)
 
 -- possible workaround for tag preservation when switching back to default screen:
 -- https://github.com/lcpz/awesome-copycats/issues/251

@@ -17,7 +17,7 @@
 (require 'use-package)
 
 ;; set tabs to 4 spaces, 2 for javascript
-(setq-default tab-width 4)
+(setq-default tab-width 2)
 (setq js-indent-level 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
@@ -27,9 +27,9 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode -1) 
-(toggle-scroll-bar -1) 
-(tool-bar-mode -1) 
+(menu-bar-mode -1)
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
 ;; always follow symlinks
 (setq vc-follow-symlinks t)
 ;; y-or-n instead of yes-or-no
@@ -38,10 +38,6 @@
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
 ;; kill current buffer without prompt
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
-;; disable new line at the end
-;; dunno if the 1st line is necessary
-;; (setq mode-require-final-newline nil)
-;; (setq require-final-newline nil)
 ;; disable cursor blink
 (blink-cursor-mode 0)
 ;; treat underscore as part of word
@@ -65,17 +61,8 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 
-(global-set-key (kbd "C-c r") '(lambda () (interactive)
-                                 (call-process-shell-command (concat "termite --directory=" (projectile-project-root)) nil 0)))
-
-;; window switching
-(defun define-window-switching-keys ()
-  (interactive)
-  (global-set-key (kbd "C-c C-w l") 'windmove-right)
-  (global-set-key (kbd "C-c C-w k") 'windmove-up)
-  (global-set-key (kbd "C-c C-w j") 'windmove-down)
-  (global-set-key (kbd "C-c C-w h") 'windmove-left))
-(define-window-switching-keys)
+;; no damn fringes dude!
+(set-fringe-style 0)
 
 ;; js2-mode as major mode for javascript - disabled some keybindings idk why
 ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -87,21 +74,8 @@
   (interactive)
   (find-file user-init-file))
 (global-set-key (kbd "C-c e") 'open-config-file)
-(defun open-awesomewm-config-file ()
-  (interactive)
-  (find-file "~/workspace/config/awesome/rc.lua"))
-(global-set-key (kbd "C-c a") 'open-awesomewm-config-file)
 
 ;; handling large files, not very helpful tbh, still slow when loading images
-(defun my-find-file-check-make-large-file-read-only-hook ()
-  "If a file is over a given size, make the buffer read only."
-  (when (> (buffer-size) 1000000)
-    (message "File is large, entering read-only mode")
-    (setq buffer-read-only t)
-    (setq-default bidi-display-reordering nil)
-    (buffer-disable-undo)))
-;; (fundamental-mode)))
-(add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
 
 ;; ;; evil-mode
 (use-package evil
@@ -312,11 +286,6 @@
 (use-package evil-org
   :ensure t)
 
-;; (use-package smartparens
-;;   :ensure t
-;;   :config
-;;   (smartparens-global-mode))
-
 (use-package lsp-mode
   :ensure t
   :config
@@ -332,25 +301,6 @@
 ;;   (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
 ;;   (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
 
-;; (use-package ranger
-;;   :ensure t
-;;   :config
-;;   (add-hook 'dired-mode-hook 'ranger-mode))
-
-;; annoying widgets...
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :config
-;;   (setq lsp-ui-doc-delay 10))
-
-(use-package hydra
-  :ensure t)
-
-(use-package yasnippet
-  :ensure t
-  :config
-  (yas-global-mode 1))
-
 (use-package avy
   :ensure t
   :config
@@ -361,22 +311,11 @@
       :config
       (doom-modeline-mode))
 
-;; eshell
-
-;; clear command to clear the eshell buffer.
-(defun eshell/clear ()
-  "Command to clear current eshell buffer."
-  (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer)))
-(defun eshell-define-clear-command ()
-  "Function to define the command clear in the current mode."
-  (defun eshell/clear ()
-    (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer))))
-(add-hook 'eshell-load-hook #'eshell-define-clear-command)
-
-;; aliases
-(defalias 'e 'find-file)
-(defalias 'openo 'find-file-other-window)
-(defalias 'try-awesome-config '(shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
+;; (use-package indent-guide
+;;   :ensure t
+;;   :config
+;;   (indent-guide-global-mode)
+;;   (setq indent-guide-recursive t))
 
 ;; function to refactor json files
 (defun beautify-json ()
@@ -398,7 +337,7 @@
                      ;; Also handle undocumented (<active> <inactive>) form.
                      ((numberp (cadr alpha)) (cadr alpha)))
                100)
-          '(85 . 50) '(100 . 100)))))
+          '(92 . 92) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
 
 ;; Set transparency of emacs
@@ -407,22 +346,6 @@
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
 (transparency 92)
-
-;; converting lines to printing statements
-(defun convert-line-to-print-statement (print-function-name)
-  (interactive)
-  (back-to-indentation)
-  (insert print-function-name)
-  (insert "(")
-  (end-of-line)
-  (insert ")"))
-(defun define-convert-line-to-print-statement (print-function-name)
-  (defvar-local my-print-function-name print-function-name)
-  (local-set-key (kbd "C-c l") (lambda () (interactive)
-                                 (convert-line-to-print-statement my-print-function-name))))
-
-(add-hook 'python-mode-hook (lambda () (interactive)
-                              (define-convert-line-to-print-statement "print")))
 
 ;; start server
 (server-start)
@@ -454,7 +377,6 @@
 
 
 ;; (switch-to-workspace 2)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -462,7 +384,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (dracula-theme spacemacs-theme yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil skewer-mode rainbow-delimiters org-bullets lua-mode lsp-java linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region evil-surround evil-org evil-numbers evil-magit emmet-mode doom-modeline company-lsp company-irony-c-headers company-irony))))
+    (indent-guide guide-key yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil tabbar spacemacs-theme skewer-mode rainbow-delimiters org-bullets lua-mode lsp-java linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region evil-tabs evil-surround evil-org evil-numbers evil-magit emojify emmet-mode dracula-theme doom-modeline cyberpunk-theme company-lsp company-irony-c-headers company-irony color-theme-sanityinc-tomorrow))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

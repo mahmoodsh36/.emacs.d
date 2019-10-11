@@ -520,11 +520,12 @@ mark c ~/workspace/config/
 mark d ~/downloads/
 mark h ~/
 mark r /
-mark m ~/movies
+mark v ~/videos
 mark w ~/workspace
 mark C ~/.config/
 mark a /usr/share/applications
 mark p ~/pictures
+mark D ~/Dropbox
 
 " Yank current directory path into the clipboard
 nnoremap yd :!printf %d | pbcopy<cr>

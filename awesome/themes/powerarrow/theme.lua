@@ -10,7 +10,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
 theme.wallpaper                                 = theme.dir .. "/wall.jpg"
-theme.font                                      = "Terminus 10"
+theme.font                                      = "MerriweatherSans 9"
 theme.fg_normal                                 = "#FEFEFE"
 theme.fg_focus                                  = "#32D6FF"
 theme.fg_urgent                                 = "#C83F11"
@@ -33,8 +33,6 @@ theme.menu_height                               = dpi(16)
 theme.menu_width                                = dpi(140)
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
 theme.awesome_icon                              = theme.dir .. "/icons/awesome.png"
-theme.taglist_squares_sel                       = theme.dir .. "/icons/square_sel.png"
-theme.taglist_squares_unsel                     = theme.dir .. "/icons/square_unsel.png"
 theme.layout_tile                               = theme.dir .. "/icons/tile.png"
 theme.layout_tileleft                           = theme.dir .. "/icons/tileleft.png"
 theme.layout_tilebottom                         = theme.dir .. "/icons/tilebottom.png"
@@ -59,7 +57,6 @@ theme.widget_temp                               = theme.dir .. "/icons/temp.png"
 theme.widget_net                                = theme.dir .. "/icons/net.png"
 theme.widget_hdd                                = theme.dir .. "/icons/hdd.png"
 theme.widget_music                              = theme.dir .. "/icons/note.png"
-theme.widget_music_on                           = theme.dir .. "/icons/note_on.png"
 theme.widget_music_pause                        = theme.dir .. "/icons/pause.png"
 theme.widget_music_stop                         = theme.dir .. "/icons/stop.png"
 theme.widget_vol                                = theme.dir .. "/icons/vol.png"
@@ -195,9 +192,16 @@ theme.volume = lain.widget.alsabar({
 
 -- SPOTIFY
 local musicicon = wibox.widget.imagebox(theme.widget_music)
-local spotify = awful.widget.watch({awful.util.shell, '-c', "pgrep spotify > /dev/null && title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | sed -n '/title/{n;p}' | cut -d \\\" -f 2` && artist=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 artist|egrep -v artist|egrep -v array|cut -b 27-|cut -d \\\" -f 1|egrep -v ^$) && echo $title - $artist || echo spotify off"}, 0.5,
+local spotify = awful.widget.watch({awful.util.shell, '-c', "pgrep spotify > /dev/null && title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | sed -n '/title/{n;p}' | cut -d \\\" -f 2` && artist=$(dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 artist|egrep -v artist|egrep -v array|cut -b 27-|cut -d \\\" -f 1|egrep -v ^$) && echo $title - $artist || echo spotify off"}, 0.3,
   function(widget, stdout)
-    widget:set_markup(markup.font(theme.font, ' <span foreground="#0f0">' .. stdout .. '</span>'))
+    widget:set_markup(markup.font(theme.font, ' <span foreground="#cb755b">' .. stdout .. '</span>'))
+  end
+)
+
+local volumeicon = wibox.widget.imagebox(theme.widget_vol)
+local volume = awful.widget.watch({awful.util.shell, '-c', "amixer -c 1 get Speaker | tail -1 | cut -d '[' -f2 | cut -d ']' -f1"}, 0.3,
+  function(widget, stdout)
+    widget:set_markup(markup.font(theme.font, stdout))
   end
 )
 
@@ -205,7 +209,7 @@ local spotify = awful.widget.watch({awful.util.shell, '-c', "pgrep spotify > /de
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem({
     settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. mem_now.used .. "MB "))
+        widget:set_markup(markup.font(theme.font, " " .. mem_now.used .. "Mb "))
     end
 })
 
@@ -353,10 +357,12 @@ function theme.at_screen_connect(s)
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
+    -- s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(16), bg = theme.bg_normal, fg = theme.fg_normal })
+
+    local myname = wibox.widget.textbox(" <span foreground='#90f'>Mahmooz</span> ")
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -372,8 +378,6 @@ function theme.at_screen_connect(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
-            wibox.container.margin(arch, dpi(4), dpi(8)),
-            wibox.container.margin(tux, dpi(4), dpi(8)),
             -- wibox.container.margin(scissors, dpi(4), dpi(8)),
             --[[ using shapes
             pl(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, "#343434"),
@@ -389,11 +393,11 @@ function theme.at_screen_connect(s)
             --]]
             -- using separators
             arrow(theme.bg_normal, "#343434"),
-            wibox.container.background(wibox.container.margin(wibox.widget { mailicon, theme.mail and theme.mail.widget, layout = wibox.layout.align.horizontal }, dpi(4), dpi(7)), "#343434"),
+            wibox.container.background(wibox.container.margin(wibox.widget { arch, myname, layout = wibox.layout.align.horizontal }, dpi(6), dpi(6)), "#343434"),
             arrow("#343434", theme.bg_normal),
             wibox.container.background(wibox.container.margin(wibox.widget { musicicon, spotify, layout = wibox.layout.align.horizontal }, dpi(3), dpi(6)), theme.bg_focus),
             arrow(theme.bg_normal, "#343434"),
-            wibox.container.background(wibox.container.margin(task, dpi(3), dpi(7)), "#343434"),
+            wibox.container.background(wibox.container.margin(wibox.widget { volumeicon, volume, layout = wibox.layout.align.horizontal }, dpi(4), dpi(7)), "#343434"),
             arrow("#343434", "#777E76"),
             wibox.container.background(wibox.container.margin(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, dpi(2), dpi(3)), "#777E76"),
             arrow("#777E76", "#4B696D"),
