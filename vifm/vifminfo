@@ -12,7 +12,7 @@
 'H
 	/home/mahmooz/
 	..
-1570043684
+1570827741
 'a
 	/usr/share/applications
 	..
@@ -20,7 +20,7 @@
 'b
 	/home/mahmooz/bin/
 	..
-1570043684
+1570827741
 'c
 	/home/mahmooz/workspace/config/
 	..
@@ -32,7 +32,7 @@
 'h
 	/home/mahmooz/
 	..
-1570615052
+1570827741
 'l
 	/home/mahmooz/downloads
 	Marvel s The Punisher_1x07_WEB.STRiFE.en
@@ -60,13 +60,13 @@
 'z
 	/home/mahmooz/.config/vifm
 	..
-1570043684
+1570827741
 
 # Bookmarks:
 
 # TUI:
 al
-q1
+q0
 v1
 ov
 m-1
@@ -74,6 +74,9 @@ l2
 r2
 
 # Left window history (oldest to newest):
+d/home/mahmooz/workspace/physics
+	..
+0
 d/home/mahmooz/workspace/config/awesome/themes
 	powerarrow
 1
@@ -104,33 +107,9 @@ d/home/mahmooz/workspace/config/awesome/lain
 d/home/mahmooz/workspace/config/awesome
 	themes
 3
-d/home/mahmooz
-	Downloads
-17
-d/home/mahmooz/Downloads
-	..
-0
-d/home/mahmooz
-	Desktop
-16
-d/home/mahmooz/Desktop
-	..
-0
-d/home/mahmooz
-	workspace
-20
 d/home/mahmooz/workspace
 	..
 0
-d/home/mahmooz
-	.config
-2
-d/home/mahmooz/.config
-	awesome
-4
-d/home/mahmooz
-	.config
-2
 d/home/mahmooz/.config
 	awesome
 4
@@ -143,39 +122,12 @@ d/home/mahmooz/.config/awesome/themes
 d/home/mahmooz/.config/awesome/themes/powerarrow
 	wall.jpg
 4
-d/home/mahmooz/downloads
-	..
-0
-d/home/mahmooz
-	.ssh
-14
 d/home/mahmooz/.ssh
 	..
 0
-d/home/mahmooz
-	.config
-2
 d/home/mahmooz/.config
 	awesome
 4
-d/home/mahmooz/workspace
-	physics
-5
-d/home/mahmooz/workspace/physics
-	src
-3
-d/home/mahmooz/workspace/physics/src
-	..
-0
-d/home/mahmooz/workspace/physics
-	src
-3
-d/home/mahmooz/workspace/physics/src
-	..
-0
-d/home/mahmooz/downloads
-	..
-0
 d/home/mahmooz/workspace
 	physics
 5
@@ -242,54 +194,15 @@ d/home/mahmooz/workspace/config
 d/home/mahmooz/workspace
 	physics
 5
-d/home/mahmooz/workspace/physics
-	src
-3
 d/home/mahmooz/workspace/config
 	awesome
 2
 d/home/mahmooz/workspace/config/awesome
 	rc.lua
 6
-d/home/mahmooz
-	.zshrc
-36
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E01.720p.WEB.x264.mp4
-1
 d/home/mahmooz/.config
 	..
 0
-d/home/mahmooz/downloads
-	Marvels The Punisher_2x02_720p.WEBRip.en.zip
-2
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E02.720p.WEB.x264.mp4
-2
-d/home/mahmooz/downloads
-	Marvels The Punisher_2x02_720p.WEBRip.en
-1
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E03.720p.WEB.x264.mp4
-3
-d/home/mahmooz/downloads
-	Marvels The Punisher_2x04_720p.WEBRip.en.zip
-2
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E04.720p.WEB.x264.mp4
-4
 d/home/mahmooz/workspace/config
 	awesome
 2
@@ -314,90 +227,66 @@ d/home/mahmooz/workspace/config
 d/home/mahmooz/workspace/config/awesome
 	rc.lua
 6
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E04.720p.WEB.x264.mp4
-4
 d/home/mahmooz/workspace
 	physics
 5
 d/home/mahmooz/workspace/config
 	bspwm
 3
-d/home/mahmooz/workspace/config/bspwm
-	bspwmrc
-1
-d/home/mahmooz
-	downloads
-17
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E05.720p.WEB.x264.mp4
-5
-d/home/mahmooz/downloads
-	Marvels The Punisher_2x05_720p.WEBRip.en
-1
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/videos/[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-	[TorrentCouch.net].Marvels.The.Punisher.S02E06.720p.WEB.x264.mp4
-6
-d/home/mahmooz/downloads
-	Marvel s The Punisher_2x06_720p.WEBRip.en
-1
-d/home/mahmooz/downloads/Marvel s The Punisher_2x06_720p.WEBRip.en
-	..
-0
-d/home/mahmooz/downloads
-	..
-0
-d/home/mahmooz/Dropbox
-	..
-0
-d/home/mahmooz/downloads
-	..
-0
-d/home/mahmooz/videos
-	[TorrentCouch.net].Marvels.The.Punisher.S02.COMPLETE.720p.WEB.x264.[5GB].[MP4].[Season.2]
-1
-d/home/mahmooz/downloads
-	..
-0
 d/home/mahmooz/workspace
 	physics
 5
+d/home/mahmooz
+	..
+0
+d/home/mahmooz/Dropbox
+	Get Started with Dropbox Paper.url
+2
+d/home/mahmooz/workspace
+	physics
+2
 d/home/mahmooz/workspace/physics
-	.gitignore
+	..
+0
+d/home/mahmooz/workspace/config
+	..
+0
+d/home/mahmooz
+	.cache
+1
+d/home/mahmooz/.cache
+	Popcorn-Time
+1
+d/home/mahmooz
+	.googleearth
+6
+d/home/mahmooz/.googleearth
+	..
+0
+d/home/mahmooz
+	Dropbox
+12
+d/home/mahmooz/Dropbox
+	Get Started with Dropbox Paper.url
 4
+d/home/mahmooz
+	workspace
+4
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz
+	workspace
+4
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz/workspace/physics
+	..
+0
 d
 
 # Right window history (oldest to newest):
-D/home/mahmooz
-	
-0
-D/home/mahmooz/movies/[TorrentCounter.co].Marvels.The.Punisher.Season.1.Complete.720p.x264
-	[TorrentCounter.co].Marvels.The.Punisher.S01E03.720p.HD.x264.mkv
-4
-D/home/mahmooz
-	movies
-3
-D/home/mahmooz/movies
-	[TorrentCounter.co].Marvels.The.Punisher.Season.1.Complete.720p.x264
-1
-D/home/mahmooz/movies/[TorrentCounter.co].Marvels.The.Punisher.Season.1.Complete.720p.x264
-	[TorrentCounter.co].Marvels.The.Punisher.S01E03.720p.HD.x264.mkv
-4
-D/home/mahmooz/movies
-	[TorrentCounter.co].Marvels.The.Punisher.Season.1.Complete.720p.x264
-1
-D/home/mahmooz/movies/[TorrentCounter.co].Marvels.The.Punisher.Season.1.Complete.720p.x264
-	[TorrentCounter.co].Marvels.The.Punisher.S01E03.720p.HD.x264.mkv
-4
 D/home/mahmooz
 	..
 0
@@ -416,7 +305,6 @@ D
 :!xdg-open %c
 :so vifmrc
 :cd /usr/share/applications/
-:q
 :nmap
 :set number
 :set relativenumber
@@ -429,6 +317,10 @@ D
 :tree
 :w
 :unzip
+:q
+:mkdir downloads
+:mkdir videos
+:mkdir 
 
 # Search history (oldest to newest):
 /xinit
@@ -446,8 +338,6 @@ D
 /wor
 /sc
 /.config
-/cache
-/rofi
 /workp
 /work
 /.vifmrc
@@ -479,6 +369,8 @@ D
 /clock
 /vol
 /bsp
+/cache
+/rofi
 
 # Prompt history (oldest to newest):
 pwall.png
@@ -491,7 +383,6 @@ pnote.png
 # Local filter history (oldest to newest):
 
 # Registers:
-""/home/mahmooz/.local/share/Trash/files/000_Marvel s The Punisher_2x06_720p.WEBRip.en.zip
 
 # Directory stack (oldest to newest):
 
@@ -554,7 +445,7 @@ t/home/mahmooz/.local/share/Trash/files/000_Marvels The Punisher_2x08_720p.WEBRi
 # State:
 f
 i1
-[.0
+[.1
 [F
 F
 I1

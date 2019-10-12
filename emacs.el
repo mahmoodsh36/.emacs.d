@@ -359,7 +359,7 @@
 
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Inconsolata 11" nil t)
+(set-frame-font "Inconsolata 10" nil t)
 
 ;; ;; workspaces
 ;; (setq current-workspace-index 1)
@@ -375,19 +375,3 @@
 ;;               (set-window-configuration workspace)
 ;;             (delete-other-windows)))))
 
-
-;; (switch-to-workspace 2)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (indent-guide guide-key yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil tabbar spacemacs-theme skewer-mode rainbow-delimiters org-bullets lua-mode lsp-java linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region evil-tabs evil-surround evil-org evil-numbers evil-magit emojify emmet-mode dracula-theme doom-modeline cyberpunk-theme company-lsp company-irony-c-headers company-irony color-theme-sanityinc-tomorrow))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
