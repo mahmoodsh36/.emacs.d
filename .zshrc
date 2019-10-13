@@ -105,3 +105,4 @@ source $ZSH/oh-my-zsh.sh
 alias ls="lsd"
 alias cat="bat"
 alias df="dfc"
+alias v="vim"

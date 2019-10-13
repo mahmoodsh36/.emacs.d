@@ -526,12 +526,16 @@ mark C ~/.config/
 mark a /usr/share/applications
 mark p ~/pictures
 mark D ~/Dropbox
+mark s ~/workspace/scripts
+mark t ~/.local/share/Trash/files
 
 " Yank current directory path into the clipboard
 nnoremap yd :!printf %d | pbcopy<cr>
-
 " Yank current file path into the clipboard
 nnoremap yf :!printf %c:p | pbcopy<cr>
+" quicker switching between the 2 windows
+nnoremap H <C-w>k<C-w>h
+nnoremap L <C-w>j<C-w>l
 
 set number
 set relativenumber
@@ -542,6 +546,13 @@ set confirm-=delete
 set trashdir=~/.local/share/Trash/files
 
 " one window on startup
-only
- " > /dev/null 2>&1
+" only
+
+" preview on seconds window
+" w
+
+" commands
 command! unzip  unzip %f -d "`echo %f | rev | cut -d "." -f2- | rev`"
+
+" syntax highlighting
+fileviewer *.* highlight -O xterm256 -s base16/gruvbox-dark-pale --force %c

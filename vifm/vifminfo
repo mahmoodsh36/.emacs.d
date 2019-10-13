@@ -24,7 +24,7 @@
 'c
 	/home/mahmooz/workspace/config/
 	..
-1570458638
+1570966098
 'd
 	/home/mahmooz/downloads/
 	..
@@ -44,11 +44,19 @@
 'p
 	/home/mahmooz/pictures
 	..
-1570459733
+1570962125
 'r
 	/
 	..
 1570357222
+'s
+	/home/mahmooz/workspace/scripts
+	..
+1570966614
+'t
+	/home/mahmooz/.local/share/Trash/files
+	..
+1570967300
 'v
 	/home/mahmooz/videos
 	..
@@ -56,33 +64,20 @@
 'w
 	/home/mahmooz/workspace
 	..
-1570380459
-'z
-	/home/mahmooz/.config/vifm
-	..
-1570827741
+1570967300
 
 # Bookmarks:
 
 # TUI:
 al
-q0
-v1
+q1
+v2
 ov
 m-1
 l2
 r2
 
 # Left window history (oldest to newest):
-d/home/mahmooz/workspace/physics
-	..
-0
-d/home/mahmooz/workspace/config/awesome/themes
-	powerarrow
-1
-d/home/mahmooz/workspace/config/awesome
-	lain
-2
 d/home/mahmooz/workspace/config/awesome/lain
 	..
 0
@@ -284,12 +279,294 @@ d/home/mahmooz/workspace
 d/home/mahmooz/workspace/physics
 	..
 0
+d/home/mahmooz
+	workspace
+5
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz/workspace/physics
+	..
+0
+d/home/mahmooz/workspace/config
+	awesome
+1
+d/home/mahmooz/workspace/config/awesome
+	rc.lua
+6
+d/home/mahmooz/pictures
+	artistry.jpg
+1
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz/workspace/physics
+	build.xml
+3
+d/home/mahmooz/pictures
+	artistry.jpg
+2
+d/home/mahmooz/workspace/scripts
+	dmenu.sh
+3
+d/home/mahmooz/workspace
+	scripts
+3
+d/home/mahmooz/workspace/scripts
+	backgrounder.sh
+2
+d/home/mahmooz/pictures
+	red_piano.jpg
+8
+d/home/mahmooz/workspace/scripts
+	pacman_install.sh
+5
+d/home/mahmooz/workspace/config
+	vifm
+3
+d/home/mahmooz/workspace/scripts
+	backgrounder.sh
+2
+d/home/mahmooz
+	workspace
+6
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz/workspace/physics
+	src
+2
+d/home/mahmooz/workspace/physics/src
+	tests
+2
+d/home/mahmooz/workspace/physics
+	src
+2
+d/home/mahmooz/workspace/physics/src
+	main
+1
+d/home/mahmooz/workspace/physics/src/main
+	..
+0
+d/home/mahmooz/workspace/physics/src
+	main
+1
+d/home/mahmooz/workspace/physics/src/main
+	Direction.java
+4
+d/home/mahmooz/workspace/physics/src
+	main
+1
+d/home/mahmooz/workspace/physics
+	src
+2
+d/home/mahmooz/workspace/scripts
+	backgrounder.sh
+2
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz/workspace/physics
+	src
+2
+d/home/mahmooz/workspace/scripts
+	backgrounder.sh
+2
+d/home/mahmooz/workspace
+	physics
+2
+d/home/mahmooz/workspace/physics
+	src
+2
 d
 
 # Right window history (oldest to newest):
+D/home/mahmooz/workspace
+	
+0
+D/home/mahmooz
+	downloads
+3
+D/home
+	mahmooz
+1
 D/home/mahmooz
 	..
 0
+D/home/mahmooz/workspace/physics/src/main
+	
+0
+D/home/mahmooz/workspace/physics/src
+	main
+1
+D/home/mahmooz/workspace/physics/src/main
+	..
+0
+D/home/mahmooz/workspace/physics/src
+	tests
+2
+D/home/mahmooz/.local/share/Trash/files
+	000_dmenu.sh
+3
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	SpeedCrunch
+1
+D/home/mahmooz/.local/share/SpeedCrunch
+	..
+0
+D/home/mahmooz/.local/share
+	SpeedCrunch
+1
+D/home/mahmooz/.local/share/SpeedCrunch
+	history.json
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share/Trash/files
+	000_dmenu.sh
+3
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	Trash
+2
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share/Trash/files
+	000_dmenu.sh
+3
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share/Trash/files
+	000_dmenu.sh
+3
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share/Trash/files
+	000_dmenu.sh
+3
+D/home/mahmooz/.local/share/Trash
+	files
+1
+D/home/mahmooz/.local/share
+	vifm
+4
+D/home/mahmooz/.local/share/vifm
+	Trash
+1
+D/home/mahmooz/.local/share/vifm/Trash
+	..
+0
+D/home/mahmooz/.local/share/vifm
+	Trash
+1
+D/home/mahmooz/.local/share
+	vlc
+5
+D/home/mahmooz/.local/share/vlc
+	..
+0
+D/home/mahmooz/.local/share
+	vlc
+5
+D/home/mahmooz/.local/share/vlc
+	ml.xspf
+1
+D/home/mahmooz/.local/share
+	xorg
+9
+D/home/mahmooz/.config
+	..
+0
+D/home/mahmooz
+	..
+0
+D/home
+	mahmooz
+1
+D/home/mahmooz
+	..
+0
+D/home
+	mahmooz
+1
+D/
+	home
+4
+D/home
+	mahmooz
+1
+D/home/mahmooz
+	workspace
+5
+D/home/mahmooz/workspace
+	physics
+2
+D/home/mahmooz
+	workspace
+5
+D/home
+	mahmooz
+1
+D/home/mahmooz
+	workspace
+5
+D/home/mahmooz/workspace
+	physics
+2
 D
 
 # Command line history (oldest to newest):
@@ -317,10 +594,20 @@ D
 :tree
 :w
 :unzip
-:q
 :mkdir downloads
 :mkdir videos
 :mkdir 
+:set vi
+:set vicmd
+:view
+:set all
+:q
+:chmod+x
+:chmod-x
+:sync
+:screen
+:set viewcolumns
+:tabclose
 
 # Search history (oldest to newest):
 /xinit
@@ -371,6 +658,8 @@ D
 /bsp
 /cache
 /rofi
+/backgrounder
+/mime
 
 # Prompt history (oldest to newest):
 pwall.png
@@ -383,6 +672,7 @@ pnote.png
 # Local filter history (oldest to newest):
 
 # Registers:
+""/home/mahmooz/.local/share/Trash/files/000_main
 
 # Directory stack (oldest to newest):
 
@@ -441,6 +731,24 @@ t/home/mahmooz/.local/share/Trash/files/000_Marvel s The Punisher_2x07_720p.WEBR
 	/home/mahmooz/downloads/Marvel s The Punisher_2x07_720p.WEBRip.en
 t/home/mahmooz/.local/share/Trash/files/000_Marvels The Punisher_2x08_720p.WEBRip.en.zip
 	/home/mahmooz/downloads/Marvels The Punisher_2x08_720p.WEBRip.en.zip
+t/home/mahmooz/.local/share/Trash/files/000_q
+	/home/mahmooz/pictures/q
+t/home/mahmooz/.local/share/Trash/files/000_moon_land_sky.jpg
+	/home/mahmooz/pictures/moon_land_sky.jpg
+t/home/mahmooz/.local/share/Trash/files/000_yt.sh
+	/home/mahmooz/workspace/scripts/yt.sh
+t/home/mahmooz/.local/share/Trash/files/000_up.sh
+	/home/mahmooz/workspace/scripts/up.sh
+t/home/mahmooz/.local/share/Trash/files/000_pashare
+	/home/mahmooz/workspace/scripts/pashare
+t/home/mahmooz/.local/share/Trash/files/000_dmenu.sh
+	/home/mahmooz/workspace/scripts/dmenu.sh
+t/home/mahmooz/.local/share/Trash/files/000_highlight.css
+	/home/mahmooz/workspace/scripts/highlight.css
+t/home/mahmooz/.local/share/Trash/files/000_simplescreenrecorder-2019-10-12_21.28.47.mkv
+	/home/mahmooz/simplescreenrecorder-2019-10-12_21.28.47.mkv
+t/home/mahmooz/.local/share/Trash/files/000_compile.sh
+	/home/mahmooz/workspace/physics/compile.sh
 
 # State:
 f
@@ -451,4 +759,4 @@ F
 I1
 ].1
 ]F
-s0
+s1
