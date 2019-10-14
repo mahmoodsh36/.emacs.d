@@ -84,6 +84,8 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
+export TERM=xterm-256color
+
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
@@ -105,4 +107,7 @@ source $ZSH/oh-my-zsh.sh
 alias ls="lsd"
 alias cat="bat"
 alias df="dfc"
-alias v="vim"
+alias v="nvim"
+alias vim="nvim"
+alias t="tmux"
+alias f="vifm"

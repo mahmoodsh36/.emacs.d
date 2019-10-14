@@ -374,4 +374,3 @@
 ;;           (if (window-configuration-p workspace)
 ;;               (set-window-configuration workspace)
 ;;             (delete-other-windows)))))
-
