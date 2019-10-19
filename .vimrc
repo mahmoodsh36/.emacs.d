@@ -12,10 +12,13 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'morhetz/gruvbox'
-" Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 " Plugin 'majutsushi/tagbar'
 Plugin 'tpope/vim-surround'
 Plugin 'AlessandroYorba/Alduin'
+Plugin 'tpope/vim-fugitive'
+Plugin 'wincent/command-t'
+Plugin 'scrooloose/nerdcommenter'
 
 call vundle#end()
 filetype plugin indent on
@@ -29,11 +32,9 @@ set expandtab
 syntax on
 " set smartcase " search will be case sensitive if it contains uppercase
 set ignorecase
-" exit buffer without closing window
-nnoremap <C-c> :bp\|bd #<CR>
 set incsearch
+set mouse=a
 
-color desert
 " let g:gruvbox_contrast_dark='hard'
 " colorscheme alduin
 " set bg=dark
@@ -74,6 +75,10 @@ nnoremap <C-h> :cprev<Return>
 nnoremap <C-l> :cnext<Return>
 inoremap <C-e> <Esc><C-e>a
 inoremap <C-y> <Esc><C-y>a
+nnoremap <C-x>c :e! ~/.vimrc<CR>
+nnoremap <C-x>r :so ~/.vimrc<CR>
+" exit buffer without closing window
+nnoremap <C-x>k :bp\|bd #<CR>
 
 " C-n to start nerdtree
 map <C-n> :NERDTreeToggle<CR>
@@ -114,3 +119,9 @@ set clipboard=unnamedplus
 let &t_SI = "\<esc>[5 q"
 let &t_SR = "\<esc>[4 q"
 let &t_EI = "\<esc>[2 q"
+
+command! FASD call fzf#run(fzf#wrap({'source': 'zsh -c "fasd -al"', 'options': '--no-sort --tac --tiebreak=index'}))
+nnoremap <silent> <Leader>f :FASD<CR>
+
+" command-t config
+let g:CommandTWildIgnore=&wildignore . ",*.class"

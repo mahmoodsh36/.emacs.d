@@ -1,0 +1,62 @@
+/* Complete https://github.com/alphapapa/solarized-everything-css/blob/master/css/solarized-all-sites-dark.css */
+
+/* base blocks */
+header,
+div,
+li,
+p,
+span,
+td,
+/* content blocks */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+section,
+summary,
+#content,
+.section,
+.global,
+.u-backgroundWhite
+ {
+  background-color: #002b36 !important;
+  color: #839496 !important;
+}
+
+/* specific content (like quote) */
+strong {
+  background-color: #073642 !important;
+  color: #839496 !important;
+}
+
+/* title */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  background-color: #002b36 !important;
+}
+
+/* navigation */
+nav,
+#mainbar,
+#archnavbar,
+ {
+  background-color: #073642 !important;
+}
+
+/* TODO not good, comment in git  */
+.blob-code span {
+  background-color: #002b36 !important;
+}
+/* code in flask doc */
+.highlight span {
+  background-color: #073642 !important;
+}
