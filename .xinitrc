@@ -5,6 +5,7 @@ setxkbmap -option caps:swapescape &
 sleep 10 && backgrounder.sh ~/pictures > ~/.cache/backgrounder_log &
 
 dropbox &
+nm-applet &
 
 # test for an existing bus daemon, just to be safe
 if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then

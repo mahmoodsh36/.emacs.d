@@ -116,6 +116,8 @@ highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
 " use system clipboard register by default, copy and paste from it by default
 set clipboard=unnamedplus
 
+autocmd VimEnter * silent exec "! echo -ne '\e[1 q'"
+autocmd VimLeave * silent exec "! echo -ne '\e[5 q'" 
 let &t_SI = "\<esc>[5 q"
 let &t_SR = "\<esc>[4 q"
 let &t_EI = "\<esc>[2 q"
@@ -125,3 +127,6 @@ nnoremap <silent> <Leader>f :FASD<CR>
 
 " command-t config
 let g:CommandTWildIgnore=&wildignore . ",*.class"
+
+" nerdtree cd
+let g:NERDTreeChDirMode = 2

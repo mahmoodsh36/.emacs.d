@@ -316,6 +316,7 @@ D
 
 # Command line history (oldest to newest):
 :FASD
+:empty
 
 # Search history (oldest to newest):
 /con
@@ -329,17 +330,10 @@ D
 # Local filter history (oldest to newest):
 
 # Registers:
-""/home/mahmooz/.local/share/Trash/files/000_emojis.txt
 
 # Directory stack (oldest to newest):
 
 # Trash content:
-t/home/mahmooz/.local/share/Trash/files/000_backgrounder_video-2019-10-16_16.54.23.mkv
-	/home/mahmooz/backgrounder_video-2019-10-16_16.54.23.mkv
-t/home/mahmooz/.local/share/Trash/files/000_backgrounder_video-2019-10-18_00.20.19.mkv
-	/home/mahmooz/backgrounder_video-2019-10-18_00.20.19.mkv
-t/home/mahmooz/.local/share/Trash/files/000_emojis.txt
-	/home/mahmooz/workspace/emojis.txt
 
 # State:
 f

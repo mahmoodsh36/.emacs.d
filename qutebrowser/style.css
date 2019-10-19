@@ -1,2 +1,50 @@
-body {
+body
+{
+	background-color: #ffe;
+	font-family: Bookman Old Style;
+	text-height: 1.2em;
+	padding: 1em;
+	margin: 1em;
+}
+
+h1
+{
+	font-weight: bold;
+	text-height: 2em;
+}
+
+h2
+{
+	font-weight: bold;
+	text-height: 1.6em;
+}
+
+h3
+{
+	font-weight: bold;
+	text-height: 1.4em;
+}
+
+pre
+{
+	font-family: Consolas;
+	border: 1px solid #cc7;
+	background-color: #ffa;
+	padding: 0.4em;
+	margin: 0.4em;
+	-webkit-box-shadow: 0.2em 0.2em 0.3em 0 #cc9;
+}
+
+code
+{
+	font-family: Consolas;
+	font-weight: bold;
+}
+
+blockquote
+{
+	border: 1px solid #ddd;
+	background-color: #fff;
+	padding: 0.4em;
+	-webkit-box-shadow: 0.2em 0.2em 0.3em 0 #ddd;
 }

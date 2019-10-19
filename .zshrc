@@ -110,11 +110,23 @@ alias df="dfc"
 alias v="vim"
 alias t="tmux"
 alias f="vifm"
-alias xi="sudo xbps-install"
-alias xq="xbps-query -Rs"
 alias pq="pacman -Ss"
 alias pi="sudo pacman -S --noconfirm"
 alias o="xdg-open"
 alias p="ping google.com"
 
 eval "$(fasd --init posix-alias zsh-hook)"
+
+# cursor handling for vi-mode
+function zle-keymap-select zle-line-init zle-line-finish {
+  case $KEYMAP in
+    vicmd)         echo -ne '\e[1 q';;
+    viins|main)    echo -ne '\e[5 q';;
+  esac
+
+  zle reset-prompt
+  zle -R
+}
+zle -N zle-line-init
+zle -N zle-line-finish
+zle -N zle-keymap-select
