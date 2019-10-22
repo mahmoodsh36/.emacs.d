@@ -125,6 +125,9 @@ let &t_EI = "\<esc>[2 q"
 command! FASD call fzf#run(fzf#wrap({'source': 'zsh -c "fasd -al"', 'options': '--no-sort --tac --tiebreak=index'}))
 nnoremap <silent> <Leader>f :FASD<CR>
 
+command! Compile !./compile
+command! Run !./compile && ./run
+
 " command-t config
 let g:CommandTWildIgnore=&wildignore . ",*.class"
 

@@ -47,7 +47,7 @@
 ;; kill buffer and window shortcut
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 ;; highlight current line
-(global-hl-line-mode)
+;; (global-hl-line-mode)
 ;; try awesomewm config
 (defun try-awesome-config ()
   (interactive)
@@ -100,17 +100,21 @@
   (setq linum-relative-current-symbol ""))
 
 ;; theme
-(setq spacemacs-theme-comment-bg nil)
-(setq spacemacs-theme-comment-italic 1)
-(setq spacemacs-theme-keyword-italic 1)
-(use-package spacemacs-theme
-  :ensure t
-  :defer t
-  :init (load-theme 'spacemacs-dark t))
+;; (setq spacemacs-theme-comment-bg nil)
+;; (setq spacemacs-theme-comment-italic 1)
+;; (setq spacemacs-theme-keyword-italic 1)
+;; (use-package spacemacs-theme
+;;   :ensure t
+;;   :defer t
+;;   :init (load-theme 'spacemacs-dark t))
 ;; (use-package gruvbox-theme
 ;;   :ensure t
 ;;   :config
 ;;   (load-theme 'gruvbox t))
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn t))
 
 ;; helm
 (use-package helm
@@ -345,7 +349,7 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-(transparency 92)
+(transparency 95)
 
 ;; start server
 (server-start)
@@ -359,7 +363,7 @@
 
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Inconsolata 10" nil t)
+(set-frame-font "Inconsolata 11" nil t)
 
 ;; ;; workspaces
 ;; (setq current-workspace-index 1)
@@ -374,3 +378,17 @@
 ;;           (if (window-configuration-p workspace)
 ;;               (set-window-configuration workspace)
 ;;             (delete-other-windows)))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

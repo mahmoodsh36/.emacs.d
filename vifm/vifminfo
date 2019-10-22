@@ -58,7 +58,7 @@
 
 # TUI:
 al
-q0
+q1
 v1
 ov
 m-1
@@ -66,6 +66,9 @@ l2
 r2
 
 # Left window history (oldest to newest):
+d/home/mahmooz/mydata
+	..
+0
 d/home/mahmooz/Dropbox
 	..
 0
@@ -298,7 +301,10 @@ d/home/mahmooz/.config/awesome
 	rc.lua
 7
 d/home/mahmooz/.config
-	awesome
+	Popcorn-Time
+4
+d/home/mahmooz/downloads
+	wallpapersden.com_the-heavens-beneath_3000x1714.jpg
 8
 d
 
@@ -310,13 +316,14 @@ D/home/mahmooz/workspace
 	..
 0
 D/home/mahmooz
-	workspace
-5
+	..
+0
 D
 
 # Command line history (oldest to newest):
 :FASD
 :empty
+:q
 
 # Search history (oldest to newest):
 /con
@@ -330,10 +337,91 @@ D
 # Local filter history (oldest to newest):
 
 # Registers:
+""/home/mahmooz/.local/share/Trash/files/000_wp2150698.jpg
 
 # Directory stack (oldest to newest):
 
 # Trash content:
+t/home/mahmooz/.local/share/Trash/files/000_5b1d6154b3daac1f587cae1312e262a5.jpg
+	/home/mahmooz/downloads/5b1d6154b3daac1f587cae1312e262a5.jpg
+t/home/mahmooz/.local/share/Trash/files/000_7d717beb281633883bd4aecc3c92f14b43acaf9d.jpeg
+	/home/mahmooz/downloads/7d717beb281633883bd4aecc3c92f14b43acaf9d.jpeg
+t/home/mahmooz/.local/share/Trash/files/000_460abdd5d612f6c36cab264c0b26abbf.jpg
+	/home/mahmooz/downloads/460abdd5d612f6c36cab264c0b26abbf.jpg
+t/home/mahmooz/.local/share/Trash/files/000_1200px-Tux.svg.png
+	/home/mahmooz/downloads/1200px-Tux.svg.png
+t/home/mahmooz/.local/share/Trash/files/000_2019-10-16-133449_1366x768_scrot.png
+	/home/mahmooz/downloads/2019-10-16-133449_1366x768_scrot.png
+t/home/mahmooz/.local/share/Trash/files/000_2019-10-16-133924_1366x768_scrot.png
+	/home/mahmooz/downloads/2019-10-16-133924_1366x768_scrot.png
+t/home/mahmooz/.local/share/Trash/files/000_2019-10-16-134312_1366x768_scrot.png
+	/home/mahmooz/downloads/2019-10-16-134312_1366x768_scrot.png
+t/home/mahmooz/.local/share/Trash/files/000_2019-10-16-134540_1366x768_scrot.png
+	/home/mahmooz/downloads/2019-10-16-134540_1366x768_scrot.png
+t/home/mahmooz/.local/share/Trash/files/000_6848e53d1871f31589aa50595ffbbf57.jpg
+	/home/mahmooz/downloads/6848e53d1871f31589aa50595ffbbf57.jpg
+t/home/mahmooz/.local/share/Trash/files/000_7382eabcb22a111c89c06e24a7243327.jpg
+	/home/mahmooz/downloads/7382eabcb22a111c89c06e24a7243327.jpg
+t/home/mahmooz/.local/share/Trash/files/000_15373-1.jpg
+	/home/mahmooz/downloads/15373-1.jpg
+t/home/mahmooz/.local/share/Trash/files/000_218460.jpg
+	/home/mahmooz/downloads/218460.jpg
+t/home/mahmooz/.local/share/Trash/files/000_279091.jpg
+	/home/mahmooz/downloads/279091.jpg
+t/home/mahmooz/.local/share/Trash/files/000_407027.jpg
+	/home/mahmooz/downloads/407027.jpg
+t/home/mahmooz/.local/share/Trash/files/000_715683f6b3b11974ab31506a2bf925cd1e35a6ff.jpeg
+	/home/mahmooz/downloads/715683f6b3b11974ab31506a2bf925cd1e35a6ff.jpeg
+t/home/mahmooz/.local/share/Trash/files/000_2963416-hangmoon-digital-art-artwork-sky-illustration-deviantart-boat-sea-fantasy-art___mixed-wallpapers.jpg
+	/home/mahmooz/downloads/2963416-hangmoon-digital-art-artwork-sky-illustration-deviantart-boat-sea-fantasy-art___mixed-wallpapers.jpg
+t/home/mahmooz/.local/share/Trash/files/000_Arial.zip
+	/home/mahmooz/downloads/Arial.zip
+t/home/mahmooz/.local/share/Trash/files/000_Archlinux-icon-crystal-64.svg.png
+	/home/mahmooz/downloads/Archlinux-icon-crystal-64.svg.png
+t/home/mahmooz/.local/share/Trash/files/000_Road-Wallpaper-062-2048x1345.jpg
+	/home/mahmooz/downloads/Road-Wallpaper-062-2048x1345.jpg
+t/home/mahmooz/.local/share/Trash/files/000_Tux the Penguin.jpeg
+	/home/mahmooz/downloads/Tux the Penguin.jpeg
+t/home/mahmooz/.local/share/Trash/files/000_Tux.jpg
+	/home/mahmooz/downloads/Tux.jpg
+t/home/mahmooz/.local/share/Trash/files/000_c586d511126263.560f2d19b1045.jpg
+	/home/mahmooz/downloads/c586d511126263.560f2d19b1045.jpg
+t/home/mahmooz/.local/share/Trash/files/000_exploits_of_a_mom.png
+	/home/mahmooz/downloads/exploits_of_a_mom.png
+t/home/mahmooz/.local/share/Trash/files/000_fantasy-ocean-wallpaper-8.jpg
+	/home/mahmooz/downloads/fantasy-ocean-wallpaper-8.jpg
+t/home/mahmooz/.local/share/Trash/files/000_images.png
+	/home/mahmooz/downloads/images.png
+t/home/mahmooz/.local/share/Trash/files/000_impressionism_by_hangmoon-d8pxqcj.jpg
+	/home/mahmooz/downloads/impressionism_by_hangmoon-d8pxqcj.jpg
+t/home/mahmooz/.local/share/Trash/files/000_linux-wallpaper-16.jpg
+	/home/mahmooz/downloads/linux-wallpaper-16.jpg
+t/home/mahmooz/.local/share/Trash/files/000_linux_tux-512.png
+	/home/mahmooz/downloads/linux_tux-512.png
+t/home/mahmooz/.local/share/Trash/files/000_maxresdefault.jpg
+	/home/mahmooz/downloads/maxresdefault.jpg
+t/home/mahmooz/.local/share/Trash/files/000_photo-1519817914152-22d216bb9170.jpeg
+	/home/mahmooz/downloads/photo-1519817914152-22d216bb9170.jpeg
+t/home/mahmooz/.local/share/Trash/files/000_sfondi-desktop-architettura-hd-new-architectural-wallpapers-wallpaper-cave-of-sfondi-desktop-architettura-hd.jpg
+	/home/mahmooz/downloads/sfondi-desktop-architettura-hd-new-architectural-wallpapers-wallpaper-cave-of-sfondi-desktop-architettura-hd.jpg
+t/home/mahmooz/.local/share/Trash/files/000_us__en_us__ibm100__linux__ibm_blue_tux__620x350.jpg
+	/home/mahmooz/downloads/us__en_us__ibm100__linux__ibm_blue_tux__620x350.jpg
+t/home/mahmooz/.local/share/Trash/files/000_wallpaper-1e0539.jpg
+	/home/mahmooz/downloads/wallpaper-1e0539.jpg
+t/home/mahmooz/.local/share/Trash/files/000_wp2150698.jpg
+	/home/mahmooz/downloads/wp2150698.jpg
+t/home/mahmooz/.local/share/Trash/files/000_1564629449435.png
+	/home/mahmooz/downloads/Mimi/1564629449435.png
+t/home/mahmooz/.local/share/Trash/files/000_1568512328111.png
+	/home/mahmooz/downloads/Mimi/1568512328111.png
+t/home/mahmooz/.local/share/Trash/files/000_1568588287120.jpg
+	/home/mahmooz/downloads/Mimi/1568588287120.jpg
+t/home/mahmooz/.local/share/Trash/files/000_1571530894495.jpg
+	/home/mahmooz/downloads/Mimi/1571530894495.jpg
+t/home/mahmooz/.local/share/Trash/files/000_Downloads
+	/home/mahmooz/Downloads
+t/home/mahmooz/.local/share/Trash/files/000_Desktop
+	/home/mahmooz/Desktop
 
 # State:
 f

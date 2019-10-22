@@ -114,8 +114,7 @@ alias pq="pacman -Ss"
 alias pi="sudo pacman -S --noconfirm"
 alias o="xdg-open"
 alias p="ping google.com"
-
-eval "$(fasd --init posix-alias zsh-hook)"
+alias enw="echo -ne '\e[1 q' && emacs -nw"
 
 # cursor handling for vi-mode
 function zle-keymap-select zle-line-init zle-line-finish {
