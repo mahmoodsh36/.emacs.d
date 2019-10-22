@@ -1,0 +1,10 @@
+dropbox
+dropbox-cli
+google-earth
+oni
+popcorntime-bin
+powerline-fonts-git
+spotify
+ttf-arabeyes-fonts
+ttf-symbola
+yay
