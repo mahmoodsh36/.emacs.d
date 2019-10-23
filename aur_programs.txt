@@ -1,7 +1,5 @@
 dropbox
 dropbox-cli
-google-earth
-oni
 popcorntime-bin
 powerline-fonts-git
 spotify

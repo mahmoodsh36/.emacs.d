@@ -2,127 +2,70 @@
 
 # Marks:
 'C
-	/home/mahmooz/.config/
+	/home/devil/.config/
 	..
-1571223452
+1571755401
 'D
-	/home/mahmooz/Dropbox
+	/home/devil/Dropbox
 	..
-1571223452
+1571755401
 'a
 	/usr/share/applications
 	..
 1571223452
 'b
-	/home/mahmooz/bin/
+	/home/devil/bin/
 	..
-1571223452
+1571755401
 'c
-	/home/mahmooz/workspace/config/
+	/home/devil/workspace/config/
 	..
-1571223452
+1571755401
 'd
-	/home/mahmooz/downloads/
+	/home/devil/downloads/
 	..
-1571223452
+1571755401
 'h
-	/home/mahmooz/
+	/home/devil/
 	..
-1571223452
+1571755401
 'p
-	/home/mahmooz/pictures
+	/home/devil/pictures
 	..
-1571223452
+1571755401
 'r
 	/
 	..
 1571223452
 's
-	/home/mahmooz/workspace/scripts
+	/home/devil/workspace/scripts
 	..
-1571223452
+1571755401
 't
-	/home/mahmooz/.local/share/Trash/files
+	/home/devil/.local/share/Trash/files
 	..
-1571223452
+1571755401
 'v
-	/home/mahmooz/videos
+	/home/devil/videos
 	..
-1571223452
+1571755401
 'w
-	/home/mahmooz/workspace
+	/home/devil/workspace
 	..
-1571223452
+1571755401
 
 # Bookmarks:
 
 # TUI:
 al
 q1
-v1
+v2
 ov
 m-1
 l2
 r2
 
 # Left window history (oldest to newest):
-d/home/mahmooz/mydata
-	..
-0
-d/home/mahmooz/Dropbox
-	..
-0
-d/home/mahmooz/pictures
-	boy_girl_ocean_sky_colourful_blue.jpg
-3
-d/home/mahmooz/videos
-	..
-0
-d/home/mahmooz/pictures
-	kid_sky_boat_sea_tree.jpg
-6
-d/home/mahmooz
-	Dropbox
-1
-d/home
-	..
-0
-d/
-	home
-4
-d/home
-	mahmooz
-1
-d/home/mahmooz
-	workspace
-5
-d/home/mahmooz/workspace
-	awesome
-1
-d/home/mahmooz/workspace/awesome
-	README.rst
-5
-d/home/mahmooz/workspace
-	scripts
-4
-d/home/mahmooz/workspace/scripts
-	pacman_install.sh
-4
-d/home/mahmooz/videos
-	Joker 2019 720p NEW HD-TS-GETB8
-1
-d/home/mahmooz/videos/Joker 2019 720p NEW HD-TS-GETB8
-	Torrent Downloaded From ProstyleX.org.txt
-3
-d/home/mahmooz/workspace
-	scripts
-4
-d/home/mahmooz/workspace/scripts
-	pacman_install.sh
-4
-d/home/mahmooz/workspace
-	physics
-3
 d/home/mahmooz/workspace/physics
 	src
 2
@@ -306,6 +249,123 @@ d/home/mahmooz/.config
 d/home/mahmooz/downloads
 	wallpapersden.com_the-heavens-beneath_3000x1714.jpg
 8
+d/home
+	devil
+1
+d/
+	home
+4
+d/home
+	devil
+1
+d/
+	mnt
+8
+d/mnt
+	home
+5
+d/mnt/home
+	mahmooz
+1
+d/mnt/home/mahmooz
+	videos
+28
+d/mnt/home/mahmooz/videos
+	Popcorn Time
+2
+d/mnt/home/mahmooz/videos/Popcorn Time
+	..
+0
+d/mnt/home/mahmooz/videos
+	Popcorn Time
+2
+d/mnt/home/mahmooz/videos/Popcorn Time
+	633a43681d60a4e6b11408cd34c4a9c5bf8bd570
+1
+d/mnt/home/mahmooz/videos/Popcorn Time/633a43681d60a4e6b11408cd34c4a9c5bf8bd570
+	..
+0
+d/mnt/home/mahmooz/videos/Popcorn Time
+	59270dee22d3b4d568e87de76c18c5b19507b838
+2
+d/mnt/home/mahmooz/videos/Popcorn Time/59270dee22d3b4d568e87de76c18c5b19507b838
+	..
+0
+d/mnt/home/mahmooz/videos/Popcorn Time
+	59270dee22d3b4d568e87de76c18c5b19507b838
+2
+d/mnt/home/mahmooz/videos
+	The Master (2012) [1080p]
+3
+d/mnt/home/mahmooz/videos/The Master (2012) [1080p]
+	WWW.YIFY-TORRENTS.COM.jpg
+3
+d/mnt
+	..
+0
+d/home/devil
+	.emacs.d
+4
+d/
+	mnt
+8
+d/mnt
+	..
+0
+d/
+	home
+4
+d/home
+	devil
+1
+d/home/devil
+	.emacs.d
+4
+d/
+	mnt
+8
+d/mnt
+	..
+0
+d/home/devil/workspace
+	..
+0
+d/home/devil/.config
+	..
+0
+d/home/devil
+	.cache
+1
+d/home/devil/.cache
+	backgrounder
+3
+d/home/devil/.cache/backgrounder
+	647764.jpg-100%
+22
+d/home/devil/pictures
+	ignore
+2
+d/home/devil/pictures/ignore
+	..
+0
+d/home/devil/pictures
+	ignore
+2
+d/home/devil/pictures/ignore
+	..
+0
+d/home/devil/pictures
+	ignore
+2
+d/home/devil/.cache/backgrounder
+	1.jpg-0%
+1
+d/home/devil/.cache
+	backgrounder
+3
+d/home/devil/.cache/backgrounder
+	1.jpg-0%
+1
 d
 
 # Right window history (oldest to newest):
@@ -316,6 +376,9 @@ D/home/mahmooz/workspace
 	..
 0
 D/home/mahmooz
+	..
+0
+D/home
 	..
 0
 D
@@ -331,13 +394,29 @@ D
 /config
 /awesome
 /qute
+/home
+/videos
+/vid
+/mnt
+/cache
+/backgrounder
 
 # Prompt history (oldest to newest):
+pgirl_in_house.jpg
+p647764.jpg
+pgirl_window_city.jpg
+pgirl_boy_hug_red_floor.png
+pgirl_future_city.png
+punder_water_1.png
+punder_water_buildings.png
+punder_water_rough_
+punder_water_rough_creature.png
+ppiano_sky_boy_girl.jpg
+pperson_under_water.png
 
 # Local filter history (oldest to newest):
 
 # Registers:
-""/home/mahmooz/.local/share/Trash/files/000_wp2150698.jpg
 
 # Directory stack (oldest to newest):
 
@@ -422,6 +501,26 @@ t/home/mahmooz/.local/share/Trash/files/000_Downloads
 	/home/mahmooz/Downloads
 t/home/mahmooz/.local/share/Trash/files/000_Desktop
 	/home/mahmooz/Desktop
+t/home/devil/.local/share/Trash/files/000_2747783-your-lie-in-april-4k-coolest-wallpaper.jpg
+	/home/devil/pictures/ignore/2747783-your-lie-in-april-4k-coolest-wallpaper.jpg
+t/home/devil/.local/share/Trash/files/000_1547788343196.jpg
+	/home/devil/pictures/ignore/1547788343196.jpg
+t/home/devil/.local/share/Trash/files/000_1561079087983.png
+	/home/devil/pictures/ignore/1561079087983.png
+t/home/devil/.local/share/Trash/files/000_1567960139997.png
+	/home/devil/pictures/ignore/1567960139997.png
+t/home/devil/.local/share/Trash/files/000_1567960207765.png
+	/home/devil/pictures/ignore/1567960207765.png
+t/home/devil/.local/share/Trash/files/000_1568588356470.jpg
+	/home/devil/pictures/ignore/1568588356470.jpg
+t/home/devil/.local/share/Trash/files/000_263742793013202.jpg
+	/home/devil/pictures/ignore/263742793013202.jpg
+t/home/devil/.local/share/Trash/files/000_1016061.jpg
+	/home/devil/pictures/ignore/1016061.jpg
+t/home/devil/.local/share/Trash/files/000_1561180318733.png
+	/home/devil/pictures/ignore/1561180318733.png
+t/home/devil/.local/share/Trash/files/000_1561311315196.png
+	/home/devil/pictures/ignore/1561311315196.png
 
 # State:
 f
