@@ -299,11 +299,11 @@
 (use-package company-lsp
   :ensure t)
 
-;; (use-package lsp-java
-;;   :ensure t
-;;   :config
-;;   (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
-;;   (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
+(use-package lsp-java
+  :ensure t
+  :config
+  (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
+  (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
 
 (use-package avy
   :ensure t
@@ -321,6 +321,9 @@
 ;;   (indent-guide-global-mode)
 ;;   (setq indent-guide-recursive t))
 
+(use-package yasnippet
+  :ensure t)
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -331,17 +334,17 @@
      "python -mjson.tool" (current-buffer) t)))
 
 ;; transparency
- (defun toggle-transparency ()
-   (interactive)
-   (let ((alpha (frame-parameter nil 'alpha)))
-     (set-frame-parameter
-      nil 'alpha
-      (if (eql (cond ((numberp alpha) alpha)
-                     ((numberp (cdr alpha)) (cdr alpha))
-                     ;; Also handle undocumented (<active> <inactive>) form.
-                     ((numberp (cadr alpha)) (cadr alpha)))
-               100)
-          '(92 . 92) '(100 . 100)))))
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; Also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(92 . 92) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
 
 ;; Set transparency of emacs
@@ -355,11 +358,11 @@
 (server-start)
 
 ;; my hooks
-(defun compile-project ()
+(defun run-project ()
     "compile the project using compile script compile.sh"
     (interactive)
-    (call-process-shell-command (concat "cd " (projectile-project-root) " && sh compile.sh") nil 0))
-(add-hook 'after-save-hook 'compile-project)
+    (call-process-shell-command (concat (concat "cd " (projectile-project-root)) " && ./compile && ./run") nil 0))
+(global-set-key (kbd "C-c r") 'run-project)
 
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
@@ -388,7 +391,7 @@
     ("cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default)))
  '(package-selected-packages
    (quote
-    (format-all doom-modeline company-lsp lsp-mode evil-org org-bullets expand-region company-irony-c-headers flycheck-irony company-irony irony skewer-mode emmet-mode lua-mode rainbow-delimiters company evil-numbers fzf evil-surround ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs helm zenburn-theme linum-relative evil use-package))))
+    (yasnippet lsp-java format-all doom-modeline company-lsp lsp-mode evil-org org-bullets expand-region company-irony-c-headers flycheck-irony company-irony irony skewer-mode emmet-mode lua-mode rainbow-delimiters company evil-numbers fzf evil-surround ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs helm zenburn-theme linum-relative evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

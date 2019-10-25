@@ -1,0 +1,20 @@
+XF86Audio{Prev,Next,Play}
+    playerctl {previous,next,play-pause}
+
+XF86Audio{RaiseVolume,LowerVolume,Mute}
+    {amixer -c 1 set Speaker 2%+, amixer -c 1 set Speaker 2%-, amixer -c 1 set Speaker 0}
+
+super + Return
+    st
+
+super + o ; {e,w,s,j,k,t,h}
+    {emacs & notify-send -t 5000 "System" "launched Emacs", \
+    firefox & notify-send -t 5000 "System" "launched Firefox", \
+    spotify & notify-send -t 5000 "System" "launched Spotify", \
+    rofi_select_emoji.sh, \
+    rofi_kill_process.sh, \
+    test_qtile.sh, \
+    rofi -show ssh}
+
+super + r
+    rofi_run.sh

@@ -15,6 +15,7 @@ ln -sf $PWD/.emacs $HOME/
 ln -sf $PWD/.inputrc $HOME/
 ln -sf $PWD/.tmux.conf $HOME/
 ln -sf $PWD/.zshrc $HOME/
+ln -sf $PWD/.zprofile $HOME/
 ln -sf $PWD/compton.conf $HOME/.config/
 ln -sf $PWD/mimeapps.list $HOME/.config/
 ln -sf $PWD/rofi $HOME/.config/

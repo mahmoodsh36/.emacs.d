@@ -1,4 +1,3 @@
-
 [Default Applications]
 text/html=firefox.desktop
 x-scheme-handler/http=firefox.desktop
@@ -23,5 +22,6 @@ target=emacsclient.desktop
 inode/x-empty=emacsclient.desktop
 application/x-bittorrent=transmission-gtk.desktop
 video/x-matroska=vlc.desktop
+video/mp4=vlc.desktop
 text/x-shellscript=emacsclient.desktop
 text/x-lisp=emacsclient.desktop

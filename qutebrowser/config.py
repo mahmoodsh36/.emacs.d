@@ -13,6 +13,7 @@ c.aliases = {
         "yt": "open https://youtube.com",
         "dk": "open https://duckduckgo.com",
         "gg": "open https://google.com",
+        "mu": "open https://mahmoodsheikh.com/music",
 }
 
 config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach mpv --force-window yes {hint-url}')
@@ -20,7 +21,7 @@ config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach mpv --force-window yes 
 c.content.user_stylesheets = [
         # 'solarized.css',
         # 'solarized_custom.css',
-        "theme.css"
+        # "theme.css"
 ]
 
 c.colors.webpage.bg = 'black'

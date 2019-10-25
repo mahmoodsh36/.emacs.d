@@ -18,7 +18,6 @@ keys = [
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
     Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
-    Key([mod], "Return", lazy.spawn("st")),
 
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout()),
@@ -26,9 +25,6 @@ keys = [
 
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
-    # Key([mod], "r", lazy.spawncmd()),
-    Key([mod], "r", lazy.spawn("rofi_run.sh")),
-    Key([mod], "s", ),
 
     Key([mod, "control"], "space", lazy.window.toggle_floating()),
 
@@ -65,8 +61,7 @@ for i in groups:
 
 layouts = [
     layout.Bsp(),
-    # layout.Stack(num_stacks=2),
-    # layout.Max(),
+    layout.Floating(),
 ]
 
 widget_defaults = dict(
@@ -83,8 +78,8 @@ screens = [
                 widget.GroupBox(),
                 widget.Prompt(),
                 widget.WindowName(),
-                widget.TextBox("mahmood", name="name"),
                 widget.Systray(),
+                widget.TextBox("mahmood", name="name"),
                 widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
             ],
             24,
@@ -108,6 +103,7 @@ follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 floating_layout = layout.Floating(float_rules=[
+    {'wname':   'physics'}, # the program im writing for school
     {'wmclass': 'confirm'},
     {'wmclass': 'dialog'},
     {'wmclass': 'download'},

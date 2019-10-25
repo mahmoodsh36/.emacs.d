@@ -2,11 +2,11 @@ compton --config ~/.config/compton.conf &
 
 setxkbmap -option caps:swapescape &
 
-sleep 10 && backgrounder.sh ~/pictures > ~/.cache/backgrounder_log &
-
+backgrounder.sh ~/pictures 200 &
 dropbox &
 nm-applet &
 dunst &
+sxhkd > ~/.cache/sxhkd_log &
 
 # test for an existing bus daemon, just to be safe
 if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
@@ -15,7 +15,4 @@ if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
   echo "D-Bus per-session daemon address is: $DBUS_SESSION_BUS_ADDRESS"
 fi
 
-while true;
-do
-    exec qtile
-done
+exec qtile > ~/.cache/qtile_log
