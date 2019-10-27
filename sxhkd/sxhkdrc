@@ -2,19 +2,23 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    {amixer -c 1 set Speaker 2%+, amixer -c 1 set Speaker 2%-, amixer -c 1 set Speaker 0}
+    amixer -c `cat $GLOBAL_VARS_FILE | jq .sound_card` set Speaker {2%+, 2%-, 0}
 
 super + Return
     st
 
-super + o ; {e,w,s,j,k,t,h}
+super + o ; {e,w,s,j,k,t,h,r}
     {emacs & notify-send -t 5000 "System" "launched Emacs", \
     firefox & notify-send -t 5000 "System" "launched Firefox", \
     spotify & notify-send -t 5000 "System" "launched Spotify", \
     rofi_select_emoji.sh, \
     rofi_kill_process.sh, \
     test_qtile.sh, \
-    rofi -show ssh}
+    rofi -show ssh, \
+    st -e ranger}
 
 super + r
     rofi_run.sh
+
+super + Escape
+    pkill sxhkd && sxhkd

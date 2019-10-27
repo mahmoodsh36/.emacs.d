@@ -4,59 +4,76 @@ from libqtile import layout, bar, widget
 
 from typing import List  # noqa: F401
 
-mod = "mod4"
+sup = "mod4"
+alt = "mod1"
 
 keys = [
     # Switch window focus to other pane(s) of stack
-    Key([mod], "space", lazy.layout.next()),
+    Key([sup], "space", lazy.layout.next()),
 
     # Swap panes of split stack
-    Key([mod, "shift"], "space", lazy.layout.rotate()),
+    Key([sup, "shift"], "space", lazy.layout.rotate()),
 
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
-    Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
+    Key([sup, "shift"], "Return", lazy.layout.toggle_split()),
 
     # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout()),
-    Key([mod], "q", lazy.window.kill()),
+    Key([sup], "Tab", lazy.next_layout()),
+    Key([sup], "q", lazy.window.kill()),
 
-    Key([mod, "control"], "r", lazy.restart()),
-    Key([mod, "control"], "q", lazy.shutdown()),
+    Key([sup, "control"], "r", lazy.restart()),
+    Key([sup, "control"], "q", lazy.shutdown()),
 
-    Key([mod, "control"], "space", lazy.window.toggle_floating()),
+    Key([sup, "control"], "space", lazy.window.toggle_floating()),
 
-    Key([mod], "j", lazy.layout.down()),
-    Key([mod], "k", lazy.layout.up()),
-    Key([mod], "h", lazy.layout.left()),
-    Key([mod], "l", lazy.layout.right()),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
-    Key([mod, "mod1"], "j", lazy.layout.flip_down()),
-    Key([mod, "mod1"], "k", lazy.layout.flip_up()),
-    Key([mod, "mod1"], "h", lazy.layout.flip_left()),
-    Key([mod, "mod1"], "l", lazy.layout.flip_right()),
-    Key([mod, "control"], "j", lazy.layout.grow_down()),
-    Key([mod, "control"], "k", lazy.layout.grow_up()),
-    Key([mod, "control"], "h", lazy.layout.grow_left()),
-    Key([mod, "control"], "l", lazy.layout.grow_right()),
-    Key([mod, "shift"], "n", lazy.layout.normalize()),
-    Key([mod], "t", lazy.layout.toggle_split()),
+    Key([sup], "j", lazy.layout.down()),
+    Key([sup], "k", lazy.layout.up()),
+    Key([sup], "h", lazy.layout.left()),
+    Key([sup], "l", lazy.layout.right()),
+    Key([sup, "shift"], "j", lazy.layout.shuffle_down()),
+    Key([sup, "shift"], "k", lazy.layout.shuffle_up()),
+    Key([sup, "shift"], "h", lazy.layout.shuffle_left()),
+    Key([sup, "shift"], "l", lazy.layout.shuffle_right()),
+    Key([sup, alt], "j", lazy.layout.flip_down()),
+    Key([sup, alt], "k", lazy.layout.flip_up()),
+    Key([sup, alt], "h", lazy.layout.flip_left()),
+    Key([sup, alt], "l", lazy.layout.flip_right()),
+    Key([sup, "control"], "j", lazy.layout.grow_down()),
+    Key([sup, "control"], "k", lazy.layout.grow_up()),
+    Key([sup, "control"], "h", lazy.layout.grow_left()),
+    Key([sup, "control"], "l", lazy.layout.grow_right()),
+    Key([sup, "shift"], "n", lazy.layout.normalize()),
+    Key([sup], "t", lazy.layout.toggle_split()),
 ]
 
-groups = [Group(i) for i in "123456"]
+groups = [
+     Group('code'),
+     Group('music'),
+     Group('web'),
+     Group('term'),
+     Group('etc'),
+     Group('etc'),
+]
 
-for i in groups:
-    keys.extend([
-        # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen()),
+for index, grp in enumerate(groups):
 
-        # mod1 + shift + letter of group = switch to & move focused window to group
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name)),
+     # index is the position in the group list grp is the group object.
+     # We assign each group object a set of keys based on it's
+     # position in the list.
+
+     # Eventually we will implement a function to change the name based
+     # on what window is active in that group.
+
+     keys.extend([
+
+             # switch to group
+         Key([sup], str(index+1), lazy.group[grp.name].toscreen()),
+
+             # send to group
+         Key([sup, "shift"], str(index+1), lazy.window.togroup(grp.name)),
     ])
 
 layouts = [
@@ -64,36 +81,38 @@ layouts = [
     layout.Floating(),
 ]
 
-widget_defaults = dict(
-    font='sans',
-    fontsize=12,
-    padding=3,
-)
-extension_defaults = widget_defaults.copy()
+# orange text on grey background
+default_data = dict(fontsize=12,
+                    foreground="FF6600",
+                    background="1D1D1D",
+                    font="ttf-droid")
+
+foreground = "FF6600"
+background ="1D1D1D"
+font="ttf-droid"
+fontsize=12
+
+extension_defaults = default_data.copy()
 
 screens = [
-    Screen(
-        bottom=bar.Bar(
-            [
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Systray(),
-                widget.TextBox("mahmood", name="name"),
-                widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
-            ],
-            24,
-        ),
-    ),
-]
+    Screen(bottom = bar.Bar([
+            widget.GroupBox(foreground=foreground,
+                background=background),
+            widget.WindowName(**default_data),
+            widget.Systray(**default_data),
+            widget.Clock(foreground=foreground,
+                background=background)
+            ], 27)
+        )
+    ]
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(),
+    Drag([sup], "Button1", lazy.window.set_position_floating(),
          start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(),
+    Drag([sup], "Button3", lazy.window.set_size_floating(),
          start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front())
+    Click([sup], "Button2", lazy.window.bring_to_front())
 ]
 
 dgroups_key_binder = None

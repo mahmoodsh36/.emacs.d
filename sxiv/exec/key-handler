@@ -1,0 +1,18 @@
+#!/bin/sh
+while read file
+do
+    case "$1" in
+        "w")
+            hsetroot -fill "$file"
+            ;;
+        "a")
+            mv "$file" ~/pictures/ignore
+            ;;
+        "d")
+            mv "$file" ~/.local/share/Trash/files/
+            ;;
+        "s")
+            mv "$file" ~/pictures
+            ;;
+    esac
+done

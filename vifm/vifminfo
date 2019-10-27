@@ -66,12 +66,6 @@ l2
 r2
 
 # Left window history (oldest to newest):
-d/home/mahmooz/workspace/physics
-	src
-2
-d/home/mahmooz/workspace/physics/src
-	main
-1
 d/home/mahmooz/workspace/physics/src/main
 	CallBack.java
 1
@@ -364,8 +358,14 @@ d/home/devil/.cache
 	backgrounder
 3
 d/home/devil/.cache/backgrounder
-	1.jpg-0%
+	..
+0
+d/home/devil/videos
+	Impulse.S02.COMPLETE.1080p.RED.WEBRip.AAC5.1.VP9-AJP69[TGx]
 1
+d/home/devil/videos/Impulse.S02.COMPLETE.1080p.RED.WEBRip.AAC5.1.VP9-AJP69[TGx]
+	Impulse.S02E07.The.End.of.the.World.1080p.RED.WEB-DL.AAC5.1.VP9-AJP69.mkv
+7
 d
 
 # Right window history (oldest to newest):
@@ -387,6 +387,7 @@ D
 :FASD
 :empty
 :q
+:bul
 
 # Search history (oldest to newest):
 /con

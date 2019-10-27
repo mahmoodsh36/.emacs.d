@@ -104,9 +104,9 @@ export TERM=xterm-256color
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias ls="lsd"
-alias cat="bat"
-alias df="dfc"
+#alias ls="lsd"
+#alias cat="bat"
+#alias df="dfc"
 alias v="vim"
 alias t="tmux"
 alias f="vifm"
