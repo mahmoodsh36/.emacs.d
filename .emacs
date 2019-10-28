@@ -17,7 +17,7 @@
 (require 'use-package)
 
 ;; set tabs to 4 spaces, 2 for javascript
-(setq-default tab-width 2)
+(setq-default tab-width 4)
 (setq js-indent-level 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers

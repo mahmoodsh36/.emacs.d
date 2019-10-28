@@ -7,7 +7,7 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + Return
     st
 
-super + o ; {e,w,s,j,k,t,h,r}
+super + o ; {e,w,s,j,k,t,h,r,i}
     {emacs & notify-send -t 5000 "System" "launched Emacs", \
     firefox & notify-send -t 5000 "System" "launched Firefox", \
     spotify & notify-send -t 5000 "System" "launched Spotify", \
@@ -16,6 +16,9 @@ super + o ; {e,w,s,j,k,t,h,r}
     test_qtile.sh, \
     rofi -show ssh, \
     st -e ranger}
+
+super + i
+    sxiv `find ~/pictures -type d | grep -v ".git" | rofi -dmenu -p "wallpaper directory" -multi-select`
 
 super + r
     rofi_run.sh
