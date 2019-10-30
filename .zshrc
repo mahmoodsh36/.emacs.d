@@ -33,7 +33,7 @@ ZSH_THEME="robbyrussell"
 # export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
+DISABLE_MAGIC_FUNCTIONS=true
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -115,6 +115,11 @@ alias pi="sudo pacman -S --noconfirm"
 alias o="xdg-open"
 alias p="ping google.com"
 alias enw="echo -ne '\e[1 q' && emacs -nw"
+
+# git aliases
+alias gs="git status"
+alias gc="git commit"
+alias gp="git push"
 
 # cursor handling for vi-mode
 function zle-keymap-select zle-line-init zle-line-finish {

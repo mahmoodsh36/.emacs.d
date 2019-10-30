@@ -299,11 +299,11 @@
 (use-package company-lsp
   :ensure t)
 
-(use-package lsp-java
-  :ensure t
-  :config
-  (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
-  (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
+;; (use-package lsp-java
+;;   :ensure t
+;;   :config
+;;   (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
+;;   (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
 
 (use-package avy
   :ensure t
