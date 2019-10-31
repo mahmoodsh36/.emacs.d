@@ -25,3 +25,6 @@ super + r
 
 super + Escape
     pkill sxhkd && sxhkd
+
+super + y ; super + y ; {i}
+    notify-send "it works"
