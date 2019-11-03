@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home//devil/.oh-my-zsh"
+export ZSH="/home//mahmooz/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -115,6 +115,8 @@ alias pi="sudo pacman -S --noconfirm"
 alias o="xdg-open"
 alias p="ping google.com"
 alias enw="echo -ne '\e[1 q' && emacs -nw"
+alias sv="sudo vim"
+alias e="emacsclient -c"
 
 # git aliases
 alias gs="git status"

@@ -244,10 +244,10 @@
   (add-hook 'css-mode-hook 'skewer-css-mode)
   (add-hook 'html-mode-hook 'skewer-html-mode))
 
-(use-package flycheck
-  :config
-  (global-flycheck-mode)
-  (setq flycheck-checker-error-threshold 4000))
+;; (use-package flycheck
+;;   :config
+;;   (global-flycheck-mode)
+;;   (setq flycheck-checker-error-threshold 4000))
 
 ;; C/C++ packages
 (use-package irony
@@ -381,20 +381,3 @@
 ;;           (if (window-configuration-p workspace)
 ;;               (set-window-configuration workspace)
 ;;             (delete-other-windows)))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default)))
- '(package-selected-packages
-   (quote
-    (yasnippet lsp-java format-all doom-modeline company-lsp lsp-mode evil-org org-bullets expand-region company-irony-c-headers flycheck-irony company-irony irony skewer-mode emmet-mode lua-mode rainbow-delimiters company evil-numbers fzf evil-surround ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs helm zenburn-theme linum-relative evil use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "#DCDCCC" :background "#3F3F3F")))))

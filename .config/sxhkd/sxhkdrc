@@ -2,23 +2,23 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    amixer -c `cat $GLOBAL_VARS_FILE | jq .sound_card` set Speaker {2%+, 2%-, 0}
+    amixer set Master {2%+, 2%-, 0}
 
 super + Return
     st
 
-super + o ; {e,w,s,j,k,t,h,r,i}
+super + o ; {e,w,s,j,k,h,r,i}
     {emacs & notify-send -t 5000 "System" "launched Emacs", \
     firefox & notify-send -t 5000 "System" "launched Firefox", \
     spotify & notify-send -t 5000 "System" "launched Spotify", \
     rofi_select_emoji.sh, \
     rofi_kill_process.sh, \
-    test_qtile.sh, \
     rofi -show ssh, \
-    st -e ranger}
+    st -e ranger, \
+    sxiv `find ~/pictures -type d | grep -v ".git" | rofi -dmenu -p "wallpaper directory" -multi-select`}
 
-super + i
-    sxiv `find ~/pictures -type d | grep -v ".git" | rofi -dmenu -p "wallpaper directory" -multi-select`
+super + e
+    toggle_touchpad.sh
 
 super + r
     rofi_run.sh
@@ -28,3 +28,6 @@ super + Escape
 
 super + y ; super + y ; {i}
     notify-send "it works"
+
+super + p
+    import -window root ~/screenshot.png && notify-send "screenshot taken"
