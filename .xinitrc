@@ -17,8 +17,9 @@ setxkbmap -option caps:swapescape &
 hsetroot -fill ~/pictures/cafe.jpg &
 
 while true; do
-#     # Log stderror to a file 
+    # Log stderror to a file 
     dwm 2> ~/.cache/dwm
-#     # No error logging
-#     #dwm >/dev/null 2>&1
+    # No error logging
+    #dwm >/dev/null 2>&1
 done
+# exec awesome

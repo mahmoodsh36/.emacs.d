@@ -14,5 +14,8 @@ do
         "s")
             mv "$file" ~/pictures
             ;;
+        "r")
+            mv "$file" `echo $file | dmenu -it "$file"`
+            ;;
     esac
 done

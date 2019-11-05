@@ -2,26 +2,25 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    amixer set Master {2%+, 2%-, 0}
+    amixer set Speaker -c 1 {2%+, 2%-, 0}
 
 super + Return
     st
 
-super + o ; {e,w,s,j,k,h,r,i}
+super + o ; {e,w,s,j,k,r,i}
     {emacs & notify-send -t 5000 "System" "launched Emacs", \
     firefox & notify-send -t 5000 "System" "launched Firefox", \
     spotify & notify-send -t 5000 "System" "launched Spotify", \
-    rofi_select_emoji.sh, \
-    rofi_kill_process.sh, \
-    rofi -show ssh, \
+    dmenu_select_emoji.sh, \
+    dmenu_kill_process.sh, \
     st -e ranger, \
-    sxiv `find ~/pictures -type d | grep -v ".git" | rofi -dmenu -p "wallpaper directory" -multi-select`}
+    sxiv `find ~/pictures -type d | grep -v ".git" | dmenu -l 10 -p "wallpaper directory"`}
 
 super + e
     toggle_touchpad.sh
 
 super + r
-    rofi_run.sh
+    dmenu_run
 
 super + Escape
     pkill sxhkd && sxhkd
