@@ -31,5 +31,6 @@ super + y ; super + y ; {i}
 super + p
     import -window root ~/screenshot.png && notify-send "screenshot taken"
 
-super + s ; {u}
-    {notify-send "updating spotify cache" && spotify_fetch_lib_tracks.py > ~/.cache/spotify_dmenu/lib_tracks.json && notify-send "updated spotify cache"}
+super + s ; {u, p}
+    {notify-send "updating spotify cache" && spotify_fetch_lib_tracks.py > ~/.cache/spotify_dmenu/lib_tracks.json && notify-send "updated spotify cache", \
+    dmenu_spotify_play_track.py}

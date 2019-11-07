@@ -21,7 +21,7 @@
 (setq js-indent-level 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
-(global-linum-mode 1)
+;; (global-linum-mode 1)
 ;; overwrite highlighted text
 (delete-selection-mode 1)
 ;; show matching parenthases
@@ -92,12 +92,12 @@
 (setq auto-window-vscroll nil)
 
 ;; relative numbering
-(use-package linum-relative
-  :ensure t
-  :config
-  (linum-relative-mode)
-  ;; show current line number not '0'
-  (setq linum-relative-current-symbol ""))
+;; (use-package linum-relative
+;;   :ensure t
+;;   :config
+;;   (linum-relative-mode)
+;;   ;; show current line number not '0'
+;;   (setq linum-relative-current-symbol ""))
 
 ;; theme
 ;; (setq spacemacs-theme-comment-bg nil)
@@ -111,10 +111,14 @@
 ;;   :ensure t
 ;;   :config
 ;;   (load-theme 'gruvbox t))
-(use-package zenburn-theme
+;; (use-package zenburn-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'zenburn t))
+(use-package monokai-theme
   :ensure t
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'monokai t))
 
 ;; helm
 (use-package helm
@@ -346,7 +350,6 @@
               100)
          '(92 . 92) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
-
 ;; Set transparency of emacs
 (defun transparency (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"

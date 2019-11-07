@@ -5,6 +5,8 @@ if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
   echo "D-Bus per-session daemon address is: $DBUS_SESSION_BUS_ADDRESS"
 fi
 
+xwinwrap -ni -b -fs -ov -nf -- mplayer -cache 4096 -quiet -loop 0 -wid WID ~/videos/water.mp4
+
 sxhkd &
 dunst &
 dropbox &
