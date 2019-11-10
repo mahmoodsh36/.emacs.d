@@ -9,7 +9,7 @@ do
             mv "$file" ~/pictures/ignore
             ;;
         "d")
-            mv "$file" ~/.local/share/Trash/files/
+            rm "$file"
             ;;
         "s")
             mv "$file" ~/pictures

@@ -2,7 +2,7 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    amixer set Speaker -c 1 {2%+, 2%-, 0}
+    amixer set Speaker -c `cat ~/.config/sound_card || echo 0 | tr -d '\n'` {2%+, 2%-, 0}
 
 super + Return
     st
@@ -20,10 +20,7 @@ super + e
     toggle_touchpad.sh
 
 super + r
-    dmenu_run
-
-super + Escape
-    pkill sxhkd && sxhkd
+    rofi_run.sh
 
 super + y ; super + y ; {i}
     notify-send "it works"
@@ -32,5 +29,5 @@ super + p
     import -window root ~/screenshot.png && notify-send "screenshot taken"
 
 super + s ; {u, p}
-    {notify-send "updating spotify cache" && spotify_fetch_lib_tracks.py > ~/.cache/spotify_dmenu/lib_tracks.json && notify-send "updated spotify cache", \
-    dmenu_spotify_play_track.py}
+    {fetch_lib_tracks.py, \
+    dmenu_play_track.py}

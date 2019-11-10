@@ -66,8 +66,8 @@ set path+=**
 
 " for airline
 set encoding=utf-8
-let g:airline_powerline_fonts=1
-let g:Powerline_symbols='unicode'
+" let g:airline_powerline_fonts=1
+" let g:Powerline_symbols='unicode'
 let g:airline_theme='alduin'
 
 nnoremap Y y$
