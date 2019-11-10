@@ -29,7 +29,7 @@
     # the top and down respectively.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "550-5+25"
+    geometry = "550-10+10"
 
     # Show how many messages are currently hidden (because of geometry).
     indicate_hidden = yes
@@ -282,7 +282,7 @@
     #icon = /path/to/icon
 
 [urgency_normal]
-    background = "#43333f"
+    background = "#222222"
     foreground = "#ffffff"
     timeout = 4
     # Icon for notifications with normal urgency, uncomment to enable
@@ -412,3 +412,7 @@
 #    set_stack_tag = "volume"
 #
 # vim: ft=cfg
+
+[play_sound]
+    summary = "*"
+    script = notification_sound.sh

@@ -139,3 +139,7 @@ function zle-keymap-select zle-line-init zle-line-finish {
 zle -N zle-line-init
 zle -N zle-line-finish
 zle -N zle-keymap-select
+
+# echo -n "\e[35m" && figlet "mahmooz" 2> /dev/null
+# restore pywal theme
+(cat ~/.cache/wal/sequences &)

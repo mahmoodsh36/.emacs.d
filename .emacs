@@ -384,17 +384,3 @@
 ;;           (if (window-configuration-p workspace)
 ;;               (set-window-configuration workspace)
 ;;             (delete-other-windows)))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (yasnippet doom-modeline company-lsp lsp-mode evil-org org-bullets expand-region company-irony-c-headers flycheck-irony company-irony irony skewer-mode emmet-mode lua-mode rainbow-delimiters company evil-numbers fzf evil-surround ivy evil-magit treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil treemacs helm monokai-theme evil use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 257)) (:foreground "#F8F8F2" :background "#272822")) (((class color) (min-colors 89)) (:foreground "#F5F5F5" :background "#1B1E1C")))))

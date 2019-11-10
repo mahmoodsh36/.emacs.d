@@ -8,13 +8,13 @@ super + Return
     st
 
 super + o ; {e,w,s,j,k,r,i}
-    {emacs & notify-send -t 5000 "System" "launched Emacs", \
-    chromium & notify-send -t 5000 "System" "launched Chromium", \
-    spotify & notify-send -t 5000 "System" "launched Spotify", \
+    {emacs, \
+    chromium, \
+    spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
     st -e ranger, \
-    sxiv `find ~/pictures -type d | grep -v ".git" | dmenu -l 10 -p "wallpaper directory"`}
+    sxiv `find ~/media/images -type d | grep -v ".git" | dmenu -l 10 -p "wallpaper directory"`}
 
 super + e
     toggle_touchpad.sh

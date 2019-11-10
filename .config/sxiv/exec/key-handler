@@ -3,7 +3,7 @@ while read file
 do
     case "$1" in
         "w")
-            hsetroot -fill "$file"
+            hsetroot -fill "$file" && wal -i "$file" && cp "$file" ~/.cache/wallpaper
             ;;
         "a")
             mv "$file" ~/pictures/ignore
@@ -16,6 +16,9 @@ do
             ;;
         "r")
             mv "$file" `echo $file | dmenu -it "$file"`
+            ;;
+        "y")
+            echo "$file" | xclip -selection c
             ;;
     esac
 done

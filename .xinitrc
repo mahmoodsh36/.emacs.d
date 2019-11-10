@@ -18,6 +18,7 @@ compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 hsetroot -fill ~/pictures/cafe.jpg &
 
-while true; do
-    dwm 2> ~/.cache/dwm
-done
+# while true; do
+#     dwm 2> ~/.cache/dwm
+# done
+exec awesome
