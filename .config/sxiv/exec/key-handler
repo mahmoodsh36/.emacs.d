@@ -3,7 +3,10 @@ while read file
 do
     case "$1" in
         "w")
-            hsetroot -fill "$file" && wal -i "$file" && cp "$file" ~/.cache/wallpaper
+            hsetroot -fill "$file"
+            wal -i "$file"
+            cp "$file" ~/.cache/wallpaper
+            /usr/bin/pywal_awesome_colors.sh
             ;;
         "a")
             mv "$file" ~/pictures/ignore

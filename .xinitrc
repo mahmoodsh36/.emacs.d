@@ -16,7 +16,7 @@ dwm_statusbar.sh &
 songs_progress_monitor.py &
 compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
-hsetroot -fill ~/pictures/cafe.jpg &
+hsetroot -fill ~/.cache/wallpaper &
 
 # while true; do
 #     dwm 2> ~/.cache/dwm
