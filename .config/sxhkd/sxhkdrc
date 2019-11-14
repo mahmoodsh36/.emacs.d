@@ -2,19 +2,19 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    amixer set Speaker -c `cat ~/.config/sound_card || echo 0 | tr -d '\n'` {2%+, 2%-, 0}
+    amixer set Master {2%+, 2%-, 0}
 
 super + Return
     st
 
-super + o ; {e,w,s,j,k,r,i}
+super + o ; {e,w,s,j,k,r,i,I}
     {emacs, \
-    chromium, \
-    spotify, \
+    chromium & notify-send "$(echo -e "launched Chromium\nHappy browsing 😁")", \
+    notify-send "launched Spotify 🎶🎵" && spotify, \
     rofi_select_emoji.sh, \
     rofi_kill_process.sh, \
     st -e ranger, \
-    sxiv `find ~/media/images -type d | grep -v ".git" | rofi -dmenu -p "wallpaper directory"`}
+    sxiv "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | rofi -dmenu -p "wallpaper directory")"}
 
 super + e
     toggle_touchpad.sh
@@ -25,9 +25,16 @@ super + r
 super + y ; super + y ; {i}
     notify-send "it works"
 
+# screenshot
 super + p
-    import -window root ~/screenshot.png && notify-send "screenshot taken"
+    scrot ~/media/scrots/`date | tr " " "_"` && notify-send "screenshot taken"
+# delayed screenshot
+super + shift + p
+    delayed_scrot.sh
 
 super + s ; {u, p}
     {fetch_lib_tracks.py, \
     rofi_play_track.py}
+
+super + Escape
+    kill -s USR1 `pgrep sxhkd`

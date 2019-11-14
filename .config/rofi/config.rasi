@@ -1,9 +1,3 @@
-/**
- * ROFI Color theme
- * User: mbfraga
- * Copyright: Martin B. Fraga
- */
-
 configuration {
     theme: "~/.cache/wal/colors-rofi-dark.rasi";
 }

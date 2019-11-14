@@ -2,20 +2,24 @@
 while read file
 do
     case "$1" in
+        "y")
+            echo $file | xclip -selection c
+            notify-send "$file"
+            ;;
         "w")
-            hsetroot -fill "$file"
+            #hsetroot -fill "$file"
             wal -i "$file"
             cp "$file" ~/.cache/wallpaper
             /usr/bin/pywal_awesome_colors.sh
             ;;
         "a")
-            mv "$file" ~/pictures/ignore
+            mv "$file" ~/media/images/ignore
             ;;
         "d")
             rm "$file"
             ;;
         "s")
-            mv "$file" ~/pictures
+            mv "$file" ~/media/images
             ;;
         "r")
             mv "$file" `echo $file | dmenu -it "$file"`

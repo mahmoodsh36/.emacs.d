@@ -100,13 +100,13 @@
   (setq linum-relative-current-symbol ""))
 
 ;; theme
-;; (setq spacemacs-theme-comment-bg nil)
-;; (setq spacemacs-theme-comment-italic 1)
-;; (setq spacemacs-theme-keyword-italic 1)
-;; (use-package spacemacs-theme
-;;   :ensure t
-;;   :defer t
-;;   :init (load-theme 'spacemacs-dark t))
+(setq spacemacs-theme-comment-bg nil)
+(setq spacemacs-theme-comment-italic 1)
+(setq spacemacs-theme-keyword-italic 1)
+(use-package spacemacs-theme
+  :ensure t
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
 ;; (use-package gruvbox-theme
 ;;   :ensure t
 ;;   :config
@@ -115,10 +115,10 @@
 ;;   :ensure t
 ;;   :config
 ;;   (load-theme 'zenburn t))
-(use-package monokai-theme
-  :ensure t
-  :config
-  (load-theme 'monokai t))
+;; (use-package monokai-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'monokai t))
 
 ;; helm
 (use-package helm
