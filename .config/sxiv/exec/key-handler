@@ -3,7 +3,7 @@ while read file
 do
     case "$1" in
         "y")
-            echo $file | xclip -selection c
+            echo $file | tr -d "\n" | xclip -selection c
             notify-send "$file"
             ;;
         "w")
@@ -11,6 +11,7 @@ do
             wal -i "$file"
             cp "$file" ~/.cache/wallpaper
             /usr/bin/pywal_awesome_colors.sh
+            /usr/bin/dunst_pywal.sh
             ;;
         "a")
             mv "$file" ~/media/images/ignore

@@ -2,13 +2,13 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    amixer set Master {2%+, 2%-, 0}
+    pactl set-sink-volume @DEFAULT_SINK@ {+3%, -3%, 0}
 
 super + Return
     st
 
 super + o ; {e,w,s,j,k,r,i,I}
-    {emacs, \
+    {notify-send "launched emacs" && emacs, \
     chromium & notify-send "$(echo -e "launched Chromium\nHappy browsing 😁")", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     rofi_select_emoji.sh, \
@@ -27,7 +27,8 @@ super + y ; super + y ; {i}
 
 # screenshot
 super + p
-    scrot ~/media/scrots/`date | tr " " "_"` && notify-send "screenshot taken"
+    file=$(echo ~/media/scrots/`date | tr " " "_"`) && \
+    scrot "$file" && echo -n "$file" | xclip -selection c && notify-send "screenshot taken"
 # delayed screenshot
 super + shift + p
     delayed_scrot.sh
@@ -38,3 +39,7 @@ super + s ; {u, p}
 
 super + Escape
     kill -s USR1 `pgrep sxhkd`
+
+super + g ; {r,s}
+    {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
+    pkill ffmpeg && notify-send "stopped recording"}

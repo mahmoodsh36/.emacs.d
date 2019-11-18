@@ -8,8 +8,6 @@ call vundle#begin()
 "call vundle#begin('~/some/path/here')
 
 Plugin 'VundleVim/Vundle.vim' 
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
 Plugin 'morhetz/gruvbox'
 Plugin 'scrooloose/nerdtree'
 " Plugin 'majutsushi/tagbar'
@@ -18,6 +16,8 @@ Plugin 'AlessandroYorba/Alduin'
 Plugin 'tpope/vim-fugitive'
 Plugin 'wincent/command-t'
 Plugin 'scrooloose/nerdcommenter'
+Plugin 'junegunn/fzf'
+Plugin 'dylanaraps/wal'
 
 call vundle#end()
 filetype plugin indent on
@@ -67,7 +67,6 @@ set path+=**
 set encoding=utf-8
 " let g:airline_powerline_fonts=1
 " let g:Powerline_symbols='unicode'
-let g:airline_theme='alduin'
 
 nnoremap Y y$
 nnoremap <C-h> :cprev<Return>
@@ -78,6 +77,7 @@ nnoremap <C-x>c :e! ~/.vimrc<CR>
 nnoremap <C-x>r :so ~/.vimrc<CR>
 " exit buffer without closing window
 nnoremap <C-x>k :bp\|bd #<CR>
+nnoremap <leader>f :FZF<CR>
 
 " C-n to start nerdtree
 map <C-n> :NERDTreeToggle<CR>
@@ -110,7 +110,7 @@ autocmd FileType tagbar nmap <buffer> dd mdy
 " print macro
 let @p = 'ISystem.out.println(A);==:w'
 
-highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
+" highlight CursorLine ctermfg=None cterm=bold term=bold ctermbg=235
 
 " use system clipboard register by default, copy and paste from it by default
 set clipboard=unnamedplus
@@ -121,14 +121,10 @@ let &t_SI = "\<esc>[5 q"
 let &t_SR = "\<esc>[4 q"
 let &t_EI = "\<esc>[2 q"
 
-command! FASD call fzf#run(fzf#wrap({'source': 'zsh -c "fasd -al"', 'options': '--no-sort --tac --tiebreak=index'}))
-nnoremap <silent> <Leader>f :FASD<CR>
-
 command! Compile !./compile
 command! Run !./compile && ./run
 
-" command-t config
-let g:CommandTWildIgnore=&wildignore . ",*.class"
-
 " nerdtree cd
 let g:NERDTreeChDirMode = 2
+
+color wal
