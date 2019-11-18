@@ -7,14 +7,15 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + Return
     st
 
-super + o ; {e,w,s,j,k,r,i,I}
+super + o ; {e,w,s,j,k,r,i,h}
     {notify-send "launched emacs" && emacs, \
     chromium & notify-send "$(echo -e "launched Chromium\nHappy browsing 😁")", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     rofi_select_emoji.sh, \
     rofi_kill_process.sh, \
     st -e ranger, \
-    sxiv "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | rofi -dmenu -p "wallpaper directory")"}
+    sxiv "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | rofi -dmenu -p "wallpaper directory")", \
+    rofi -show ssh}
 
 super + e
     toggle_touchpad.sh

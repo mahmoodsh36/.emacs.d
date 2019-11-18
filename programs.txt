@@ -11,3 +11,5 @@ alsa-utils
 jq
 git
 pywal
+wpgtk
+thunar

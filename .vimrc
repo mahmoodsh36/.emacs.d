@@ -62,6 +62,8 @@ set timeout timeoutlen=5000 ttimeoutlen=100
 
 " to enable recursive file finding
 set path+=**
+" set swap files directory
+set directory=$HOME/.vim//
 
 " for airline
 set encoding=utf-8
