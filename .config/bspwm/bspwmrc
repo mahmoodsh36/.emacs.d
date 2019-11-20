@@ -1,0 +1,129 @@
+#!/bin/sh
+
+# Set environment
+export BSPWM_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/bspwm"
+
+bspc config border_width        5
+bspc config window_gap          0
+bspc config top_padding         20
+
+bspc config split_ratio                 0.50
+bspc config borderless_monocle          true
+bspc config gapless_monocle             true
+bspc config focus_follows_pointer       true
+
+bspc monitor --reset-desktops code music web term 5 6
+
+# Use monocle layout on desktop 1
+# bspc desktop '^1' --layout monocle
+# Make windows float on specific desktops
+# https://github.com/baskerville/bspwm/issues/325
+bspc subscribe node_manage | while read event monitor desktop nodeid ipid; do
+	case "$desktop" in
+		www|play|6|virt|7|9)
+			bspc node "$nodeid" --state floating
+			;;
+	esac
+done &
+
+# Script for external rules
+# bspc config external_rules_command "$BSPWM_CONFIG/scripts/external_rules"
+
+# Send to www desktop
+bspc rule --add Firefox                     desktop='www' follow=on
+bspc rule --add Iceweasel                   desktop='www' follow=on
+# Send to dev desktop
+bspc rule --add Atom                        desktop='dev' follow=on
+bspc rule --add Brackets                    desktop='dev' follow=on
+bspc rule --add Eclipse                     desktop='dev' follow=on
+bspc rule --add LightTable                  desktop='dev' follow=on
+bspc rule --add Ltbin                       desktop='dev' follow=on
+bspc rule --add Gvim                        desktop='dev' follow=on
+bspc rule --add Mysql-workbench-bin         desktop='dev' follow=on
+bspc rule --add sun-awt-X11-XFramePeer      desktop='dev' follow=on
+# Send to chat desktop
+bspc rule --add Hexchat                     desktop='chat' --one-shot follow=on
+bspc rule --add Xchat                       desktop='chat' --one-shot follow=on
+# Send to edit desktop
+bspc rule --add Abiword                     desktop='edit' follow=on
+bspc rule --add Avidemux                    desktop='edit' follow=on
+bspc rule --add Blender                     desktop='edit' follow=on
+bspc rule --add Darktable                   desktop='edit' follow=on
+bspc rule --add Gimp                        desktop='edit' follow=on
+bspc rule --add Gimp-2.8                    desktop='edit' follow=on
+bspc rule --add Gnumeric                    desktop='edit' follow=on
+bspc rule --add Handbrake                   desktop='edit' follow=on
+bspc rule --add Illustrator.exe             desktop='edit' follow=on
+bspc rule --add Photoshop.exe               desktop='edit' follow=on
+bspc rule --add Inkscape                    desktop='edit' follow=on
+bspc rule --add Openshot                    desktop='edit' follow=on
+bspc rule --add Pitivi                      desktop='edit' follow=on
+bspc rule --add Rawtherapee                 desktop='edit' follow=on
+bspc rule --add Ufraw                       desktop='edit' follow=on
+# Send to play desktop
+bspc rule --add Vlc                         desktop='play' follow=on
+bspc rule --add retroarch                   desktop='play' follow=on
+bspc rule --add scummvm                     desktop='play' follow=on
+bspc rule --add zsnes                       desktop='play' follow=on
+bspc rule --add Wine                        desktop='play' follow=on
+bspc rule --add Desura                      desktop='play' --one-shot follow=on
+bspc rule --add Steam                       desktop='play' --one-shot follow=on
+# Send to virt desktop
+bspc rule --add qemu-system-i386            desktop='virt' follow=on
+bspc rule --add qemu-system-x86_64          desktop='virt' follow=on
+bspc rule --add Virt-manager                desktop='virt' follow=on
+bspc rule --add VirtualBox                  desktop='virt' follow=on
+
+# Float windows opened from the panel
+bspc rule --add URxvt:popup                 state=floating
+# Make scratchpad floating and sticky
+bspc rule --add URxvt:scratchpad            sticky=on state=floating border=off
+# Other floating windows
+bspc rule --add Cssh                        state=floating
+bspc rule --add Display                     state=floating
+bspc rule --add Empathy                     state=floating
+bspc rule --add Eog                         state=floating
+bspc rule --add feh                         state=floating
+bspc rule --add Keepassx                    state=floating
+bspc rule --add mplayer2                    state=floating
+bspc rule --add mpv                         state=floating
+bspc rule --add Nautilus                    state=floating
+bspc rule --add Pavucontrol                 state=floating
+bspc rule --add Pcmanfm                     state=floating
+bspc rule --add Pidgin                      state=floating
+bspc rule --add qTox                        state=floating
+bspc rule --add Remmina                     state=floating
+bspc rule --add "Syncthing GTK"             state=floating
+bspc rule --add Transmission-gtk            state=floating
+bspc rule --add Uget-gtk                    state=floating
+bspc rule --add Vinagre                     state=floating
+
+# Colors
+# . "$HOME/.local/share/themes/colorschemes/bspwm.cfg"
+# bspc config focused_border_color            "$brightwhite"
+# bspc config active_border_color             "$brightblack"
+# bspc config normal_border_color             "$black"
+# bspc config urgent_border_color             "$blue"
+# bspc config presel_feedback_color           "$yellow"
+# bspc config focused_locked_border_color     "$brightred"
+# bspc config active_locked_border_color      "$red"
+# bspc config normal_locked_border_color      "$black"
+# bspc config focused_sticky_border_color     "$brightcyan"
+# bspc config active_sticky_border_color      "$cyan"
+# bspc config normal_sticky_border_color      "$black"
+# bspc config focused_private_border_color    "$brightblue"
+# bspc config active_private_border_color     "$blue"
+# bspc config normal_private_border_color     "$black"
+
+# Load session
+. "$BSPWM_CONFIG/restore.cfg"
+if [ -e "$BSPWM_STATE" ] ; then
+	bspc wm --load-state "$BSPWM_STATE"
+	bspc wm --adopt-orphans
+	rm "$BSPWM_STATE"
+fi
+
+sh /usr/bin/bspwm_sxhkd.sh &
+
+# Autostart
+"$BSPWM_CONFIG/autostart" &

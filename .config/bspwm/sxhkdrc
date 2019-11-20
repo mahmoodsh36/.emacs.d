@@ -1,0 +1,72 @@
+# exit
+super + shift + q
+    $BSPWM_CONFIG/scripts/dmenu-logout
+
+# Close window
+alt + F4
+    bspc node --close
+super + shift + c
+    bspc node --close
+
+super + equal
+    bspc node @/ --equalize
+
+# Make split ratios balanced
+super + minus
+    bspc node @/ --balance
+
+# Toggle tiling of window
+super + ctrl + space
+    bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
+    bspc node --state \~$state
+
+# Toggle fullscreen of window
+super + f
+    bspc node --state \~fullscreen
+
+# Focus/swap windows by direction
+super + {_,shift + }{h,j,k,l}
+    bspc node --{focus,swap} {west,south,north,east}
+
+# Flip layout vertically/horizontally
+super + {_,shift + }v
+    bspc node @/ --flip {vertical,horizontal}
+
+# Preselect the splitting area for next window on leaf/parent
+super + alt + {h,j,k,l}
+    bspc node --presel-dir \~{west,south,north,east}
+
+# Expand tiled space
+super + ctrl + {h,j,k,l}
+    bspc node {@west -r -10,@south -r +10,@north -r -10,@east -r +10}
+
+# Move window to selected desktop
+super + shift + {1-9,0}
+    bspc node --to-desktop ^{1-9,10} --focus
+
+# Focus selected desktop
+super + {1-9,0}
+    num={1-9,10} && bspc desktop --focus ^$num && notify-send -t 1000 $num
+
+# Increase/decrease window gap on focused desktop
+super + bracket{left,right}
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` {-,+} 5 ))
+
+# Focus when clicking
+~button1
+    bspc pointer --grab focus
+
+# Move/resize windows
+alt + button{1-3}
+    ; bspc pointer --grab {move,resize_side,resize_corner}
+
+# Ungrab when releasing a mouse button
+alt + @button{1-3}
+    bspc pointer --ungrab
+
+super + shift + Escape
+    bspwm_sxhkd.sh
+
+# cancel preselection
+super + ctrl + Escape
+    bspc node --presel-dir cancel
