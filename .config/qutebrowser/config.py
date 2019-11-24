@@ -14,14 +14,13 @@ c.aliases = {
         "dk": "open https://duckduckgo.com",
         "gg": "open https://google.com",
         "mu": "open https://mahmoodsheikh.com/music",
+        "gt": "open https://mahmoodsheikh.com/github",
 }
 
 config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach mpv --force-window yes {hint-url}')
 
 c.content.user_stylesheets = [
-        # 'solarized.css',
-        # 'solarized_custom.css',
-        # "theme.css"
+        "style.css"
 ]
 
 c.colors.webpage.bg = 'black'
