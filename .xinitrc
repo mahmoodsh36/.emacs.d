@@ -3,12 +3,8 @@ if test -z "$DBUS_SESSION_BUS_ADDRESS" ; then
 fi
 # xwinwrap -ni -b -fs -ov -nf -- mplayer -cache 4096 -quiet -loop 0 -wid WID ~/ORBIT\ -\ A\ Journey\ Around\ Earth\ in\ Real\ Time\ \[\ 4k\ \]-Xjs6fnpPWy4.webm -nosound &
 
-if [ ! "$session" = "bspwm" ]; then
-    sxhkd &
-fi
-if [ "$session" = "dwm" ]; then
-    dwm_statusbar.sh &
-fi
+sxhkd &
+dwm_statusbar.sh &
 dunst_pywal.sh &
 dropbox &
 nm-applet &
@@ -18,10 +14,11 @@ pasystray &
 # songs_progress_monitor.py &
 compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
-# feh --bg-scale ~/.cache/wallpaper &
+feh --bg-scale ~/.cache/wallpaper &
 # unclutter is fucking buggy
 # unclutter -root &
 blueman-applet &
+syndaemon -K -i 0.5 -R -d
 
 case $session in
     awesome) exec awesome;;
