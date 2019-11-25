@@ -26,7 +26,9 @@ blueman-applet &
 case $session in
     awesome) exec awesome;;
     bspwm)   exec bspwm;;
-    dwm)     while true; do dwm 2> ~/.cache/dwm; done;;
-    # No known session, try to run it as command
-    *                 ) exec $1;;
+    dwm|*)
+        while true; do
+            dwm 2> ~/.cache/dwm.log
+        done
+        ;;
 esac

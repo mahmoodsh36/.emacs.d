@@ -14,12 +14,14 @@ super + o ; {e,w,s,j,k,r,i,h,p}
     rofi_select_emoji.sh, \
     rofi_kill_process.sh, \
     st -e zsh -i -c ranger && notify-send 'launched ranger', \
-    sxiv "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | rofi -dmenu -p "wallpaper directory")", \
+    sxiv -a "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | rofi -dmenu -p "wallpaper directory")", \
     rofi -show ssh, \
     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer 🔊'}
 
-super + I
-    notify-send "$(xprop | tail -40) -t 10000"
+super + o ; {n,I,v}
+    {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
+    notify-send "$(xprop | tail -40) -t 10000", \
+    st -e zsh -i -c vim & notify-send 'launched vim'}
 
 super + e
     toggle_touchpad.sh
@@ -42,8 +44,9 @@ super + s ; {u, p}
     {fetch_lib_tracks.py, \
     rofi_play_track.py}
 
+# {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
 super + g ; {r,s}
-    {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
+    {ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     pkill ffmpeg && notify-send "stopped recording"}
 
 super + Escape ; {s,w,c,C}
