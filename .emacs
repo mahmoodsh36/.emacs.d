@@ -99,27 +99,6 @@
   ;; show current line number not '0'
   (setq linum-relative-current-symbol ""))
 
-;; theme
-;; (setq spacemacs-theme-comment-bg nil)
-;; (setq spacemacs-theme-comment-italic 1)
-;; (setq spacemacs-theme-keyword-italic 1)
-;; (use-package spacemacs-theme
-;;   :ensure t
-;;   :defer t
-;;   :init (load-theme 'spacemacs-dark t))
-(use-package gruvbox-theme
-  :ensure t
-  :config
-  (load-theme 'gruvbox t))
-;; (use-package zenburn-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'zenburn t))
-;; (use-package monokai-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'monokai t))
-
 ;; helm
 (use-package helm
   :ensure t
@@ -128,37 +107,6 @@
   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") #'helm-find-files))
 
-;; treemacs
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (global-set-key (kbd "C-0") 'treemacs-select-window)
-  :config
-  (treemacs-resize-icons 15)
-  (setq treemacs-width 25)
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-(use-package treemacs-evil
-  :after treemacs evil
-  :ensure t)
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
-(use-package treemacs-icons-dired
-  :after treemacs dired
-  :ensure t
-  :config (treemacs-icons-dired-mode))
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
-
 ;; magit
 (use-package magit
   :ensure t)
@@ -166,7 +114,6 @@
   :ensure t
   :config
   (require 'evil-magit))
-  ;; (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
 
 ;; projectile
 (use-package projectile
@@ -189,17 +136,6 @@
   :config
   (global-evil-surround-mode 1))
 
-;; fuzzy finder for emacs
-(use-package fzf
-  :ensure t)
-
-;; vim-like increase and decrease numbers
-(use-package evil-numbers
-  :ensure t
-  :config
-  (global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
-  (global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt))
-
 (use-package company
   :ensure t
   :config
@@ -217,75 +153,11 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;; (use-package evil-collection
-;;   :ensure t
-;;   :config
-;;   (evil-collection-init))
-
-;; dunno if async is useful for me tbh
-(use-package async
-  :ensure t
-  :config
-  (autoload 'dired-async-mode "dired-async.el" nil t)
-  (dired-async-mode 1)
-  (async-bytecomp-package-mode 1))
-
-(use-package lua-mode
-  :ensure t
-  :config
-  (setq lua-indent-level 2))
-
 (use-package emmet-mode
   :ensure t
   :config
   (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
   (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
-
-(use-package skewer-mode
-  :ensure t
-  :config
-  (add-hook 'js2-mode-hook 'skewer-mode)
-  (add-hook 'css-mode-hook 'skewer-css-mode)
-  (add-hook 'html-mode-hook 'skewer-html-mode))
-
-;; (use-package flycheck
-;;   :config
-;;   (global-flycheck-mode)
-;;   (setq flycheck-checker-error-threshold 4000))
-
-;; C/C++ packages
-(use-package irony
-  :ensure t)
-(use-package company-irony
-  :ensure t)
-(use-package flycheck-irony
-  :ensure t)
-(use-package company-irony-c-headers
-  :ensure t)
-
-;; (use-package rainbow-mode
-;;   :ensure t)
-
-;; (use-package centaur-tabs
-;;   :ensure t
-;;   :config
-;;   (centaur-tabs-mode t)
-;;   :bind
-;;   ("C-j" . centaur-tabs-backward)
-;;   ("C-k" . centaur-tabs-forward))
-
-(use-package expand-region
-  :ensure t
-  :config
-  (global-set-key (kbd "C-=") 'er/expand-region))
-
-;; (use-package popwin
-;;   :ensure t
-;;   :config
-;;   (require 'popwin)
-;;   (popwin-mode 1)
-;;   (push '(dired-mode :position top) popwin:special-display-config)
-;;   (push '("*eshell*" :position bottom :stick non-nil) popwin:special-display-config))
 
 (use-package org-bullets
   :ensure t
@@ -303,31 +175,20 @@
 (use-package company-lsp
   :ensure t)
 
-;; (use-package lsp-java
-;;   :ensure t
-;;   :config
-;;   (define-key java-mode-map (kbd "C-c i") 'lsp-java-organize-imports)
-;;   (define-key java-mode-map (kbd "C-c g") 'lsp-java-generate-getters-and-setters))
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox))
 
 (use-package avy
   :ensure t
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char))
-
-(use-package doom-modeline
-      :ensure t
-      :config
-      (doom-modeline-mode))
-
 ;; (use-package indent-guide
 ;;   :ensure t
 ;;   :config
 ;;   (indent-guide-global-mode)
 ;;   (setq indent-guide-recursive t))
-
-(use-package yasnippet
-  :ensure t)
-
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -337,19 +198,13 @@
     (shell-command-on-region b e
      "python -mjson.tool" (current-buffer) t)))
 
-;; transparency
-(defun toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ;; Also handle undocumented (<active> <inactive>) form.
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         '(92 . 92) '(100 . 100)))))
- (global-set-key (kbd "C-c t") 'toggle-transparency)
+;; change region highlight color
+(set-face-attribute 'region nil :background "#000")
+(set-frame-font "Inconsolata 11" nil t)
+
+;; start server
+(server-start)
+
 ;; Set transparency of emacs
 (defun transparency (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
@@ -357,30 +212,20 @@
   (set-frame-parameter (selected-frame) 'alpha value))
 (transparency 90)
 
-;; start server
-(server-start)
-
-;; my hooks
-(defun run-project ()
-    "compile the project using compile script compile.sh"
-    (interactive)
-    (call-process-shell-command (concat (concat "cd " (projectile-project-root)) " && ./compile && ./run") nil 0))
-(global-set-key (kbd "C-c r") 'run-project)
-
-;; change region highlight color
-(set-face-attribute 'region nil :background "#000")
-(set-frame-font "Inconsolata 11" nil t)
-
-;; ;; workspaces
-;; (setq current-workspace-index 1)
-;; (setq workspaces '())
-;; (defun switch-to-workspace (workspace-index)
-;;   "switch to a workspace"
-;;   (interactive)
-;;   (let (workspace) (nth workspace-index workspaces)
-;;         (progn
-;;           (setcar (nthcdr current-workspace-index workspaces) (current-window-configuration))
-;;           (setq current-workspace-index workspace-index)
-;;           (if (window-configuration-p workspace)
-;;               (set-window-configuration workspace)
-;;             (delete-other-windows)))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" "cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" default)))
+ '(package-selected-packages
+   (quote
+    (zenburn-theme yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil spaceline skewer-mode rainbow-delimiters org-bullets monokai-theme lua-mode linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region ewal-spacemacs-themes ewal-evil-cursors evil-surround evil-org evil-numbers evil-magit emmet-mode doom-modeline cyberpunk-theme company-lsp company-irony-c-headers company-irony))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((((class color) (min-colors 16777215)) (:background "#282828" :foreground "#fdf4c1")) (((class color) (min-colors 255)) (:background "#262626" :foreground "#ffffaf")))))
