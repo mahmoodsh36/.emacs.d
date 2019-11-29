@@ -27,8 +27,7 @@ bind-key x pb-delete
 browser urlhandler.sh
 macro , open-in-browser
 macro v set browser "mpv"; open-in-browser ; set browser urlhandler.sh
-macro y set browser "spawndl"; open-in-browser ; set browser urlhandler.sh
 macro w set browser "w3m"; open-in-browser ; set browser urlhandler.sh
 macro p set browser "dmenuhandler"; open-in-browser ; set browser urlhandler.sh
 macro i set browser "sxiv"; open-in-browser ; set browser urlhandler.sh
-macro c set browser "copy() { echo -n $1 | xclip -selection c; }; copy"; open-in-browser ; set browser urlhandler.sh
+macro y set browser "copy() { echo -n $1 | xclip -selection c; }; copy"; open-in-browser ; set browser urlhandler.sh

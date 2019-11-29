@@ -7,15 +7,14 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + Return
     st
 
-super + o ; {e,w,s,j,k,r,i,h,p}
+super + o ; {e,w,s,j,k,r,i,p}
     {notify-send "launched emacs" && emacs, \
     firefox & notify-send "$(echo -e "launched Firefox\nHappy browsing 😁")", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
     st -e zsh -i -c ranger && notify-send 'launched ranger', \
-    sxiv -a "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | rofi -dmenu -p "wallpaper directory")", \
-    rofi -show ssh, \
+    sxiv -a "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu.sh -l 10 -p "wallpaper directory")", \
     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer 🔊'}
 
 super + o ; {n,I,v}
