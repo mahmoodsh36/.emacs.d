@@ -14,7 +14,7 @@ super + o ; {e,w,s,j,k,r,i,p}
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
     st -e zsh -i -c ranger && notify-send 'launched ranger', \
-    sxiv -a "$(echo -e "$(find ~/media/ -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu.sh -l 10 -p "wallpaper directory")", \
+    sxiv -a "$(echo -e "$(find ~/media/images -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu.sh -l 10 -p "wallpaper directory")", \
     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer 🔊'}
 
 super + o ; {n,I,v}
@@ -33,7 +33,7 @@ super + y ; super + y ; {i}
 
 # screenshot
 super + p
-    file=$(echo ~/media/scrots/`date | tr " " "_"`) && \
+    file=$(echo ~/media/images/scrots/`date | tr " " "_"`) && \
     scrot "$file" && echo -n "$file" | xclip -selection c && notify-send "screenshot taken"
 # delayed screenshot
 super + shift + p
@@ -48,11 +48,10 @@ super + g ; {R,r,s}
     ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     pkill ffmpeg && notify-send "stopped recording"}
 
-super + Escape ; {s,w,c,C}
+super + a ; {s,w,c,C}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
     feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
-    pkill compton; compton & notify-send "restarted compton", \
-    pkill compton; compton --config ~/.config/compton_no_opacity.conf & notify-send "compton without transparency set"}
+    pkill compton; compton & notify-send "restarted compton"}
 
 super + T
-    notify-send "test"
+    notify-send "test2"
