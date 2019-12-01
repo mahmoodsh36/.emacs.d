@@ -6,7 +6,6 @@ fi
 sxhkd &
 dwm_statusbar.sh &
 dunst_pywal.sh &
-dropbox &
 nm-applet &
 pasystray &
 # backgrounder.sh ~/pictures 200 0 & disown
@@ -18,7 +17,7 @@ feh --bg-scale ~/.cache/wallpaper &
 # unclutter is fucking buggy
 # unclutter -root &
 blueman-applet &
-syndaemon -K -i 0.5 -R -d
+syndaemon -K -i 0.5 -R -d &
 
 case $session in
     awesome) exec awesome;;
