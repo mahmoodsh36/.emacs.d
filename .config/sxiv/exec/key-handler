@@ -1,6 +1,7 @@
 #!/bin/sh
 while read file
 do
+    echo "$@" > ~/test
     case "$1" in
         "x")
             image_index=$(expr `ls ~/media/images/girls/ | cut -d "e" -f2 | sort -n | tail -1` + 1)
