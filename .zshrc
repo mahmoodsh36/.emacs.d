@@ -45,4 +45,6 @@ fi
 alias ls="ls --color"
 alias grep="grep --color=auto"
 alias pq="pacman -Ss"
-alias xi="sudo pacman -S"
+alias pi="sudo pacman -S"
+alias o="xdg-open"
+alias v="vim"

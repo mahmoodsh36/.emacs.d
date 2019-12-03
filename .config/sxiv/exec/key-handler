@@ -1,11 +1,10 @@
 #!/bin/sh
 while read file
 do
-    echo "$@" > ~/test
     case "$1" in
         "x")
-            image_index=$(expr `ls ~/media/images/girls/ | cut -d "e" -f2 | sort -n | tail -1` + 1)
-            mv "$file" "/home/$USER/media/images/girls/image$image_index"
+            image_index=$(expr `ls ~/media/images/toffee/ | cut -d "e" -f2 | sort -n | tail -1` + 1)
+            mv "$file" "/home/$USER/media/images/toffee/image$image_index"
             ;;
         "y")
             echo $file | tr -d "\n" | xclip -selection c
@@ -19,13 +18,13 @@ do
             /usr/bin/dunst_pywal.sh
             ;;
         "a")
-            mv "$file" ~/media/images/ignore
+            mv "$file" ~/media/images/wal/ignore
             ;;
         "d")
             rm "$file"
             ;;
         "s")
-            mv "$file" ~/media/images
+            mv "$file" ~/media/images/wal
             ;;
         "r")
             mv "$file" `echo $file | dmenu -it "$file"`
