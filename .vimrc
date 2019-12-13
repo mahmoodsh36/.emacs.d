@@ -15,7 +15,6 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'wincent/command-t'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'junegunn/fzf'
-Plugin 'dylanaraps/wal'
 Plugin 'habamax/vim-colors-defnoche'
 
 call vundle#end()
@@ -32,6 +31,8 @@ set smartcase " search will be case sensitive if it contains uppercase
 set ignorecase
 set incsearch
 set mouse=a
+set autoread
+au FocusGained,BufEnter * :checktime
 
 " fix delay on esc+shift+o
 set timeout timeoutlen=5000 ttimeoutlen=100
@@ -68,7 +69,6 @@ let &t_EI = "\<esc>[2 q"
 command! Compile !./compile
 command! Run !./compile && ./run
 
-color wal
  function! TurnOffColors()
    :set t_Co=0
    syntax off
@@ -79,4 +79,3 @@ color wal
 
  command! TurnOffColors call TurnOffColors()
  " TurnOffColors
- color wal

@@ -7,22 +7,23 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + Return
     st
 
-super + o ; {e,w,s,j,k,r,i,p}
+super + x ; {e,w,s,j,k,r,i,p}
     {notify-send "launched emacs" && emacs, \
-    firefox & notify-send "$(echo -e "launched Firefox\nHappy browsing 😁")", \
+    firefox & notify-send "launched Firefox", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
-    st -e zsh -i -c ranger && notify-send 'launched ranger', \
-    sxiv -a "$(echo -e "$(find ~/media/images -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu.sh -l 10 -p "wallpaper directory")", \
-    st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer 🔊'}
+    st -e zsh -i -c ranger & notify-send 'launched ranger', \
+    sxiv -a "$(echo -e "$(find ~/media/images -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu -l 10 -p "wallpaper directory")", \
+    st -e zsh -i -c ncpamixer & notify-send 'launched ncpamixer'}
 
-super + o ; {n,I,v,d,m}
+super + x ; {n,I,v,d,m,f}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
-    notify-send "$(xprop | tail -40) -t 10000", \
+    notify-send  -t 60000 "$(xprop | tail -40)", \
     st -e zsh -i -c vim & notify-send 'launched vim', \
     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
-    notify-send "launched PopcornTime" && popcorntime || Popcorn-Time}
+    notify-send "launched PopcornTime" && popcorntime || Popcorn-Time, \
+    fetch_reddit_images.sh}
 
 super + e
     toggle_touchpad.sh
@@ -52,10 +53,12 @@ super + g ; {R,r,s}
     ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     pkill ffmpeg && notify-send "stopped recording"}
 
-super + a ; {s,w,c,C}
+super + a ; {s,w,c,n,d}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
     feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
-    pkill compton; compton & notify-send "restarted compton"}
+    pkill compton; compton & notify-send "restarted compton", \
+    notify-send 'restarted NetworkManager'; sudo sv restart NetworkManager, \
+    pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh}
 
-super + T
-    notify-send "test2"
+super + ctrl + space
+    notify-send "switched layout to $(switch_layout.sh)"

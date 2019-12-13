@@ -5,7 +5,7 @@ super + shift + q
 # Close window
 alt + F4
     bspc node --close
-super + shift + c
+super + q
     bspc node --close
 
 super + equal
@@ -16,7 +16,7 @@ super + minus
     bspc node @/ --balance
 
 # Toggle tiling of window
-super + ctrl + space
+super + shift + space
     bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
     bspc node --state \~$state
 
@@ -42,11 +42,11 @@ super + ctrl + {h,j,k,l}
 
 # Move window to selected desktop
 super + shift + {1-9,0}
-    bspc node --to-desktop ^{1-9,10} --focus
+    bspc node --to-desktop ^{1-9,10}
 
 # Focus selected desktop
 super + {1-9,0}
-    num={1-9,10} && bspc desktop --focus ^$num && notify-send -t 1000 $num
+    num={1-9,10} && bspc desktop --focus ^$num
 
 # Increase/decrease window gap on focused desktop
 super + bracket{left,right}

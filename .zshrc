@@ -32,19 +32,32 @@ zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower
 setopt AUTO_CD
 setopt ALWAYS_TO_END
 setopt COMPLETE_ALIASES
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt RM_STARSILENT
+setopt HIST_IGNORE_ALL_DUPS
 
 # prompt
-export PS1="[%m@%1~] "
-
-# load pywal colors
-if [ -f ~/.cache/wal/sequences ]; then
-	(cat ~/.cache/wal/sequences &)
-fi
+# export PS1="[%m@%1~]$ "
+export PS1="[%1~]$ "
 
 # aliases
 alias ls="ls --color"
 alias grep="grep --color=auto"
-alias pq="pacman -Ss"
-alias pi="sudo pacman -S"
 alias o="xdg-open"
 alias v="vim"
+alias xi="sudo xbps-install -y"
+alias xq="xbps-query -Rs"
+alias history='history 1'
+alias l="ls"
+alias youtube-mp3='youtube-dl --ignore-errors --extract-audio --audio-format mp3'
+
+# functions
+c() {
+    cd $@; ls
+}
+
+# command history
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.history

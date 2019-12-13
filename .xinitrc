@@ -11,12 +11,12 @@ pasystray &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &
-compton --config ~/.config/compton.conf &
+# compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
-feh --bg-scale ~/.cache/wallpaper &
+hsetroot -solid "#000000"
 # unclutter is fucking buggy
 # unclutter -root &
-blueman-applet &
+# blueman-applet &
 syndaemon -K -i 0.5 -R -d &
 
 case $session in
@@ -28,3 +28,4 @@ case $session in
         done
         ;;
 esac
+# exec bspwm

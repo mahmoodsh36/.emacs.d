@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" "cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" default)))
  '(package-selected-packages
    (quote
-    (zenburn-theme yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil spaceline skewer-mode rainbow-delimiters org-bullets monokai-theme lua-mode linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region ewal-spacemacs-themes ewal-evil-cursors evil-surround evil-org evil-numbers evil-magit emmet-mode doom-modeline cyberpunk-theme company-lsp company-irony-c-headers company-irony))))
+    (evil-collection avy zenburn-theme yasnippet use-package treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-evil spaceline skewer-mode rainbow-delimiters org-bullets monokai-theme lua-mode linum-relative ivy helm gruvbox-theme fzf flycheck-irony expand-region ewal-spacemacs-themes ewal-evil-cursors evil-surround evil-org evil-numbers evil-magit emmet-mode doom-modeline cyberpunk-theme company-lsp company-irony-c-headers company-irony))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -202,6 +202,10 @@
   :ensure t
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char))
+
+(use-package evil-collection
+  :ensure t)
+
 ;; (use-package indent-guide
 ;;   :ensure t
 ;;   :config
