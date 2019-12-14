@@ -48,9 +48,13 @@ alias o="xdg-open"
 alias v="vim"
 alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
+alias xr="sudo xbps-remove"
 alias history='history 1'
 alias l="ls"
 alias youtube-mp3='youtube-dl --ignore-errors --extract-audio --audio-format mp3'
+alias gs="git status"
+alias gc="git commit -a -m"
+alias gp="git push"
 
 # functions
 c() {

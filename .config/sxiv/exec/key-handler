@@ -11,15 +11,15 @@ do
             notify-send "$file"
             ;;
         "w")
-            #hsetroot -fill "$file"
-            wal -i "$file"
-            cp "$file" ~/.cache/wallpaper
-            /usr/bin/pywal_awesome_colors.sh
-            /usr/bin/dunst_pywal.sh
-            sudo oomoxify-cli -s /usr/share/spotify/spotify-client/Apps -g /home/mahmooz/.cache/wal/colors-oomox
-            sed -i '/SchemeUrg/d' ~/.cache/wal/colors-wal-dwm.h
-            sudo make install clean -C ~/workspace/dwm
-            notify-send "wallpaper colors generated"
+            hsetroot -fill "$file"
+            #wal -i "$file"
+            #cp "$file" ~/.cache/wallpaper
+            #/usr/bin/pywal_awesome_colors.sh
+            #/usr/bin/dunst_pywal.sh
+            #sudo oomoxify-cli -s /usr/share/spotify/spotify-client/Apps -g /home/mahmooz/.cache/wal/colors-oomox
+            #sed -i '/SchemeUrg/d' ~/.cache/wal/colors-wal-dwm.h
+            #sudo make install clean -C ~/workspace/dwm
+            #notify-send "wallpaper colors generated"
             ;;
         "a")
             mv "$file" ~/media/images/wal/ignore/
