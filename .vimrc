@@ -8,14 +8,10 @@ call vundle#begin()
 "call vundle#begin('~/some/path/here')
 
 Plugin 'VundleVim/Vundle.vim' 
-Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-surround'
 Plugin 'AlessandroYorba/Alduin'
-Plugin 'tpope/vim-fugitive'
-Plugin 'wincent/command-t'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'junegunn/fzf'
-Plugin 'habamax/vim-colors-defnoche'
 
 call vundle#end()
 filetype plugin indent on

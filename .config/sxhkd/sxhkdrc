@@ -14,16 +14,17 @@ super + x ; {e,w,s,j,k,r,i,p}
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
     st -e zsh -i -c ranger & notify-send 'launched ranger', \
-    sxiv -a "$(echo -e "$(find ~/media/images -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu -l 10 -p "wallpaper directory")", \
+    sxiv -a "$(echo -e "$(find ~/media/images -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu -l 10 -p "directory")", \
     st -e zsh -i -c ncpamixer & notify-send 'launched ncpamixer'}
 
-super + x ; {n,I,v,d,m,f}
+super + x ; {n,I,v,d,m,f,t}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
     notify-send  -t 60000 "$(xprop | tail -40)", \
     st -e zsh -i -c vim & notify-send 'launched vim', \
     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
     notify-send "launched PopcornTime" && popcorntime || Popcorn-Time, \
-    notify-send "fetching reddit images" && fetch_reddit_images.sh}
+    notify-send "fetching media from reddit" && fetch_reddit_media.sh, \
+    rm -rf ~/.local/share/Trash/files/* && notify-send "cleaned trash"}
 
 super + e
     toggle_touchpad.sh
@@ -53,12 +54,13 @@ super + g ; {R,r,s}
     ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     pkill ffmpeg && notify-send "stopped recording"}
 
-super + a ; {s,w,c,n,d}
+super + a ; {s,w,c,n,d,o}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
     feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
     pkill compton; compton & notify-send "restarted compton", \
     notify-send 'restarted NetworkManager'; sudo sv restart NetworkManager, \
-    pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh}
+    pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh, \
+    pkill dunst && notify-send 'restarted dunst' && dunst}
 
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"

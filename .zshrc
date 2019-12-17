@@ -20,6 +20,8 @@ export KEYTIMEOUT=1
 bindkey '^P' up-history
 bindkey '^N' down-history
 bindkey '^r' history-incremental-search-backward
+autoload edit-command-line; zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
 
 # auto completion
 autoload -Uz compinit && compinit
@@ -55,6 +57,8 @@ alias youtube-mp3='youtube-dl --ignore-errors --extract-audio --audio-format mp3
 alias gs="git status"
 alias gc="git commit -a -m"
 alias gp="git push"
+alias p="pwd"
+alias m="mpv --keep-open"
 
 # functions
 c() {
@@ -65,3 +69,6 @@ c() {
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.history
+
+IFS='
+'

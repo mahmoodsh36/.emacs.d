@@ -25,7 +25,7 @@ do
             mv "$file" ~/media/images/wal/ignore/
             ;;
         "d")
-            rm "$file"
+            mv "$file" ~/.local/share/Trash/files
             ;;
         "s")
             mv "$file" ~/media/images/wal/
