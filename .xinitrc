@@ -5,8 +5,8 @@ fi
 
 sxhkd &
 dwm_statusbar.sh &
-dunst_pywal.sh &
 nm-applet &
+dunst &
 pasystray &
 # backgrounder.sh ~/pictures 200 0 & disown
 

@@ -36,5 +36,11 @@ do
         "y")
             echo "$file" | xclip -selection c
             ;;
+        "D")
+            rm "$file"
+            ;;
+        "2")
+            mv "$file" ~/media/2
+            ;;
     esac
 done

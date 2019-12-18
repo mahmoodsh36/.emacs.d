@@ -9,7 +9,7 @@ function save_local_video()
 end
 function remove_video()
     vid_path = mp.get_property("path")
-    os.execute("mv '" .. vid_path .. "' $HOME/.local/share/Trash/files")
+    os.execute('mv $(printf "%q" $(echo ' .. vid_path .. '))" $HOME/.local/share/Trash/files')
     mp.command('stop')
 end
 mp.add_key_binding("d", "download_video", video_downloader)

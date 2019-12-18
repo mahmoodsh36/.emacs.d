@@ -59,6 +59,8 @@ alias gc="git commit -a -m"
 alias gp="git push"
 alias p="pwd"
 alias m="mpv --keep-open"
+alias vi="echo viewing images && find . -type f -exec file --mime {} \; | grep 'image/' | cut -d ':' -f1 | xargs -d '\n' sxiv -a"
+alias vv="echo viewing videos && find . -type f -exec file --mime {} \; | grep 'video/' | cut -d ':' -f1 | xargs -d'\n' -n1 mpv --keep-open"
 
 # functions
 c() {
