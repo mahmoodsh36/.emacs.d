@@ -4,12 +4,15 @@ function video_downloader()
 end
 function save_local_video()
     vid_path = mp.get_property("path")
-    os.execute("mv '" .. vid_path .. "' $HOME/media/vid/toffee/")
+    print(vid_path:gsub("'", "\\'"))
+    os.execute("mv \"" .. vid_path:gsub('"',  '\\"') .. "\" $HOME/media/vid/toffee/")
     mp.command('stop')
 end
 function remove_video()
     vid_path = mp.get_property("path")
-    os.execute('mv $(printf "%q" $(echo ' .. vid_path .. '))" $HOME/.local/share/Trash/files')
+    print(vid_path)
+    print(vid_path:gsub("'", "\\'"))
+    os.execute('mv "' .. vid_path:gsub('"', '\\"') .. '" $HOME/.local/share/Trash/files')
     mp.command('stop')
 end
 mp.add_key_binding("d", "download_video", video_downloader)

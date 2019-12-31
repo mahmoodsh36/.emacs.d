@@ -7,24 +7,24 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + Return
     st -e tmux
 
-super + x ; {e,w,s,j,k,r,i,p}
+super + x ; {e,w,s,j,k,r,p}
     {notify-send "launched emacs" && emacs, \
     firefox & notify-send "launched Firefox", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
     st -e zsh -i -c ranger & notify-send 'launched ranger', \
-    sxiv -a "$(echo -e "$(find ~/media/images -type d -mindepth 1)\n/home/$USER/downloads" | grep -v ".git" | dmenu -l 10 -p "directory")", \
-    st -e zsh -i -c ncpamixer & notify-send 'launched ncpamixer'}
+    st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
 
-super + x ; {n,I,v,d,m,f,t}
+super + x ; {n,I,v,d,m,f,t,l}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
     notify-send  -t 60000 "$(xprop | tail -40)", \
     st -e zsh -i -c vim & notify-send 'launched vim', \
     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
     notify-send "launched PopcornTime" && popcorntime || Popcorn-Time, \
     notify-send "fetching media from reddit" && fetch_reddit_media.sh, \
-    rm -rf ~/.local/share/Trash/files/* && notify-send "cleaned trash"}
+    rm -rf ~/.local/share/Trash/files/* && notify-send "cleaned trash", \
+    lock.sh}
 
 super + e
     toggle_touchpad.sh
@@ -36,12 +36,9 @@ super + y ; super + y ; {i}
     notify-send "it works"
 
 # screenshot
-super + p
+super + {_,shift +} p
     file=$(echo ~/media/images/scrots/`date | tr " " "_"`) && \
-    scrot "$file" && echo -n "$file" | xclip -selection c && notify-send "screenshot taken"
-# delayed screenshot
-super + shift + p
-    delayed_scrot.sh
+    notif_str="screenshot taken"; {scrot, notif_str="image of selection taken"; sleep 0.2; scrot --select} "$file" && echo -n "$file" | xclip -selection c && notify-send $notif_str
 
 super + s ; {u, p, l, L}
     {fetch_lib_tracks.py, \
@@ -49,16 +46,17 @@ super + s ; {u, p, l, L}
     lyrics.sh 0, \
     lyrics.sh}
 
-super + g ; {R,r,s}
+super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
-    pkill ffmpeg && notify-send "stopped recording"}
+    pkill ffmpeg && notify-send "stopped recording", \
+    notify-send "started recording from webcam" && ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -f pulse -i default -c:v libx264 -preset ultrafast -c:a aac "$HOME/recording_$(date | tr " " "_").mkv"}
 
 super + a ; {s,w,c,n,d,o}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
     feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
     pkill compton; compton & notify-send "restarted compton", \
-    notify-send 'restarted NetworkManager'; sudo sv restart NetworkManager, \
+    notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager, \
     pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh, \
     pkill dunst && notify-send 'restarted dunst' && dunst}
 

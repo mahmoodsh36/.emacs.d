@@ -5,7 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default))))
+    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
+ '(package-selected-packages
+   (quote
+    (evil-collection avy gruvbox-theme company-lsp lsp-mode evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround ivy projectile evil-magit magit helm linum-relative evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -33,7 +36,8 @@
 
 ;; set tabs to 4 spaces, 2 for javascript
 (setq-default tab-width 4)
-(setq js-indent-level 2)
+(setq js-indent-level 4)
+(setq-default c-basic-offset 4)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
 (global-linum-mode 1)
@@ -220,7 +224,7 @@
 
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Inconsolata 11" nil t)
+(set-frame-font "Inconsolata 14" nil t)
 
 ;; start server
 (server-start)

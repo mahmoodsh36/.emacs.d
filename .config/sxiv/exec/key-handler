@@ -1,19 +1,41 @@
 #!/bin/sh
+
+file_path() {
+    case "$1" in
+        .*)
+            echo "$PWD/$(echo "$1" | cut -c2-)"
+            ;;
+        */*)
+            echo "$1"
+            ;;
+        *)
+            echo "$PWD/$1"
+            ;;
+    esac
+}
+
 while read file
 do
     case "$1" in
         "x")
-            image_index=$(expr `ls ~/media/images/toffee/ | cut -d "e" -f2 | sort -n | tail -1` + 1)
-            mv "$file" "/home/$USER/media/images/toffee/image$image_index"
+            image_index="$(expr "$(find ~/media/images/toffee/ -type f | sed 's,^.*/image,,' | cut -d '_' -f1 | sort -n | tail -1)" + 1)"
+            filepath="$(file_path "$file")"
+            parent_dir="$(echo "$filepath" | rev | cut -d '/' -f2 | rev)"
+            original_filename="$(echo "$filepath" | rev | cut -d "/" -f1 | rev)"
+            if [ -d "$HOME/media/images/toffee/$parent_dir" ]; then
+                mv "$file" "/home/$USER/media/images/toffee/$parent_dir/image${image_index}_$original_filename"
+            else
+                mv "$file" "/home/$USER/media/images/toffee/image${image_index}_$original_filename"
+            fi
             ;;
         "y")
             echo $file | tr -d "\n" | xclip -selection c
             notify-send "$file"
             ;;
         "w")
-            hsetroot -fill "$file"
+            hsetroot -full "$file"
             #wal -i "$file"
-            #cp "$file" ~/.cache/wallpaper
+            cp "$file" ~/.cache/wallpaper
             #/usr/bin/pywal_awesome_colors.sh
             #/usr/bin/dunst_pywal.sh
             #sudo oomoxify-cli -s /usr/share/spotify/spotify-client/Apps -g /home/mahmooz/.cache/wal/colors-oomox

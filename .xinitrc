@@ -8,24 +8,18 @@ dwm_statusbar.sh &
 nm-applet &
 dunst &
 pasystray &
+parcellite &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &
-# compton --config ~/.config/compton.conf &
+compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
-hsetroot -solid "#000000"
-# unclutter is fucking buggy
+hsetroot -full ~/.cache/wallpaper
+unclutter &
 # unclutter -root &
 # blueman-applet &
 syndaemon -K -i 0.5 -R -d &
 
-case $session in
-    awesome) exec awesome;;
-    bspwm)   exec bspwm;;
-    dwm|*)
-        while true; do
-            dwm 2> ~/.cache/dwm.log
-        done
-        ;;
-esac
-# exec bspwm
+while true; do
+    dwm 2> ~/.cache/dwm.log
+done
