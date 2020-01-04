@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
  '(package-selected-packages
    (quote
-    (evil-collection avy gruvbox-theme company-lsp lsp-mode evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround ivy projectile evil-magit magit helm linum-relative evil use-package))))
+    (ein evil-collection avy gruvbox-theme company-lsp lsp-mode evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround ivy projectile evil-magit magit helm linum-relative evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -206,6 +206,9 @@
   (global-set-key (kbd "C-;") 'avy-goto-char))
 
 (use-package evil-collection
+  :ensure t)
+
+(use-package ein
   :ensure t)
 
 ;; (use-package indent-guide

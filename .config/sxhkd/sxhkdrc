@@ -48,7 +48,7 @@ super + s ; {u, p, l, L}
 
 super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
-    ffmpeg -video_size 1366x768 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
+    ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     pkill ffmpeg && notify-send "stopped recording", \
     notify-send "started recording from webcam" && ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -f pulse -i default -c:v libx264 -preset ultrafast -c:a aac "$HOME/recording_$(date | tr " " "_").mkv"}
 

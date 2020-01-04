@@ -9,6 +9,7 @@ nm-applet &
 dunst &
 pasystray &
 parcellite &
+pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &

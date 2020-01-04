@@ -75,3 +75,6 @@ command! Run !./compile && ./run
 
  command! TurnOffColors call TurnOffColors()
  " TurnOffColors
+ 
+ " disable welcome message
+ set shortmess+=I

@@ -65,12 +65,17 @@ alias p="pwd"
 alias m="mpv --keep-open"
 alias vi="echo viewing images && find . -type f -exec file --mime {} \; | grep 'image/' | cut -d ':' -f1 | xargs -d '\n' sxiv -a"
 alias vv="echo viewing videos && find . -type f -exec file --mime {} \; | grep 'video/' | cut -d ':' -f1 | xargs -d'\n' -n1 mpv --keep-open"
+alias tor_new_ip="echo -e 'AUTHENTICATE ""\r\nsignal NEWNYM\r\nQUIT' | nc 127.0.0.1 9051"
 
+ffwm() {
+    mime="$1"
+    find -type f -exec file --mime {} \; | grep "$mime"
+}
 vir() {
     find -type f | grep -o 'e[0-9]\+\(_\|$\)' | tr -d 'e' | tr -d '_' | sort -nr | while read number; do echo num: $number; find . -name "image${number}_*" -exec open.sh {} \;; done
 }
 viR() {
-    find -type f | grep -o 'e[0-9]\+\(_\|$\)' | tr -d 'e' | tr -d '_' | sort -R | while read number; do echo num: $number; find . -name "image${number}_*" -exec open.sh {} \;; done
+    find -type f | shuf | while read image; do echo viewing $image; open.sh "$image"; done
 }
 oa() {
     trap "exit" 2
