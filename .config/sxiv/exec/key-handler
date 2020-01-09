@@ -22,11 +22,10 @@ do
             filepath="$(file_path "$file")"
             parent_dir="$(echo "$filepath" | rev | cut -d '/' -f2 | rev)"
             original_filename="$(echo "$filepath" | rev | cut -d "/" -f1 | rev)"
-            if [ -d "$HOME/media/images/toffee/$parent_dir" ]; then
-                mv "$file" "/home/$USER/media/images/toffee/$parent_dir/image${image_index}_$original_filename"
-            else
-                mv "$file" "/home/$USER/media/images/toffee/image${image_index}_$original_filename"
+            if [ ! -d "$HOME/media/images/toffee/$parent_dir" ]; then
+                mkdir "$HOME/media/images/toffee/$parent_dir"
             fi
+            mv "$file" "/home/$USER/media/images/toffee/$parent_dir/image${image_index}_$original_filename"
             ;;
         "y")
             echo $file | tr -d "\n" | xclip -selection c

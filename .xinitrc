@@ -15,12 +15,13 @@ pulseaudio &
 # songs_progress_monitor.py &
 compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
-hsetroot -full ~/.cache/wallpaper
+hsetroot -fill ~/.cache/wallpaper
 unclutter &
 # unclutter -root &
 # blueman-applet &
 syndaemon -K -i 0.5 -R -d &
 
-while true; do
-    dwm 2> ~/.cache/dwm.log
-done
+# while true; do
+#     dwm 2> ~/.cache/dwm.log
+# done
+exec awesome
