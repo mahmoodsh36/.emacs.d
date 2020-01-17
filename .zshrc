@@ -70,6 +70,7 @@ alias vol="pactl list sinks | awk '/^\s*Volume/{print \$5}'"
 # nanoseconds since epoch
 alias nse="date +%s.%N"
 alias dl="curl -O"
+alias pg="ping mahmoodsheikh.com"
 
 # open image by name from folder ~/media/images/toffee
 oi() {
@@ -78,11 +79,11 @@ oi() {
 # find files with a certain mimetype
 ffwm() {
     mime="$1"
-    find -type f -exec file --mime-type {} \; | grep --color=no "$mime"
+    find -type f -exec file --mime-type {} \; | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
 }
 # view images in reverse order
 vir() {
-    find -type f | grep -o 'e[0-9]\+\(_\|$\)' | tr -d 'e' | tr -d '_' | sort -nr | while read number; do echo num: $number; find . -name "image${number}_*" -exec open.sh {} \;; done
+    find -type f | grep -o 'e[0-9]\+\(_\|$\)' | tr -d 'e' | tr -d '_' | sort -nr | while read number; do echo num: $number; find . \( -name "file${number}_*" -or -name "image${number}_*" \) -exec open.sh {} \;; done
 }
 # view images in ascending order
 vio() {
