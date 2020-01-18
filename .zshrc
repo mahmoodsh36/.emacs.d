@@ -71,6 +71,8 @@ alias vol="pactl list sinks | awk '/^\s*Volume/{print \$5}'"
 alias nse="date +%s.%N"
 alias dl="curl -O"
 alias pg="ping mahmoodsheikh.com"
+alias xi="sudo xbps-install -y"
+alias xq="xbps-query -Rs"
 
 # open image by name from folder ~/media/images/toffee
 oi() {

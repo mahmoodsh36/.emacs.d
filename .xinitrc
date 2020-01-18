@@ -4,8 +4,8 @@ fi
 # xwinwrap -ni -b -fs -ov -nf -- mplayer -cache 4096 -quiet -loop 0 -wid WID ~/ORBIT\ -\ A\ Journey\ Around\ Earth\ in\ Real\ Time\ \[\ 4k\ \]-Xjs6fnpPWy4.webm -nosound &
 
 sxhkd &
-dwm_statusbar.sh &
-nm-applet &
+# dwm_statusbar.sh &
+# nm-applet &
 dunst &
 pasystray &
 parcellite &
