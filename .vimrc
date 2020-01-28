@@ -9,7 +9,7 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim' 
 Plugin 'tpope/vim-surround'
-Plugin 'AlessandroYorba/Alduin'
+"Plugin 'AlessandroYorba/Alduin'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'junegunn/fzf'
 
