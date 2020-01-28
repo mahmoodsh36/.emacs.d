@@ -9,7 +9,7 @@ super + Return
 
 super + x ; {e,w,s,j,k,r,p}
     {notify-send "launched emacs" && emacs, \
-    firefox & notify-send "launched Firefox", \
+    qutebrowser & notify-send "launched qutebrowser", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
