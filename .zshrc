@@ -31,6 +31,13 @@ zstyle ':completion::complete:*' gain-privileges 1
 # make auto completion case insensitive
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'
 
+# enable completion for aliases
+_complete_alias() {
+    [[ -n $PREFIX ]] && compadd -- ${(M)${(k)galiases}:#$PREFIX*}
+    return 1
+}
+zstyle ':completion:*' completer _complete_alias _complete _ignored
+
 # options
 setopt AUTO_CD
 setopt ALWAYS_TO_END
@@ -73,6 +80,8 @@ alias dl="curl -O"
 alias pg="ping mahmoodsheikh.com"
 alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
+alias fm="ffmpeg -i"
+alias t="mimetype"
 
 # open image by name from folder ~/media/images/toffee
 oi() {
@@ -81,7 +90,7 @@ oi() {
 # find files with a certain mimetype
 ffwm() {
     mime="$1"
-    find -type f -exec file --mime-type {} \; | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
+    find -type f -exec mimetype {} \; | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
 }
 # view images in reverse order
 vir() {
@@ -89,11 +98,11 @@ vir() {
 }
 # view images in ascending order
 vio() {
-    echo viewing images && find . -type f -exec file --mime {} \; | grep 'image/' | cut -d ':' -f1 | xargs -d '\n' sxiv -a
+    echo viewing images && find . -type f -exec mimetype {} \; | grep 'image/' | cut -d ':' -f1 | xargs -d '\n' sxiv -a
 }
 # view images randomly
 viR() {
-    find -type f -exec file --mime-type {} \; | grep 'image/' | rev | cut -d ':' -f2- | rev | shuf | while read image; do echo viewing $image; open.sh "$image"; done
+    find -type f -exec mimetype {} \; | grep 'image/' | rev | cut -d ':' -f2- | rev | shuf | while read image; do echo viewing $image; open.sh "$image"; done
 }
 # open all files in current directory using open.sh script
 oa() {
