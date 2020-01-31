@@ -173,6 +173,7 @@ command! reload :write | restart
 " Pdf
 filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 fileviewer *.pdf pdftotext -nopgbrk %c -
+fileviewer *.mp3 show_song_details.sh %c
 
 " PostScript
 filextype *.ps,*.eps,*.ps.gz
@@ -513,7 +514,7 @@ highlight Fifo		cterm=none	ctermfg=172	ctermbg=default
 highlight Socket	cterm=bold	ctermfg=223	ctermbg=default
 
 nnoremap Q  :q<CR>
-nnoremap o  :!xdg-open %c<CR>
+nnoremap o  :!open.sh %c || xdg-open %c<CR>
 nnoremap O  :!xdg-open %c >> /dev/null 2>&1 & disown<CR>
 
 mark c ~/workspace/config/
