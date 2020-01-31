@@ -45,9 +45,9 @@ setopt COMPLETE_ALIASES
 # setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt RM_STARSILENT
-setopt HIST_IGNORE_ALL_DUPS
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
+setopt HIST_FIND_NO_DUPS
 
 # prompt
 # export PS1="[%m@%1~]$ "
@@ -90,7 +90,7 @@ oi() {
 # find files with a certain mimetype
 ffwm() {
     mime="$1"
-    find -type f -exec mimetype {} \; | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
+    find -type f | parallel -j+1 mimetype | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
 }
 # view images in reverse order
 vir() {
@@ -127,7 +127,7 @@ math() { awk "BEGIN {print ${@:1}}"; }
 # command history
 HISTSIZE=1000000
 SAVEHIST=1000000
-HISTFILE=~/.history
+HISTFILE=~/media/zsh_history
 
 IFS='
 '
