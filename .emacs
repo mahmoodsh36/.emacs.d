@@ -71,6 +71,9 @@
 (defun try-awesome-config ()
   (interactive)
   (shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
+(defun try-qtile-config ()
+  (interactive)
+  (shell-command "/home/mahmooz/workspace/dotfiles/.config/qtile/xephyr.sh 2>&1 > /dev/null"))
 ;; shortcut to open new eshell buffer
 (global-set-key (kbd "C-c s") 'eshell)
 ;; zap-up-to-char not zap-to-char
