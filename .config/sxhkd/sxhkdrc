@@ -7,22 +7,21 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
 super + Return
     st -e tmux
 
-super + x ; {e,w,s,j,k,r,p}
+super + x ; {e,w,s,j,k,f,p}
     {notify-send "launched emacs" && emacs, \
-    qutebrowser & notify-send "launched qutebrowser", \
+    brave & notify-send "launched brave", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
-    st -e zsh -i -c ranger & notify-send 'launched ranger', \
+    st -e zsh -i -c vifm & notify-send 'launched vifm', \
     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
 
-super + x ; {n,I,v,d,m,f,t,l}
+super + x ; {n,I,v,d,m,t,l}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
     notify-send  -t 60000 "$(xprop | tail -40)", \
     st -e zsh -i -c vim & notify-send 'launched vim', \
     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
     notify-send "launched PopcornTime" && popcorntime || Popcorn-Time, \
-    notify-send "fetching media from reddit" && fetch_reddit_media.sh, \
     rm -rf ~/.local/share/Trash/files/* && notify-send "cleaned trash", \
     lock.sh}
 
