@@ -1,6 +1,8 @@
 XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
+st -e tmux new-session \; send-keys 'ranger; exit' C-m \;
+
 XF86Audio{RaiseVolume,LowerVolume,Mute}
     pactl set-sink-volume @DEFAULT_SINK@ {+3%, -3%, 0}
 
@@ -13,7 +15,7 @@ super + x ; {e,w,s,j,k,f,p}
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
-    st -e zsh -i -c ranger & notify-send 'launched ranger', \
+    st -e tmux new-session \; send-keys 'ranger; exit' C-m \;, \
     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
 
 super + x ; {n,I,v,d,m,t,l}
