@@ -82,6 +82,8 @@ alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
 alias fm="ffmpeg -i"
 alias t="mimetype"
+alias vj="vim -c 'set syntax=json' -"
+alias aas="add_album_song.sh"
 
 # open image by name from folder ~/media/images/toffee
 oi() {
