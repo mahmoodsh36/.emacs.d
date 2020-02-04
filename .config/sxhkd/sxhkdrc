@@ -5,7 +5,7 @@ XF86Audio{RaiseVolume,LowerVolume,Mute}
     pactl set-sink-volume @DEFAULT_SINK@ {+3%, -3%, 0}
 
 super + Return
-    st -e tmux
+    st -g 120x30 -e tmux
 
 super + x ; {e,w,s,j,k,f,p}
     {notify-send "launched emacs" && emacs, \
@@ -13,7 +13,7 @@ super + x ; {e,w,s,j,k,f,p}
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
-    st -e zsh -i -c vifm & notify-send 'launched vifm', \
+    st -e zsh -i -c ranger & notify-send 'launched ranger', \
     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
 
 super + x ; {n,I,v,d,m,t,l}
