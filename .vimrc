@@ -65,16 +65,16 @@ let &t_EI = "\<esc>[2 q"
 command! Compile !./compile
 command! Run !./compile && ./run
 
- function! TurnOffColors()
-   :set t_Co=0
-   syntax off
-   :highlight LineNr NONE
-   :highlight CursorLine NONE
-   " Add any other necessary highlight lines here
- endfunction
+function! TurnOffColors()
+    :set t_Co=0
+    syntax off
+    :highlight LineNr NONE
+    :highlight CursorLine NONE
+    " Add any other necessary highlight lines here
+endfunction
 
- command! TurnOffColors call TurnOffColors()
- " TurnOffColors
- 
- " disable welcome message
- set shortmess+=I
+command! TurnOffColors call TurnOffColors()
+" TurnOffColors
+
+" disable welcome message
+set shortmess+=I
