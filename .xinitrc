@@ -4,8 +4,8 @@ fi
 # xwinwrap -ni -b -fs -ov -nf -- mplayer -cache 4096 -quiet -loop 0 -wid WID ~/ORBIT\ -\ A\ Journey\ Around\ Earth\ in\ Real\ Time\ \[\ 4k\ \]-Xjs6fnpPWy4.webm -nosound &
 
 sxhkd &
-# dwm_statusbar.sh &
-# nm-applet &
+dwm_statusbar.sh &
+nm-applet &
 dunst &
 pasystray &
 parcellite &
@@ -16,15 +16,14 @@ pulseaudio &
 compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 hsetroot -fill ~/.cache/wallpaper
-unclutter &
-# unclutter -root &
+unclutter -root &
 # blueman-applet &
 syndaemon -K -i 0.5 -R -d &
 
 expressvpn connect &
 
-# while true; do
-#     dwm 2> ~/.cache/dwm.log
-# done
+#while true; do
+#    dwm 2> ~/.cache/dwm.log
+#done
 
 exec awesome
