@@ -138,7 +138,7 @@ command! diff vim -d %f %F
 command! zip zip -r %f.zip %f
 command! run !! ./%f
 command! make !!make %a
-command! mkcd :mkdir %a | cd %a
+command! mkcd :mkdir "%a" | cd %a
 command! vgrep vim "+grep %a"
 command! reload :write | restart
 
@@ -174,6 +174,7 @@ command! reload :write | restart
 filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 fileviewer *.pdf pdftotext -nopgbrk %c -
 fileviewer *.mp3 show_song_details.sh %c
+fileviewer *.flac show_song_details.sh %c
 
 " PostScript
 filextype *.ps,*.eps,*.ps.gz
@@ -525,18 +526,20 @@ mark v ~/videos
 mark w ~/workspace
 mark C ~/.config/
 mark a /usr/share/applications
-mark p ~/pictures
 mark D ~/Dropbox
 mark s ~/workspace/scripts
 mark t ~/.local/share/Trash/files
+mark p ~/part
 
 " Yank current directory path into the clipboard
-nnoremap yd :!printf %d | pbcopy<cr>
+nnoremap yd :!printf %d | xclip -selection clipboard<cr>
 " Yank current file path into the clipboard
 nnoremap yf :!printf %c:p | pbcopy<cr>
 " quicker switching between the 2 windows
 nnoremap H <C-w>k<C-w>h
 nnoremap L <C-w>j<C-w>l
+nnoremap cd :mkdir<space>
+nnoremap cf :touch<space>
 
 set number
 set relativenumber
