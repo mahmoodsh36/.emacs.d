@@ -1,30 +1,28 @@
 XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}
 
-st -e tmux new-session \; send-keys 'ranger; exit' C-m \;
-
 XF86Audio{RaiseVolume,LowerVolume,Mute}
     pactl set-sink-volume @DEFAULT_SINK@ {+3%, -3%, 0}
 
 super + Return
-    st -g 120x30 -e tmux
+    st -e tmux
 
-super + x ; {e,w,s,j,k,f,p}
+super + x ; {e,w,s,j,k,f,p,m}
     {notify-send "launched emacs" && emacs, \
     brave & notify-send "launched brave", \
     notify-send "launched Spotify 🎶🎵" && spotify, \
     dmenu_select_emoji.sh, \
     dmenu_kill_process.sh, \
-    st -e tmux new-session \; send-keys 'ranger; exit' C-m \;, \
-    st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
+    notify-send 'launched ranger' && st -e tmux new-session \; send-keys 'reset; ranger; exit' C-m  \;, \
+    st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer', \
+    dir=$(ls ~/music | dmenu -l 15 -i) && st -e tmux new-session \; send-keys 'reset; ranger $dir; exit' C-m \;}
 
-super + x ; {n,I,v,d,m,t,l}
+super + x ; {n,I,v,d,t,l}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
     notify-send  -t 60000 "$(xprop | tail -40)", \
     st -e zsh -i -c vim & notify-send 'launched vim', \
     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
-    notify-send "launched PopcornTime" && popcorntime || Popcorn-Time, \
-    rm -rf ~/.local/share/Trash/files/* && notify-send "cleaned trash", \
+    notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
     lock.sh}
 
 super + e
