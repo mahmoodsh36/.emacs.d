@@ -77,13 +77,24 @@ alias vol="pactl list sinks | awk '/^\s*Volume/{print \$5}'"
 # nanoseconds since epoch
 alias nse="date +%s.%N"
 alias dl="curl -O"
-alias pg="ping mahmoodsheikh.com"
+alias pg="ping google.com"
 alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
 alias fm="ffmpeg -i"
 alias t="mimetype"
 alias vj="vim -c 'set syntax=json' -"
+alias md="curl 10.0.0.55/music/metadata | jq | less"
 alias aas="add_album_song.sh"
+alias aal="add_album.sh"
+alias ass="add_single_song.sh"
+alias aar="add_artist.sh"
+
+# display spectrum of an audio file
+spc() {
+    random_str=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
+    sox "$1" -n spectrogram -o /tmp/$random_str.png && sxiv /tmp/$random_str.png
+    rm /tmp/$random_str.png
+}
 
 # open image by name from folder ~/media/images/toffee
 oi() {
