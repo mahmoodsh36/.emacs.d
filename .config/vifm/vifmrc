@@ -173,8 +173,8 @@ command! reload :write | restart
 " Pdf
 filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 fileviewer *.pdf pdftotext -nopgbrk %c -
-fileviewer *.mp3 show_song_details.sh %c
-fileviewer *.flac show_song_details.sh %c
+fileviewer *.mp3 soxi %c
+fileviewer *.flac soxi %c
 
 " PostScript
 filextype *.ps,*.eps,*.ps.gz
@@ -191,13 +191,9 @@ filextype *.djvu
         \ apvlv %f,
 
 " Audio
-filetype *.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus
-       \ {Play using ffplay}
-       \ ffplay -nodisp -autoexit %c,
-       \ {Play using MPlayer}
-       \ mplayer %f,
 fileviewer *.mp3 mp3info
 fileviewer *.flac soxi
+filetype *.flac mpv
 
 " Video
 filextype *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
@@ -208,21 +204,11 @@ filextype *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
         \ {View using Dragon}
         \ dragon %f:p,
         \ {View using mplayer}
-        \ mplayer %f,
+        \ mpv %f,
 fileviewer *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
           \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
           \*.as[fx]
          \ ffprobe -pretty %c 2>&1
-
-" Web
-filextype *.html,*.htm
-        \ {Open with dwb}
-        \ dwb %f %i &,
-        \ {Open with firefox}
-        \ firefox %f &,
-        \ {Open with uzbl}
-        \ uzbl-browser %f %i &,
-filetype *.html,*.htm links, lynx
 
 " Object
 filetype *.o nm %f | less
@@ -528,18 +514,19 @@ mark C ~/.config/
 mark a /usr/share/applications
 mark D ~/Dropbox
 mark s ~/workspace/scripts
-mark t ~/.local/share/Trash/files
+mark t ~/.trash
 mark p ~/part
 
 " Yank current directory path into the clipboard
 nnoremap yd :!printf %d | xclip -selection clipboard<cr>
 " Yank current file path into the clipboard
-nnoremap yf :!printf %c:p | pbcopy<cr>
+nnoremap yp :!printf %c:p | xclip -selection clipboard<cr>
 " quicker switching between the 2 windows
 nnoremap H <C-w>k<C-w>h
 nnoremap L <C-w>j<C-w>l
 nnoremap cd :mkdir<space>
 nnoremap cf :touch<space>
+nnoremap gs :!view_audio_spectrum.sh %c<cr>
 
 set number
 set relativenumber
@@ -547,16 +534,14 @@ set fastrun
 
 set statusline+="%E"
 set confirm-=delete
-set trashdir=~/.local/share/Trash/files
+set trashdir=$HOME/.trash
 
 " one window on startup
 " only
-
-" preview on seconds window
-" w
 
 " commands
 command! unzip  unzip %f -d "`echo %f | rev | cut -d "." -f2- | rev`"
 
 " syntax highlighting
 fileviewer *.* highlight -O xterm256 -s base16/gruvbox-dark-pale --force %c
+filetype *.flac xdg-open
