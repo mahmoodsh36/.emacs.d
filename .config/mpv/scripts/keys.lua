@@ -19,16 +19,7 @@ function yank_path_to_clipboard()
     os.execute('echo "' .. vid_path:gsub('"', '\\"') .. '" | xclip -selection clipboard')
     os.execute('notify-send "' .. vid_path:gsub('"', '\\"') .. '"')
 end
-function just_loop()
-    i = 1
-    while (true)
-    do
-        print('loop ' .. tostring(i))
-        i = i + 1
-    end
-end
 mp.add_key_binding("d", "download_video", video_downloader)
 mp.add_key_binding("s", "save_local_video", save_local_video)
 mp.add_key_binding("x", "remove_video", remove_video)
 mp.add_key_binding("y", "yank_path", yank_path_to_clipboard)
--- mp.add_key_binding("y", "loop", just_loop)
