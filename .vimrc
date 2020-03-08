@@ -12,6 +12,7 @@ Plugin 'tpope/vim-surround'
 "Plugin 'AlessandroYorba/Alduin'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'junegunn/fzf'
+Plugin 'morhetz/gruvbox'
 
 call vundle#end()
 filetype plugin indent on
@@ -78,3 +79,6 @@ command! TurnOffColors call TurnOffColors()
 
 " disable welcome message
 set shortmess+=I
+
+color gruvbox
+set bg=dark
