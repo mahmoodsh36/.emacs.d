@@ -173,8 +173,10 @@ command! reload :write | restart
 " Pdf
 filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 fileviewer *.pdf pdftotext -nopgbrk %c -
-fileviewer *.mp3 soxi %c
-fileviewer *.flac soxi %c
+fileviewer *.mp3 mediainfo %c
+fileviewer *.flac mediainfo %c
+filetype *.mp3 mpv %c
+filetype *.avi mpv %c
 
 " PostScript
 filextype *.ps,*.eps,*.ps.gz
@@ -193,22 +195,9 @@ filextype *.djvu
 " Audio
 fileviewer *.mp3 mp3info
 fileviewer *.flac soxi
+fileviewer *.m4a mediainfo
 filetype *.flac mpv
-
-" Video
-filextype *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
-         \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
-         \*.as[fx]
-        \ {View using ffplay}
-        \ ffplay -fs -autoexit %f,
-        \ {View using Dragon}
-        \ dragon %f:p,
-        \ {View using mplayer}
-        \ mpv %f,
-fileviewer *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
-          \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
-          \*.as[fx]
-         \ ffprobe -pretty %c 2>&1
+filetype *.mp4 mpv
 
 " Object
 filetype *.o nm %f | less
@@ -516,6 +505,7 @@ mark D ~/Dropbox
 mark s ~/workspace/scripts
 mark t ~/.trash
 mark p ~/part
+mark m ~/music
 
 " Yank current directory path into the clipboard
 nnoremap yd :!printf %d | xclip -selection clipboard<cr>
