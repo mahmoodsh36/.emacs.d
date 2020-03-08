@@ -89,6 +89,7 @@ alias aal="add_album.sh"
 alias ass="add_single_song.sh"
 alias aar="add_artist.sh"
 alias ti='date +%s%3N'
+alias locate='locate -i'
 
 flac_to_mp3() {
     mkdir 320k; find -name '*.flac' -type f -exec ffmpeg -i {} -ab 320k 320k/{}.mp3 \;
