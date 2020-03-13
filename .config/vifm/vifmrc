@@ -173,10 +173,8 @@ command! reload :write | restart
 " Pdf
 filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 fileviewer *.pdf pdftotext -nopgbrk %c -
-fileviewer *.mp3 mediainfo %c
-fileviewer *.flac mediainfo %c
-filetype *.mp3 mpv %c
-filetype *.avi mpv %c
+fileviewer *.flac,*.wav,*.mp3 mediainfo %c
+filetype *.mp3,*.avi,*.wav mpv %c
 
 " PostScript
 filextype *.ps,*.eps,*.ps.gz
