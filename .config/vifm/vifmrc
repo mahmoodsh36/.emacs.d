@@ -491,7 +491,7 @@ nnoremap Q  :q<CR>
 nnoremap o  :!open.sh %c || xdg-open %c<CR>
 nnoremap O  :!xdg-open %c >> /dev/null 2>&1 & disown<CR>
 
-mark c ~/workspace/config/
+mark c ~/workspace/website
 mark d ~/downloads/
 mark h ~/
 mark r /
@@ -499,11 +499,11 @@ mark v ~/videos
 mark w ~/workspace
 mark C ~/.config/
 mark a /usr/share/applications
-mark D ~/Dropbox
 mark s ~/workspace/scripts
 mark t ~/.trash
 mark p ~/part
 mark m ~/music
+mark D ~/mnt
 
 " Yank current directory path into the clipboard
 nnoremap yd :!printf %d | xclip -selection clipboard<cr>
@@ -522,7 +522,8 @@ set fastrun
 
 set statusline+="%E"
 set confirm-=delete
-set trashdir=$HOME/.trash
+"set trashdir=$HOME/.trash
+set trashdir=$HOME/mnt/trash
 
 " one window on startup
 " only
