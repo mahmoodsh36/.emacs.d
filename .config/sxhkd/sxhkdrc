@@ -9,22 +9,26 @@ super + Return
 
 super + x ; {e,w,s,j,k,f,p,m}
     {notify-send "launched emacs" && emacs, \
-    firefox & notify-send "launched firefox", \
-    notify-send "launched Spotify 🎶🎵" && spotify, \
-    dmenu_select_emoji.sh, \
-    dmenu_kill_process.sh, \
-    notify-send 'launched vifm' && st -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
-    st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer', \
-    dir=$(ls ~/music | dmenu -l 15 -i) && st -e tmux new-session \; send-keys 'reset; ranger $dir; exit' C-m \;}
+     firefox & notify-send "launched firefox", \
+     notify-send "launched Spotify 🎶🎵" && spotify, \
+     dmenu_select_emoji.sh, \
+     dmenu_kill_process.sh, \
+     notify-send 'launched vifm' && st -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
+     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer', \
+     dir=$(ls ~/music | dmenu -l 15 -i) && st -e tmux new-session \; send-keys 'reset; ranger $dir; exit' C-m \;}
 
 super + x ; {n,I,v,d,t,l,u}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
-    notify-send  -t 60000 "$(xprop | tail -40)", \
-    st -e zsh -i -c vim & notify-send 'launched vim', \
-    notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
-    notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
-    lock.sh, \
-    notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh}
+     notify-send  -t 60000 "$(xprop | tail -40)", \
+     st -e zsh -i -c vim & notify-send 'launched vim', \
+     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
+     notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
+     lock.sh, \
+     notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh}
+
+super + shift + w ; {t,d}
+    {notify-send 'opening piratebay on Tor' && tor-browser http://piratebayztemzmv.onion,\
+     notify-send 'opening duckduckgo on Tor' && tor-browser https://3g2upl4pq6kufc4m.onion}
 
 super + e
     toggle_touchpad.sh
