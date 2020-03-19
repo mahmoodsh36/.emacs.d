@@ -6,7 +6,6 @@ fi
 sxhkd &
 while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 dwm_statusbar.sh &
-nm-applet &
 dunst &
 pasystray &
 parcellite &
