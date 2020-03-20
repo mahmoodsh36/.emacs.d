@@ -26,9 +26,10 @@ super + x ; {n,I,v,d,t,l,u}
      lock.sh, \
      notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh}
 
-super + shift + w ; {t,d}
+super + shift + w ; {t,d,2}
     {notify-send 'opening piratebay on Tor' && tor-browser http://piratebayztemzmv.onion,\
-     notify-send 'opening duckduckgo on Tor' && tor-browser https://3g2upl4pq6kufc4m.onion}
+     notify-send 'opening duckduckgo on Tor' && tor-browser https://3g2upl4pq6kufc4m.onion,\
+     notify-send 'opening torrentz2 on Tor' && tor-browser http://torrentzwealmisr.onion}
 
 super + e
     toggle_touchpad.sh
