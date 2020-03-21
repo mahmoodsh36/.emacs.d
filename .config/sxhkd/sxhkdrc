@@ -2,7 +2,7 @@ XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}; dwm_statusbar_update.sh
 
 XF86Audio{RaiseVolume,LowerVolume,Mute}
-    pactl set-sink-volume @DEFAULT_SINK@ {+3%, -3%, 0}; dwm_statusbar_update.sh
+    amixer set Master {3%+, 3%-, 0}; dwm_statusbar_update.sh
 
 super + Return
     st -e tmux
@@ -45,12 +45,6 @@ super + {_,shift +} p
     file=$(echo ~/media/images/scrots/`date | tr " " "_"`) && \
     notif_str="screenshot taken"; {scrot, notif_str="image of selection taken"; sleep 0.2; scrot --select} "$file" && echo -n "$file" | xclip -selection c && notify-send $notif_str
 
-super + s ; {u, p, l, L}
-    {fetch_lib_tracks.py, \
-    dmenu_play_track.py, \
-    lyrics.sh 0, \
-    lyrics.sh}
-
 super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
@@ -67,3 +61,14 @@ super + a ; {s,w,c,n,d,o}
 
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"
+
+super + s ; {r,p,s,a,u,n,b,l,P}
+    {notify-send 'restarted music daemon'; pkill daemon.py; ~/workspace/music_daemon/daemon.py > ~/.cache/music_daemon/log.txt 2>&1,\
+    ~/workspace/music_daemon/scripts/play.sh song play,\
+    music_daemon_cmd.sh pause,\
+    music_daemon_cmd.sh resume,\
+    ~/workspace/music_daemon/scripts/play.sh album play,\
+    music_daemon_cmd.sh next,\
+    music_daemon_cmd.sh prev,\
+    ~/workspace/music_daemon/scripts/like_current_song.sh,\
+    ~/workspace/music_daemon/scripts/play.sh song add}
