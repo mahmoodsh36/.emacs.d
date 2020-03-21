@@ -1,9 +1,9 @@
 configuration {
 /*	modi: "window,run,ssh";*/
     case-sensitive: false;
-    width: 50;
-    lines: 15;
-/*	columns: 1;*/
+    width: 80;
+    lines: 35;
+	columns: 2;
     font: "inconsolata 16";
 /*	bw: 1;*/
 /*	location: 0;*/
@@ -103,7 +103,7 @@ configuration {
 /*	kb-row-select: "Control+space";*/
 /*	kb-screenshot: "Alt+S";*/
 /*	kb-ellipsize: "Alt+period";*/
-/*	kb-toggle-case-sensitivity: "grave,dead_grave";*/
+    kb-toggle-case-sensitivity: "Alt+i";
 /*	kb-toggle-sort: "Alt+grave";*/
 /*	kb-cancel: "Escape,Control+g,Control+bracketleft";*/
 /*	kb-custom-1: "Alt+1";*/
