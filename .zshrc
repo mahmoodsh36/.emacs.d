@@ -92,6 +92,7 @@ alias adas="add_directory_as_album.sh"
 alias ti='date +%s%3N'
 alias locate='locate -i'
 alias of='o $(fzf)'
+alias mdc="music_daemon_cmd.sh"
 
 flac_to_mp3() {
     mkdir 320k; find -name '*.flac' -type f -exec ffmpeg -i {} -ab 320k 320k/{}.mp3 \;
