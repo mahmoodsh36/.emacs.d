@@ -43,7 +43,7 @@ configuration {
 /*	filter: ;*/
 /*	separator-style: "dash";*/
 /*	hide-scrollbar: false;*/
-/*	fullscreen: false;*/
+    fullscreen: true;
 /*	fake-transparency: false;*/
 /*	dpi: -1;*/
 /*	threads: 0;*/
@@ -143,3 +143,4 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 }
+@import "/usr/share/rofi/themes/Arc-Dark.rasi"
