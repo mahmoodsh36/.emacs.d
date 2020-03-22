@@ -1,6 +1,5 @@
 XF86Audio{Prev,Next,Play}
     playerctl {previous,next,play-pause}; dwm_statusbar_update.sh
-
 XF86Audio{RaiseVolume,LowerVolume,Mute}
     amixer set Master {3%+, 3%-, 0}; dwm_statusbar_update.sh
 
@@ -62,7 +61,7 @@ super + a ; {s,w,c,n,d,o}
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"
 
-super + s ; {r,p,s,a,u,n,b,l,P}
+super + s ; {r,p,s,a,u,n,b,l,i,g,U}
     {notify-send 'restarted music daemon'; pkill daemon.py; ~/workspace/music_daemon/daemon.py > ~/.cache/music_daemon/log.txt 2>&1,\
     ~/workspace/music_daemon/scripts/play.sh song play,\
     music_daemon_cmd.sh pause,\
@@ -71,4 +70,8 @@ super + s ; {r,p,s,a,u,n,b,l,P}
     music_daemon_cmd.sh next,\
     music_daemon_cmd.sh prev,\
     ~/workspace/music_daemon/scripts/like_current_song.sh,\
-    ~/workspace/music_daemon/scripts/play.sh song add}
+    ~/workspace/music_daemon/scripts/play.sh song add,\
+    ~/workspace/music_daemon/scripts/play.sh liked play}
+
+super + s ; {U}
+    {~/workspace/music_daemon/scripts/play.sh album add}
