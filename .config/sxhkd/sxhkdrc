@@ -52,26 +52,27 @@ super + g ; {R,r,s,w}
 
 super + a ; {s,w,c,n,d,o}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
-    feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
-    pkill compton; compton & notify-send "restarted compton", \
-    notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager, \
-    pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh, \
-    pkill dunst && notify-send 'restarted dunst' && dunst}
+     feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
+     pkill compton; compton & notify-send "restarted compton", \
+     notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager, \
+     pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh, \
+     pkill dunst && notify-send 'restarted dunst' && dunst}
 
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"
 
 super + s ; {r,p,s,a,u,n,b,l,i,g,U}
-    {notify-send 'restarted music daemon'; pkill daemon.py; ~/workspace/music_daemon/daemon.py > ~/.cache/music_daemon/log.txt 2>&1,\
-    ~/workspace/music_daemon/scripts/play.sh song play,\
-    music_daemon_cmd.sh pause,\
-    music_daemon_cmd.sh resume,\
-    ~/workspace/music_daemon/scripts/play.sh album play,\
-    music_daemon_cmd.sh next,\
-    music_daemon_cmd.sh prev,\
-    ~/workspace/music_daemon/scripts/like_current_song.sh,\
-    ~/workspace/music_daemon/scripts/play.sh song add,\
-    ~/workspace/music_daemon/scripts/play.sh liked play}
+    {notify-send 'restarted music daemon'; pkill daemon.py; stdbuf -oL ~/workspace/music_daemon/daemon.py > ~/.cache/music_daemon/log.txt 2>&1,\
+     ~/workspace/music_daemon/scripts/play.sh song play,\
+     music_daemon_cmd.sh pause,\
+     music_daemon_cmd.sh resume,\
+     ~/workspace/music_daemon/scripts/play.sh album play,\
+     music_daemon_cmd.sh next,\
+     music_daemon_cmd.sh prev,\
+     ~/workspace/music_daemon/scripts/like_current_song.sh,\
+     ~/workspace/music_daemon/scripts/play.sh song add,\
+     ~/workspace/music_daemon/scripts/play.sh liked play}
 
-super + s ; {U}
-    {~/workspace/music_daemon/scripts/play.sh album add}
+super + s ; {U,G}
+    {~/workspace/music_daemon/scripts/play.sh album add,\
+     ~/workspace/music_daemon/scripts/play.sh liked add}
