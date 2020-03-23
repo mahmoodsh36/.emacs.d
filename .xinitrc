@@ -9,7 +9,7 @@ dwm_statusbar.sh &
 dunst &
 pasystray &
 parcellite &
-pulseaudio &
+#pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &
