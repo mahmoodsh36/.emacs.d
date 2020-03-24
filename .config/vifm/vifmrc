@@ -110,7 +110,7 @@ endif
 
 " Set custom status line look
 
-set statusline="  Hint: %z%= %A %10u:%-7g %15s %20d  "
+set statusline="  Hint: %z%= %A %10u:%-7g"
 
 " ------------------------------------------------------------------------------
 
@@ -173,8 +173,8 @@ command! reload :write | restart
 " Pdf
 filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 fileviewer *.pdf pdftotext -nopgbrk %c -
-fileviewer *.flac,*.wav,*.mp3 mediainfo %c
-filetype *.mp3,*.avi,*.wav mpv %c
+fileviewer *.flac,*.wav,*.mp3,*.opus ffprobe -loglevel panic -show_format %c
+filetype *.mp3,*.avi,*.wav,*.opus mpv %c
 
 " PostScript
 filextype *.ps,*.eps,*.ps.gz
@@ -520,7 +520,8 @@ set number
 set relativenumber
 set fastrun
 
-set statusline+="%E"
+set timefmt="%d/%m/%y"
+set statusline+="%d %E"
 set confirm-=delete
 "set trashdir=$HOME/.trash
 set trashdir=$HOME/mnt/trash
