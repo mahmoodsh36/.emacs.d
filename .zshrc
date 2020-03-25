@@ -93,39 +93,17 @@ alias ti='date +%s%3N'
 alias locate='locate -i'
 alias of='o $(fzf)'
 alias mdc="music_daemon_cmd.sh"
+alias spc="view_audio_spectrum.sh"
+alias ltb="list_tags.py . album"
+alias lta="list_tags.py . artist"
+alias ltt="list_tags.py . title"
 
-flac_to_mp3() {
-    mkdir 320k; find -name '*.flac' -type f -exec ffmpeg -i {} -ab 320k 320k/{}.mp3 \;
-}
-
-# display spectrum of an audio file
-spc() {
-    random_str=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
-    sox "$1" -n spectrogram -o /tmp/$random_str.png && sxiv /tmp/$random_str.png
-    rm /tmp/$random_str.png
-}
-
-# open image by name from folder ~/media/images/toffee
-oi() {
-    find ~/media/images/toffee -name "$1" -exec open.sh {} \;
-}
 # find files with a certain mimetype
 ffwm() {
     mime="$1"
     find -type f | parallel -j+1 mimetype | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
 }
-# view images in reverse order
-vir() {
-    find -type f | grep -o 'e[0-9]\+\(_\|$\)' | tr -d 'e' | tr -d '_' | sort -nr | while read number; do echo num: $number; find . \( -name "file${number}_*" -or -name "image${number}_*" \) -exec open.sh {} \;; done
-}
-# view images in ascending order
-vio() {
-    echo viewing images && find . -type f -exec mimetype {} \; | grep 'image/' | cut -d ':' -f1 | xargs -d '\n' sxiv -a
-}
-# view images randomly
-viR() {
-    find -type f -exec mimetype {} \; | grep 'image/' | rev | cut -d ':' -f2- | rev | shuf | while read image; do echo viewing $image; open.sh "$image"; done
-}
+
 # open all files in current directory using open.sh script
 oa() {
     trap "exit" 2
@@ -134,15 +112,18 @@ oa() {
         open.sh $file || return;
     done
 }
+
 # get the difference in percentage between 2 images
 cmp_image() {
     convert "$1" "$2" -compose Difference -composite \
         -colorspace gray -format '%[fx:mean*100]' info:
 }
+
 # cd and ls into directory
 c() {
     cd $@; ls
 }
+
 # do some math
 math() { awk "BEGIN {print ${@:1}}"; }
 
