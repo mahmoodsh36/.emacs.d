@@ -4,7 +4,7 @@ configuration {
     width: 80;
     lines: 35;
 	columns: 2;
-    font: "inconsolata 16";
+    font: "source code pro 14";
 /*	bw: 1;*/
 /*	location: 0;*/
 /*	padding: 5;*/
