@@ -34,7 +34,7 @@ super + e
     toggle_touchpad.sh
 
 super + r
-    dmenu_run.sh
+    sh -c "$(ls /usr/bin | rofi -dmenu)"
 
 super + y ; super + y ; {i}
     notify-send "it works"
@@ -73,6 +73,7 @@ super + s ; {r,p,s,a,u,n,b,l,i,g,U}
      ~/workspace/music_daemon/scripts/play.sh song add,\
      ~/workspace/music_daemon/scripts/play.sh liked play}
 
-super + s ; {U,G}
+super + s ; {U,G,K}
     {~/workspace/music_daemon/scripts/play.sh album add,\
-     ~/workspace/music_daemon/scripts/play.sh liked add}
+     ~/workspace/music_daemon/scripts/play.sh liked add,\
+     pkill daemon.py}
