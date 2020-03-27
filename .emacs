@@ -234,7 +234,7 @@
 
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Inconsolata 14" nil t)
+(set-frame-font "Source Code Pro 14" nil t)
 
 ;; start server
 (server-start)
