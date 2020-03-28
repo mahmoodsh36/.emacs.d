@@ -11,7 +11,7 @@ super + x ; {e,w,s,j,k,f,p,m}
      firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
      dmenu_select_emoji.sh, \
-     dmenu_kill_process.sh, \
+     rofi_kill_process.sh, \
      notify-send 'launched vifm' && st -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
      st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer', \
      dir=$(ls ~/music | dmenu -l 15 -i) && st -e tmux new-session \; send-keys 'reset; ranger $dir; exit' C-m \;}
