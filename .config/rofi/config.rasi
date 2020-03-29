@@ -4,7 +4,7 @@ configuration {
     width: 80;
     lines: 35;
 	columns: 2;
-    font: "source code pro 14";
+    font: "source code pro 13";
 /*	bw: 1;*/
 /*	location: 0;*/
 /*	padding: 5;*/
@@ -143,4 +143,4 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 }
-@import "/usr/share/rofi/themes/Arc-Dark.rasi"
+@import "/usr/share/rofi/themes/Monokai.rasi"
