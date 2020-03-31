@@ -10,7 +10,7 @@ super + x ; {e,w,s,j,k,f,p,m}
     {notify-send "launched emacs" && emacs, \
      firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
-     dmenu_select_emoji.sh, \
+     rofi_select_emoji.sh, \
      rofi_kill_process.sh, \
      notify-send 'launched vifm' && st -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
      st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer', \
@@ -73,7 +73,9 @@ super + s ; {r,p,s,a,u,n,b,l,i,g,U}
      ~/workspace/music_daemon/scripts/play.sh song add,\
      ~/workspace/music_daemon/scripts/play.sh liked play}
 
-super + s ; {U,G,K}
+super + s ; {U,G,K,R,q}
     {~/workspace/music_daemon/scripts/play.sh album add,\
      ~/workspace/music_daemon/scripts/play.sh liked add,\
-     pkill daemon.py}
+     pkill daemon.py,\
+     music_daemon_cmd.sh loop_song,\
+     music_daemon_cmd.sh loop_queue}
