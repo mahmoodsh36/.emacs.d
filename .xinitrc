@@ -5,7 +5,6 @@ fi
 
 sxhkd &
 while true; do dwm_statusbar_update.sh; sleep 0.9; done &
-dwm_statusbar.sh &
 dunst &
 pasystray &
 parcellite &
@@ -23,9 +22,7 @@ syndaemon -K -i 0.5 -R -d &
 expressvpn connect &
 
 [[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
-#
-#while true; do
-#    dwm 2> ~/.cache/dwm.log
-#done
 
-exec awesome
+while true; do
+    dwm 2> ~/.cache/dwm.log
+done
