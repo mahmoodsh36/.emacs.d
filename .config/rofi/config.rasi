@@ -143,4 +143,4 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 }
-@import "/usr/share/rofi/themes/Monokai.rasi"
+@import "/usr/share/rofi/themes/gruvbox-dark-hard.rasi"
