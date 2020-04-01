@@ -23,12 +23,13 @@ config.bind('<Ctrl-Shift-v>', 'hint links spawn --detach mpv --keep-open --force
 config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach sh -c \'url={hint-url}; notify-send "$url"; echo "$url" | xclip -selection clipboard\'')
 
 c.content.user_stylesheets = [
-        #"style.css"
+        # the stylesheet was taken from 'https://github.com/alphapapa/solarized-everything-css'
+        'gruvbox.css',
 ]
 
 c.colors.webpage.bg = 'black'
 
-c.content.cookies.accept = 'never'
+#c.content.cookies.accept = 'never'
 c.content.cookies.store = False
 
 c.auto_save.session = True
