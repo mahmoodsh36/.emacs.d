@@ -73,9 +73,10 @@ super + s ; {r,p,s,a,u,n,b,l,i,g,U}
      ~/workspace/music_daemon/scripts/play.sh song add,\
      ~/workspace/music_daemon/scripts/play.sh liked play}
 
-super + s ; {U,G,K,R,q}
+super + s ; {U,G,K,R,q,e}
     {~/workspace/music_daemon/scripts/play.sh album add,\
      ~/workspace/music_daemon/scripts/play.sh liked add,\
      pkill daemon.py,\
      music_daemon_cmd.sh loop_song,\
-     music_daemon_cmd.sh loop_queue}
+     music_daemon_cmd.sh loop_queue,\
+     notify-send "$(music_daemon_cmd.sh queue)"}
