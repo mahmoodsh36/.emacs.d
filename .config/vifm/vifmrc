@@ -195,7 +195,7 @@ fileviewer *.mp3 mp3info
 fileviewer *.flac soxi
 fileviewer *.m4a mediainfo
 filetype *.flac mpv
-filetype *.mp4 mpv
+filetype *.mp4,*.mkv mpv
 
 " Object
 filetype *.o nm %f | less
