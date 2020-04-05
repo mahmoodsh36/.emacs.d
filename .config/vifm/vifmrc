@@ -116,8 +116,8 @@ set statusline="  Hint: %z%= %A %10u:%-7g"
 
 " :mark mark /full/directory/path [filename]
 
-mark b ~/bin/
-mark h ~/
+"mark b ~/bin/
+"mark h ~/
 
 " ------------------------------------------------------------------------------
 
