@@ -508,6 +508,7 @@ nnoremap L <C-w>j<C-w>l
 nnoremap cd :mkdir<space>
 nnoremap cf :touch<space>
 nnoremap gs :!view_audio_spectrum.sh %c<cr>
+nnoremap <C-i> :histnext<cr>
 
 set number
 set relativenumber
