@@ -51,7 +51,12 @@ setopt HIST_FIND_NO_DUPS
 
 # prompt
 # export PS1="[%m@%1~]$ "
-export PS1="[%1~]$ "
+if [ -n "$SSH_CLIENT" ]; then
+    ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1)
+    export PS1="[$ip_addr %1~]$ "
+else
+    export PS1="[%1~]$ "
+fi
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
 
