@@ -97,6 +97,7 @@ alias spc="view_audio_spectrum.sh"
 alias ltb="list_tags.py . album"
 alias lta="list_tags.py . artist"
 alias ltt="list_tags.py . title"
+alias vim="nvim"
 
 # find files with a certain mimetype
 ffwm() {
