@@ -1,8 +1,3 @@
-XF86Audio{Prev,Next,Play}
-    playerctl {previous,next,play-pause}; dwm_statusbar_update.sh
-XF86Audio{RaiseVolume,LowerVolume,Mute}
-     pactl set-sink-volume @DEFAULT_SINK@ {+3%, -3%, 0}; dwm_statusbar_update.sh
-
 super + Return
     st -e tmux
 
@@ -81,3 +76,6 @@ super + s ; {U,G,K,r,q,e,w}
      music_daemon_cmd.sh loop_queue,\
      notify-send "$(music_daemon_cmd.sh queue)",\
      notify-send -t 6000000 "$(music_daemon_cmd.sh lyrics $(music_daemon_cmd.sh current | cut -d ' ' -f1))"}
+
+super + shift + {j,k}
+     pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%}; dwm_statusbar_update.sh
