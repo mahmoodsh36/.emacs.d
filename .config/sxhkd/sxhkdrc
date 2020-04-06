@@ -73,10 +73,11 @@ super + s ; {R,p,s,a,u,n,b,l,i,g,U}
      ~/workspace/music_daemon/scripts/play.sh song add,\
      ~/workspace/music_daemon/scripts/play.sh liked play}
 
-super + s ; {U,G,K,r,q,e}
+super + s ; {U,G,K,r,q,e,w}
     {~/workspace/music_daemon/scripts/play.sh album add,\
      ~/workspace/music_daemon/scripts/play.sh liked add,\
      pkill daemon.py,\
      music_daemon_cmd.sh loop_song,\
      music_daemon_cmd.sh loop_queue,\
-     notify-send "$(music_daemon_cmd.sh queue)"}
+     notify-send "$(music_daemon_cmd.sh queue)",\
+     notify-send -t 6000000 "$(music_daemon_cmd.sh lyrics $(music_daemon_cmd.sh current | cut -d ' ' -f1))"}
