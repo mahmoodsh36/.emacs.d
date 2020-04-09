@@ -11,10 +11,12 @@ c.url.searchengines = {
 c.aliases = {
         "o": "open",
         "yt": "open https://youtube.com",
-        "dk": "open https://duckduckgo.com",
+        "dk": "open https://start.duckduckgo.com",
         "gg": "open https://google.com",
         "mu": "open https://mahmoodsheikh.com/music",
         "gt": "open https://mahmoodsheikh.com/github",
+        "pb": "open https://unblocktheship.org",
+        "ru": "open https://rutracker.org",
         "r": "open https://reddit.com",
         "test": "spawn --userscript test.sh",
 }
@@ -29,8 +31,8 @@ c.content.user_stylesheets = [
 
 c.colors.webpage.bg = 'black'
 
-#c.content.cookies.accept = 'never'
-c.content.cookies.store = False
+c.content.cookies.accept = 'no-3rdparty'
+c.content.notifications = False
 
 c.auto_save.session = True
 
