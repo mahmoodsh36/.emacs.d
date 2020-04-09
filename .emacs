@@ -192,7 +192,7 @@
 (use-package lsp-mode
   :ensure t
   :config
-  (add-hook 'prog-mode-hook #'lsp)
+  ;;(add-hook 'prog-mode-hook #'lsp)
   (remove-hook 'html-mode-hook #'lsp))
 
 (use-package company-lsp
