@@ -51,6 +51,7 @@ nnoremap <C-x>k :bp\|bd #<CR>
 nnoremap <leader>f :FZF<CR>
 " this doesnt work <C-c> tries to exit
 nnoremap <C-w><C-c> <C-w>c
+nnoremap diP vipjd
 
 " set t_Co=256
 
