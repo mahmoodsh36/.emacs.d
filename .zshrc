@@ -140,3 +140,6 @@ HISTFILE=~/media/zsh_history
 
 IFS='
 '
+
+# plugins start here
+source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
