@@ -141,5 +141,15 @@ HISTFILE=~/media/zsh_history
 IFS='
 '
 
-# plugins start here
-source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# plugin management
+setup_plugins() {
+    [ ! -d ~/.config/zsh ] && mkdir ~/.config/zsh
+    cd ~/.config/zsh
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+}
+
+load_plugins() {
+    source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+}
+
+load_plugins 2>/dev/null
