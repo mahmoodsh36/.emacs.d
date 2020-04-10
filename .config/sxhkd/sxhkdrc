@@ -64,7 +64,7 @@ super + s ; {R,p,s,a,u,n,b,l,g}
      ~/workspace/music_daemon/scripts/play.sh album play; dwm_statusbar_update.sh,\
      music_daemon_cmd.sh next; dwm_statusbar_update.sh,\
      music_daemon_cmd.sh prev; dwm_statusbar_update.sh,\
-     ~/workspace/music_daemon/scripts/like_current_song.sh}
+     ~/workspace/music_daemon/scripts/like_current_song.sh; dwm_statusbar_update.sh}
 
 super + s ; {g,U,G,K,r,q,e,w}
     {~/workspace/music_daemon/scripts/play.sh liked play; dwm_statusbar_update.sh,\
