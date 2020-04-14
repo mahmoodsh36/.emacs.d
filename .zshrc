@@ -104,6 +104,7 @@ alias lta="list_tags.py . artist"
 alias ltt="list_tags.py . title"
 alias vim="nvim"
 alias rsync="ionice -c2 -n7 rsync"
+alias ion="ionice -c2 -n7"
 
 # find files with a certain mimetype
 ffwm() {
