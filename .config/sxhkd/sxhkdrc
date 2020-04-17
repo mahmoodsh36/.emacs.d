@@ -80,3 +80,6 @@ super + s ; {w}
 
 super + shift + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%}; dwm_statusbar_update.sh
+
+super + shift + s; {l,h,s}
+    playerctl {next,prev,play-pause}
