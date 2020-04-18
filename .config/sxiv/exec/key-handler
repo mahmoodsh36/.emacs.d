@@ -11,7 +11,7 @@ do
             notify-send "$file"
             ;;
         "w")
-            hsetroot -fill "$file"
+            hsetroot -cover "$file"
             #wal -i "$file"
             cp "$file" ~/.cache/wallpaper
             #/usr/bin/pywal_awesome_colors.sh
