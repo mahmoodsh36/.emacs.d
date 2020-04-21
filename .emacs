@@ -151,10 +151,10 @@
   :ensure t)
 
 ;; evil-surround for evil mode
-;;(use-package evil-surround
-;;  :ensure t
-;;  :config
-;;  (global-evil-surround-mode 1))
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package company
   :ensure t
@@ -234,7 +234,7 @@
 
 ;; change region highlight color
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Source Code Pro 14" nil t)
+(set-frame-font "Source Code Pro 13" nil t)
 
 ;; start server
 (server-start)
@@ -244,7 +244,7 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-(transparency 90)
+;;(transparency 90)
 
 ;; function to make printing easier for many languages
 (defun current-line-to-print-statement ()
@@ -255,8 +255,6 @@
           (insert "print(")
           (end-of-line)
           (insert ")"))))
-
 (global-set-key (kbd "C-x p") 'current-line-to-print-statement)
-
 (if (string= major-mode "python-mode")
     (message "hi"))
