@@ -56,30 +56,32 @@ super + a ; {s,w,c,n,d,o}
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"
 
-super + s ; {R,p,s,a,u,n,b,l,g}
-    {notify-send 'restarted music daemon'; pkill md.py; md.py -d > ~/.cache/music_daemon/log.txt 2>&1,\
-     ~/workspace/music_daemon/scripts/play.sh song play; dwm_statusbar_update.sh,\
-     music_daemon_cmd.sh pause,\
-     music_daemon_cmd.sh resume,\
-     ~/workspace/music_daemon/scripts/play.sh album play; dwm_statusbar_update.sh,\
-     music_daemon_cmd.sh next; dwm_statusbar_update.sh,\
-     music_daemon_cmd.sh prev; dwm_statusbar_update.sh,\
-     ~/workspace/music_daemon/scripts/like_current_song.sh; dwm_statusbar_update.sh}
+#super + s ; {R,p,s,a,u,n,b,l,g}
+#    {notify-send 'restarted music daemon'; pkill md.py; md.py -d > ~/.cache/music_daemon/log.txt 2>&1,\
+#     ~/workspace/music_daemon/scripts/play.sh song play; dwm_statusbar_update.sh,\
+#     music_daemon_cmd.sh pause,\
+#     music_daemon_cmd.sh resume,\
+#     ~/workspace/music_daemon/scripts/play.sh album play; dwm_statusbar_update.sh,\
+#     music_daemon_cmd.sh next; dwm_statusbar_update.sh,\
+#     music_daemon_cmd.sh prev; dwm_statusbar_update.sh,\
+#     ~/workspace/music_daemon/scripts/like_current_song.sh; dwm_statusbar_update.sh}
 
-super + s ; {g,U,G,K,r,q,e,w}
-    {~/workspace/music_daemon/scripts/play.sh liked play; dwm_statusbar_update.sh,\
-     ~/workspace/music_daemon/scripts/play.sh album add,\
-     ~/workspace/music_daemon/scripts/play.sh liked add,\
-     notify-send 'killed music daemon'; pkill md.py; dwm_statusbar_update.sh,\
-     music_daemon_cmd.sh loop_song; dwm_statusbar_update.sh,\
-     music_daemon_cmd.sh loop_queue; dwm_statusbar_update.sh,\
-     notify-send "$(music_daemon_cmd.sh queue)"}
+#super + s ; {g,U,G,K,r,q,e,w}
+#    {~/workspace/music_daemon/scripts/play.sh liked play; dwm_statusbar_update.sh,\
+#     ~/workspace/music_daemon/scripts/play.sh album add,\
+#     ~/workspace/music_daemon/scripts/play.sh liked add,\
+#     notify-send 'killed music daemon'; pkill md.py; dwm_statusbar_update.sh,\
+#     music_daemon_cmd.sh loop_song; dwm_statusbar_update.sh,\
+#     music_daemon_cmd.sh loop_queue; dwm_statusbar_update.sh,\
+#     notify-send "$(music_daemon_cmd.sh queue)"}
 
-super + s ; {w}
-    {notify-send -t 6000000 "$(music_daemon_cmd.sh lyrics $(music_daemon_cmd.sh current | cut -d ' ' -f1))"}
+#super + s ; {w}
+#    {notify-send -t 6000000 "$(music_daemon_cmd.sh lyrics $(music_daemon_cmd.sh current | cut -d ' ' -f1))"}
 
 super + shift + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%}; dwm_statusbar_update.sh
+super + alt + shift + {j,k}
+     pactl set-sink-volume @DEFAULT_SINK@ {0%, 100%}; dwm_statusbar_update.sh
 
-super + shift + s; {l,h,s}
+super + s; {l,h,s}
     playerctl {next,previous,play-pause}
