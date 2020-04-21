@@ -96,7 +96,7 @@
 
 ;; handling large files, not very helpful tbh, still slow when loading images
 
-;; ;; evil-mode
+;; evil-mode
 (setq evil-want-keybinding nil)
 (use-package evil
   :ensure t
@@ -151,10 +151,10 @@
   :ensure t)
 
 ;; evil-surround for evil mode
-(use-package evil-surround
-  :ensure t
-  :config
-  (global-evil-surround-mode 1))
+;;(use-package evil-surround
+;;  :ensure t
+;;  :config
+;;  (global-evil-surround-mode 1))
 
 (use-package company
   :ensure t
@@ -220,6 +220,9 @@
 ;;   (indent-guide-global-mode)
 ;;   (setq indent-guide-recursive t))
 
+(use-package command-log-mode
+  :ensure t)
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -243,55 +246,17 @@
   (set-frame-parameter (selected-frame) 'alpha value))
 (transparency 90)
 
-;;; workspaces.el -- implemented using registers
+;; function to make printing easier for many languages
+(defun current-line-to-print-statement ()
+    (interactive)
+    (if (string= major-mode "python-mode")
+        (progn
+          (back-to-indentation)
+          (insert "print(")
+          (end-of-line)
+          (insert ")"))))
 
-(defun workspace-create-new (deskid)
-  "Create a blank workspace at id deskid, between 1 and 9"
-  (interactive "cWhat ID do you want to give to blank workspace ?")
-  (workspace-goto ?0)
-  (window-configuration-to-register deskid)
-  (add-to-list 'workspaces-list deskid)
-  (workspace-goto deskid))
+(global-set-key (kbd "C-x p") 'current-line-to-print-statement)
 
-
-(defun workspace-goto (deskid)
-  "Go to another workspace, deskid is workspace number between 1 and 9;
-Workspace 0 is a template workspace, do not use it unless you know what you do;
-You can kill a workspace with 'k' and fallback on 1."
-  (interactive "cTo which workspace do you want to go ? ")
-  (let (add)
-    (setq add (if (eq deskid ?0) "\n!-!-! This is template workspace. New workspaces are based on it. " nil))
-    (cond
-     ((and (>= deskid ?0) (<= deskid ?9))
-      (if (or (position deskid workspaces-list) (eq deskid ?0))
-	  (progn
-	    (window-configuration-to-register current-workspace)
-	    (setq current-workspace deskid)
-	    (jump-to-register deskid))
-	(if (y-or-n-p "This workspace does not exist, should it be created ? ")
-	    (progn
-	      (window-configuration-to-register current-workspace)
-	      (workspace-create-new deskid))
-	  nil)))
-     ((and (eq deskid ?k) (not (or (eq current-workspace ?0) (eq current-workspace ?1))))
-      (let ((deskid-to-del current-workspace))
-	(workspace-goto ?1)
-	(setq workspaces-list (remove deskid-to-del workspaces-list))))
-     (t (setq add "\n!-!-! Please specify a valid workspace number in (1-9), 0 do edit template, 'k' to kill current workspace in (2-9)")))
-    ;; (message (concat "Now on workspace " (char-to-string current-workspace) "\nWorkspaces list is : " (mapconcat 'char-to-string (sort (copy-sequence workspaces-list) '<) ", ") add))))
-    (message (concat "Now on workspace " (char-to-string current-workspace) add))))
-
-;; workspaces init
-(window-configuration-to-register ?0)
-(defvar workspaces-list nil)
-(setq current-workspace ?0)
-(workspace-create-new ?1)
-(workspace-create-new ?2)
-(workspace-create-new ?3)
-(workspace-create-new ?4)
-(setq current-workspace ?1)
-
-(global-set-key (kbd "M-1") (lambda () (interactive) (workspace-goto ?1)))
-(global-set-key (kbd "M-2") (lambda () (interactive) (workspace-goto ?2)))
-(global-set-key (kbd "M-3") (lambda () (interactive) (workspace-goto ?3)))
-(global-set-key (kbd "M-4") (lambda () (interactive) (workspace-goto ?4)))
+(if (string= major-mode "python-mode")
+    (message "hi"))
