@@ -5,7 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default))))
+    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
+ '(package-selected-packages
+   (quote
+    (highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -63,7 +66,7 @@
 ;; kill buffer and window shortcut
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 ;; highlight current line
-;; (global-hl-line-mode)
+(global-hl-line-mode)
 ;; try awesomewm config
 (defun try-awesome-config ()
   (interactive)
@@ -219,9 +222,6 @@
 ;;   :config
 ;;   (indent-guide-global-mode)
 ;;   (setq indent-guide-recursive t))
-
-(use-package command-log-mode
-  :ensure t)
 
 ;; function to refactor json files
 (defun beautify-json ()
