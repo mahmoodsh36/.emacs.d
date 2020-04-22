@@ -242,7 +242,8 @@
     (shell-command-on-region b e
      "python -mjson.tool" (current-buffer) t)))
 
-;; change region highlight color
+;; change region highlight color, set it to black,
+;; makes things more visible
 (set-face-attribute 'region nil :background "#000")
 (set-frame-font "Source Code Pro 13" nil t)
 
@@ -254,7 +255,7 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-;;(transparency 90)
+(transparency 95)
 
 ;; function to make printing easier for many languages
 (defun current-line-to-print-statement ()
