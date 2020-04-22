@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
  '(package-selected-packages
    (quote
-    (highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
+    (spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -82,6 +82,9 @@
 (global-auto-revert-mode t)
 ;; enable all disabled commands
 (setq disabled-command-function nil)
+
+;; general keys
+(global-set-key (kbd "C-M-S-x") 'eval-region)
 
 ;; no damn fringes dude!
 (set-fringe-style 0)
@@ -198,10 +201,17 @@
 (use-package company-lsp
   :ensure t)
 
-(use-package gruvbox-theme
-  :ensure t
-  :config
-  (load-theme 'gruvbox))
+;; ====== gruvbox
+;;(use-package gruvbox-theme
+;;  :ensure t
+;;  :config
+;;  (load-theme 'gruvbox))
+;; ====== spacemacs
+(setq spacemacs-theme-comment-bg nil)
+(setq spacemacs-theme-comment-italic t)
+(use-package spacemacs-theme
+  :defer t
+  :init (load-theme 'spacemacs-dark t))
 
 (use-package avy
   :ensure t
