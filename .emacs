@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
  '(package-selected-packages
    (quote
-    (spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
+    (web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -192,14 +192,14 @@
 (use-package evil-org
   :ensure t)
 
-(use-package lsp-mode
-  :ensure t
-  :config
+;;(use-package lsp-mode
+  ;;:ensure t)
+  ;;:config
   ;;(add-hook 'prog-mode-hook #'lsp)
-  (remove-hook 'html-mode-hook #'lsp))
+  ;;(remove-hook 'html-mode-hook #'lsp))
 
-(use-package company-lsp
-  :ensure t)
+;;(use-package company-lsp
+;;  :ensure t)
 
 ;; ====== gruvbox
 ;;(use-package gruvbox-theme
@@ -232,6 +232,24 @@
 ;;   :config
 ;;   (indent-guide-global-mode)
 ;;   (setq indent-guide-recursive t))
+
+(use-package web-mode
+  :ensure t
+  :config
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-enable-auto-closing nil)
+  (setq web-mode-enable-auto-expanding nil)
+  (setq web-mode-enable-auto-pairing nil)
+  (setq web-mode-enable-auto-indentation nil)
+  (setq web-mode-enable-auto-opening nil)
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
 ;; function to refactor json files
 (defun beautify-json ()
