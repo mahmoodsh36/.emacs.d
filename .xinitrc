@@ -14,7 +14,7 @@ pulseaudio &
 # songs_progress_monitor.py &
 compton --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
-hsetroot -fill ~/.cache/wallpaper
+hsetroot -cover ~/.cache/wallpaper
 unclutter -root &
 # blueman-applet &
 syndaemon -K -i 0.5 -R -d &
