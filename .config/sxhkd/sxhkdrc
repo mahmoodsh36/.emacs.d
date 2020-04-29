@@ -85,3 +85,5 @@ super + alt + shift + {j,k}
 
 super + shift + s; {l,h,s}
     playerctl {next,previous,play-pause}
+super + shift + s; {w}
+      {spotify_lyrics.sh}
