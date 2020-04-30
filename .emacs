@@ -293,3 +293,11 @@
 (global-set-key (kbd "C-x p") 'current-line-to-print-statement)
 (if (string= major-mode "python-mode")
     (message "hi"))
+
+;; c-x c-l to complete line like vim
+(defun my-expand-lines ()
+  (interactive)
+  (let ((hippie-expand-try-functions-list
+         '(try-expand-line)))
+    (call-interactively 'hippie-expand)))
+(define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
