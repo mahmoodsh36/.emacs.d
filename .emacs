@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
  '(package-selected-packages
    (quote
-    (web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
+    (lua-mode ranger web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -202,16 +202,16 @@
 ;;  :ensure t)
 
 ;; ====== gruvbox
-;;(use-package gruvbox-theme
-;;  :ensure t
-;;  :config
-;;  (load-theme 'gruvbox))
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox))
 ;; ====== spacemacs
-(setq spacemacs-theme-comment-bg nil)
-(setq spacemacs-theme-comment-italic t)
-(use-package spacemacs-theme
-  :defer t
-  :init (load-theme 'spacemacs-dark t))
+;;(setq spacemacs-theme-comment-bg nil)
+;;(setq spacemacs-theme-comment-italic t)
+;;(use-package spacemacs-theme
+;;  :defer t
+;;  :init (load-theme 'spacemacs-dark t))
 
 (use-package avy
   :ensure t
@@ -250,6 +250,12 @@
   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+
+(use-package ranger
+  :ensure t)
+
+(use-package lua-mode
+  :ensure t)
 
 ;; function to refactor json files
 (defun beautify-json ()
