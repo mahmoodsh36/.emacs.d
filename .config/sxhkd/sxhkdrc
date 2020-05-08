@@ -78,7 +78,7 @@ super + s ; {g,U,G,K,r,q,e,w}
 super + s ; {w}
     {notify-send -t 6000000 "$(pmus -r "lyrics $(pmus -r current | cut -d ' ' -f1)")"}
 
-super + shift + {j,k}
+super + alt + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%}; dwm_statusbar_update.sh
 super + alt + shift + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {0%, 100%}; dwm_statusbar_update.sh
