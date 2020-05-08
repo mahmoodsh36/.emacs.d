@@ -93,6 +93,7 @@ alias spc="view_audio_spectrum.sh"
 alias vim="nvim"
 alias rsync="ionice -c2 -n7 rsync"
 alias ion="ionice -c2 -n7"
+alias calc="bc -l"
 
 # find files with a certain mimetype
 ffwm() {
