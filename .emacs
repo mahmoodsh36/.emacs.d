@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
  '(package-selected-packages
    (quote
-    (lua-mode ranger web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
+    (all-the-icons lua-mode ranger web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -256,6 +256,13 @@
 
 (use-package lua-mode
   :ensure t)
+
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p)
+  :config
+  (unless (find-font (font-spec :name "all-the-icons"))
+    (all-the-icons-install-fonts t)))
 
 ;; function to refactor json files
 (defun beautify-json ()
