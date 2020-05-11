@@ -54,6 +54,8 @@ c.fonts.tabs = font_size
 c.fonts.web.size.minimum = 15
 c.fonts.web.size.default = 15
 
+c.content.host_blocking.enabled = False
+
 import sys, os
 sys.path.append(os.path.join(sys.path[0], "jblock"))
 config.source("jblock/jblock/integrations/qutebrowser.py")
