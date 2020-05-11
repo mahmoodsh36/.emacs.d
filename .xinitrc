@@ -12,7 +12,7 @@ pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &
-compton --config ~/.config/compton.conf &
+picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 hsetroot -cover ~/.cache/wallpaper
 unclutter -root &
