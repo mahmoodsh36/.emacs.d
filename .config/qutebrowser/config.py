@@ -15,10 +15,11 @@ c.aliases = {
         "gg": "open https://google.com",
         "mu": "open https://mahmoodsheikh.com/music",
         "gt": "open https://mahmoodsheikh.com/github",
-        "pb": "open https://unblocktheship.org",
+        "pb": "open https://thepiratebay.org",
         "ru": "open https://rutracker.org",
         "r": "open https://reddit.com",
         "test": "spawn --userscript test.sh",
+        "q": "quit",
 }
 
 config.bind('<Ctrl-Shift-v>', 'hint links spawn --detach mpv --keep-open --force-window yes {hint-url}')
@@ -52,3 +53,23 @@ c.fonts.statusbar = font_size
 c.fonts.tabs = font_size
 c.fonts.web.size.minimum = 15
 c.fonts.web.size.default = 15
+
+import sys, os
+sys.path.append(os.path.join(sys.path[0], "jblock"))
+config.source("jblock/jblock/integrations/qutebrowser.py")
+config.set(
+    "content.host_blocking.lists",
+    [
+        "https://easylist.to/easylist/easylist.txt",
+        "https://easylist.to/easylist/easyprivacy.txt",
+        "https://easylist.to/easylist/fanboy-annoyance.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/annoyances.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/resource-abuse.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/unbreak.txt",
+        "https://www.malwaredomainlist.com/hostslist/hosts.txt",
+        "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
+    ],
+)
