@@ -19,6 +19,7 @@ c.aliases = {
         "ru": "open https://rutracker.org",
         "r": "open https://reddit.com",
         "test": "spawn --userscript test.sh",
+        "mu": "open https://4chan.org/mu"
         "q": "quit",
 }
 
@@ -32,7 +33,7 @@ c.content.user_stylesheets = [
 
 c.colors.webpage.bg = 'black'
 
-c.content.cookies.accept = 'no-3rdparty'
+c.content.cookies.accept = 'all'
 c.content.notifications = False
 
 c.auto_save.session = True
