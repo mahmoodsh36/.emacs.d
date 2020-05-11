@@ -19,7 +19,7 @@ c.aliases = {
         "ru": "open https://rutracker.org",
         "r": "open https://reddit.com",
         "test": "spawn --userscript test.sh",
-        "mu": "open https://4chan.org/mu"
+        "mu": "open https://4chan.org/mu",
         "q": "quit",
 }
 
