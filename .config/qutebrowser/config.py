@@ -1,7 +1,7 @@
 #c.tabs.position = "left"
 
 c.url.searchengines = {
-        "DEFAULT": "https://duckduckgo.com/?q={}",
+        "DEFAULT": "https://www.google.com/search?q={}",
         "y": "https://www.youtube.com/results?hl=en&search_query={}",
         "g": "https://www.google.com/search?q={}",
         'i': 'https://duckduckgo.com/?q={}&iar=images&iax=images&ia=images',
