@@ -1,6 +1,7 @@
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.command import lazy
 from libqtile import layout, bar, widget
+import subprocess
 
 sup = "mod4"
 alt = "mod1"
@@ -81,15 +82,19 @@ layouts = [
 
 # orange text on grey background
 default_data = dict(fontsize=17,
-                    foreground="FF6600",
+                    foreground="#cccccc",
                     background="1D1D1D",
                     font="Source Code Pro")
+
+def current_song():
+     return subprocess.check_output('current_spotify_song.sh').decode().replace('\n', '')
 
 screens = [
      Screen(bottom = bar.Bar([
           widget.GroupBox(**default_data),
           widget.WindowName(**default_data),
-          widget.TextBox(text='hey there', **default_data),
+          widget.TextBox(text='🎧', **default_data),
+          widget.GenPollText(func=current_song, update_interval=0.5, **default_data),
           widget.Sep(),
           widget.TextBox(text='🔊', **default_data),
           widget.Volume(**default_data),
