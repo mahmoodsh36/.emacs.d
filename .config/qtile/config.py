@@ -2,8 +2,6 @@ from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.command import lazy
 from libqtile import layout, bar, widget
 
-from typing import List  # noqa: F401
-
 sup = "mod4"
 alt = "mod1"
 
@@ -27,7 +25,7 @@ keys = [
     Key([sup, "control"], "r", lazy.restart()),
     Key([sup, "control"], "q", lazy.shutdown()),
 
-    Key([sup, "control"], "space", lazy.window.toggle_floating()),
+    Key([sup, "shift"], "space", lazy.window.toggle_floating()),
 
     Key([sup], "j", lazy.layout.down()),
     Key([sup], "k", lazy.layout.up()),
@@ -82,29 +80,24 @@ layouts = [
 ]
 
 # orange text on grey background
-default_data = dict(fontsize=12,
+default_data = dict(fontsize=17,
                     foreground="FF6600",
                     background="1D1D1D",
-                    font="ttf-droid")
-
-foreground = "FF6600"
-background ="1D1D1D"
-font="ttf-droid"
-fontsize=12
-
-extension_defaults = default_data.copy()
+                    font="Source Code Pro")
 
 screens = [
-    Screen(bottom = bar.Bar([
-            widget.GroupBox(foreground=foreground,
-                background=background),
-            widget.WindowName(**default_data),
-            widget.Systray(**default_data),
-            widget.Clock(foreground=foreground,
-                background=background)
-            ], 27)
-        )
-    ]
+     Screen(bottom = bar.Bar([
+          widget.GroupBox(**default_data),
+          widget.WindowName(**default_data),
+          widget.TextBox(text='hey there', **default_data),
+          widget.Sep(),
+          widget.TextBox(text='🔊', **default_data),
+          widget.Volume(**default_data),
+          widget.Sep(),
+          widget.Clock(**default_data),
+          widget.Systray(**default_data),
+     ], 27))
+]
 
 # Drag floating layouts.
 mouse = [
@@ -116,13 +109,12 @@ mouse = [
 ]
 
 dgroups_key_binder = None
-dgroups_app_rules = []  # type: List
+dgroups_app_rules = []
 main = None
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 floating_layout = layout.Floating(float_rules=[
-    {'wname':   'physics'}, # the program im writing for school
     {'wmclass': 'confirm'},
     {'wmclass': 'dialog'},
     {'wmclass': 'download'},
