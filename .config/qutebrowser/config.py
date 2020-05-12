@@ -28,7 +28,7 @@ config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach sh -c \'url={hint-url};
 
 c.content.user_stylesheets = [
         # the stylesheet was taken from 'https://github.com/alphapapa/solarized-everything-css'
-        'gruvbox.css',
+        #'gruvbox.css',
 ]
 
 c.colors.webpage.bg = 'black'
