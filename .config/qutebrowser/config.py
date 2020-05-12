@@ -26,6 +26,9 @@ c.aliases = {
 config.bind('<Ctrl-Shift-v>', 'hint links spawn --detach mpv --keep-open --force-window yes {hint-url}')
 config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach sh -c \'url={hint-url}; notify-send "$url"; echo "$url" | xclip -selection clipboard\'')
 
+config.bind('Iv', 'hint images spawn sh -c "open_url_image.sh {hint-url}"')
+config.bind('Is', 'hint images run open -t https://www.google.com/searchbyimage?&image_url={hint-url}')
+
 c.content.user_stylesheets = [
         # the stylesheet was taken from 'https://github.com/alphapapa/solarized-everything-css'
         #'gruvbox.css',
