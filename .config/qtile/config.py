@@ -1,11 +1,15 @@
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.command import lazy
-from libqtile.extension import CommandSet
 from libqtile import layout, bar, widget
 import subprocess
 
 sup = "mod4"
 alt = "mod1"
+
+default_theme = dict(fontsize=17,
+                    foreground="#cccccc",
+                    background="1D1D1D",
+                    font="Source Code Pro")
 
 def resize(qtile, direction):
     layout = qtile.current_layout
@@ -121,27 +125,21 @@ layouts = [
     layout.Floating(),
 ]
 
-# orange text on grey background
-default_data = dict(fontsize=17,
-                    foreground="#cccccc",
-                    background="1D1D1D",
-                    font="Source Code Pro")
-
 def current_song():
      return subprocess.check_output('current_spotify_song.sh').decode().replace('\n', '')
 
 screens = [
      Screen(bottom = bar.Bar([
-          widget.GroupBox(**default_data),
-          widget.WindowName(**default_data),
-          widget.TextBox(text='🎧', **default_data),
-          widget.GenPollText(func=current_song, update_interval=0.5, **default_data),
+          widget.GroupBox(**default_theme),
+          widget.WindowName(**default_theme),
+          widget.TextBox(text='🎧', **default_theme),
+          widget.GenPollText(func=current_song, update_interval=0.5, **default_theme),
           widget.Sep(),
-          widget.TextBox(text='🔊', **default_data),
-          widget.Volume(**default_data),
+          widget.TextBox(text='🔊', **default_theme),
+          widget.Volume(**default_theme),
           widget.Sep(),
-          widget.Clock(**default_data),
-          widget.Systray(**default_data),
+          widget.Clock(**default_theme),
+          widget.Systray(**default_theme),
      ], 27))
 ]
 
