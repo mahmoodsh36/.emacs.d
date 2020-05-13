@@ -56,34 +56,12 @@ super + a ; {s,w,c,n,d,o}
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"
 
-super + s ; {R,p,s,a,u,n,b,l,g}
-    {notify-send 'restarted music daemon'; pkill pmus; pmus -d > ~/.cache/pmus/log.txt 2>&1,\
-     ~/workspace/pmus/scripts/play.sh song play; dwm_statusbar_update.sh,\
-     pmus -r pause,\
-     pmus -r resume,\
-     ~/workspace/pmus/scripts/play.sh album play; dwm_statusbar_update.sh,\
-     pmus -r next; dwm_statusbar_update.sh,\
-     pmus -r prev; dwm_statusbar_update.sh,\
-     ~/workspace/pmus/scripts/like_current_song.sh; dwm_statusbar_update.sh}
-
-super + s ; {g,U,G,K,r,q,e,w}
-    {~/workspace/pmus/scripts/play.sh liked play; dwm_statusbar_update.sh,\
-     ~/workspace/pmus/scripts/play.sh album add,\
-     ~/workspace/pmus/scripts/play.sh liked add,\
-     notify-send 'killed music daemon'; pkill pmus; dwm_statusbar_update.sh,\
-     pmus -r loop_song; dwm_statusbar_update.sh,\
-     pmus -r loop_queue; dwm_statusbar_update.sh,\
-     notify-send "$(pmus -r queue)"}
-
-super + s ; {w}
-    {notify-send -t 6000000 "$(pmus -r "lyrics $(pmus -r current | cut -d ' ' -f1)")"}
-
 super + alt + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%}; dwm_statusbar_update.sh
 super + alt + shift + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {0%, 100%}; dwm_statusbar_update.sh
 
-super + shift + s; {l,h,s}
+super + s; {l,h,s}
     playerctl {next,previous,play-pause}
-super + shift + s; {w}
+super + s; {w}
       {spotify_lyrics.sh}
