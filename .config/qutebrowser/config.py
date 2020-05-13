@@ -20,6 +20,7 @@ c.aliases = {
         "r": "open https://reddit.com",
         "test": "spawn --userscript test.sh",
         "mu": "open https://4chan.org/mu",
+        "t": "open trackifyapp.net/spotify/top_users",
         "q": "quit",
 }
 
