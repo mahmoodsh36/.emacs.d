@@ -103,21 +103,9 @@ keys = [
 groups = [Group(str(group_num)) for group_num in range(1, 7)]
 
 for index, grp in enumerate(groups):
-
-     # index is the position in the group list grp is the group object.
-     # We assign each group object a set of keys based on it's
-     # position in the list.
-
-     # Eventually we will implement a function to change the name based
-     # on what window is active in that group.
-
-     keys.extend([
-
-             # switch to group
-         Key([sup], str(index+1), lazy.group[grp.name].toscreen()),
-
-             # send to group
-         Key([sup, "shift"], str(index+1), lazy.window.togroup(grp.name)),
+    keys.extend([
+        Key([sup], str(index+1), lazy.group[grp.name].toscreen()),
+        Key([sup, "shift"], str(index+1), lazy.window.togroup(grp.name)),
     ])
 
 layouts = [
@@ -177,12 +165,4 @@ floating_layout = layout.Floating(float_rules=[
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 
-# XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
-# string besides java UI toolkits; you can see several discussions on the
-# mailing lists, GitHub issues, and other WM documentation that suggest setting
-# this string if your java app doesn't work correctly. We may as well just lie
-# and say that we're a working one by default.
-#
-# We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
-# java that happens to be on java's whitelist.
 wmname = "LG3D"
