@@ -1,10 +1,57 @@
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.command import lazy
+from libqtile.extension import CommandSet
 from libqtile import layout, bar, widget
 import subprocess
 
 sup = "mod4"
 alt = "mod1"
+
+def resize(qtile, direction):
+    layout = qtile.current_layout
+    child = layout.current
+    parent = child.parent
+
+    while parent:
+        if child in parent.children:
+            layout_all = False
+
+            if (direction == "left" and parent.split_horizontal) or (
+                direction == "up" and not parent.split_horizontal
+            ):
+                parent.split_ratio = max(5, parent.split_ratio - layout.grow_amount)
+                layout_all = True
+            elif (direction == "right" and parent.split_horizontal) or (
+                direction == "down" and not parent.split_horizontal
+            ):
+                parent.split_ratio = min(95, parent.split_ratio + layout.grow_amount)
+                layout_all = True
+
+            if layout_all:
+                layout.group.layout_all()
+                break
+
+        child = parent
+        parent = child.parent
+
+@lazy.function
+def resize_left(qtile):
+    resize(qtile, "left")
+
+
+@lazy.function
+def resize_right(qtile):
+    resize(qtile, "right")
+
+
+@lazy.function
+def resize_up(qtile):
+    resize(qtile, "up")
+
+
+@lazy.function
+def resize_down(qtile):
+    resize(qtile, "down")
 
 keys = [
     # Switch window focus to other pane(s) of stack
@@ -40,22 +87,16 @@ keys = [
     Key([sup, alt], "k", lazy.layout.flip_up()),
     Key([sup, alt], "h", lazy.layout.flip_left()),
     Key([sup, alt], "l", lazy.layout.flip_right()),
-    Key([sup, "control"], "j", lazy.layout.grow_down()),
-    Key([sup, "control"], "k", lazy.layout.grow_up()),
-    Key([sup, "control"], "h", lazy.layout.grow_left()),
-    Key([sup, "control"], "l", lazy.layout.grow_right()),
+    Key([sup, "control"], "j", resize_down),
+    Key([sup, "control"], "k", resize_up),
+    Key([sup, "control"], "h", resize_left),
+    Key([sup, "control"], "l", resize_right),
     Key([sup, "shift"], "n", lazy.layout.normalize()),
     Key([sup], "t", lazy.layout.toggle_split()),
+
 ]
 
-groups = [
-     Group('code'),
-     Group('music'),
-     Group('web'),
-     Group('term'),
-     Group('etc'),
-     Group('etc'),
-]
+groups = [Group(str(group_num)) for group_num in range(1, 7)]
 
 for index, grp in enumerate(groups):
 
