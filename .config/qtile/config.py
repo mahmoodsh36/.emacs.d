@@ -114,14 +114,20 @@ layouts = [
 ]
 
 def current_song():
-     return subprocess.check_output('current_spotify_song.sh').decode().replace('\n', '')
+    return subprocess.check_output('current_spotify_song.sh').decode().replace('\n', '')
+
+def keyboard_layout():
+    cmd = "setxkbmap -query | awk '/layout/ {print $2}'"
+    return subprocess.check_output(cmd, shell=True).decode().replace('\n', '')
 
 screens = [
      Screen(bottom = bar.Bar([
           widget.GroupBox(**default_theme),
           widget.WindowName(**default_theme),
+          widget.GenPollText(func=keyboard_layout, update_interval=0.7, **default_theme),
+          widget.Sep(),
           widget.TextBox(text='🎧', **default_theme),
-          widget.GenPollText(func=current_song, update_interval=0.5, **default_theme),
+          widget.GenPollText(func=current_song, update_interval=0.3, **default_theme),
           widget.Sep(),
           widget.TextBox(text='🔊', **default_theme),
           widget.Volume(**default_theme),
