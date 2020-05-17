@@ -8,7 +8,7 @@
     ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
  '(package-selected-packages
    (quote
-    (all-the-icons lua-mode ranger web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
+    (lsp-python-ms all-the-icons lua-mode ranger web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -192,14 +192,14 @@
 (use-package evil-org
   :ensure t)
 
-;;(use-package lsp-mode
-  ;;:ensure t)
-  ;;:config
-  ;;(add-hook 'prog-mode-hook #'lsp)
-  ;;(remove-hook 'html-mode-hook #'lsp))
+(use-package lsp-mode
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook #'lsp)
+  (remove-hook 'html-mode-hook #'lsp))
 
-;;(use-package company-lsp
-;;  :ensure t)
+(use-package company-lsp
+ :ensure t)
 
 ;; ====== gruvbox
 (use-package gruvbox-theme
