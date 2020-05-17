@@ -31,7 +31,7 @@ do
             mv "$file" ~/media/images/wal/
             ;;
         "r")
-            mv "$file" `echo $file | dmenu -it "$file"`
+            mv "$file" `echo $file | rofi -dmenu -i "$file"`
             ;;
         "y")
             echo "$file" | xclip -selection c
