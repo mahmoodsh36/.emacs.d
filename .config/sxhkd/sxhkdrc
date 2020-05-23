@@ -32,7 +32,7 @@ super + r
     sh -c "$(ls /usr/bin | rofi -dmenu)"
 
 super + y ; super + y ; {i}
-    notify-send "it works"
+    notify-send "it works"; sleep 0.1; xdotool type "hey"
 
 # screenshot
 super + {_,shift +} p
