@@ -192,14 +192,14 @@
 (use-package evil-org
   :ensure t)
 
-(use-package lsp-mode
-  :ensure t
-  :config
-  (add-hook 'prog-mode-hook #'lsp)
-  (remove-hook 'html-mode-hook #'lsp))
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :config
+;;   (add-hook 'prog-mode-hook #'lsp)
+;;   (remove-hook 'html-mode-hook #'lsp))
 
-(use-package company-lsp
- :ensure t)
+;; (use-package company-lsp
+;;  :ensure t)
 
 ;; ====== gruvbox
 (use-package gruvbox-theme
