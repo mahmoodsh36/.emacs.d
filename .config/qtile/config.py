@@ -7,9 +7,9 @@ sup = "mod4"
 alt = "mod1"
 
 default_theme = dict(fontsize=17,
-                    foreground="#cccccc",
-                    background="1D1D1D",
-                    font="Source Code Pro")
+                     foreground="#cccccc",
+                     background="1D1D1D",
+                     font="Source Code Pro")
 
 def resize(qtile, direction):
     layout = qtile.current_layout
@@ -121,7 +121,7 @@ def keyboard_layout():
     return subprocess.check_output(cmd, shell=True).decode().replace('\n', '')
 
 screens = [
-     Screen(bottom = bar.Bar([
+     Screen(top = bar.Bar([
           widget.GroupBox(**default_theme),
           widget.WindowName(**default_theme),
           widget.GenPollText(func=keyboard_layout, update_interval=0.7, **default_theme),
@@ -132,6 +132,7 @@ screens = [
           widget.TextBox(text='🔊', **default_theme),
           widget.Volume(**default_theme),
           widget.Sep(),
+          widget.TextBox(text='🕗', **default_theme),
           widget.Clock(**default_theme),
           widget.Systray(**default_theme),
      ], 27))
