@@ -27,4 +27,5 @@ xrdb -load ~/.Xresources
 #    dwm 2> ~/.cache/dwm.log
 #done
 
-exec awesome
+#exec awesome
+exec qtile
