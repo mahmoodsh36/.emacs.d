@@ -8,7 +8,7 @@ alt = "mod1"
 
 default_theme = dict(fontsize=17,
                      foreground="#cccccc",
-                     background="1D1D1D",
+                     background="000000",
                      font="Source Code Pro")
 
 def resize(qtile, direction):
