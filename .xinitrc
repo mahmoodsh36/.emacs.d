@@ -23,9 +23,9 @@ expressvpn connect &
 
 xrdb -load ~/.Xresources
 
-#while true; do
-#    dwm 2> ~/.cache/dwm.log
-#done
+while true; do
+    dwm 2> ~/.cache/dwm.log
+done
 
-exec awesome
+#exec awesome
 #exec qtile
