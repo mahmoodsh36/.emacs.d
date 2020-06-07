@@ -65,3 +65,6 @@ super + s; {l,h,s}
     playerctl {next,previous,play-pause}
 super + s; {w}
       {spotify_lyrics.sh}
+
+super + v
+    sleep 0.1; xdotool type $(xclip -selection c -o)
