@@ -314,3 +314,8 @@
          '(try-expand-line)))
     (call-interactively 'hippie-expand)))
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
+
+;; org mode configs
+(setq org-clock-persist 'history)
+(org-clock-persistence-insinuate)
+(setq org-log-done 'time)
