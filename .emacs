@@ -319,3 +319,8 @@
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
+
+(defun insert-image-from-file (filepath)
+  "insert image from the given filepath"
+  (interactive "f")
+  (insert-image (create-image filepath 'imagemagick nil :width 200)))
