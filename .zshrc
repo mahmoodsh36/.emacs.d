@@ -61,6 +61,7 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
 
 # aliases
+alias l="lsd"
 alias ls="ls --color"
 alias grep="grep --color=auto"
 alias o="open.sh"
@@ -68,7 +69,6 @@ alias v="vim"
 alias pi="sudo pacman -S --noconfirm"
 alias pq="pacman -Ss"
 alias history='history 1'
-alias l="ls"
 alias ytadl='youtube-dl -f bestaudio --extract-audio --add-metadata'
 alias gs="git status"
 alias gc="git commit -a -m"
@@ -127,7 +127,7 @@ math() { awk "BEGIN {print ${@:1}}"; }
 # command history
 HISTSIZE=1000000
 SAVEHIST=1000000
-HISTFILE=~/media/zsh_history
+HISTFILE=~/data/zsh_history
 
 IFS='
 '
