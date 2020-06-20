@@ -518,7 +518,7 @@ set timefmt="%d/%m/%y"
 set statusline+="%d %E"
 set confirm-=delete
 "set trashdir=$HOME/.trash
-set trashdir=$HOME/mnt/trash
+set trashdir=$HOME/trash
 
 " one window on startup
 " only
