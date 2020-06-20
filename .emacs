@@ -264,6 +264,9 @@
   (unless (find-font (font-spec :name "all-the-icons"))
     (all-the-icons-install-fonts t)))
 
+(use-package request
+  :ensure t)
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -276,7 +279,7 @@
 ;; change region highlight color, set it to black,
 ;; makes things more visible
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Source Code Pro 13" nil t)
+(set-frame-font "Hack 13" nil t)
 
 ;; start server
 (server-start)
@@ -320,7 +323,23 @@
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
 
+;; functions for working with images
 (defun insert-image-from-file (filepath)
   "insert image from the given filepath"
   (interactive "f")
   (insert-image (create-image filepath 'imagemagick nil :width 200)))
+
+(defun insert-image-from-url (url width height)
+  (interactive)
+  (unless url (setq url (url-get-url-at-point)))
+  (unless url
+    (error "Couldn't find URL."))
+  (let ((buffer (url-retrieve-synchronously url)))
+    (unwind-protect
+         (let ((data (with-current-buffer buffer
+                       (goto-char (point-min))
+                       (search-forward "\n\n")
+                       (buffer-substring (point) (point-max)))))
+           (insert-image (create-image data 'imagemagick t
+                                       :max-width width :max-height height)))
+      (kill-buffer buffer))))
