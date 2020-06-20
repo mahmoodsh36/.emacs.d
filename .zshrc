@@ -118,7 +118,7 @@ cmp_image() {
 
 # cd and ls into directory
 c() {
-    cd $@; ls
+    cd $@; lsd
 }
 
 # do some math
