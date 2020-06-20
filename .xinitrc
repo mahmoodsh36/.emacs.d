@@ -14,6 +14,7 @@ pulseaudio &
 # songs_progress_monitor.py &
 picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
+#setxkbmap -option ctrl:nocaps
 hsetroot -cover ~/.cache/wallpaper
 unclutter -root &
 # blueman-applet &
@@ -23,9 +24,9 @@ expressvpn connect &
 
 xrdb -load ~/.Xresources
 
-while true; do
-    dwm 2> ~/.cache/dwm.log
-done
+#while true; do
+    #dwm 2> ~/.cache/dwm.log
+#done
 
-#exec awesome
+exec awesome
 #exec qtile
