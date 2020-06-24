@@ -221,11 +221,11 @@
 (use-package evil-collection
   :ensure t)
 
-(use-package ein
-  :ensure t)
+;; (use-package ein
+;;   :ensure t)
 
-(use-package dart-mode
-  :ensure t)
+;; (use-package dart-mode
+;;   :ensure t)
 
 ;; (use-package indent-guide
 ;;   :ensure t
@@ -305,7 +305,13 @@
           (back-to-indentation)
           (insert "printf(")
           (end-of-line)
-          (insert ");"))))
+          (insert ");")))
+    (if (string= major-mode "emacs-lisp-mode")
+        (progn
+          (back-to-indentation)
+          (insert "(message ")
+          (end-of-line)
+          (insert ")"))))
 (global-set-key (kbd "C-x p") 'current-line-to-print-statement)
 (if (string= major-mode "python-mode")
     (message "hi"))
