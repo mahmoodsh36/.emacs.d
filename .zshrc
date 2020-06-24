@@ -48,6 +48,7 @@ setopt RM_STARSILENT
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 setopt HIST_FIND_NO_DUPS
+setopt interactivecomments
 
 # prompt
 # export PS1="[%m@%1~]$ "
@@ -65,6 +66,7 @@ alias l="lsd"
 alias ls="ls --color"
 alias grep="grep --color=auto"
 alias o="open.sh"
+alias vim="nvim"
 alias v="vim"
 alias pi="sudo pacman -S --noconfirm"
 alias pq="pacman -Ss"
@@ -80,7 +82,7 @@ alias vol="pactl list sinks | awk '/^\s*Volume/{print \$5}'"
 # nanoseconds since epoch
 alias nse="date +%s.%N"
 alias dl="curl -O"
-alias pg="ping google.com"
+alias pg="ping trackifyapp.net"
 alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
 alias fm="ffmpeg -i"
@@ -90,7 +92,6 @@ alias ti='date +%s%3N'
 alias locate='locate -i'
 alias of='o $(fzf)'
 alias spc="view_audio_spectrum.sh"
-alias vim="nvim"
 alias rsync="ionice -c2 -n7 rsync"
 alias ion="ionice -c2 -n7"
 alias calc="bc -l"
@@ -99,15 +100,6 @@ alias calc="bc -l"
 ffwm() {
     mime="$1"
     find -type f | parallel -j+1 mimetype | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
-}
-
-# open all files in current directory using open.sh script
-oa() {
-    trap "exit" 2
-    for file in $(ls --color=no); do
-        echo $file 
-        open.sh $file || return;
-    done
 }
 
 # get the difference in percentage between 2 images
@@ -123,6 +115,15 @@ c() {
 
 # do some math
 math() { awk "BEGIN {print ${@:1}}"; }
+
+# colors for man pages
+export LESS_TERMCAP_mb=$'\e[1;32m'
+export LESS_TERMCAP_md=$'\e[1;32m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;4;31m'
 
 # command history
 HISTSIZE=1000000
