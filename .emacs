@@ -5,10 +5,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" default)))
+    ("b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default)))
  '(package-selected-packages
    (quote
-    (lsp-python-ms all-the-icons lua-mode ranger web-mode jinja2-mode spacemacs-theme darkroom highlight-parenthases beacon highlight-thing vterm use-package swiper rainbow-delimiters projectile org-bullets linum-relative helm gruvbox-theme evil-surround evil-org evil-magit evil-collection emmet-mode ein dart-mode company-lsp command-log-mode avy))))
+    (slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -153,8 +153,8 @@
   (setq projectile-globally-ignored-files (append '("*.py" "*.o" "*.so") projectile-globally-ignored-files)))
 
 ;; ivy for projectile
-(use-package ivy
-  :ensure t)
+;; (use-package ivy
+;;   :ensure t)
 
 ;; evil-surround for evil mode
 (use-package evil-surround
@@ -267,6 +267,19 @@
 (use-package request
   :ensure t)
 
+(use-package counsel
+  :ensure t
+  :config (ivy-mode t))
+
+(use-package slime-company
+  :ensure t)
+
+(use-package slime
+  :ensure t
+  :config
+  (setq inferior-lisp-program "sbcl")
+  (slime-setup '(slime-company)))
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -348,4 +361,18 @@
                        (buffer-substring (point) (point-max)))))
            (insert-image (create-image data 'imagemagick t
                                        :max-width width :max-height height)))
+      (kill-buffer buffer))))
+
+(defun insert-image-from-url-no-predefined-size (url)
+  (interactive)
+  (unless url (setq url (url-get-url-at-point)))
+  (unless url
+    (error "Couldn't find URL."))
+  (let ((buffer (url-retrieve-synchronously url)))
+    (unwind-protect
+         (let ((data (with-current-buffer buffer
+                       (goto-char (point-min))
+                       (search-forward "\n\n")
+                       (buffer-substring (point) (point-max)))))
+           (insert-image (create-image data 'imagemagick t)))
       (kill-buffer buffer))))
