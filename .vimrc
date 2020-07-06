@@ -81,5 +81,5 @@ command! TurnOffColors call TurnOffColors()
 " disable welcome message
 set shortmess+=I
 
-color gruvbox
+"color gruvbox
 set bg=dark
