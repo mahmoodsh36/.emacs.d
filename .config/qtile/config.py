@@ -9,7 +9,7 @@ alt = "mod1"
 default_theme = dict(fontsize=17,
                      foreground="#cccccc",
                      background="000000",
-                     font="Source Code Pro")
+                     font="Hack")
 
 def resize(qtile, direction):
     layout = qtile.current_layout
@@ -97,7 +97,6 @@ keys = [
     Key([sup, "control"], "l", resize_right),
     Key([sup, "shift"], "n", lazy.layout.normalize()),
     Key([sup], "t", lazy.layout.toggle_split()),
-
 ]
 
 groups = [Group(str(group_num)) for group_num in range(1, 7)]
