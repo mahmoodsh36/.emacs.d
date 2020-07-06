@@ -1,15 +1,15 @@
 configuration {
 /*	modi: "window,run,ssh";*/
     case-sensitive: false;
-    width: 80;
+    width: 800;
     lines: 35;
-	columns: 2;
-    font: "source code pro 13";
-/*	bw: 1;*/
-/*	location: 0;*/
-/*	padding: 5;*/
-/*	yoffset: 0;*/
-/*	xoffset: 0;*/
+    /*columns: 2;*/
+    font: "Hack 13";
+    /*bw: 1;*/
+    location: 0;
+    padding: 10;
+    /*yoffset: -100;*/
+    /*xoffset: -200;*/
 /*	fixed-num-lines: true;*/
 /*	show-icons: false;*/
 /*	terminal: "rofi-sensible-terminal";*/
@@ -29,7 +29,7 @@ configuration {
 /*	sort: false;*/
 /*	sorting-method: ;*/
 /*	cycle: true;*/
-/*	sidebar-mode: false;*/
+    /*sidebar-mode: true;*/
 /*	eh: 1;*/
 /*	auto-select: false;*/
 /*	parse-hosts: false;*/
@@ -43,7 +43,7 @@ configuration {
 /*	filter: ;*/
 /*	separator-style: "dash";*/
 /*	hide-scrollbar: false;*/
-    fullscreen: true;
+    /*fullscreen: true;*/
 /*	fake-transparency: false;*/
 /*	dpi: -1;*/
 /*	threads: 0;*/
@@ -54,10 +54,10 @@ configuration {
 /*	click-to-exit: true;*/
 /*	show-match: true;*/
 /*	theme: ;*/
-/*	color-normal: ;*/
-/*	color-urgent: ;*/
-/*	color-active: ;*/
-/*	color-window: ;*/
+    /*color-normal: "#000000";*/
+    /*color-urgent: "#ffffff";*/
+    /*color-active: "#000000";*/
+    /*color-window: "#ffffff";*/
 /*	max-history-size: 25;*/
 /*	combi-hide-mode-prefix: false;*/
 /*	matching-negate-char: '-' /* unsupported */;*/
@@ -108,7 +108,7 @@ configuration {
 /*	kb-cancel: "Escape,Control+g,Control+bracketleft";*/
     kb-custom-1: "Alt+e";
     kb-custom-2: "Alt+s";
-    kb-custom-3: "Alt+a";
+    /*kb-custom-3: "Alt+a";*/
 /*	kb-custom-4: "Alt+4";*/
 /*	kb-custom-5: "Alt+5";*/
 /*	kb-custom-6: "Alt+6";*/
