@@ -5,7 +5,7 @@ fi
 
 sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
-dunst &
+#dunst &
 pasystray &
 parcellite &
 pulseaudio &
@@ -26,11 +26,11 @@ expressvpn connect &
 xrdb -load ~/.Xresources
 
 #while true; do
-   #dwm 2> ~/.cache/dwm.log
+#  dwm 2> ~/.cache/dwm.log
 #done
 
-xsetroot -cursor_name left_ptr
-#exec awesome
+#xsetroot -cursor_name left_ptr
+exec awesome
 #exec qtile
-exec bspwm
+#exec bspwm
 #exec sbcl --load /home/mahmooz/startstumpwm
