@@ -1,16 +1,15 @@
 configuration {
 /*	modi: "window,run,ssh";*/
-    case-sensitive: false;
-    width: 800;
-    lines: 35;
-    /*columns: 2;*/
+    width: 50;
+    lines: 1;
+    columns: 1;
     font: "Hack 13";
-    /*bw: 1;*/
+/*	bw: 1;*/
     location: 0;
-    padding: 10;
-    /*yoffset: -100;*/
-    /*xoffset: -200;*/
-/*	fixed-num-lines: true;*/
+/*	padding: 5;*/
+    yoffset: 0;
+    xoffset: 0;
+    fixed-num-lines: false;
 /*	show-icons: false;*/
 /*	terminal: "rofi-sensible-terminal";*/
 /*	ssh-client: "ssh";*/
@@ -28,8 +27,9 @@ configuration {
 /*	ignored-prefixes: "";*/
 /*	sort: false;*/
 /*	sorting-method: ;*/
+/*	case-sensitive: false;*/
 /*	cycle: true;*/
-    /*sidebar-mode: true;*/
+/*	sidebar-mode: false;*/
 /*	eh: 1;*/
 /*	auto-select: false;*/
 /*	parse-hosts: false;*/
@@ -43,7 +43,7 @@ configuration {
 /*	filter: ;*/
 /*	separator-style: "dash";*/
 /*	hide-scrollbar: false;*/
-    /*fullscreen: true;*/
+/*	fullscreen: false;*/
 /*	fake-transparency: false;*/
 /*	dpi: -1;*/
 /*	threads: 0;*/
@@ -55,9 +55,9 @@ configuration {
 /*	show-match: true;*/
 /*	theme: ;*/
     /*color-normal: "#000000";*/
-    /*color-urgent: "#ffffff";*/
+    /*color-urgent: "#000000";*/
     /*color-active: "#000000";*/
-    /*color-window: "#ffffff";*/
+    /*color-window: "#000000";*/
 /*	max-history-size: 25;*/
 /*	combi-hide-mode-prefix: false;*/
 /*	matching-negate-char: '-' /* unsupported */;*/
@@ -103,12 +103,12 @@ configuration {
 /*	kb-row-select: "Control+space";*/
 /*	kb-screenshot: "Alt+S";*/
 /*	kb-ellipsize: "Alt+period";*/
-    kb-toggle-case-sensitivity: "Alt+i";
+/*	kb-toggle-case-sensitivity: "grave,dead_grave";*/
 /*	kb-toggle-sort: "Alt+grave";*/
 /*	kb-cancel: "Escape,Control+g,Control+bracketleft";*/
-    kb-custom-1: "Alt+e";
-    kb-custom-2: "Alt+s";
-    /*kb-custom-3: "Alt+a";*/
+/*	kb-custom-1: "Alt+1";*/
+/*	kb-custom-2: "Alt+2";*/
+/*	kb-custom-3: "Alt+3";*/
 /*	kb-custom-4: "Alt+4";*/
 /*	kb-custom-5: "Alt+5";*/
 /*	kb-custom-6: "Alt+6";*/
@@ -143,4 +143,4 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 }
-@import "/usr/share/rofi/themes/gruvbox-dark-hard.rasi"
+@import "theme.rasi"
