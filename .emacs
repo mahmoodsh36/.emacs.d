@@ -255,7 +255,9 @@
   :ensure t)
 
 (use-package lua-mode
-  :ensure t)
+  :ensure t
+  :config
+  (setq lua-indent-level 4))
 
 (use-package all-the-icons
   :ensure t
