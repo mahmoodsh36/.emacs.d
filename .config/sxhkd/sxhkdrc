@@ -54,11 +54,9 @@ super + ctrl + space
 
 super + alt + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%};\
-         dwm_statusbar_update.sh;\
          cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
 super + alt + shift + {j,k}
      pactl set-sink-volume @DEFAULT_SINK@ {0%, 100%};\
-         dwm_statusbar_update.sh;\
          cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
 
 super + s; {l,h,s}
@@ -218,6 +216,3 @@ super + w; {g, i, y}
 #
 #super + alt + s
 #    pgrep dzen2_status && pkill dzen2 || dzen2_statusbar.sh
-
-ctrl + super + !button1
-    notify-send 'Pointer root coordinates: %i, %i.'
