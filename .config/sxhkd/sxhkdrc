@@ -1,14 +1,15 @@
 super + Return
     st -e tmux
 
-super + x ; {e,w,s,j,k,f,p}
+super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
      firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
      rofi_select_emoji.sh, \
      kill_process.sh, \
      notify-send 'launched vifm' && st -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
-     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
+     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
+     st_with_cmd.sh nvim "$(find / | rofi -dmenu -i -p 'file')"}
 
 super + x ; {n,I,v,d,t,l,u}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
@@ -51,12 +52,12 @@ super + a ; {s,w,c,n,d,o}
 super + ctrl + space
     notify-send "switched layout to $(switch_layout.sh)"
 
-super + alt + {j,k}
-     pactl set-sink-volume @DEFAULT_SINK@ {-3%, +3%};\
-         cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
-super + alt + shift + {j,k}
-     pactl set-sink-volume @DEFAULT_SINK@ {0%, 100%};\
-         cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
+#super + alt + {j,k}
+#     amixer set Master {3%-, 3%+};\
+#         cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
+#super + alt + shift + {j,k}
+#     amixer set Master {0%, 100%};\
+#         cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
 
 super + s; {l,h,s}
     playerctl {next,previous,play-pause}
