@@ -96,6 +96,7 @@ alias rsync="ionice -c2 -n7 rsync"
 alias ion="ionice -c2 -n7"
 alias calc="bc -l"
 alias bgd="bg; disown"
+alias psg="ps -e | grep"
 
 # find files with a certain mimetype
 ffwm() {
@@ -146,3 +147,7 @@ load_plugins() {
 }
 
 load_plugins 2>/dev/null
+
+export ANDROID_HOME=$HOME/flutter/android/
+export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+export PATH="${PATH}:$HOME/flutter/bin/"
