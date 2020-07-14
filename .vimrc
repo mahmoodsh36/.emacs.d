@@ -64,9 +64,6 @@ let &t_SI = "\<esc>[5 q"
 let &t_SR = "\<esc>[4 q"
 let &t_EI = "\<esc>[2 q"
 
-command! Compile !./compile
-command! Run !./compile && ./run
-
 function! TurnOffColors()
     :set t_Co=0
     syntax off
@@ -82,4 +79,4 @@ command! TurnOffColors call TurnOffColors()
 set shortmess+=I
 
 "color gruvbox
-set bg=dark
+"set bg=dark
