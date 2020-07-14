@@ -1,13 +1,13 @@
 configuration {
 /*	modi: "window,run,ssh";*/
     width: 50;
-    lines: 1;
+    lines: 20;
     columns: 1;
     font: "Hack 13";
 /*	bw: 1;*/
-    location: 0;
+    location: 2;
 /*	padding: 5;*/
-    yoffset: 0;
+    yoffset: 25;
     xoffset: 0;
     fixed-num-lines: false;
 /*	show-icons: false;*/
@@ -73,8 +73,8 @@ configuration {
 /*	kb-primary-paste: "Control+V,Shift+Insert";*/
 /*	kb-secondary-paste: "Control+v,Insert";*/
 /*	kb-clear-line: "Control+w";*/
-/*	kb-move-front: "Control+a";*/
-/*	kb-move-end: "Control+e";*/
+    kb-move-front: "Control+a";
+    kb-move-end: "Control+e";
 /*	kb-move-word-back: "Alt+b,Control+Left";*/
 /*	kb-move-word-forward: "Alt+f,Control+Right";*/
 /*	kb-move-char-back: "Left,Control+b";*/
@@ -98,8 +98,8 @@ configuration {
 /*	kb-row-tab: "Tab";*/
 /*	kb-page-prev: "Page_Up";*/
 /*	kb-page-next: "Page_Down";*/
-/*	kb-row-first: "Home,KP_Home";*/
-/*	kb-row-last: "End,KP_End";*/
+    kb-row-first: "Alt+a,Home,KP_Home";
+    kb-row-last: "Alt+e,End,KP_End";
 /*	kb-row-select: "Control+space";*/
 /*	kb-screenshot: "Alt+S";*/
 /*	kb-ellipsize: "Alt+period";*/
