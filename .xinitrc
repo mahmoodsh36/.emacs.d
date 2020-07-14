@@ -6,9 +6,8 @@ fi
 sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
-pasystray &
 parcellite &
-pulseaudio &
+#pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &
