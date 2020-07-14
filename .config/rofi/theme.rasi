@@ -13,24 +13,24 @@
   bg:         #282c34;
 
   spacing: 0;
-  background-color: transparent;
+  background-color: @black;
 
   font: "Hack 14";
   text-color: @text;
 }
 
 window {
-  transparency: "real";
+  /*transparency: "real";*/
   fullscreen: true;
   background-color: #282c34dd;
 }
 
 mainbox {
-  padding: 5% 30%;
+  padding: 5px 5px;
 }
 
 inputbar {
-  margin: 0px 0px 20px 0px;
+  margin: 0px 0px 5px 0px;
   children: [prompt, textbox-prompt-colon, entry, case-indicator];
 }
 
@@ -48,17 +48,9 @@ entry {
   margin: 0px 10px;
 }
 
-listview {
-  spacing: 5px;
-  dynamic: true;
-  scrollbar: false;
-}
-
 element {
-  padding: 5px;
   text-color: @text-alt;
   highlight: bold #95ee8f; /* green */
-  border-radius: 3px;
 }
 
 element selected {
