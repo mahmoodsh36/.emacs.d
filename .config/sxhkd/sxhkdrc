@@ -9,16 +9,20 @@ super + x ; {e,w,s,j,k,f,p,F}
      kill_process.sh, \
      notify-send 'launched vifm' && st -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
      st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
-     st_with_cmd.sh nvim "$(find / | rofi -dmenu -i -p 'file')"}
+     file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
 
-super + x ; {n,I,v,d,t,l,u}
+super + x ; {n,I,v,d,t,l,u,g}
     {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
      notify-send  -t 60000 "$(xprop | tail -40)", \
      st -e zsh -i -c vim & notify-send 'launched vim', \
      notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
      notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
      lock.sh, \
-     notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh}
+     notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh,\
+     file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
+
+super + x ; {h}
+     {cd $HOME; file="$(find | cut -c3- | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
 
 super + e
     toggle_touchpad.sh
