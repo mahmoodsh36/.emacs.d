@@ -7,15 +7,15 @@ sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
 parcellite &
-#pulseaudio &
+pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 
 # songs_progress_monitor.py &
 picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 #setxkbmap -option ctrl:nocaps
-#hsetroot -cover ~/.cache/wallpaper
-hsetroot -solid '#000000'
+hsetroot -cover ~/.cache/wallpaper
+#hsetroot -solid '#000000'
 unclutter -root &
 # blueman-applet &
 syndaemon -K -i 0.5 -R -d &
