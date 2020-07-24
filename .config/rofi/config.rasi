@@ -3,7 +3,7 @@ configuration {
     width: 50;
     lines: 20;
     columns: 1;
-    font: "Hack 13";
+    font: "fantasque sans mono 14";
 /*	bw: 1;*/
     location: 2;
 /*	padding: 5;*/

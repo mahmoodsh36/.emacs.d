@@ -15,7 +15,7 @@
   spacing: 0;
   background-color: @black;
 
-  font: "Hack 14";
+  /*font: "Hack 14";*/
   text-color: @text;
 }
 
