@@ -6,6 +6,6 @@ Exec=st
 Terminal=false
 Type=Application
 Encoding=UTF-8
-Icon=terminal
+Icon=utilities-terminal
 Categories=System;TerminalEmulator;
 Keywords=shell;prompt;command;commandline;cmd;st;suckless;simple;terminal
