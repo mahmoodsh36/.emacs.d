@@ -34,7 +34,7 @@
 
 (require 'use-package)
 
-;; set tabs to 4 spaces, 2 for javascript
+;; set tabs to 4 spaces
 (setq-default tab-width 4)
 (setq js-indent-level 4)
 (setq-default c-basic-offset 4)
@@ -294,7 +294,7 @@
 ;; change region highlight color, set it to black,
 ;; makes things more visible
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "Hack 13" nil t)
+(set-frame-font "fantasque sans mono 14" nil t)
 
 ;; start server
 (server-start)
@@ -362,7 +362,7 @@
                        (search-forward "\n\n")
                        (buffer-substring (point) (point-max)))))
            (insert-image (create-image data 'imagemagick t
-                                       :max-width width :max-height height)))
+                                       :max-width width :max-height height) "i"))
       (kill-buffer buffer))))
 
 (defun insert-image-from-url-no-predefined-size (url)
@@ -376,5 +376,5 @@
                        (goto-char (point-min))
                        (search-forward "\n\n")
                        (buffer-substring (point) (point-max)))))
-           (insert-image (create-image data 'imagemagick t)))
+           (insert-image (create-image data 'imagemagick t) "i"))
       (kill-buffer buffer))))
