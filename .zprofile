@@ -1,7 +1,7 @@
 # exports
 export TERMINAL="st"
 export BROWSER="firefox"
-export EDITOR="vim"
+export EDITOR="nvim"
 
 # fix a java swing problem
 export _JAVA_AWT_WM_NONREPARENTING=1.
