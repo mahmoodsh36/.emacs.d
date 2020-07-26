@@ -9,6 +9,7 @@ sxhkd &
 parcellite &
 pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
+nm-applet &
 
 # songs_progress_monitor.py &
 picom --config ~/.config/compton.conf &
