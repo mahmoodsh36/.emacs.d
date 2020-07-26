@@ -17,7 +17,7 @@ super + x ; {n,I,v,d,t,l,u,g}
      st -e zsh -i -c vim & notify-send 'launched vim', \
      notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
      notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
-     lock.sh, \
+     xset dpms force off, \
      notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh,\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
 
