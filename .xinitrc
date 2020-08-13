@@ -7,7 +7,7 @@ sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
 parcellite &
-pulseaudio &
+#pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
 
@@ -19,9 +19,9 @@ hsetroot -cover ~/.cache/wallpaper
 #hsetroot -solid '#000000'
 unclutter -root &
 # blueman-applet &
-syndaemon -K -i 0.5 -R -d &
+#syndaemon -K -i 0.5 -R -d &
 
-expressvpn connect &
+#expressvpn connect &
 
 xrdb -load ~/.Xresources
 
@@ -33,4 +33,3 @@ xrdb -load ~/.Xresources
 exec awesome
 #exec qtile
 #exec bspwm
-#exec sbcl --load /home/mahmooz/startstumpwm
