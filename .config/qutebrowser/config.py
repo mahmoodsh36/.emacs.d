@@ -35,7 +35,7 @@ c.content.user_stylesheets = [
         #'gruvbox.css',
 ]
 
-c.colors.webpage.bg = 'black'
+#c.colors.webpage.bg = 'black'
 
 c.content.cookies.accept = 'all'
 c.content.notifications = False
@@ -55,7 +55,7 @@ c.fonts.messages.info = font_size
 c.fonts.messages.warning = font_size
 c.fonts.prompts = font_size
 c.fonts.statusbar = font_size
-c.fonts.tabs = font_size
+# c.fonts.tabs = font_size
 c.fonts.web.size.minimum = 15
 c.fonts.web.size.default = 15
 
