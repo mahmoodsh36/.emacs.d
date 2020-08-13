@@ -8,7 +8,7 @@
     ("b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default)))
  '(package-selected-packages
    (quote
-    (slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))))
+    (dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -26,7 +26,7 @@
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/")
+             '("melpa" . "http://melpa.org/packages/")
              '("gnu" . "http://elpa.gnu.org/packages/"))
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -282,6 +282,11 @@
   (setq inferior-lisp-program "sbcl")
   (slime-setup '(slime-company)))
 
+(use-package dumb-jump
+  :ensure t
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -378,3 +383,7 @@
                        (buffer-substring (point) (point-max)))))
            (insert-image (create-image data 'imagemagick t) "i"))
       (kill-buffer buffer))))
+
+;; mouse scroll behavior
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . nil)))
+(setq mouse-wheel-progressive-speed nil)
