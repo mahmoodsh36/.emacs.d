@@ -17,12 +17,13 @@ super + x ; {n,I,v,d,t,l,u,g}
      st -e zsh -i -c vim & notify-send 'launched vim', \
      notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
      notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
-     xset dpms force off, \
+     xset dpms force off,\
      notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh,\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
 
-super + x ; {h}
-     {cd $HOME; file="$(find | cut -c3- | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
+super + x ; {h,m}
+     {cd $HOME; file="$(find | cut -c3- | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file",\
+      notify-send 'launched scrcpy' && scrcpy}
 
 super + alt + p ; {i, u}
     {install_program.sh,\
@@ -57,8 +58,8 @@ super + a ; {s,w,c,n,d,o}
      pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh, \
      pkill dunst && notify-send 'restarted dunst' && dunst}
 
-super + ctrl + space
-    notify-send "switched layout to $(switch_layout.sh)"
+#super + ctrl + space
+#    notify-send "switched layout to $(switch_layout.sh)"
 
 #super + alt + {j,k}
 #     amixer set Master {3%-, 3%+};\
