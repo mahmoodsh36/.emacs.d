@@ -97,6 +97,7 @@ alias ion="ionice -c2 -n7"
 alias calc="bc -l"
 alias bgd="bg; disown"
 alias psg="ps -e | grep"
+alias mt="file --mime-type -b"
 
 # find files with a certain mimetype
 ffwm() {
