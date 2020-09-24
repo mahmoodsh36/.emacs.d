@@ -97,6 +97,9 @@ alias ion="ionice -c2 -n7"
 alias calc="bc -l"
 alias bgd="bg; disown"
 alias psg="ps -e | grep"
+alias mt="file --mime-type -b"
+alias cp="rsync -a --info=progress2"
+alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
 
 # find files with a certain mimetype
 ffwm() {
