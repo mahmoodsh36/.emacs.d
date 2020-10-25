@@ -1,6 +1,9 @@
 super + Return
     alacritty -e tmux
 
+super + shift + Return
+    alacritty
+
 super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
      firefox & notify-send "launched firefox", \
@@ -21,9 +24,11 @@ super + x ; {n,I,v,d,t,l,u,g}
      notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh,\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
 
-super + x ; {h,m}
+super + x ; {h,m,r,R}
      {cd $HOME; file="$(find | cut -c3- | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file",\
-      notify-send 'launched scrcpy' && scrcpy}
+      notify-send 'launched scrcpy' && scrcpy,\
+      notify-send 'launched runescape' && runescape-launcher,\
+      notify-send 'launched evilscape' && java -jar ~/data/dl/evilscape.jar}
 
 super + alt + p ; {i, u}
     {install_program.sh,\
