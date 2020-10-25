@@ -101,6 +101,10 @@ alias mt="file --mime-type -b"
 alias cp="rsync -a --info=progress2"
 alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
 
+#rm() {
+#    rsync -a --info=progress2 --remove-source-files $1 mahmooz@home:trash/
+#}
+
 # find files with a certain mimetype
 ffwm() {
     mime="$1"
