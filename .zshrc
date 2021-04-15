@@ -100,6 +100,13 @@ alias psg="ps -e | grep"
 alias mt="file --mime-type -b"
 alias cp="rsync -a --info=progress2"
 alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
+alias cat="bat"
+alias ytdl='youtube-dl'
+
+update_trackify_android_apk() {
+    rsync -P ~/workspace/trackify_android/build/app/outputs/flutter-apk/app-release.apk \
+        trackifyapp.net:/home/mahmooz/workspace/trackify/trackify/webapp/static/trackify.apk
+}
 
 #rm() {
 #    rsync -a --info=progress2 --remove-source-files $1 mahmooz@home:trash/
@@ -158,3 +165,6 @@ load_plugins 2>/dev/null
 export ANDROID_HOME=$HOME/flutter/android/
 export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 export PATH="${PATH}:$HOME/flutter/bin/"
+
+# im gonnna keep this here temporarily
+setxkbmap -option caps:swapescape
