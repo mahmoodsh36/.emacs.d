@@ -6,29 +6,29 @@ super + shift + Return
 
 super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
-     firefox & notify-send "launched firefox", \
+     brave & notify-send "launched brave", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
      rofi_select_emoji.sh, \
      kill_process.sh, \
      notify-send 'launched ranger' && alacritty -e tmux new-session \; send-keys 'ranger; exit' C-m  \;, \
-     st -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
+     alacritty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
 
 super + x ; {n,I,v,d,t,l,u,g}
-    {st -e zsh -i -c newsboat & notify-send 'launched newsboat', \
+    {alacritty -e zsh -i -c newsboat & notify-send 'launched newsboat', \
      notify-send  -t 60000 "$(xprop | tail -40)", \
-     st -e zsh -i -c vim & notify-send 'launched vim', \
-     notify-send 'launched diary' && st -e zsh -i -c diary.sh, \
+     alacritty -e zsh -i -c vim & notify-send 'launched vim', \
+     notify-send 'launched diary' && alacritty -e zsh -i -c diary.sh, \
      notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
      xset dpms force off,\
-     notify-send 'launched music diary' && st -e zsh -i -c music_diary.sh,\
+     notify-send 'launched music diary' && alacritty -e zsh -i -c music_diary.sh,\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
 
 super + x ; {h,m,r,R}
      {cd $HOME; file="$(find | cut -c3- | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file",\
       notify-send 'launched scrcpy' && scrcpy,\
       notify-send 'launched runescape' && runescape-launcher,\
-      notify-send 'launched evilscape' && java -jar ~/data/dl/evilscape.jar}
+      notify-send 'launched Envision' && java -jar ~/data/dl/Envision\ Loader.jar}
 
 super + alt + p ; {i, u}
     {install_program.sh,\
@@ -47,7 +47,7 @@ super + y ; super + y ; {i}
 # screenshot
 super + {_,shift +} p
     file=$(echo ~/data/images/scrots/`date | tr " " "_"`.png) && \
-    notif_str="screenshot taken"; {scrot, notif_str="image of selection taken"; sleep 0.2; scrot --select} "$file" && echo -n "$file" | xclip -selection c && notify-send $notif_str
+    notif_str="screenshot taken"; {scrot, notif_str="image of selection taken"; sleep 0.2; scrot -s} "$file" && echo -n "$file" | xclip -selection c && notify-send $notif_str
 
 super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
@@ -83,7 +83,7 @@ super + v
 
 super + w; {g, i, y}
     term=$(rofi -dmenu -lines 0 -p search);\
-    [ ! -z "$term" ] && firefox {"google.com/search?q=$term",\
+    [ ! -z "$term" ] && brave {"google.com/search?q=$term",\
                                  "imdb.com/find?q=$term",\
                                  "youtube.com/results?search_query=$term"}
 
