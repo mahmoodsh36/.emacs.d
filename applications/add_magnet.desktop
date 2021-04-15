@@ -1,7 +1,0 @@
-[Desktop Entry]
-Exec=add_magnet.sh %U
-MimeType=application/x-bittorrent;x-scheme-handler/magnet;
-Type=Application
-Name=add_magnet
-GenericName=add magnet
-NoDisplay=true
