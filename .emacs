@@ -4,11 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default)))
+   '("b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
  '(package-selected-packages
-   (quote
-    (dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))))
+   '(racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -82,9 +80,12 @@
 (global-auto-revert-mode t)
 ;; enable all disabled commands
 (setq disabled-command-function nil)
+;; initial frame size
+(when window-system (set-frame-size (selected-frame) 160 48))
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
+(global-set-key (kbd "C-c g") 'counsel-git-grep)
 
 ;; no damn fringes dude!
 (set-fringe-style 0)
@@ -224,8 +225,8 @@
 ;; (use-package ein
 ;;   :ensure t)
 
-;; (use-package dart-mode
-;;   :ensure t)
+(use-package dart-mode
+  :ensure t)
 
 ;; (use-package indent-guide
 ;;   :ensure t
@@ -287,6 +288,26 @@
   :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
+(use-package mmm-mode
+  :ensure t)
+
+(use-package indent-guide
+  :ensure t
+  :config
+  (indent-guide-global-mode))
+
+(use-package vterm
+  :ensure t)
+
+(use-package rust-mode
+  :ensure t)
+
+;;(use-package racer
+;;  :ensure t
+;;  :config
+;;  (add-hook 'rust-mode-hook #'racer-mode)
+;;  (add-hook 'racer-mode-hook #'eldoc-mode))
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -312,6 +333,17 @@
 (transparency 95)
 
 ;; function to make printing easier for many languages
+(defun current-line-to-empty-class ()
+  (interactive)
+  (if (string= major-mode "python-mode")
+      (progn
+        (back-to-indentation)
+        (insert "class ")
+        (end-of-line)
+        (insert ":")
+        (newline-and-indent)
+        (insert "def __init__(self):")
+        (newline-and-indent))))
 (defun current-line-to-print-statement ()
     (interactive)
     (if (string= major-mode "python-mode")
