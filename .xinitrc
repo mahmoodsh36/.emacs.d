@@ -18,7 +18,8 @@ setxkbmap -option caps:swapescape &
 hsetroot -cover ~/.cache/wallpaper
 #hsetroot -solid '#000000'
 unclutter -root &
-# blueman-applet &
+#blueman-applet &
+mpris-proxy &
 #syndaemon -K -i 0.5 -R -d &
 
 #expressvpn connect &
@@ -28,6 +29,9 @@ xrdb -load ~/.Xresources
 #while true; do
 #  dwm 2> ~/.cache/dwm.log
 #done
+
+# disable beep sound
+sudo rmmod pcspkr
 
 #xsetroot -cursor_name left_ptr
 exec awesome
