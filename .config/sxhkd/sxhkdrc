@@ -8,8 +8,8 @@ super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
      brave & notify-send "launched brave", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
-     rofi_select_emoji.sh, \
-     kill_process.sh, \
+     ~/workspace/scripts/rofi_select_emoji.sh, \
+     ~/workspace/scripts/kill_process.sh, \
      notify-send 'launched ranger' && alacritty -e tmux new-session \; send-keys 'ranger; exit' C-m  \;, \
      alacritty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
@@ -76,7 +76,7 @@ super + a ; {s,w,c,n,d,o}
 super + s; {l,h,s}
     playerctl {next,previous,play-pause}
 super + s; {w}
-    {spotify_lyrics.sh}
+    {~/workspace/scripts/spotify_lyrics.sh}
 
 super + v
     sleep 0.1; xdotool type $(xclip -selection c -o)
