@@ -7,7 +7,7 @@ sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
 parcellite &
-pulseaudio &
+#pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
 
@@ -15,8 +15,7 @@ nm-applet &
 picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 #setxkbmap -option ctrl:nocaps
-hsetroot -cover ~/.cache/wallpaper
-#hsetroot -solid '#000000'
+feh --bg-scale ~/.cache/wallpaper
 unclutter -root &
 #blueman-applet &
 mpris-proxy &
