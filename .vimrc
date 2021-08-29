@@ -80,3 +80,6 @@ set shortmess+=I
 
 "color gruvbox
 "set bg=dark
+
+" search without highlighting
+:set nohlsearch
