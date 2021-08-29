@@ -62,7 +62,7 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
 
 # aliases
-alias l="lsd"
+alias l="ls"
 alias ls="ls --color"
 alias grep="grep --color=auto"
 alias o="open.sh"
@@ -82,7 +82,7 @@ alias vol="pactl list sinks | awk '/^\s*Volume/{print \$5}'"
 # nanoseconds since epoch
 alias nse="date +%s.%N"
 alias dl="curl -O"
-alias pg="ping trackifyapp.net"
+alias pg="ping mahmoodsheikh.com"
 alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
 alias fm="ffmpeg -i"
@@ -102,6 +102,7 @@ alias cp="rsync -a --info=progress2"
 alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
 alias cat="bat"
 alias ytdl='youtube-dl'
+alias nrs="sudo nixos-rebuild switch"
 
 update_trackify_android_apk() {
     rsync -P ~/workspace/trackify_android/build/app/outputs/flutter-apk/app-release.apk \
@@ -126,7 +127,7 @@ cmp_image() {
 
 # cd and ls into directory
 c() {
-    cd $@; lsd
+    cd $@; ls
 }
 
 # do some math
@@ -168,3 +169,4 @@ export PATH="${PATH}:$HOME/flutter/bin/"
 
 # im gonnna keep this here temporarily
 setxkbmap -option caps:swapescape
+if [ -e /home/mahmooz/.nix-profile/etc/profile.d/nix.sh ]; then . /home/mahmooz/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
