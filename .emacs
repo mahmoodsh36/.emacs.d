@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
+   '("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
  '(package-selected-packages
-   '(racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package)))
+   '(command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -30,6 +30,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(async-bytecomp-package-mode 1)
 (require 'use-package)
 
 ;; set tabs to 4 spaces
@@ -82,10 +83,23 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 (when window-system (set-frame-size (selected-frame) 160 48))
+;; disable prompt when executing code block in org mode
+(setq org-confirm-babel-evaluate nil)
+;; enable more code block languages for org mode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python . t)
+   (js . t)
+   (lisp . t)
+   (java . t)
+   (lua . t)))
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-c g") 'counsel-git-grep)
+(global-set-key (kbd "C-x D") 'image-dired)
+(global-set-key (kbd "C-c f") 'find-function-at-point)
 
 ;; no damn fringes dude!
 (set-fringe-style 0)
@@ -105,10 +119,16 @@
 
 ;; evil-mode
 (setq evil-want-keybinding nil)
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode))
 (use-package evil
   :ensure t
   :config
-  (evil-mode 1))
+  (evil-mode 1)
+  (evil-set-undo-system 'undo-tree)
+  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs))
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -137,10 +157,10 @@
 ;; magit
 (use-package magit
   :ensure t)
-(use-package evil-magit
-  :ensure t
-  :config
-  (require 'evil-magit))
+;;(use-package evil-magit
+;;  :ensure t
+;;  :config
+;;  (require 'evil-magit))
 
 ;; projectile
 (use-package projectile
@@ -193,26 +213,27 @@
 (use-package evil-org
   :ensure t)
 
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :config
-;;   (add-hook 'prog-mode-hook #'lsp)
-;;   (remove-hook 'html-mode-hook #'lsp))
-
-;; (use-package company-lsp
-;;  :ensure t)
+;;(use-package lsp-mode
+;;:ensure t
+;;:config
+;;(add-hook 'prog-mode-hook #'lsp)
+;;(remove-hook 'html-mode-hook #'lsp))
 
 ;; ====== gruvbox
-(use-package gruvbox-theme
-  :ensure t
-  :config
-  (load-theme 'gruvbox))
+;;(use-package gruvbox-theme
+;;:ensure t
+;;:config
+;;(load-theme 'gruvbox))
 ;; ====== spacemacs
 ;;(setq spacemacs-theme-comment-bg nil)
 ;;(setq spacemacs-theme-comment-italic t)
 ;;(use-package spacemacs-theme
-;;  :defer t
-;;  :init (load-theme 'spacemacs-dark t))
+;;:defer t
+;;:init (load-theme 'spacemacs-dark t))
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn))
 
 (use-package avy
   :ensure t
@@ -220,19 +241,16 @@
   (global-set-key (kbd "C-;") 'avy-goto-char))
 
 (use-package evil-collection
-  :ensure t)
+  :after (evil)
+  :config
+  (setq evil-collection-mode-list '(dired))
+  (evil-collection-init))
 
 ;; (use-package ein
 ;;   :ensure t)
 
 (use-package dart-mode
   :ensure t)
-
-;; (use-package indent-guide
-;;   :ensure t
-;;   :config
-;;   (indent-guide-global-mode)
-;;   (setq indent-guide-recursive t))
 
 (use-package web-mode
   :ensure t
@@ -251,6 +269,7 @@
   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+
 
 (use-package ranger
   :ensure t)
@@ -291,13 +310,8 @@
 (use-package mmm-mode
   :ensure t)
 
-(use-package indent-guide
-  :ensure t
-  :config
-  (indent-guide-global-mode))
-
-(use-package vterm
-  :ensure t)
+;;(use-package vterm
+;;:ensure t)
 
 (use-package rust-mode
   :ensure t)
@@ -308,6 +322,32 @@
 ;;  (add-hook 'rust-mode-hook #'racer-mode)
 ;;  (add-hook 'racer-mode-hook #'eldoc-mode))
 
+(use-package rainbow-mode
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-mode))
+
+;;(use-package aggressive-indent
+;;:ensure t
+;;:config
+;;(global-aggressive-indent-mode 1))
+
+(use-package emojify
+  :ensure t
+  :hook (after-init . global-emojify-mode))
+
+(use-package emms
+  :ensure t
+  :config
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players))
+
+(use-package command-log-mode
+  :ensure t
+  :config
+  (global-command-log-mode))
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -315,12 +355,12 @@
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
         (e (if mark-active (max (point) (mark)) (point-max))))
     (shell-command-on-region b e
-     "python -mjson.tool" (current-buffer) t)))
+                             "python -mjson.tool" (current-buffer) t)))
 
 ;; change region highlight color, set it to black,
 ;; makes things more visible
 (set-face-attribute 'region nil :background "#000")
-(set-frame-font "fantasque sans mono 14" nil t)
+(set-frame-font "Fantasque Sans Mono 13" nil t)
 
 ;; start server
 (server-start)
@@ -370,10 +410,10 @@
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
-  (interactive)
-  (let ((hippie-expand-try-functions-list
-         '(try-expand-line)))
-    (call-interactively 'hippie-expand)))
+(interactive)
+(let ((hippie-expand-try-functions-list
+       '(try-expand-line)))
+  (call-interactively 'hippie-expand)))
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
 ;; org mode configs
@@ -385,7 +425,7 @@
 (defun insert-image-from-file (filepath)
   "insert image from the given filepath"
   (interactive "f")
-  (insert-image (create-image filepath 'imagemagick nil :width 200)))
+  (insert-image (create-image filepath nil nil :width 200)))
 
 (defun insert-image-from-url (url width height)
   (interactive)
@@ -419,3 +459,74 @@
 ;; mouse scroll behavior
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
+
+;; set window size
+(when window-system (set-frame-size (selected-frame) 160 45))
+
+;; image viewing
+(defun show-images-from-directory (directory-path)
+  (dolist (file-path (directory-files directory-path t directory-files-no-dot-files-regexp))
+    (if (file-regular-p file-path)
+        (progn
+          (setq image (create-image file-path nil nil :width 100))
+          (if (not (eq image nil))
+            (progn
+              (insert-image image)
+              (newline)))))))
+
+(defun run-command-show-output ()
+  (interactive)
+  (setq cmd (read-from-minibuffer "$ "))
+  (progn
+    (start-process-shell-command cmd cmd cmd)
+    (switch-to-buffer-other-window cmd)
+    (evil-insert nil)
+    (end-of-buffer)))
+(global-set-key (kbd "C-x $") 'run-command-show-output)
+
+;; dired file management
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
+
+;; images
+(setq image-dired-show-all-from-dir-max-files 100000000)
+(defun image-dired-up ()
+  (interactive)
+  (previous-line)
+  (setq current-char (- (point) (point-at-bol)))
+  (if (eq (% current-char 2) 1)
+      (left-char))
+  (image-dired-display-thumbnail-original-image))
+
+(defun image-dired-down ()
+  (interactive)
+  (next-line)
+  (setq current-char (- (point) (point-at-bol)))
+  (if (eq (% current-char 2) 1)
+      (left-char))
+  (image-dired-display-thumbnail-original-image))
+
+(defun image-dired-bol ()
+  (interactive)
+  (beginning-of-line)
+  (image-dired-display-thumbnail-original-image))
+
+(defun image-dired-eol ()
+  (interactive)
+  (end-of-line)
+  (left-char)
+  (image-dired-display-thumbnail-original-image))
+
+(defun define-dired-thumbnail-mode-keys ()
+  (define-key image-dired-thumbnail-mode-map (kbd "l") 'image-dired-display-next-thumbnail-original)
+  (define-key image-dired-thumbnail-mode-map (kbd "h") 'image-dired-display-previous-thumbnail-original)
+  (define-key image-dired-thumbnail-mode-map (kbd "k") 'image-dired-up)
+  (define-key image-dired-thumbnail-mode-map (kbd "j") 'image-dired-down)
+  (define-key image-dired-thumbnail-mode-map (kbd "0") 'image-dired-bol)
+  (define-key image-dired-thumbnail-mode-map (kbd "$") 'image-dired-eol))
+
+(add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
+
+;;(progn
+;;  (end-of-buffer)
+;;  (newline)
+;;  (show-images-from-directory "/home/mahmooz/"))
