@@ -15,7 +15,7 @@ do
             notify-send "$PWD/$file"
             ;;
         "w")
-            feh --bg-scale "$file"
+            feh --bg-fill "$file"
             #wal -i "$file"
             cp "$file" ~/.cache/wallpaper
             #/usr/bin/pywal_awesome_colors.sh
