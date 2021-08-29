@@ -6,8 +6,8 @@ fi
 sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
-parcellite &
-#pulseaudio &
+#parcellite &
+pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
 
@@ -15,7 +15,7 @@ nm-applet &
 picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 #setxkbmap -option ctrl:nocaps
-feh --bg-scale ~/.cache/wallpaper
+feh --bg-fill ~/.cache/wallpaper
 unclutter -root &
 #blueman-applet &
 mpris-proxy &
@@ -28,6 +28,7 @@ xrdb -load ~/.Xresources
 #while true; do
 #  dwm 2> ~/.cache/dwm.log
 #done
+#
 
 # disable beep sound
 sudo rmmod pcspkr
@@ -36,3 +37,4 @@ sudo rmmod pcspkr
 exec awesome
 #exec qtile
 #exec bspwm
+#exec emacs
