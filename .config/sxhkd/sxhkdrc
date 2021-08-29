@@ -6,10 +6,10 @@ super + shift + Return
 
 super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
-     brave & notify-send "launched brave", \
+     firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
-     ~/workspace/scripts/rofi_select_emoji.sh, \
-     ~/workspace/scripts/kill_process.sh, \
+     rofi_select_emoji.sh, \
+     kill_process.sh, \
      notify-send 'launched ranger' && alacritty -e tmux new-session \; send-keys 'ranger; exit' C-m  \;, \
      alacritty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
@@ -38,7 +38,7 @@ super + e
     toggle_touchpad.sh
 
 super + r
-    sh -c "$(ls /usr/bin | rofi -dmenu -p command)"
+    sh -c "$(ls /usr/bin | rofi -dmenu -i -p command)"
     
 
 super + y ; super + y ; {i}
@@ -52,7 +52,7 @@ super + {_,shift +} p
 super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
     ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
-    pkill ffmpeg && notify-send "stopped recording", \
+    notify-send $HOME && pkill ffmpeg && notify-send "stopped recording", \
     notify-send "started recording from webcam" && ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -f pulse -i default -c:v libx264 -preset ultrafast -c:a aac "$HOME/recording_$(date | tr " " "_").mkv"}
 
 super + a ; {s,w,c,n,d,o}
@@ -75,8 +75,15 @@ super + a ; {s,w,c,n,d,o}
 
 super + s; {l,h,s}
     playerctl {next,previous,play-pause}
-super + s; {w}
-    {~/workspace/scripts/spotify_lyrics.sh}
+super + s; {w, W, alt + w, q}
+    {spotify_lyrics.sh,\
+     alacritty_with_cmd.sh 'vim ~/data/lyrics/$(current_spotify_song.sh)',\
+     touch "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)"; gedit "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)",\
+     rm "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)"}
+super + s; {a,e,r}
+    {setxkbmap ar,\
+     setxkbmap us,\
+     setxkbmap il}
 
 super + v
     sleep 0.1; xdotool type $(xclip -selection c -o)
