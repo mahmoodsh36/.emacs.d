@@ -62,7 +62,7 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
 
 # aliases
-alias l="ls"
+alias l="lsd"
 alias ls="ls --color"
 alias grep="grep --color=auto"
 alias o="open.sh"
@@ -92,10 +92,10 @@ alias ti='date +%s%3N'
 alias locate='locate -i'
 alias of='o $(fzf)'
 alias spc="view_audio_spectrum.sh"
-alias rsync="ionice -c2 -n7 rsync"
+alias rsync="ionice -c2 -n7 rsync -t"
 alias ion="ionice -c2 -n7"
 alias calc="bc -l"
-alias bgd="bg; disown"
+alias bde="bg; disown; exit"
 alias psg="ps -e | grep"
 alias mt="file --mime-type -b"
 alias cp="rsync -a --info=progress2"
@@ -103,6 +103,8 @@ alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
 alias cat="bat"
 alias ytdl='youtube-dl'
 alias nrs="sudo nixos-rebuild switch"
+alias ncu="sudo nix-channel --update"
+alias tra="transmission-remote"
 
 update_trackify_android_apk() {
     rsync -P ~/workspace/trackify_android/build/app/outputs/flutter-apk/app-release.apk \
@@ -155,6 +157,7 @@ setup_plugins() {
     [ ! -d ~/.config/zsh ] && mkdir ~/.config/zsh
     cd ~/.config/zsh
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 }
 
 load_plugins() {
@@ -165,8 +168,4 @@ load_plugins 2>/dev/null
 
 export ANDROID_HOME=$HOME/flutter/android/
 export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-export PATH="${PATH}:$HOME/flutter/bin/"
-
-# im gonnna keep this here temporarily
-setxkbmap -option caps:swapescape
-if [ -e /home/mahmooz/.nix-profile/etc/profile.d/nix.sh ]; then . /home/mahmooz/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+#export PATH="${PATH}:$HOME/flutter/bin/"
