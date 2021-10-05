@@ -18,7 +18,7 @@ super + x ; {n,I,v,d,t,l,u,g}
     {alacritty -e zsh -i -c newsboat & notify-send 'launched newsboat', \
      notify-send  -t 60000 "$(xprop | tail -40)", \
      alacritty -e zsh -i -c vim & notify-send 'launched vim', \
-     notify-send 'launched diary' && alacritty -e zsh -i -c diary.sh, \
+     notify-send 'launched discord' && discord, \
      notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
      xset dpms force off,\
      notify-send 'launched music diary' && alacritty -e zsh -i -c music_diary.sh,\
@@ -38,8 +38,7 @@ super + e
     toggle_touchpad.sh
 
 super + r
-    sh -c "$(ls /usr/bin | rofi -dmenu -i -p command)"
-    
+    sh -c "$(ls /usr/bin/ | rofi -dmenu -i -p command)"
 
 super + y ; super + y ; {i}
     notify-send "it works"; sleep 0.1; xdotool type "hey"
