@@ -6,7 +6,7 @@ fi
 sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
-#parcellite &
+parcellite &
 pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
@@ -15,15 +15,13 @@ nm-applet &
 picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
 #setxkbmap -option ctrl:nocaps
-feh --bg-fill ~/.cache/wallpaper
+feh --bg-fill ~/.cache/wallpaper &
 unclutter -root &
 #blueman-applet &
 mpris-proxy &
 #syndaemon -K -i 0.5 -R -d &
 
-#expressvpn connect &
-
-xrdb -load ~/.Xresources
+xrdb -load ~/.Xresources &
 
 #while true; do
 #  dwm 2> ~/.cache/dwm.log
@@ -31,7 +29,7 @@ xrdb -load ~/.Xresources
 #
 
 # disable beep sound
-sudo rmmod pcspkr
+sudo rmmod pcspkr &
 
 #xsetroot -cursor_name left_ptr
 exec awesome
