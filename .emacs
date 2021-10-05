@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
+   '("3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
  '(package-selected-packages
-   '(command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package)))
+   '(ag command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -30,7 +30,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(async-bytecomp-package-mode 1)
+;;(async-bytecomp-package-mode 1)
 (require 'use-package)
 
 ;; set tabs to 4 spaces
@@ -97,7 +97,7 @@
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
-(global-set-key (kbd "C-c g") 'counsel-git-grep)
+(global-set-key (kbd "C-c g") 'counsel-ag)
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
 
@@ -310,9 +310,6 @@
 (use-package mmm-mode
   :ensure t)
 
-;;(use-package vterm
-;;:ensure t)
-
 (use-package rust-mode
   :ensure t)
 
@@ -347,6 +344,12 @@
   :ensure t
   :config
   (global-command-log-mode))
+
+;;(use-package vterm
+  ;;:ensure t)
+
+(use-package ag
+  :ensure t)
 
 ;; function to refactor json files
 (defun beautify-json ()
