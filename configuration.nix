@@ -13,7 +13,6 @@
   # allow non-free packages to be installed
   nixpkgs.config.allowUnfree = true; 
 
-
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -22,13 +21,13 @@
   #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
   networking.enableIPv6 = false;
-  #networking.nameservers = [ "8.8.4.4" "8.8.8.8" ];
-  environment.etc = {
-    "resolv.conf".text = ''
-      nameserver 8.8.8.8
-      nameserver 8.8.4.4
-    '';
-  };
+  networking.nameservers = [ "8.8.4.4" "8.8.8.8" ];
+  #environment.etc = {
+  #  "resolv.conf".text = ''
+  #    nameserver 8.8.8.8
+  #    nameserver 8.8.4.4
+  #  '';
+  #};
 
   # Set your time zone.
   time.timeZone = "Asia/Jerusalem";
@@ -117,6 +116,11 @@
 
   # enable zsh
   programs.zsh.enable = true;
+  # enable adb
+  programs.adb.enable = true;
+  # enable mysql
+  services.mysql.enable = true;
+  services.mysql.package = pkgs.mariadb;
 
   # users
   users.users.mahmooz = {
@@ -128,10 +132,17 @@
     mahmooz ALL=(ALL:ALL) NOPASSWD: ALL
   '';
 
+  # virtualbox
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "mahmooz" ];
+
   # packages
   environment.systemPackages = with pkgs; [
+    (import ./scripts.nix).hello
+    (import ./scripts.nix).what
+
     # text editors
-    vim
+    vim vimPlugins.Vundle-vim
     emacs
     neovim
 
@@ -145,14 +156,21 @@
     # media tools
     mpv
     spotify
-    sxiv
-    imagemagick
     feh # i use it to set wallpaper
+
+    # media manipulation tools
+    imagemagick
+    ffmpeg
+    gimp
 
     # general tools
     brave
     awesome
     discord
+    scrcpy
+    tdesktop
+    torbrowser
+    pavucontrol
 
     # commandline tools
     alacritty # terminal emulator
@@ -170,6 +188,12 @@
     gcc
     file
     youtube-dl
+    iw
+    transmission
+    acpi
+    fzf
+    unzip
+    pciutils
 
     # x11 tools
     xorg.xinit
@@ -177,12 +201,30 @@
     rofi
     libnotify
     xclip
+    scrot
+    picom
 
-    # other
-    vimPlugins.Vundle-vim
 
     # python
-    (python38.withPackages(ps: with ps; [ numpy requests beautifulsoup4 ]))
+    (python38.withPackages(ps: with ps; [ 
+       numpy requests beautifulsoup4 flask
+       flask-jwt-extended mysql-connector
+    ]))
+
+    # javascript
+    yarn
+    nodejs
+
+    # lua
+    lua
+
+    # flutter
+    dart
+    flutter
+    android-studio
+
+    # fonts
+    google-fonts
 
     # libs
     imlib2 x11 libexif giflib # required to compile sxiv
@@ -215,5 +257,8 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.09"; # Did you read the comment?
+
+  # disable edns0 option in /etc/resolv.conf
+  networking.resolvconf.dnsExtensionMechanism = false;
 
 }
