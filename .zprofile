@@ -9,3 +9,5 @@ export _JAVA_AWT_WM_NONREPARENTING=1.
 export XDG_SESSION_TYPE=x11
 export XDG_RUNTIME_DIR="$HOME/.runtime"
 export XDG_CONFIG_HOME="$HOME/.config"
+
+source /etc/profile
