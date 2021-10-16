@@ -34,7 +34,7 @@
 (require 'use-package)
 
 ;; set tabs to 4 spaces
-(setq-default tab-width 4)
+(setq-default tab-width 2)
 (setq js-indent-level 4)
 (setq-default c-basic-offset 4)
 (setq-default indent-tabs-mode nil)
