@@ -13,3 +13,6 @@ done
 mkdir "$HOME/.config/guix/"
 ln -s "$HOME/workspace/dotfiles/channels.scm" "$HOME/.config/guix/"
 sudo ln -sf "$HOME/workspace/dotfiles/config.scm" "/etc/config.scm"
+
+mkdir "$HOME/.config/nvim/"
+ln -s "$HOME/workspace/dotfiles/.vimrc" "$HOME/.config/nvim/init.vim"
