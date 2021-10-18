@@ -62,7 +62,7 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
 
 # aliases
-alias l="lsd"
+alias l="ls"
 alias ls="ls --color"
 alias grep="grep --color=auto"
 alias o="open.sh"
@@ -159,6 +159,14 @@ setup_plugins() {
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
     git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 }
+setup_yay() {
+    pacman -S --needed git base-devel
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si
+    cd ..
+    rm -r yay
+}
 
 load_plugins() {
     source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -168,4 +176,4 @@ load_plugins 2>/dev/null
 
 export ANDROID_HOME=$HOME/flutter/android/
 export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-#export PATH="${PATH}:$HOME/flutter/bin/"
+export PATH="${PATH}:$HOME/flutter/bin/"
