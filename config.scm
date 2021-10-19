@@ -9,12 +9,13 @@
 (use-modules (gnu system setuid))
 (use-service-modules networking desktop xorg sound)
 (use-package-modules vim gnome version-control curl wm
-		     emacs xorg xdisorg image-viewers terminals
-		     gtk rsync cran rust-apps shells bittorrent
-		     gnuzilla pulseaudio compton video fonts tmux
-		     freedesktop fontutils web-browsers package-management
-		     emacs-xyz ssh cmake pkg-config image music photo android
-             glib python-xyz python unicode admin certs linux rust crates-io)
+                     emacs xorg xdisorg image-viewers terminals
+                     gtk rsync cran rust-apps shells bittorrent
+                     gnuzilla pulseaudio compton video fonts tmux
+                     freedesktop fontutils web-browsers package-management
+                     emacs-xyz ssh cmake pkg-config image music photo android
+                     glib python-xyz python unicode admin certs linux rust
+                     crates-io disk imagemagick file haskell-xyz)
 
 (define this-file
   (local-file (basename (assoc-ref (current-source-location) 'filename))
@@ -74,6 +75,21 @@ base should be kept small and clean to make it easy for you to dig into
 it and customize it for your needs.")
     (license gpl2+)))
 
+(define %xorg-libinput-config
+  "Section \"InputClass\"
+  Identifier \"Touchpads\"
+  Driver \"libinput\"
+  MatchDevicePath \"/dev/input/event*\"
+  MatchIsTouchpad \"on\"
+
+  Option \"Tapping\" \"on\"
+  Option \"TappingDrag\" \"on\"
+  Option \"DisableWhileTyping\" \"on\"
+  Option \"MiddleEmulation\" \"on\"
+  Option \"ScrollMethod\" \"twofinger\"
+EndSection
+")
+
 (operating-system
   (kernel linux)
   (locale "en_US.utf8")
@@ -106,13 +122,14 @@ it and customize it for your needs.")
                      fontconfig
                      font-fantasque-sans
                      font-dejavu
+                     font-google-noto
 
                      ;; media
                      mpv feh
                      my-sxiv
 
                      ;; X
-                     xf86-input-libinput xf86-video-fbdev
+                     libinput xf86-video-fbdev
                      xf86-video-nouveau xf86-video-ati xf86-video-vesa
                      sxhkd xinit
                      awesome
@@ -135,6 +152,11 @@ it and customize it for your needs.")
                      clyrics
                      scrot
                      adb
+                     ranger
+                     vifm
+                     imagemagick
+                     file
+                     ffmpeg
 
                      ;; other
                      libnotify
@@ -144,14 +166,12 @@ it and customize it for your needs.")
                      pulseaudio pulsemixer
                      qutebrowser
                      firefox
-                     flatpak
                      openssh
                      emacs-guix
                      cmake
                      gnu-make
                      dbus
                      playerctl
-                     unicode-emoji
                      hostapd
 
                      ;; rust
@@ -174,11 +194,13 @@ it and customize it for your needs.")
                           (udev-rules-service 'android android-udev-rules
                                               #:groups '("adbusers"))
                           (service wpa-supplicant-service-type)
-                          (service slim-service-type (slim-configuration
-                                                       (auto-login? #t)
-                                                       (default-user "mahmooz")
-                                                       (display ":0")
-                                                       (vt "vt2")))
+                          (service slim-service-type
+                                   (slim-configuration
+                                    (auto-login? #t)
+                                    (default-user "mahmooz")
+                                    (display ":0")
+                                    (vt "vt2")
+                                    (xorg-configuration (xorg-configuration (extra-config (list %xorg-libinput-config))))))
                           (service xorg-server-service-type)
                           (service hostapd-service-type
                                    (hostapd-configuration
