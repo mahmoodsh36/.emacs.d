@@ -7,10 +7,10 @@ super + shift + Return
 super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
      firefox & notify-send "launched firefox", \
-     notify-send "launched Spotify 🎶🎵" && spotify, \
+     notify-send "launched Spotify 🎶🎵" && flatpak run com.spotify.Client, \
      rofi_select_emoji.sh, \
      kill_process.sh, \
-     notify-send 'launched ranger' && alacritty -e tmux new-session \; send-keys 'ranger; exit' C-m  \;, \
+     notify-send 'launched vifm' && alacritty -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
      alacritty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
 
@@ -38,7 +38,7 @@ super + e
     toggle_touchpad.sh
 
 super + r
-    sh -c "$(ls /usr/bin/ | rofi -dmenu -i -p command)"
+    sh -c "$(ls /run/current-system/profile/bin | rofi -dmenu -i -p command)"
 
 super + y ; super + y ; {i}
     notify-send "it works"; sleep 0.1; xdotool type "hey"
