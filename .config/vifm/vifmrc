@@ -517,8 +517,7 @@ set fastrun
 set timefmt="%d/%m/%y"
 set statusline+="%d %E"
 set confirm-=delete
-"set trashdir=$HOME/.trash
-set trashdir=$HOME/trash
+set trashdir=$HOME/.cache/vifm-trash
 
 " one window on startup
 " only
