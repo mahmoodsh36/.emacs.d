@@ -1,27 +1,23 @@
 set nocompatible
 filetype off
 
-" set the runtime path to include Vundle and initialize
+" set the runtime path to include Vundle
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
 Plugin 'VundleVim/Vundle.vim' 
 Plugin 'tpope/vim-surround'
 "Plugin 'AlessandroYorba/Alduin'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'junegunn/fzf'
 Plugin 'morhetz/gruvbox'
-
 call vundle#end()
 filetype plugin indent on
 
 set smartindent
 set number
 set relativenumber
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 syntax on
 set smartcase " search will be case sensitive if it contains uppercase
@@ -79,7 +75,7 @@ command! TurnOffColors call TurnOffColors()
 set shortmess+=I
 
 "color gruvbox
-"set bg=dark
+set bg=dark
 
 " search without highlighting
 :set nohlsearch
