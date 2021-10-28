@@ -7,7 +7,7 @@ done
 mkdir "$HOME/.config/"
 for filename in alacritty compton.conf gtk-3.0 mimeapps.list mpv vifm\
 	rofi sxhkd sxiv user-dirs.dirs transmission-daemon; do
-	ln -s "$HOME/workspace/dotfiles/.config/$filename" "$PWD/.config/"
+	ln -s "$HOME/workspace/dotfiles/.config/$filename" "$HOME/.config/"
 done
 
 mkdir "$HOME/.config/guix/"
