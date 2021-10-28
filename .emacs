@@ -6,7 +6,9 @@
  '(custom-safe-themes
    '("3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
  '(package-selected-packages
-   '(ag command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package)))
+   '(undo-fu-session transmission ag command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))
+ '(transmission-refresh-modes
+   '(transmission-mode transmission-files-mode transmission-info-mode transmission-peers-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -97,7 +99,6 @@
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
-(global-set-key (kbd "C-c g") 'counsel-ag)
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
 
@@ -333,6 +334,7 @@
   :ensure t
   :hook (after-init . global-emojify-mode))
 
+;; the emacs media player or whatever
 (use-package emms
   :ensure t
   :config
@@ -340,6 +342,7 @@
   (emms-all)
   (emms-default-players))
 
+;; helps figure out which key runs which function
 (use-package command-log-mode
   :ensure t
   :config
@@ -348,8 +351,22 @@
 ;;(use-package vterm
   ;;:ensure t)
 
+;; the silver searcher, an alternative to grep
 (use-package ag
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c g") 'counsel-ag))
+
+;; transmission-daemon client
+(use-package transmission
   :ensure t)
+
+;; save undos/redos even when buffer is killed or emacs restarts
+(use-package undo-fu-session
+  :ensure t
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+  (global-undo-fu-session-mode))
 
 ;; function to refactor json files
 (defun beautify-json ()
@@ -408,15 +425,13 @@
           (end-of-line)
           (insert ")"))))
 (global-set-key (kbd "C-x p") 'current-line-to-print-statement)
-(if (string= major-mode "python-mode")
-    (message "hi"))
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
-(interactive)
-(let ((hippie-expand-try-functions-list
-       '(try-expand-line)))
-  (call-interactively 'hippie-expand)))
+  (interactive)
+  (let ((hippie-expand-try-functions-list
+         '(try-expand-line)))
+    (call-interactively 'hippie-expand)))
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
 ;; org mode configs
