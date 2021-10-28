@@ -360,7 +360,7 @@ set vifminfo=dhistory,savedirs,chistory,state,tui,shistory,
 
 " Customize view columns a bit (enable ellipsis for truncated file names)
 "
-" set viewcolumns=-{name}..,6{}.
+set viewcolumns=-{name}..,6{size}.
 
 " Filter-out build and temporary files
 "
@@ -517,7 +517,7 @@ set fastrun
 set timefmt="%d/%m/%y"
 set statusline+="%d %E"
 set confirm-=delete
-set trashdir=$HOME/.cache/vifm-trash
+set trashdir=$HOME/data/trash
 
 " one window on startup
 " only
