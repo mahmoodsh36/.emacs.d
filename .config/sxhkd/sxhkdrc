@@ -30,7 +30,7 @@ super + x ; {h,m,r,R,c,T}
       notify-send 'launched runescape' && runescape-launcher,\
       notify-send 'launched Envision' && java -jar ~/data/dl/Envision\ Loader.jar,\
       sxiv -f ~/data/charts/,\
-      terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -90'\""}
+      terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -100'\""}
 
 super + alt + p ; {i, u}
     {install_program.sh,\
@@ -41,6 +41,9 @@ super + e
 
 super + r
     sh -c "$(ls /run/current-system/sw/bin | rofi -dmenu -i -p command)"
+
+super + R
+    terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
 
 super + y ; super + y ; {i}
     notify-send "it works"; sleep 0.1; xdotool type "hey"
