@@ -53,10 +53,12 @@ setopt interactivecomments
 # prompt
 # export PS1="[%m@%1~]$ "
 if [ -n "$SSH_CLIENT" ]; then
-    ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1)
-    export PS1="[$ip_addr %1~]$ "
+  ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1)
+  export PS1="[$ip_addr %1~]$ "
+elif [[ ! -z "$IN_NIX_SHELL" ]]; then
+  export PS1=$(echo '\033[0;32m[NIX]\033[0m[%1~]$ ')
 else
-    export PS1="[%1~]$ "
+  export PS1="[%1~]$ "
 fi
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
@@ -72,7 +74,6 @@ alias pi="sudo pacman -S --noconfirm"
 alias pq="pacman -Ss"
 alias history='history 1'
 alias ytadl='youtube-dl -f bestaudio --extract-audio --add-metadata'
-alias gs="git status"
 alias gc="git commit -a -m"
 alias gp="git push"
 alias p="pwd"
@@ -101,10 +102,13 @@ alias mt="file --mime-type -b"
 alias cp="rsync -a --info=progress2"
 alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
 alias cat="bat"
-alias ytdl='youtube-dl'
+alias ytdl='yt-dlp'
 alias nrs="sudo nixos-rebuild switch"
 alias ncu="sudo nix-channel --update"
 alias tra="transmission-remote"
+alias duh="du -hs"
+alias se="sudoedit"
+alias nix-shell="nix-shell --command zsh"
 
 update_trackify_android_apk() {
     rsync -P ~/workspace/trackify_android/build/app/outputs/flutter-apk/app-release.apk \
@@ -174,6 +178,6 @@ load_plugins() {
 
 load_plugins 2>/dev/null
 
-export ANDROID_HOME=$HOME/flutter/android/
-export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-export PATH="${PATH}:$HOME/flutter/bin/"
+#export ANDROID_HOME=$HOME/flutter/android/
+#export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+#export PATH="${PATH}:$HOME/flutter/bin/"
