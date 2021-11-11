@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
+   '("d9646b131c4aa37f01f909fbdd5a9099389518eb68f25277ed19ba99adeb7279" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
  '(package-selected-packages
-   '(undo-fu-session transmission ag command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode ranger web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))
+   '(pdf-tools latex-preview-pane helm-nixos-options company-nixos-options nix-mode monokai-theme undo-fu-session transmission ag command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))
  '(transmission-refresh-modes
    '(transmission-mode transmission-files-mode transmission-info-mode transmission-peers-mode)))
 (custom-set-faces
@@ -37,8 +37,8 @@
 
 ;; set tabs to 4 spaces
 (setq-default tab-width 2)
-(setq js-indent-level 4)
-(setq-default c-basic-offset 4)
+(setq js-indent-level 2)
+(setq-default c-basic-offset 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
 (global-linum-mode 1)
@@ -129,7 +129,8 @@
   :config
   (evil-mode 1)
   (evil-set-undo-system 'undo-tree)
-  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs))
+  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
+  (evil-set-initial-state 'dired-mode 'emacs)) ;; disable evil for dired
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -231,21 +232,21 @@
 ;;(use-package spacemacs-theme
 ;;:defer t
 ;;:init (load-theme 'spacemacs-dark t))
-(use-package zenburn-theme
+(use-package monokai-theme
   :ensure t
   :config
-  (load-theme 'zenburn))
+  (load-theme 'monokai))
 
 (use-package avy
   :ensure t
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char))
 
-(use-package evil-collection
-  :after (evil)
-  :config
-  (setq evil-collection-mode-list '(dired))
-  (evil-collection-init))
+;;(use-package evil-collection
+;;  :after (evil)
+;;  :config
+;;  (setq evil-collection-mode-list '(dired))
+;;  (evil-collection-init))
 
 ;; (use-package ein
 ;;   :ensure t)
@@ -269,16 +270,20 @@
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
-
-
-(use-package ranger
-  :ensure t)
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
+  (setq web-mode-content-types-alist
+        '(("jsx" . "\\.js[x]?\\'")))
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
 
 (use-package lua-mode
   :ensure t
   :config
-  (setq lua-indent-level 4))
+  (setq lua-indent-level 2))
 
 (use-package all-the-icons
   :ensure t
@@ -367,6 +372,16 @@
   :config
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (global-undo-fu-session-mode))
+
+(use-package nix-mode
+  :ensure t)
+(use-package company-nixos-options
+  :ensure t)
+(use-package helm-nixos-options
+  :ensure t)
+
+(use-package latex-preview-pane
+  :ensure t)
 
 ;; function to refactor json files
 (defun beautify-json ()
@@ -504,6 +519,7 @@
 
 ;; dired file management
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+(setq dired-listing-switches "-l")
 
 ;; images
 (setq image-dired-show-all-from-dir-max-files 100000000)
