@@ -335,9 +335,9 @@
 ;;:config
 ;;(global-aggressive-indent-mode 1))
 
-(use-package emojify
-  :ensure t
-  :hook (after-init . global-emojify-mode))
+;;(use-package emojify
+;;  :ensure t
+;;  :hook (after-init . global-emojify-mode))
 
 ;; the emacs media player or whatever
 (use-package emms
@@ -378,9 +378,6 @@
 (use-package company-nixos-options
   :ensure t)
 (use-package helm-nixos-options
-  :ensure t)
-
-(use-package latex-preview-pane
   :ensure t)
 
 ;; function to refactor json files
@@ -564,3 +561,20 @@
 ;;  (end-of-buffer)
 ;;  (newline)
 ;;  (show-images-from-directory "/home/mahmooz/"))
+
+;; my config for latex
+;; on save compile the document using pdflatex and put it in /tmp/
+(defun current-filename ()
+  (file-name-sans-extension
+   (file-name-nondirectory (buffer-file-name))))
+(defun compile-current-document ()
+  (interactive)
+  (call-process-shell-command (concat (concat "pdflatex -output-directory=/tmp " buffer-file-name) "&"))
+  (message (concat "compiled " buffer-file-name)))
+(defun launch-zathura-for-current-document ()
+  (interactive)
+  (call-process-shell-command (concat "zathura /tmp/" (concat (current-filename) ".pdf&"))))
+(add-hook
+ 'latex-mode-hook (lambda ()
+                    (compile-current-document)
+                    (add-hook 'after-save-hook 'compile-current-document)))
