@@ -6,7 +6,7 @@
  '(custom-safe-themes
    '("d9646b131c4aa37f01f909fbdd5a9099389518eb68f25277ed19ba99adeb7279" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
  '(package-selected-packages
-   '(pdf-tools latex-preview-pane helm-nixos-options company-nixos-options nix-mode monokai-theme undo-fu-session transmission ag command-log-mode emms zenburn-theme company-lsp lsp-mode exwm fireplace emojify aggressive-indent rainbow-mode deferred racer flycheck flutter centered-cursor-mode indent-guide vline dumb-jump slime-company slime counsel request all-the-icons lua-mode web-mode evil-collection avy gruvbox-theme evil-org org-bullets emmet-mode rainbow-delimiters company evil-surround projectile evil-magit magit helm linum-relative evil use-package))
+   '(google-translate company-auctex zenburn-theme web-mode use-package undo-tree undo-fu-session transmission slime-company rust-mode ranger rainbow-mode rainbow-delimiters projectile pdf-tools org-bullets nix-mode monokai-theme mmm-mode math-symbol-lists magit lua-mode linum-relative latex-preview-pane latex-extra lastfm helm-nixos-options evil-surround evil-org evil-collection emojify emms emmet-mode dumb-jump dart-mode counsel company-nixos-options command-log-mode avy all-the-icons ag))
  '(transmission-refresh-modes
    '(transmission-mode transmission-files-mode transmission-info-mode transmission-peers-mode)))
 (custom-set-faces
@@ -380,6 +380,20 @@
 (use-package helm-nixos-options
   :ensure t)
 
+(use-package math-symbol-lists
+  :ensure t)
+
+(use-package latex-extra
+  :ensure t)
+
+(use-package company-auctex
+  :ensure t)
+
+(use-package google-translate
+  :ensure t)
+
+(require 'tex-site)
+
 ;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -573,8 +587,9 @@
   (message (concat "compiled " buffer-file-name)))
 (defun launch-zathura-for-current-document ()
   (interactive)
-  (call-process-shell-command (concat "zathura /tmp/" (concat (current-filename) ".pdf&"))))
+  (call-process-shell-command (concat "zathura /tmp/" (concat (current-filename) ".pdf &"))))
 (add-hook
- 'latex-mode-hook (lambda ()
-                    (compile-current-document)
-                    (add-hook 'after-save-hook 'compile-current-document)))
+ 'LaTeX-mode-hook
+ (lambda ()
+   (compile-current-document)
+   (add-hook 'after-save-hook 'compile-current-document 0 t)))
