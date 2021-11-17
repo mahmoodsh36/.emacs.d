@@ -1,5 +1,7 @@
 #c.tabs.position = "left"
 
+config.load_autoconfig(True)
+
 c.url.searchengines = {
         "DEFAULT": "https://www.google.com/search?q={}",
         "y": "https://www.youtube.com/results?hl=en&search_query={}",
@@ -10,6 +12,7 @@ c.url.searchengines = {
 
 c.aliases = {
         "o": "open",
+        "c": "open https://michlol.netanya.ac.il/Portals/student",
         "yt": "open https://youtube.com",
         "dk": "open https://start.duckduckgo.com",
         "gg": "open https://google.com",
@@ -25,20 +28,17 @@ c.aliases = {
 }
 
 config.bind('<Ctrl-Shift-v>', 'hint links spawn --detach mpv --keep-open --force-window yes {hint-url}')
-config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach sh -c \'url={hint-url}; notify-send "$url"; echo "$url" | xclip -selection clipboard\'')
+config.bind('<Ctrl-Shift-y>', 'hint links spawn --detach sh -c \'url={hint-url}; notify-send "$url"; echo "$url" | tr -d "\\n" | xclip -selection clipboard\'')
+config.bind('<Ctrl-Shift-m>', 'hint links spawn --detach add_magnet.sh "{hint-url}"')
 
 config.bind('Iv', 'hint images spawn sh -c "open_url_image.sh {hint-url}"')
 config.bind('Is', 'hint images run open -t https://www.google.com/searchbyimage?&image_url={hint-url}')
 
-c.content.user_stylesheets = [
-        # the stylesheet was taken from 'https://github.com/alphapapa/solarized-everything-css'
-        #'gruvbox.css',
-]
-
 #c.colors.webpage.bg = 'black'
+c.colors.webpage.darkmode.enabled = True
 
 c.content.cookies.accept = 'all'
-c.content.notifications = False
+c.content.notifications.enabled = False
 
 c.auto_save.session = True
 
@@ -58,25 +58,3 @@ c.fonts.statusbar = font_size
 # c.fonts.tabs = font_size
 c.fonts.web.size.minimum = 15
 c.fonts.web.size.default = 15
-
-c.content.host_blocking.enabled = False
-
-import sys, os
-sys.path.append(os.path.join(sys.path[0], "jblock"))
-config.source("jblock/jblock/integrations/qutebrowser.py")
-config.set(
-    "content.host_blocking.lists",
-    [
-        #"https://easylist.to/easylist/easylist.txt",
-        #"https://easylist.to/easylist/easyprivacy.txt",
-        #"https://easylist.to/easylist/fanboy-annoyance.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/annoyances.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/resource-abuse.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/unbreak.txt",
-        #"https://www.malwaredomainlist.com/hostslist/hosts.txt",
-        #"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=1&mimetype=plaintext",
-    ],
-)
