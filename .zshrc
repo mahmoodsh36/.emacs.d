@@ -75,6 +75,7 @@ alias pq="pacman -Ss"
 alias history='history 1'
 alias ytadl='youtube-dl -f bestaudio --extract-audio --add-metadata'
 alias gc="git commit -a -m"
+alias s="git status"
 alias gp="git push"
 alias p="pwd"
 alias m="mpv --keep-open"
