@@ -102,7 +102,6 @@ alias psg="ps -e | grep -i"
 alias mt="file --mime-type -b"
 alias cp="rsync -a --info=progress2"
 alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
-alias cat="bat"
 alias ytdl='yt-dlp'
 alias nrs="sudo nixos-rebuild switch"
 alias ncu="sudo nix-channel --update"
