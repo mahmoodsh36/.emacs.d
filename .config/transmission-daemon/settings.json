@@ -35,7 +35,7 @@
     "port-forwarding-enabled": true,
     "preallocation": 1,
     "prefetch-enabled": true,
-    "queue-stalled-enabled": true,
+    "queue-stalled-enabled": false,
     "queue-stalled-minutes": 30,
     "ratio-limit": 0,
     "ratio-limit-enabled": true,
