@@ -1,21 +1,3 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("d9646b131c4aa37f01f909fbdd5a9099389518eb68f25277ed19ba99adeb7279" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "b89ae2d35d2e18e4286c8be8aaecb41022c1a306070f64a66fd114310ade88aa" default))
- '(package-selected-packages
-   '(google-translate company-auctex zenburn-theme web-mode use-package undo-tree undo-fu-session transmission slime-company rust-mode ranger rainbow-mode rainbow-delimiters projectile pdf-tools org-bullets nix-mode monokai-theme mmm-mode math-symbol-lists magit lua-mode linum-relative latex-preview-pane latex-extra lastfm helm-nixos-options evil-surround evil-org evil-collection emojify emms emmet-mode dumb-jump dart-mode counsel company-nixos-options command-log-mode avy all-the-icons ag))
- '(transmission-refresh-modes
-   '(transmission-mode transmission-files-mode transmission-info-mode transmission-peers-mode)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 16777215)) (:background "#282828" :foreground "#fdf4c1")) (((class color) (min-colors 255)) (:background "#262626" :foreground "#ffffaf")))))
-
 ;; get rid of the stupid startup screen
 (setq inhibit-startup-screen t)
 ;; fix undo-tree package not found error
@@ -223,19 +205,18 @@
 
 ;; ====== gruvbox
 ;;(use-package gruvbox-theme
-;;:ensure t
-;;:config
-;;(load-theme 'gruvbox))
+;;  :ensure t
+;;  :config
+;;  (load-theme 'gruvbox))
 ;; ====== spacemacs
 ;;(setq spacemacs-theme-comment-bg nil)
 ;;(setq spacemacs-theme-comment-italic t)
 ;;(use-package spacemacs-theme
 ;;:defer t
 ;;:init (load-theme 'spacemacs-dark t))
-(use-package monokai-theme
-  :ensure t
+(use-package almost-mono-themes
   :config
-  (load-theme 'monokai))
+  (load-theme 'almost-mono-black t))
 
 (use-package avy
   :ensure t
@@ -405,8 +386,8 @@
 
 ;; change region highlight color, set it to black,
 ;; makes things more visible
-(set-face-attribute 'region nil :background "#000")
-(set-frame-font "Fantasque Sans Mono 13" nil t)
+;;(set-face-attribute 'region nil :background "#000")
+(set-frame-font "Fantasque Sans Mono 12" nil t)
 
 ;; start server
 (server-start)
@@ -416,7 +397,7 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-(transparency 95)
+(transparency 90)
 
 ;; function to make printing easier for many languages
 (defun current-line-to-empty-class ()
@@ -593,3 +574,38 @@
  (lambda ()
    (compile-current-document)
    (add-hook 'after-save-hook 'compile-current-document 0 t)))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("a0feb1322de9e26a4d209d1cfa236deaf64662bb604fa513cca6a057ddf0ef64" "04dd0236a367865e591927a3810f178e8d33c372ad5bfef48b5ce90d4b476481" default))
+ '(safe-local-variable-values
+   '((eval modify-syntax-entry 43 "'")
+     (eval modify-syntax-entry 36 "'")
+     (eval modify-syntax-entry 126 "'")
+     (eval let
+           ((root-dir-unexpanded
+             (locate-dominating-file default-directory ".dir-locals.el")))
+           (when root-dir-unexpanded
+             (let*
+                 ((root-dir
+                   (expand-file-name root-dir-unexpanded))
+                  (root-dir*
+                   (directory-file-name root-dir)))
+               (unless
+                   (boundp 'geiser-guile-load-path)
+                 (defvar geiser-guile-load-path 'nil))
+               (make-local-variable 'geiser-guile-load-path)
+               (require 'cl-lib)
+               (cl-pushnew root-dir* geiser-guile-load-path :test #'string-equal))))
+     (eval setq-local guix-directory
+           (locate-dominating-file default-directory ".dir-locals.el")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
