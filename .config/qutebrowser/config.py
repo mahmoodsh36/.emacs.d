@@ -33,8 +33,9 @@ config.bind('<Ctrl-Shift-m>', 'hint links spawn --detach add_magnet.sh "{hint-ur
 
 config.bind('Iv', 'hint images spawn sh -c "open_url_image.sh {hint-url}"')
 config.bind('Is', 'hint images run open -t https://www.google.com/searchbyimage?&image_url={hint-url}')
+config.bind('Idw', 'hint images spawn terminal_with_cmd.sh "curl -O {hint-url} --output-dir ~/data/images/wal/ && notify-send downloaded-image"')
 
-#c.colors.webpage.bg = 'black'
+c.colors.webpage.bg = 'black'
 c.colors.webpage.darkmode.enabled = True
 
 c.content.cookies.accept = 'all'
