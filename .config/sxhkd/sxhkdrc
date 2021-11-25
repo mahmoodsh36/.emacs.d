@@ -6,7 +6,7 @@ super + shift + Return
 
 super + x ; {e,w,s,j,k,f,p,F}
     {notify-send "launched emacs" && emacs, \
-     qutebrowser & notify-send "launched qutebrowser", \
+     firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify, \
      rofi_select_emoji.sh, \
      ~/workspace/scripts/kill_process.sh, \
@@ -30,7 +30,7 @@ super + x ; {h,m,r,R,c,T}
       notify-send 'launched runescape' && runescape-launcher,\
       notify-send 'launched Envision' && java -jar ~/data/dl/Envision\ Loader.jar,\
       sxiv -f ~/data/charts/,\
-      terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -100'\""}
+      terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\""}
 
 super + alt + p ; {i, u}
     {install_program.sh,\
@@ -43,7 +43,8 @@ super + R
     terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
 
 super + e
-    choice=$(find | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice
+    choice=$(find -not -path './.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*'\
+    | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice
 
 super + y ; super + y ; {i}
     notify-send "it works"; sleep 0.1; xdotool type "hey"
