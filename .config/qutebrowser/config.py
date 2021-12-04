@@ -37,6 +37,8 @@ config.bind('Idw', 'hint images spawn terminal_with_cmd.sh "curl -O {hint-url} -
 
 c.colors.webpage.bg = 'black'
 c.colors.webpage.darkmode.enabled = True
+c.colors.webpage.darkmode.grayscale.all = True
+c.colors.webpage.preferred_color_scheme = 'dark'
 
 c.content.cookies.accept = 'all'
 c.content.notifications.enabled = False
