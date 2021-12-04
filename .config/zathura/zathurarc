@@ -1,2 +1,9 @@
 set recolor
 set selection-clipboard clipboard
+map K zoom in
+map J zoom out
+map d scroll half-down
+map u scroll half-up
+map r reload
+map g goto top
+map D toggle_page_mode
