@@ -43,7 +43,7 @@ super + R
     terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
 
 super + e
-    choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*'\
+    choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*'\
     | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice
 
 super + y ; super + y ; {i}
