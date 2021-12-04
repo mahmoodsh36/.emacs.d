@@ -29,12 +29,9 @@ configuration {
 	selected-active-background:  @actbg;
 	active-background:           @selbg;
 
-	line-margin:                 2;
-	line-padding:                2;
-	separator-style:             "none";
 	hide-scrollbar:              "true";
-	margin:                      0;
-	padding:                     0;
+  margin: 0px;
+  padding: 0px;
 }
 
 window {
@@ -57,7 +54,6 @@ inputbar {
 }
 
 listview {
-	spacing: 0.5em;
 	dynamic: false;
 	cycle:   true;
   columns: 3;
@@ -67,10 +63,6 @@ entry {
 	expand:         false;
 	text-color:     @normal-foreground;
 	vertical-align: 1;
-}
-
-element {
-  margin: -5px;
 }
 
 element normal.normal {
