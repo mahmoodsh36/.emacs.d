@@ -53,7 +53,7 @@ setopt interactivecomments
 # prompt
 # export PS1="[%m@%1~]$ "
 if [ -n "$SSH_CLIENT" ]; then
-  ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1)
+  ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1 | head -1)
   export PS1="[$ip_addr %1~]$ "
 elif [[ ! -z "$IN_NIX_SHELL" ]]; then
   export PS1=$(echo '\033[0;32m[NIX]\033[0m[%1~]$ ')
