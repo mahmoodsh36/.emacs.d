@@ -19,6 +19,7 @@
 
 ;;(async-bytecomp-package-mode 1)
 (require 'use-package)
+(setq use-package-always-ensure t)
 
 ;; set tabs to 4 spaces
 (setq-default tab-width 2)
@@ -40,7 +41,10 @@
 ;; y-or-n instead of yes-or-no
 (defalias 'yes-or-no-p 'y-or-n-p)
 ;; all backups to one folder
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+(setq backup-directory-alist
+      `((".*" . ,"~/.emacs.d/backup/")))
+(setq auto-save-file-name-transforms
+      `((".*" ,"~/.emacs.d/backup/" t)))
 ;; kill current buffer without prompt
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 ;; disable cursor blink
@@ -106,16 +110,16 @@
 ;; evil-mode
 (setq evil-want-keybinding nil)
 (use-package undo-tree
-  :ensure t
   :config
   (global-undo-tree-mode))
 (use-package evil
-  :ensure t
   :config
   (evil-mode 1)
   (evil-set-undo-system 'undo-tree)
   (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
-  (evil-set-initial-state 'dired-mode 'emacs)) ;; disable evil for dired
+  ;;(evil-set-initial-state 'dired-mode 'emacs) ;; disable evil for dired
+  (define-key evil-operator-state-map "w" "iw")
+  (define-key evil-operator-state-map "W" "iW"))
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -127,7 +131,6 @@
 
 ;; relative numbering
 (use-package linum-relative
-  :ensure t
   :config
   (linum-relative-mode)
   ;; show current line number not '0'
@@ -135,23 +138,19 @@
 
 ;; helm
 (use-package helm
-  :ensure t
   :config
   (global-set-key (kbd "M-x") #'helm-M-x)
   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") #'helm-find-files))
 
 ;; magit
-(use-package magit
-  :ensure t)
+(use-package magit)
 ;;(use-package evil-magit
-;;  :ensure t
 ;;  :config
 ;;  (require 'evil-magit))
 
 ;; projectile
 (use-package projectile
-  :ensure t
   :config
   (setq projectile-completion-system 'ivy)
   (setq projectile-project-search-path '("~/workspace/" "~/"))
@@ -161,17 +160,14 @@
   (setq projectile-globally-ignored-files (append '("*.py" "*.o" "*.so") projectile-globally-ignored-files)))
 
 ;; ivy for projectile
-;; (use-package ivy
-;;   :ensure t)
+;; (use-package ivy)
 
 ;; evil-surround for evil mode
 (use-package evil-surround
-  :ensure t
   :config
   (global-evil-surround-mode 1))
 
 (use-package company
-  :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
@@ -183,32 +179,26 @@
        (define-key company-active-map [tab] 'company-complete-selection))))
 
 (use-package rainbow-delimiters
-  :ensure t
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package emmet-mode
-  :ensure t
   :config
   (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
   (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
 
 (use-package org-bullets
-  :ensure t
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-(use-package evil-org
-  :ensure t)
+(use-package evil-org)
 
 ;;(use-package lsp-mode
-;;:ensure t
 ;;:config
 ;;(add-hook 'prog-mode-hook #'lsp)
 ;;(remove-hook 'html-mode-hook #'lsp))
 
 ;; ====== gruvbox
 ;;(use-package gruvbox-theme
-;;  :ensure t
 ;;  :config
 ;;  (load-theme 'gruvbox))
 ;; ====== spacemacs
@@ -222,24 +212,20 @@
   (load-theme 'almost-mono-black t))
 
 (use-package avy
-  :ensure t
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char))
 
-;;(use-package evil-collection
-;;  :after (evil)
-;;  :config
-;;  (setq evil-collection-mode-list '(dired))
-;;  (evil-collection-init))
+(use-package evil-collection
+  :after (evil)
+  :config
+  (setq evil-collection-mode-list '(dired)) ;; enable for dired
+  (evil-collection-init))
 
 ;; (use-package ein
-;;   :ensure t)
 
-(use-package dart-mode
-  :ensure t)
+(use-package dart-mode)
 
 (use-package web-mode
-  :ensure t
   :config
   (setq web-mode-enable-auto-quoting nil)
   (setq web-mode-enable-auto-closing nil)
@@ -265,67 +251,41 @@
   (setq web-mode-code-indent-offset 2))
 
 (use-package lua-mode
-  :ensure t
   :config
   (setq lua-indent-level 2))
 
 (use-package all-the-icons
-  :ensure t
   :if (display-graphic-p)
   :config
   (unless (find-font (font-spec :name "all-the-icons"))
     (all-the-icons-install-fonts t)))
 
-(use-package request
-  :ensure t)
+(use-package request)
 
 (use-package counsel
-  :ensure t
   :config (ivy-mode t))
 
-(use-package slime-company
-  :ensure t)
+(use-package slime-company)
 
 (use-package slime
-  :ensure t
   :config
   (setq inferior-lisp-program "sbcl")
   (slime-setup '(slime-company)))
 
 (use-package dumb-jump
-  :ensure t
   :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-(use-package mmm-mode
-  :ensure t)
+(use-package mmm-mode)
 
-(use-package rust-mode
-  :ensure t)
-
-;;(use-package racer
-;;  :ensure t
-;;  :config
-;;  (add-hook 'rust-mode-hook #'racer-mode)
-;;  (add-hook 'racer-mode-hook #'eldoc-mode))
+(use-package rust-mode)
 
 (use-package rainbow-mode
-  :ensure t
   :config
   (add-hook 'prog-mode-hook 'rainbow-mode))
 
-;;(use-package aggressive-indent
-;;:ensure t
-;;:config
-;;(global-aggressive-indent-mode 1))
-
-;;(use-package emojify
-;;  :ensure t
-;;  :hook (after-init . global-emojify-mode))
-
 ;; the emacs media player or whatever
 (use-package emms
-  :ensure t
   :config
   (require 'emms-setup)
   (emms-all)
@@ -333,50 +293,46 @@
 
 ;; helps figure out which key runs which function
 (use-package command-log-mode
-  :ensure t
   :config
   (global-command-log-mode))
 
 ;;(use-package vterm
-  ;;:ensure t)
 
 ;; the silver searcher, an alternative to grep
 (use-package ag
-  :ensure t
   :config
   (global-set-key (kbd "C-c g") 'counsel-ag))
 
 ;; transmission-daemon client
-(use-package transmission
-  :ensure t)
+(use-package transmission)
 
 ;; save undos/redos even when buffer is killed or emacs restarts
 (use-package undo-fu-session
-  :ensure t
   :config
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (global-undo-fu-session-mode))
 
-(use-package nix-mode
-  :ensure t)
-(use-package company-nixos-options
-  :ensure t)
-(use-package helm-nixos-options
-  :ensure t)
+(use-package nix-mode)
+(use-package company-nixos-options)
+(use-package helm-nixos-options)
 
-(use-package math-symbol-lists
-  :ensure t)
+(use-package math-symbol-lists)
 
-(use-package latex-extra
-  :ensure t)
+(use-package google-translate)
+
+(use-package general
+  :config
+  (general-evil-setup))
+  ;;(general-define-key "ci$"
+  ;;  (lambda ()
+  ;;    (evil-find-char-to-backward 1 ?$)
+  ;;    (zap-up-to-char ?$)
+  ;;    (evil-insert))))
 
 (use-package company-auctex
-  :ensure t)
+  :config
+  (company-auctex-init))
 
-(use-package google-translate
-  :ensure t)
-
-;; function to refactor json files
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
@@ -552,11 +508,8 @@
   (define-key image-dired-thumbnail-mode-map (kbd "$") 'image-dired-eol))
 
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
-
-;;(progn
-;;  (end-of-buffer)
-;;  (newline)
-;;  (show-images-from-directory "/home/mahmooz/"))
+(add-hook 'image-dired-display-image-mode (lambda ()
+                                            (message "it works..")))
 
 ;; my config for latex
 ;; on save compile the document using pdflatex and put it in /tmp/
@@ -565,6 +518,7 @@
    (file-name-nondirectory (buffer-file-name))))
 (defun compile-current-document ()
   (interactive)
+  ;;(call-process-shell-command (concat (concat "xelatex -output-directory=/tmp " buffer-file-name) "&"))
   (call-process-shell-command (concat (concat "pdflatex -output-directory=/tmp " buffer-file-name) "&"))
   (message (concat "compiled " buffer-file-name)))
 (defun launch-zathura-for-current-document ()
