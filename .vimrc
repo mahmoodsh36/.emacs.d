@@ -48,6 +48,9 @@ nnoremap <leader>f :FZF<CR>
 " this doesnt work <C-c> tries to exit
 nnoremap <C-w><C-c> <C-w>c
 nnoremap diP vipjd
+nnoremap ci$ T$ct$
+nnoremap cw ciw
+nnoremap dw diw
 
 " set t_Co=256
 
