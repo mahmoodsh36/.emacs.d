@@ -37,13 +37,13 @@ super + alt + p ; {i, u}
      ~/workspace/scripts/terminal_with_cmd.sh "guix pull && sudo -E guix system reconfigure ~/workspace/guix/config.scm"; notify-send -t 30000 'updated system'}
 
 super + r
-    sh -c "$(ls /run/current-system/sw/bin | rofi -dmenu -i -p command)"
+    sh -c "$(ls /usr/bin/ | rofi -dmenu -i -p command)"
 
 super + R
     terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
 
 super + e
-    choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*'\
+    choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*' -not -path './mnt/*'\
     | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice
 
 super + y ; super + y ; {i}
@@ -52,7 +52,7 @@ super + y ; super + y ; {i}
 # screenshot
 super + {_,shift +} p
     file=$(echo ~/data/images/scrots/`date | tr " " "_"`.png) && \
-    notif_str="screenshot taken"; {scrot, notif_str="image of selection taken"; sleep 0.2; scrot -s} "$file" && echo -n "$file" | xclip -selection c && notify-send $notif_str
+    notif_str="screenshot taken"; {scrot, notif_str="image of selection taken"; sleep 0.2; scrot -s} "$file" && echo -n "$file" | xclip -selection c && notify-send $notif_str && sxiv "$file"
 
 super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
