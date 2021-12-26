@@ -6,7 +6,7 @@ done
 
 mkdir "$HOME/.config/"
 for filename in alacritty compton.conf gtk-3.0 mimeapps.list mpv vifm qutebrowser\
-	rofi sxhkd sxiv user-dirs.dirs transmission-daemon; do
+	rofi sxhkd sxiv user-dirs.dirs transmission-daemon zathura; do
 	ln -s "$HOME/workspace/dotfiles/.config/$filename" "$HOME/.config/"
 done
 
