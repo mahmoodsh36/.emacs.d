@@ -1,26 +1,26 @@
 # cursor handling for vi-mode
-function zle-keymap-select zle-line-init zle-line-finish {
-  case $KEYMAP in
-    vicmd)         echo -ne '\e[1 q';;
-    viins|main)    echo -ne '\e[5 q';;
-  esac
-
-  zle reset-prompt
-  zle -R
-}
-zle -N zle-line-init
-zle -N zle-line-finish
-zle -N zle-keymap-select
-
-# vim keys
-bindkey -v
-export KEYTIMEOUT=1
+#function zle-keymap-select zle-line-init zle-line-finish {
+#  case $KEYMAP in
+#    vicmd)         echo -ne '\e[1 q';;
+#    viins|main)    echo -ne '\e[5 q';;
+#  esac
+#
+#  zle reset-prompt
+#  zle -R
+#}
+#zle -N zle-line-init
+#zle -N zle-line-finish
+#zle -N zle-keymap-select
+#
+## vim keys
+bindkey -e
+#export KEYTIMEOUT=1
 
 # bindings
 bindkey '^P' up-history
 bindkey '^N' down-history
 bindkey '^r' history-incremental-search-backward
-bindkey '^f' history-incremental-search-forward
+#bindkey '^f' history-incremental-search-forward
 autoload edit-command-line; zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
