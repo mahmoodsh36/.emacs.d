@@ -1,7 +1,4 @@
 super + Return
-    kitty -e tmux
-
-super + shift + Return
     kitty
 
 super + x ; {e,w,s,j,k,f,p,F}
@@ -10,7 +7,7 @@ super + x ; {e,w,s,j,k,f,p,F}
      notify-send "launched Spotify 🎶🎵" && spotify || flatpak run com.spotify.Client, \
      rofi_select_emoji.sh, \
      ~/workspace/scripts/kill_process.sh, \
-     notify-send 'launched vifm' && kitty -e tmux new-session \; send-keys 'vifm; exit' C-m  \;, \
+     notify-send 'launched vifm' && terminal_with_cmd.sh 'vifm; exit',\
      kitty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
 
@@ -38,7 +35,7 @@ super + alt + p ; {i, u}
      ~/workspace/scripts/terminal_with_cmd.sh "guix pull && sudo -E guix system reconfigure ~/workspace/guix/full-os.scm"; notify-send -t 30000 'updated system'}
 
 super + r
-    sh -c "$(ls /run/current-system/profile/bin/ | rofi -dmenu -i -p command)"
+    echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | rofi -dmenu -i -p command
 
 super + R
     terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
