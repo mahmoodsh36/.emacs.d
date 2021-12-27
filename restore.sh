@@ -5,7 +5,7 @@ for filename in .xinitrc .zshrc .zprofile .Xresources .vimrc .emacs .tmux.conf; 
 done
 
 mkdir "$HOME/.config/"
-for filename in alacritty compton.conf gtk-3.0 mimeapps.list mpv vifm qutebrowser\
+for filename in alacritty compton.conf gtk-3.0 mimeapps.list mpv vifm qutebrowser kitty\
 	rofi sxhkd sxiv user-dirs.dirs transmission-daemon zathura; do
 	ln -s "$HOME/workspace/dotfiles/.config/$filename" "$HOME/.config/"
 done
