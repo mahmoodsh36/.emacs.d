@@ -13,8 +13,8 @@ nm-applet &
 
 # songs_progress_monitor.py &
 picom --config ~/.config/compton.conf &
-#setxkbmap -option caps:swapescape &
-setxkbmap -option ctrl:nocaps
+setxkbmap -option caps:swapescape &
+#setxkbmap -option ctrl:nocaps
 feh --bg-fill ~/.cache/wallpaper &
 unclutter -root &
 #blueman-applet &
@@ -34,7 +34,7 @@ sudo rmmod pcspkr &
 # start some programs
 emacs &
 firefox &
-flatpak run com.client.Spotify || spotify
+flatpak run com.client.Spotify || spotify &
 
 #xsetroot -cursor_name left_ptr
 exec awesome
