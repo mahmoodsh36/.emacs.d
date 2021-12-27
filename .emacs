@@ -108,18 +108,18 @@
 ;; handling large files, not very helpful tbh, still slow when loading images
 
 ;; evil-mode
-;;(setq evil-want-keybinding nil)
-;;(use-package undo-tree
-;;  :config
-;;  (global-undo-tree-mode))
-;;(use-package evil
-;;  :config
-;;  (evil-mode 1)
-;;  (evil-set-undo-system 'undo-tree)
-;;  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
-;;  ;;(evil-set-initial-state 'dired-mode 'emacs) ;; disable evil for dired
-;;  (define-key evil-operator-state-map "w" "iw")
-;;  (define-key evil-operator-state-map "W" "iW"))
+(setq evil-want-keybinding nil)
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+(use-package evil
+  :config
+  (evil-mode 1)
+  (evil-set-undo-system 'undo-tree)
+  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs))
+  ;;(evil-set-initial-state 'dired-mode 'emacs) ;; disable evil for dired
+  ;;(define-key evil-operator-state-map "w" "iw")
+  ;;(define-key evil-operator-state-map "W" "iW"))
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -163,9 +163,9 @@
 ;; (use-package ivy)
 
 ;; evil-surround for evil mode
-;;(use-package evil-surround
-;;  :config
-;;  (global-evil-surround-mode 1))
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package company
   :config
@@ -190,7 +190,7 @@
 (use-package org-bullets
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-;;(use-package evil-org)
+(use-package evil-org)
 
 ;;(use-package lsp-mode
 ;;:config
@@ -215,11 +215,11 @@
   :config
   (global-set-key (kbd "C-;") 'avy-goto-char))
 
-;;(use-package evil-collection
-;;  :after (evil)
-;;  :config
-;;  (setq evil-collection-mode-list '(dired)) ;; enable for dired
-;;  (evil-collection-init))
+(use-package evil-collection
+  :after (evil)
+  :config
+  (setq evil-collection-mode-list '(dired)) ;; enable for dired
+  (evil-collection-init))
 
 ;; (use-package ein
 
@@ -399,7 +399,7 @@
   (let ((hippie-expand-try-functions-list
          '(try-expand-line)))
     (call-interactively 'hippie-expand)))
-;;(define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
+(define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
 ;; org mode configs
 (setq org-clock-persist 'history)
@@ -545,3 +545,10 @@
  (lambda ()
    (compile-current-document)
    (add-hook 'after-save-hook 'compile-current-document 0 t)))
+;; this is a function to change the text between two $'s since i do that alot in latex
+(defun change-text-between-dollar-signs ()
+  (interactive)
+  (beginning-of-line)
+  (forward-char)
+  (zap-up-to-char 1 ?$))
+(global-set-key (kbd "C-c c") 'change-text-between-dollar-signs)
