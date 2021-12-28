@@ -1,22 +1,21 @@
 super + Return
     kitty
 
-super + x ; {e,w,s,j,k,f,p,F}
+super + x ; {e,w,s,j,k,f,p}
     {notify-send "launched emacs" && emacs, \
      firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify || flatpak run com.spotify.Client, \
      rofi_select_emoji.sh, \
      ~/workspace/scripts/kill_process.sh, \
      notify-send 'launched vifm' && terminal_with_cmd.sh 'vifm; exit',\
-     kitty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer',\
-     file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && st_with_cmd.sh nvim "$file"}
+     kitty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
 
 super + x ; {n,I,v,d,t,l,u,g}
     {kitty -e zsh -i -c newsboat & notify-send 'launched newsboat', \
      notify-send  -t 60000 "$(xprop | tail -40)", \
      kitty -e zsh -i -c vim & notify-send 'launched vim', \
      notify-send 'launched discord' && discord, \
-     notify-send 'launched transmission' && export QT_STYLE_OVERRIDE=adwaita-dark && transmission-qt, \
+     notify-send 'launched nmtui' && terminal_with_cmd.sh sudo nmtui,\
      xset dpms force off,\
      notify-send 'launched music diary' && kitty -e zsh -i -c music_diary.sh,\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
@@ -27,15 +26,16 @@ super + x ; {h,m,r,R,c,T,o}
       notify-send 'launched runescape' && runescape-launcher,\
       notify-send 'launched Envision' && java -jar ~/data/dl/Envision\ Loader.jar,\
       sxiv -f ~/data/charts/,\
-      terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\"",\
+      pgrep transmission-da || transmission-daemon; terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\"",\
       terminal_with_cmd.sh top}
 
 super + alt + p ; {i, u}
     {install_program.sh,\
-     ~/workspace/scripts/terminal_with_cmd.sh "guix pull && sudo -E guix system reconfigure ~/workspace/guix/full-os.scm"; notify-send -t 30000 'updated system'}
+     ~/workspace/scripts/terminal_with_cmd.sh "sudo nixos-rebuild switch"; notify-send -t 30000 'updated system'}
+     #~/workspace/scripts/terminal_with_cmd.sh "guix pull && sudo -E guix system reconfigure ~/workspace/guix/full-os.scm"; notify-send -t 30000 'updated system'}
 
 super + r
-    echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | rofi -dmenu -i -p command
+    sh -c "$(echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | rofi -dmenu -i -p command)"
 
 super + R
     terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
@@ -80,7 +80,7 @@ super + s; {l,h,s}
     playerctl {next,previous,play-pause}
 super + s; {w, W, alt + w, q}
     {spotify_lyrics.sh,\
-     terminal_with_cmd.sh 'vim ~/data/lyrics/$(current_spotify_song.sh)',\
+     terminal_with_cmd.sh 'nvim ~/data/lyrics/"$(current_spotify_song.sh)"',\
      touch "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)"; gedit "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)",\
      rm "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)"}
 super + s; {a,e,r}
