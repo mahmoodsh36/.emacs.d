@@ -116,7 +116,9 @@
   :config
   (evil-mode 1)
   (evil-set-undo-system 'undo-tree)
-  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs))
+  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
+  (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
+  (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up))
   ;;(evil-set-initial-state 'dired-mode 'emacs) ;; disable evil for dired
   ;;(define-key evil-operator-state-map "w" "iw")
   ;;(define-key evil-operator-state-map "W" "iW"))
@@ -548,7 +550,7 @@
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
   (interactive)
-  (beginning-of-line)
+  (search-backward "$")
   (forward-char)
   (zap-up-to-char 1 ?$))
 (global-set-key (kbd "C-c c") 'change-text-between-dollar-signs)
