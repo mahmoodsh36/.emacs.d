@@ -178,6 +178,9 @@ load_plugins() {
 
 load_plugins 2>/dev/null
 
+# fix kitty issues with ssh
+export TERM=xterm
+
 #export ANDROID_HOME=$HOME/flutter/android/
 #export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 #export PATH="${PATH}:$HOME/flutter/bin/"
