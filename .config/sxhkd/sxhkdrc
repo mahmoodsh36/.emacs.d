@@ -58,31 +58,19 @@ super + g ; {R,r,s,w}
     notify-send $HOME && pkill ffmpeg && notify-send "stopped recording", \
     notify-send "started recording from webcam" && ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -f pulse -i default -c:v libx264 -preset ultrafast -c:a aac "$HOME/recording_$(date | tr " " "_").mkv"}
 
-super + a ; {s,w,c,n,d,o}
+super + a ; {s,w,c}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
      feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
-     pkill compton; compton & notify-send "restarted compton", \
-     notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager, \
-     pkill dwm_statusbar.s && notify-send "restarted statusbar" && dwm_statusbar.sh, \
-     pkill dunst && notify-send 'restarted dunst' && dunst}
-
-#super + ctrl + space
-#    notify-send "switched layout to $(switch_layout.sh)"
-
-#super + alt + {j,k}
-#     amixer set Master {3%-, 3%+};\
-#         cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
-#super + alt + shift + {j,k}
-#     amixer set Master {0%, 100%};\
-#         cat ~/.config/awesome/scripts/volume_popup.lua | awesome-client
+     notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager}
 
 super + s; {l,h,s}
     playerctl {next,previous,play-pause}
-super + s; {w, W, alt + w, q}
+
+super + s; {w, W, q}
     {spotify_lyrics.sh,\
      terminal_with_cmd.sh 'nvim ~/data/lyrics/"$(current_spotify_song.sh)"',\
-     touch "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)"; gedit "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)",\
      rm "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)"}
+
 super + s; {a,e,r}
     {setxkbmap ar,\
      setxkbmap us,\
@@ -94,9 +82,7 @@ super + w; {g, i, y}
                                  "imdb.com/find?q=$term",\
                                  "youtube.com/results?search_query=$term"}
 
-super + shift + w; {w, r}
-    {hsetroot -solid "#ffffff",\
-     hsetroot -cover ~/.cache/wallpaper}
-
 super + v; {n}
     {notify-send 'launching nixos'; sudo qemu-system-x86_64 -enable-kvm -m 4G -boot a -hda ~/data/vm/nixos.img}
+
+super + 
