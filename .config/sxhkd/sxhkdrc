@@ -15,7 +15,7 @@ super + x ; {n,I,v,d,t,l,u,g}
      notify-send  -t 60000 "$(xprop | tail -40)", \
      kitty -e zsh -i -c vim & notify-send 'launched vim', \
      notify-send 'launched discord' && discord, \
-     notify-send 'launched nmtui' && terminal_with_cmd.sh sudo nmtui,\
+     notify-send 'launched nmtui' && terminal_with_cmd.sh 'sudo nmcli device wifi rescan; sudo nmcli device wifi list; sudo nmtui',\
      xset dpms force off,\
      notify-send 'launched music diary' && kitty -e zsh -i -c music_diary.sh,\
      file="$(find / | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file"}
@@ -40,9 +40,10 @@ super + r
 super + R
     terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
 
-super + e
-    choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*' -not -path './mnt/*'\
-    | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice
+super + {e,shift+e}
+    {choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*' -not -path './mnt/*'\
+    | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice,\
+    choice=$(find workspace/college/ | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice,\}
 
 super + y ; super + y ; {i}
     notify-send "it works"; sleep 0.1; xdotool type "hey"
@@ -54,11 +55,12 @@ super + {_,shift +} p
 
 super + g ; {R,r,s,w}
     {ffmpeg -video_size 3286x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
-    ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
-    notify-send $HOME && pkill ffmpeg && notify-send "stopped recording", \
+    #ffmpeg -video_size 1920x1080 -framerate 60 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
+    ffmpeg -video_size 1920x1080 -framerate 60 -f x11grab -i :0.0 -f pulse -ac 2 -i default "/home/$USER/recording_$(date | tr " " "_").mkv" & notify-send "started recording", \
+    pkill ffmpeg && notify-send "stopped recording", \
     notify-send "started recording from webcam" && ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -f pulse -i default -c:v libx264 -preset ultrafast -c:a aac "$HOME/recording_$(date | tr " " "_").mkv"}
 
-super + a ; {s,w,c}
+super + a ; {s,w,n}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
      feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
      notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager}
@@ -66,10 +68,13 @@ super + a ; {s,w,c}
 super + s; {l,h,s}
     playerctl {next,previous,play-pause}
 
-super + s; {w, W, q}
+super + s; {w, W, q, f}
     {spotify_lyrics.sh,\
      terminal_with_cmd.sh 'nvim ~/data/lyrics/"$(current_spotify_song.sh)"',\
-     rm "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)"}
+     rm "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)",\
+     choice=$(awk '\{print FILENAME ":" $0\}' ~/data/lyrics/* | rofi -dmenu -i -p lyrics); notify-send "$(echo $choice | cut -d ':' -f1 | rev | cut -d '/' -f1 | rev)" "$(cat "$(echo $choice | cut -d ':' -f1)")"}
+super + s; {d}
+     {~/workspace/spotify_scripts/rofi_play_track.sh}
 
 super + s; {a,e,r}
     {setxkbmap ar,\
@@ -82,7 +87,10 @@ super + w; {g, i, y}
                                  "imdb.com/find?q=$term",\
                                  "youtube.com/results?search_query=$term"}
 
-super + v; {n}
-    {notify-send 'launching nixos'; sudo qemu-system-x86_64 -enable-kvm -m 4G -boot a -hda ~/data/vm/nixos.img}
+super + v; {n,1,2}
+    {notify-send 'launching nixos'; sudo qemu-system-x86_64 -enable-kvm -m 4G -boot a -hda ~/data/vm/nixos.img,\
+     terminal_with_cmd.sh 'ssh server1 -i ~/data/keys/server1/id_ed25519',\
+     terminal_with_cmd.sh 'ssh server2 -i ~/data/keys/server2/id_ed25519'}
 
-super + 
+super + b; {f}
+    {notify-send 'connecting to freebuds'; terminal_with_cmd.sh bluetoothctl connect A0:DE:0F:CA:59:42}
