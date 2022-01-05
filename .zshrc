@@ -109,6 +109,7 @@ alias tra="transmission-remote"
 alias duh="du -hs"
 alias se="sudoedit"
 alias nix-shell="nix-shell --command zsh"
+alias dla="yt-dlp -f bestaudio --extract-audio --add-metadata --split-chapters --embed-thumbnail" # short for download album
 
 update_trackify_android_apk() {
     rsync -P ~/workspace/trackify_android/build/app/outputs/flutter-apk/app-release.apk \
@@ -138,6 +139,12 @@ c() {
 
 # do some math
 math() { awk "BEGIN {print ${@:1}}"; }
+
+# connect to a server of mine using the ssh key
+sr() {
+  num=$1
+  ssh server$num -i ~/data/keys/server$num/id_ed25519
+}
 
 # colors for man pages
 export LESS_TERMCAP_mb=$'\e[1;32m'
@@ -181,6 +188,6 @@ load_plugins 2>/dev/null
 # fix kitty issues with ssh
 export TERM=xterm
 
-#export ANDROID_HOME=$HOME/flutter/android/
-#export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-#export PATH="${PATH}:$HOME/flutter/bin/"
+export ANDROID_HOME=$HOME/flutter/android/
+export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+export PATH="${PATH}:$HOME/flutter/bin/"
