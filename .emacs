@@ -335,9 +335,6 @@
   :config
   (company-auctex-init))
 
-(use-package geiser)
-(use-package guix)
-
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
@@ -542,6 +539,7 @@
 (defun launch-zathura-for-current-document ()
   (interactive)
   (call-process-shell-command (concat "zathura /tmp/" (concat (current-filename) ".pdf &"))))
+(global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
