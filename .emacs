@@ -531,14 +531,19 @@
 (defun current-filename ()
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
+(defun get-latex-cache-dir-path ()
+  (interactive)
+  (setq dir-path (concat (expand-file-name user-emacs-directory) "latex/"))
+  (ignore-errors (make-directory dir-path))
+  dir-path)
 (defun compile-current-document ()
   (interactive)
   ;;(call-process-shell-command (concat (concat "xelatex -output-directory=/tmp " buffer-file-name) "&"))
-  (call-process-shell-command (concat (concat "pdflatex -output-directory=/tmp " buffer-file-name) "&"))
+  (call-process-shell-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) buffer-file-name) "&"))
   (message (concat "compiled " buffer-file-name)))
 (defun launch-zathura-for-current-document ()
   (interactive)
-  (call-process-shell-command (concat "zathura /tmp/" (concat (current-filename) ".pdf &"))))
+  (call-process-shell-command (concat (concat "zathura " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
 (add-hook
  'LaTeX-mode-hook
