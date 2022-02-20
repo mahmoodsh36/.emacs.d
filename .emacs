@@ -109,8 +109,6 @@
   (find-file user-init-file))
 (global-set-key (kbd "C-c e") 'open-config-file)
 
-;; handling large files, not very helpful tbh, still slow when loading images
-
 ;; evil-mode
 (setq evil-want-keybinding nil)
 (use-package undo-tree
@@ -318,22 +316,9 @@
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (global-undo-fu-session-mode))
 
-(use-package nix-mode)
-(use-package company-nixos-options)
-(use-package helm-nixos-options)
-
 (use-package math-symbol-lists)
 
 (use-package google-translate)
-
-(use-package general
-  :config
-  (general-evil-setup))
-  ;;(general-define-key "ci$"
-  ;;  (lambda ()
-  ;;    (evil-find-char-to-backward 1 ?$)
-  ;;    (zap-up-to-char ?$)
-  ;;    (evil-insert))))
 
 (use-package company-auctex
   :config
@@ -355,8 +340,7 @@
   ;; Show images when opening a file.
   (setq org-startup-with-inline-images t)
   ;; Show images after evaluating code blocks.
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-)
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
 
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
