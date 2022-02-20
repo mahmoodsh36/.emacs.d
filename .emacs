@@ -73,7 +73,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 160 48))
+;;(when window-system (set-frame-size (selected-frame) 160 48))
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 ;; enable more code block languages for org mode
@@ -85,6 +85,10 @@
    (lisp . t)
    (java . t)
    (lua . t)))
+;; enable which-function-mode that shows the current function being edited in the bottom bar
+(add-hook 'prog-mode-hook 'which-function-mode)
+;; key to start calc mode
+(global-set-key (kbd "C-c c") 'calc)
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
@@ -200,18 +204,18 @@
 ;;(remove-hook 'html-mode-hook #'lsp))
 
 ;; ====== gruvbox
-;;(use-package gruvbox-theme
-;;  :config
-;;  (load-theme 'gruvbox))
+(use-package gruvbox-theme
+  :config
+  (load-theme 'gruvbox))
 ;; ====== spacemacs
 ;;(setq spacemacs-theme-comment-bg nil)
 ;;(setq spacemacs-theme-comment-italic t)
 ;;(use-package spacemacs-theme
 ;;:defer t
 ;;:init (load-theme 'spacemacs-dark t))
-(use-package almost-mono-themes
-  :config
-  (load-theme 'almost-mono-black t))
+;;(use-package almost-mono-themes
+;;  :config
+;;  (load-theme 'almost-mono-black t))
 
 (use-package avy
   :config
@@ -335,6 +339,25 @@
   :config
   (company-auctex-init))
 
+(use-package latex-preview-pane)
+
+(use-package sage-shell-mode)
+(use-package ob-sagemath
+  :config
+  ;; Ob-sagemath supports only evaluating with a session.
+  (setq org-babel-default-header-args:sage '((:session . t)
+                                             (:results . "output")))
+  ;; C-c c for asynchronous evaluating (only for SageMath code blocks).
+  (with-eval-after-load "org"
+    (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async))
+  ;; Do not confirm before evaluation
+  (setq org-confirm-babel-evaluate nil)
+  ;; Show images when opening a file.
+  (setq org-startup-with-inline-images t)
+  ;; Show images after evaluating code blocks.
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+)
+
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
@@ -346,7 +369,7 @@
 ;; change region highlight color, set it to black,
 ;; makes things more visible
 ;;(set-face-attribute 'region nil :background "#000")
-(set-frame-font "Fantasque Sans Mono 12" nil t)
+;;(set-frame-font "Fantasque Sans Mono 12" nil t)
 
 ;; start server
 (server-start)
@@ -356,7 +379,7 @@
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
-(transparency 90)
+;;(transparency 90)
 
 ;; function to make printing easier for many languages
 (defun current-line-to-empty-class ()
@@ -523,8 +546,6 @@
   (define-key image-dired-thumbnail-mode-map (kbd "$") 'image-dired-eol))
 
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
-(add-hook 'image-dired-display-image-mode (lambda ()
-                                            (message "it works..")))
 
 ;; my config for latex
 ;; on save compile the document using pdflatex and put it in /tmp/
@@ -543,17 +564,21 @@
   (message (concat "compiled " buffer-file-name)))
 (defun launch-zathura-for-current-document ()
   (interactive)
-  (call-process-shell-command (concat (concat "zathura " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
+  (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
    (compile-current-document)
    (add-hook 'after-save-hook 'compile-current-document 0 t)))
+(defun compile-sagetex ()
+  (interactive)
+  (call-process-shell-command (concat "cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage")))))
+  (compile-current-document))
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
   (interactive)
   (search-backward "$")
   (forward-char)
   (zap-up-to-char 1 ?$))
-(global-set-key (kbd "C-c c") 'change-text-between-dollar-signs)
+(global-set-key (kbd "C-c C") 'change-text-between-dollar-signs)
