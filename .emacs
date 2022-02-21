@@ -344,6 +344,9 @@
 ;; smooth scrolling over images
 (use-package iscroll)
 
+;; display latex inline
+(use-package math-preview)
+
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
