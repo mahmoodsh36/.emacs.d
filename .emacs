@@ -73,7 +73,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-;;(when window-system (set-frame-size (selected-frame) 160 48))
+(when window-system (set-frame-size (selected-frame) 100 57))
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 ;; enable more code block languages for org mode
@@ -89,14 +89,18 @@
 (add-hook 'prog-mode-hook 'which-function-mode)
 ;; key to start calc mode
 (global-set-key (kbd "C-c c") 'calc)
+;; no damn fringes dude!
+(set-fringe-style 0)
+;; change region highlight color, set it to black,
+;; makes things more visible
+;;(set-face-attribute 'region nil :background "#000")
+;; set font
+;;(set-frame-font "Fantasque Sans Mono 12" nil t)
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
-
-;; no damn fringes dude!
-(set-fringe-style 0)
 
 ;; js2-mode as major mode for javascript - disabled some keybindings idk why
 ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -204,7 +208,7 @@
 ;; ====== gruvbox
 (use-package gruvbox-theme
   :config
-  (load-theme 'gruvbox))
+  (load-theme 'gruvbox t))
 ;; ====== spacemacs
 ;;(setq spacemacs-theme-comment-bg nil)
 ;;(setq spacemacs-theme-comment-italic t)
@@ -300,15 +304,10 @@
   :config
   (global-command-log-mode))
 
-;;(use-package vterm
-
 ;; the silver searcher, an alternative to grep
 (use-package ag
   :config
   (global-set-key (kbd "C-c g") 'counsel-ag))
-
-;; transmission-daemon client
-(use-package transmission)
 
 ;; save undos/redos even when buffer is killed or emacs restarts
 (use-package undo-fu-session
@@ -342,6 +341,9 @@
   ;; Show images after evaluating code blocks.
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
 
+;; smooth scrolling over images
+(use-package iscroll)
+
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
@@ -349,11 +351,6 @@
         (e (if mark-active (max (point) (mark)) (point-max))))
     (shell-command-on-region b e
                              "python -mjson.tool" (current-buffer) t)))
-
-;; change region highlight color, set it to black,
-;; makes things more visible
-;;(set-face-attribute 'region nil :background "#000")
-;;(set-frame-font "Fantasque Sans Mono 12" nil t)
 
 ;; start server
 (server-start)
@@ -450,9 +447,6 @@
 ;; mouse scroll behavior
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
-
-;; set window size
-(when window-system (set-frame-size (selected-frame) 160 45))
 
 ;; image viewing
 (defun show-images-from-directory (directory-path)
