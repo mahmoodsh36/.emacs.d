@@ -347,6 +347,18 @@
 ;; display latex inline
 (use-package math-preview)
 
+;; better built-in help/documentation
+(use-package helpful
+  :config
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key))
+
+;; neater modeline i guess
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
