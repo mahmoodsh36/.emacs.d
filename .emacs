@@ -96,6 +96,8 @@
 ;;(set-face-attribute 'region nil :background "#000")
 ;; set font
 ;;(set-frame-font "Fantasque Sans Mono 12" nil t)
+;; display only buffer name in modeline
+(setq mode-line-format (list "%e  %b " mode-line-modified))
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
@@ -354,11 +356,6 @@
   (global-set-key (kbd "C-h v") #'helpful-variable)
   (global-set-key (kbd "C-h k") #'helpful-key))
 
-;; neater modeline i guess
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
-
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
@@ -541,7 +538,7 @@
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
 
 ;; my config for latex
-;; on save compile the document using pdflatex and put it in /tmp/
+;; on save compile the document using pdflatex and put it in ~/.emacs.d/latex/
 (defun current-filename ()
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
