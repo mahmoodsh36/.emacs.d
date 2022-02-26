@@ -21,7 +21,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;; set tabs to 4 spaces
+;; set tabs to 2 spaces
 (setq-default tab-width 2)
 (setq js-indent-level 2)
 (setq-default c-basic-offset 2)
@@ -97,7 +97,10 @@
 ;; set font
 ;;(set-frame-font "Fantasque Sans Mono 12" nil t)
 ;; display only buffer name in modeline
-(setq mode-line-format (list "%e  %b " mode-line-modified))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+;; remember recently opened files
+(recentf-mode 1)
+(run-at-time nil (* 5 60) 'recentf-save-list) ;; save file list every 5 minutes
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
@@ -163,7 +166,7 @@
 (use-package projectile
   :config
   (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/workspace/" "~/"))
+  (setq projectile-project-search-path '("~/workspace/"))
   (projectile-mode +1)
   ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -215,8 +218,8 @@
 ;;(setq spacemacs-theme-comment-bg nil)
 ;;(setq spacemacs-theme-comment-italic t)
 ;;(use-package spacemacs-theme
-;;:defer t
-;;:init (load-theme 'spacemacs-dark t))
+;;  :defer t
+;;  :init (load-theme 'spacemacs-dark t))
 ;;(use-package almost-mono-themes
 ;;  :config
 ;;  (load-theme 'almost-mono-black t))
@@ -230,8 +233,6 @@
   :config
   (setq evil-collection-mode-list '(dired)) ;; enable for dired
   (evil-collection-init))
-
-;; (use-package ein
 
 (use-package dart-mode)
 
@@ -538,7 +539,8 @@
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
 
 ;; my config for latex
-;; on save compile the document using pdflatex and put it in ~/.emacs.d/latex/
+;; this disables the error when trying to insert dollar after \(
+(define-key TeX-mode-map "$" nil)
 (defun current-filename ()
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
@@ -560,11 +562,13 @@
  'LaTeX-mode-hook
  (lambda ()
    (compile-current-document)
-   (add-hook 'after-save-hook 'compile-current-document 0 t)))
+   ;;(add-hook 'after-save-hook 'compile-current-document 0 t)))
+   (add-hook 'after-save-hook 'compile-sagetex 0 t)))
 (defun compile-sagetex ()
   (interactive)
-  (call-process-shell-command (concat "cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage")))))
-  (compile-current-document))
+  (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) buffer-file-name) ";")))
+  (setq last-pdflatex-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) buffer-file-name) ")&"))
+  (call-process-shell-command (concat first-pdflatex-command (concat (concat "cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage;")))) pdflatex-command))))
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
   (interactive)
