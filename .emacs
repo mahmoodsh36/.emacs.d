@@ -73,7 +73,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 100 57))
+(when window-system (set-frame-size (selected-frame) 105 59))
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 ;; enable more code block languages for org mode
@@ -556,6 +556,7 @@
   (message (concat "compiled " (buffer-file-name))))
 (defun launch-zathura-for-current-document ()
   (interactive)
+  (compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
 (add-hook
