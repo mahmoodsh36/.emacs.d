@@ -327,9 +327,6 @@
   (with-eval-after-load "org"
     (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
 
-;; smooth scrolling over images
-(use-package iscroll)
-
 ;; display latex inline
 (use-package math-preview)
 
@@ -344,6 +341,14 @@
 (use-package yasnippet-snippets)
 (use-package yasnippet
   :config (yas-global-mode 1))
+
+;; smooth scrolling over images
+(use-package iscroll
+  :hook
+  (org-mode . iscroll-mode)
+  :config
+  (evil-define-key '(normal visual) 'global-map (kbd "j") 'iscroll-next-line)
+  (evil-define-key '(normal visual) 'global-map (kbd "k") 'iscroll-previous-line))
 
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -414,7 +419,7 @@
 ;; Show images when opening a file.
 (setq org-startup-with-inline-images t)
 ;; Show images after evaluating code blocks.
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 ;; enable more code block languages for org mode
@@ -563,6 +568,7 @@
   (message (concat "compiled " (buffer-file-name))))
 (defun launch-zathura-for-current-document ()
   (interactive)
+  (compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
 (add-hook
