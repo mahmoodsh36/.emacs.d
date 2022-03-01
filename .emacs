@@ -74,17 +74,6 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 (when window-system (set-frame-size (selected-frame) 105 59))
-;; disable prompt when executing code block in org mode
-(setq org-confirm-babel-evaluate nil)
-;; enable more code block languages for org mode
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python . t)
-   (js . t)
-   (lisp . t)
-   (java . t)
-   (lua . t)))
 ;; enable which-function-mode that shows the current function being edited in the bottom bar
 (add-hook 'prog-mode-hook 'which-function-mode)
 ;; key to start calc mode
@@ -336,13 +325,7 @@
                                              (:results . "output")))
   ;; C-c c for asynchronous evaluating (only for SageMath code blocks).
   (with-eval-after-load "org"
-    (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async))
-  ;; Do not confirm before evaluation
-  (setq org-confirm-babel-evaluate nil)
-  ;; Show images when opening a file.
-  (setq org-startup-with-inline-images t)
-  ;; Show images after evaluating code blocks.
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
+    (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
 
 ;; smooth scrolling over images
 (use-package iscroll)
@@ -356,6 +339,11 @@
   (global-set-key (kbd "C-h f") #'helpful-callable)
   (global-set-key (kbd "C-h v") #'helpful-variable)
   (global-set-key (kbd "C-h k") #'helpful-key))
+
+;; yasnippet
+(use-package yasnippet-snippets)
+(use-package yasnippet
+  :config (yas-global-mode 1))
 
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -417,10 +405,29 @@
     (call-interactively 'hippie-expand)))
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
-;; org mode configs
+;; org mode config
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
+;; Do not confirm before evaluation
+(setq org-confirm-babel-evaluate nil)
+;; Show images when opening a file.
+(setq org-startup-with-inline-images t)
+;; Show images after evaluating code blocks.
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images))
+;; disable prompt when executing code block in org mode
+(setq org-confirm-babel-evaluate nil)
+;; enable more code block languages for org mode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (python . t)
+   (js . t)
+   (lisp . t)
+   (java . t)
+   (lua . t)))
+;; require org-tempo to enable <s expansion
+(require 'org-tempo)
 
 ;; functions for working with images
 (defun insert-image-from-file (filepath)
@@ -556,7 +563,6 @@
   (message (concat "compiled " (buffer-file-name))))
 (defun launch-zathura-for-current-document ()
   (interactive)
-  (compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
 (add-hook
@@ -569,7 +575,7 @@
   (interactive)
   (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
   (setq last-pdflatex-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")&"))
-  (call-process-shell-command (concat first-pdflatex-command (concat (concat "cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage;")))) last-pdflatex-command))))
+  (call-process-shell-command (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command))))
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
   (interactive)
