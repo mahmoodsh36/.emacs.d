@@ -89,7 +89,7 @@
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; remember recently opened files
 (recentf-mode 1)
-(run-at-time nil (* 5 60) 'recentf-save-list) ;; save file list every 5 minutes
+;;(run-at-time nil (* 5 60) 'recentf-save-list) ;; save file list every 5 minutes
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
@@ -400,7 +400,7 @@
           (insert "(message ")
           (end-of-line)
           (insert ")"))))
-(global-set-key (kbd "C-x p") 'current-line-to-print-statement)
+(define-key evil-normal-state-map (kbd "SPC p") 'current-line-to-print-statement)
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
@@ -566,15 +566,15 @@
   ;;(call-process-shell-command (concat (concat "xelatex -output-directory=/tmp " (buffer-file-name)) "&"))
   (call-process-shell-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
   (message (concat "compiled " (buffer-file-name))))
-(defun launch-zathura-for-current-document ()
+(defun open-current-document ()
   (interactive)
   (compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
-(global-set-key (kbd "C-c z") 'launch-zathura-for-current-document)
+(global-set-key (kbd "C-c z") 'open-current-document)
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
-   (compile-current-document)
+   (compile-sagetex)
    ;;(add-hook 'after-save-hook 'compile-current-document 0 t)))
    (add-hook 'after-save-hook 'compile-sagetex 0 t)))
 (defun compile-sagetex ()
@@ -589,3 +589,11 @@
   (forward-char)
   (zap-up-to-char 1 ?$))
 (global-set-key (kbd "C-c C") 'change-text-between-dollar-signs)
+
+;; dmenu like functions
+(defun search-open-file (directory-path)
+  (interactive)
+  (let ((my-file (completing-read "select file:" (directory-files-recursively directory-path ".*\.pdf"))))
+    (call-process-shell-command (concat "open " my-file))))
+(define-key evil-normal-state-map (kbd "SPC f c") (lambda () (interactive) (search-open-file "~/Desktop/college")))
+
