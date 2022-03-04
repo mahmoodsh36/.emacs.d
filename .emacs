@@ -597,10 +597,17 @@
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
   (interactive)
-  (let ((my-file (completing-read "select file:" (directory-files-recursively directory-path regex))))
+  (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex))))
     (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
+
+(defun search-open-file-in-emacs (directory-path regex)
+  (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex))))
+    (find-file (expand-file-name my-file) "'")))
+
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\.pdf")))
+  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\)")))
+(define-key evil-normal-state-map (kbd "SPC F c")
+  (lambda () (interactive) (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
   (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
