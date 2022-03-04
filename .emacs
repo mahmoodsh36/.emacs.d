@@ -572,7 +572,7 @@
   (message (concat "compiled " (buffer-file-name))))
 (defun open-current-document ()
   (interactive)
-  (compile-sagetex)
+  ;;(compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'open-current-document)
 (add-hook
@@ -592,7 +592,7 @@
   (search-backward "$")
   (forward-char)
   (zap-up-to-char 1 ?$))
-(global-set-key (kbd "C-c C") 'change-text-between-dollar-signs)
+(define-key evil-normal-state-map (kbd "SPC c") 'change-text-between-dollar-signs)
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
@@ -603,3 +603,7 @@
   (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\.pdf")))
 (define-key evil-normal-state-map (kbd "SPC f p")
   (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
+(define-key evil-normal-state-map (kbd "SPC f b")
+  (lambda () (interactive) (search-open-file "~/Desktop/books" "")))
+(define-key evil-normal-state-map (kbd "SPC f d")
+  (lambda () (interactive) (search-open-file "~/Desktop" "")))
