@@ -23,7 +23,7 @@
 
 ;; set tabs to 2 spaces
 (setq-default tab-width 2)
-(setq js-indent-level 2)
+(setq-default js-indent-level 2)
 (setq-default c-basic-offset 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
@@ -350,6 +350,10 @@
   (evil-define-key '(normal visual) 'global-map (kbd "j") 'iscroll-next-line)
   (evil-define-key '(normal visual) 'global-map (kbd "k") 'iscroll-previous-line))
 
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
+
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
   (interactive)
@@ -591,9 +595,11 @@
 (global-set-key (kbd "C-c C") 'change-text-between-dollar-signs)
 
 ;; dmenu like functions
-(defun search-open-file (directory-path)
+(defun search-open-file (directory-path regex)
   (interactive)
-  (let ((my-file (completing-read "select file:" (directory-files-recursively directory-path ".*\.pdf"))))
-    (call-process-shell-command (concat "open " my-file))))
-(define-key evil-normal-state-map (kbd "SPC f c") (lambda () (interactive) (search-open-file "~/Desktop/college")))
-
+  (let ((my-file (completing-read "select file:" (directory-files-recursively directory-path regex))))
+    (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
+(define-key evil-normal-state-map (kbd "SPC f c")
+  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\.pdf")))
+(define-key evil-normal-state-map (kbd "SPC f p")
+  (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
