@@ -90,6 +90,7 @@
 ;; remember recently opened files
 (recentf-mode 1)
 ;;(run-at-time nil (* 5 60) 'recentf-save-list) ;; save file list every 5 minutes
+(electric-pair-mode)
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
