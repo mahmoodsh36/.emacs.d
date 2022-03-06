@@ -1,13 +1,9 @@
 ;; disable customization using the interactive interface
 (setq custom-file "/dev/null")
-
 ;; get rid of the stupid startup screen
 (setq inhibit-startup-screen t)
-;; fix undo-tree package not found error
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-(setq package-check-signature nil)
-;; install use-package if not installed
-;; package archives
+
+;; setup use-package
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
@@ -16,8 +12,6 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-
-;;(async-bytecomp-package-mode 1)
 (require 'use-package)
 (setq use-package-always-ensure t)
 
@@ -58,17 +52,6 @@
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 ;; highlight current line
 (global-hl-line-mode)
-;; try awesomewm config
-(defun try-awesome-config ()
-  (interactive)
-  (shell-command "Xephyr :5 & sleep 1 ; DISPLAY=:5 awesome"))
-(defun try-qtile-config ()
-  (interactive)
-  (shell-command "/home/mahmooz/workspace/dotfiles/.config/qtile/xephyr.sh 2>&1 > /dev/null"))
-;; shortcut to open new eshell buffer
-(global-set-key (kbd "C-c s") 'eshell)
-;; zap-up-to-char not zap-to-char
-(global-set-key (kbd "M-z") 'zap-up-to-char)
 ;; reload file automatically
 (global-auto-revert-mode t)
 ;; enable all disabled commands
@@ -81,38 +64,17 @@
 (global-set-key (kbd "C-c c") 'calc)
 ;; no damn fringes dude!
 (set-fringe-style 0)
-;; change region highlight color, set it to black,
-;; makes things more visible
-;;(set-face-attribute 'region nil :background "#000")
 ;; set font
 ;;(set-frame-font "Fantasque Sans Mono 12" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
-;; remember recently opened files
-(recentf-mode 1)
-;;(run-at-time nil (* 5 60) 'recentf-save-list) ;; save file list every 5 minutes
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
 
-;; js2-mode as major mode for javascript - disabled some keybindings idk why
-;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;; (add-hook 'js2-mode-hook 'js2-mode-hide-warnings-and-errors)
-;; (add-hook 'js2-mode-hook 'define-window-switching-keys)
-
-;; shortcuts
-(defun open-config-file ()
-  (interactive)
-  (find-file user-init-file))
-(global-set-key (kbd "C-c e") 'open-config-file)
-
 ;; evil-mode
-(setq evil-want-keybinding nil)
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode))
 (use-package evil
   :config
   (evil-mode 1)
@@ -120,9 +82,10 @@
   (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
   (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
   (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up))
-  ;;(evil-set-initial-state 'dired-mode 'emacs) ;; disable evil for dired
-  ;;(define-key evil-operator-state-map "w" "iw")
-  ;;(define-key evil-operator-state-map "W" "iW"))
+
+;; evil-mode bindings here, after the package is installed
+;; keybinding to quickly open config file
+(define-key evil-normal-state-map (kbd "SPC e") (lambda () (interactive) (find-file user-init-file)))
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -146,12 +109,6 @@
   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") #'helm-find-files))
 
-;; magit
-(use-package magit)
-;;(use-package evil-magit
-;;  :config
-;;  (require 'evil-magit))
-
 ;; projectile
 (use-package projectile
   :config
@@ -162,64 +119,45 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-globally-ignored-files (append '("*.py" "*.o" "*.so") projectile-globally-ignored-files)))
 
-;; ivy for projectile
-;; (use-package ivy)
-
 ;; evil-surround for evil mode
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1))
 
+;; ide-like features
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
   (setq company-idle-delay 0)
-  (setq company-require-match nil)
-  (eval-after-load 'company
-    '(progn
-       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-       (define-key company-active-map [tab] 'company-complete-selection))))
+  (setq company-require-match nil))
 
+;; colorful delimiters
 (use-package rainbow-delimiters
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-(use-package emmet-mode
-  :config
-  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-  (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
-
+;; nice bullets for headlines instead of just stars
 (use-package org-bullets
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-(use-package evil-org)
 
-;;(use-package lsp-mode
-;;:config
-;;(add-hook 'prog-mode-hook #'lsp)
-;;(remove-hook 'html-mode-hook #'lsp))
+;; evil mode support for org
+(use-package evil-org)
 
 ;; ====== gruvbox
 (use-package gruvbox-theme
   :config
   (load-theme 'gruvbox t))
-;; ====== spacemacs
-;;(setq spacemacs-theme-comment-bg nil)
-;;(setq spacemacs-theme-comment-italic t)
-;;(use-package spacemacs-theme
-;;  :defer t
-;;  :init (load-theme 'spacemacs-dark t))
-;;(use-package almost-mono-themes
-;;  :config
-;;  (load-theme 'almost-mono-black t))
 
+;; support to make evil more compatible with the whole of emacs
 (use-package evil-collection
   :after (evil)
   :config
   (setq evil-collection-mode-list '(dired)) ;; enable for dired
   (evil-collection-init))
 
+;; helps with dart/flutter dev
 (use-package dart-mode)
 
 (use-package web-mode
@@ -251,42 +189,16 @@
   :config
   (setq lua-indent-level 2))
 
-(use-package all-the-icons
-  :if (display-graphic-p)
-  :config
-  (unless (find-font (font-spec :name "all-the-icons"))
-    (all-the-icons-install-fonts t)))
-
+;; package to help making http requests
 (use-package request)
 
 (use-package counsel
   :config (ivy-mode t))
 
-(use-package slime-company)
-
-(use-package slime
-  :config
-  (setq inferior-lisp-program "sbcl")
-  (slime-setup '(slime-company)))
-
-(use-package dumb-jump
-  :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
-
-(use-package mmm-mode)
-
-(use-package rust-mode)
-
+;; highlights color names with the corresponding color
 (use-package rainbow-mode
   :config
   (add-hook 'prog-mode-hook 'rainbow-mode))
-
-;; the emacs media player or whatever
-(use-package emms
-  :config
-  (require 'emms-setup)
-  (emms-all)
-  (emms-default-players))
 
 ;; helps figure out which key runs which function
 (use-package command-log-mode
@@ -303,10 +215,6 @@
   :config
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (global-undo-fu-session-mode))
-
-(use-package math-symbol-lists)
-
-(use-package google-translate)
 
 (use-package company-auctex
   :config
@@ -327,20 +235,16 @@
   :config
   (global-set-key (kbd "C-h f") #'helpful-callable)
   (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h a") #'helpful-symbol)
   (global-set-key (kbd "C-h k") #'helpful-key))
 
 ;; yasnippet
 (use-package yasnippet-snippets)
 (use-package yasnippet
-  :config (yas-global-mode 1))
-
-;; smooth scrolling over images
-;;(use-package iscroll
-;;  :hook
-;;  (org-mode . iscroll-mode)
-;;  :config
-;;  (evil-define-key '(normal visual) 'global-map (kbd "j") 'iscroll-next-line)
-;;  (evil-define-key '(normal visual) 'global-map (kbd "k") 'iscroll-previous-line))
+  :config
+  (setq yas-snippet-dirs
+        `(,(concat user-emacs-directory "snippets")))
+  (yas-global-mode 1))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -391,17 +295,6 @@
 ;;(transparency 90)
 
 ;; function to make printing easier for many languages
-(defun current-line-to-empty-class ()
-  (interactive)
-  (if (string= major-mode "python-mode")
-      (progn
-        (back-to-indentation)
-        (insert "class ")
-        (end-of-line)
-        (insert ":")
-        (newline-and-indent)
-        (insert "def __init__(self):")
-        (newline-and-indent))))
 (defun current-line-to-print-statement ()
     (interactive)
     (if (string= major-mode "python-mode")
@@ -458,56 +351,7 @@
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
 
-;; functions for working with images
-(defun insert-image-from-file (filepath)
-  "insert image from the given filepath"
-  (interactive "f")
-  (insert-image (create-image filepath nil nil :width 200)))
-
-(defun insert-image-from-url (url width height)
-  (interactive)
-  (unless url (setq url (url-get-url-at-point)))
-  (unless url
-    (error "Couldn't find URL."))
-  (let ((buffer (url-retrieve-synchronously url)))
-    (unwind-protect
-         (let ((data (with-current-buffer buffer
-                       (goto-char (point-min))
-                       (search-forward "\n\n")
-                       (buffer-substring (point) (point-max)))))
-           (insert-image (create-image data 'imagemagick t
-                                       :max-width width :max-height height) "i"))
-      (kill-buffer buffer))))
-
-(defun insert-image-from-url-no-predefined-size (url)
-  (interactive)
-  (unless url (setq url (url-get-url-at-point)))
-  (unless url
-    (error "Couldn't find URL."))
-  (let ((buffer (url-retrieve-synchronously url)))
-    (unwind-protect
-         (let ((data (with-current-buffer buffer
-                       (goto-char (point-min))
-                       (search-forward "\n\n")
-                       (buffer-substring (point) (point-max)))))
-           (insert-image (create-image data 'imagemagick t) "i"))
-      (kill-buffer buffer))))
-
-;; mouse scroll behavior
-(setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . nil)))
-(setq mouse-wheel-progressive-speed nil)
-
-;; image viewing
-(defun show-images-from-directory (directory-path)
-  (dolist (file-path (directory-files directory-path t directory-files-no-dot-files-regexp))
-    (if (file-regular-p file-path)
-        (progn
-          (setq image (create-image file-path nil nil :width 100))
-          (if (not (eq image nil))
-            (progn
-              (insert-image image)
-              (newline)))))))
-
+;; run shell command and show continuous output in new buffer
 (defun run-command-show-output ()
   (interactive)
   (setq cmd (read-from-minibuffer "$ "))
@@ -518,12 +362,13 @@
     (end-of-buffer)))
 (global-set-key (kbd "C-x $") 'run-command-show-output)
 
-;; dired file management
+;; hide config
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 (setq dired-listing-switches "-l")
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
 
+;; function to get size of files in dired
 (defun dired-get-size ()
   (interactive)
   (let ((files (dired-get-marked-files)))
@@ -535,7 +380,7 @@
                  (match-string 1))))))
  (define-key dired-mode-map (kbd "?") 'dired-get-size)
 
-;; images
+;; vim like keys for dired image viewer
 (setq image-dired-show-all-from-dir-max-files 100000000)
 (defun image-dired-up ()
   (interactive)
@@ -544,7 +389,6 @@
   (if (eq (% current-char 2) 1)
       (left-char))
   (image-dired-display-thumbnail-original-image))
-
 (defun image-dired-down ()
   (interactive)
   (next-line)
@@ -552,18 +396,15 @@
   (if (eq (% current-char 2) 1)
       (left-char))
   (image-dired-display-thumbnail-original-image))
-
 (defun image-dired-bol ()
   (interactive)
   (beginning-of-line)
   (image-dired-display-thumbnail-original-image))
-
 (defun image-dired-eol ()
   (interactive)
   (end-of-line)
   (left-char)
   (image-dired-display-thumbnail-original-image))
-
 (defun define-dired-thumbnail-mode-keys ()
   (define-key image-dired-thumbnail-mode-map (kbd "l") 'image-dired-display-next-thumbnail-original)
   (define-key image-dired-thumbnail-mode-map (kbd "h") 'image-dired-display-previous-thumbnail-original)
@@ -571,7 +412,6 @@
   (define-key image-dired-thumbnail-mode-map (kbd "j") 'image-dired-down)
   (define-key image-dired-thumbnail-mode-map (kbd "0") 'image-dired-bol)
   (define-key image-dired-thumbnail-mode-map (kbd "$") 'image-dired-eol))
-
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
 
 ;; my config for latex
@@ -589,20 +429,17 @@
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
-  ;;(call-process-shell-command (concat (concat "xelatex -output-directory=/tmp " (buffer-file-name)) "&"))
   (call-process-shell-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
   (message (concat "compiled " (buffer-file-name))))
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  ;;(compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'open-current-document)
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
    (compile-sagetex)
-   ;;(add-hook 'after-save-hook 'compile-current-document 0 t)))
    (add-hook 'after-save-hook 'compile-sagetex 0 t)))
 (defun compile-sagetex ()
   "compile the current latex document and also compile sagetex by running sage on the resulted file"
