@@ -74,6 +74,12 @@
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
 
+;; fix evil-mode issue with undo, this is required
+(setq evil-want-keybinding nil)
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+
 ;; evil-mode
 (use-package evil
   :config
