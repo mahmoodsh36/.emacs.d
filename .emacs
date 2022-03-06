@@ -24,6 +24,7 @@
 ;; set tabs to 2 spaces
 (setq-default tab-width 2)
 (setq-default js-indent-level 2)
+(setq-default python-indent-offset 4)
 (setq-default c-basic-offset 2)
 (setq-default indent-tabs-mode nil)
 ;; set line numbers
@@ -90,7 +91,6 @@
 ;; remember recently opened files
 (recentf-mode 1)
 ;;(run-at-time nil (* 5 60) 'recentf-save-list) ;; save file list every 5 minutes
-(electric-pair-mode)
 
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
@@ -214,10 +214,6 @@
 ;;  :config
 ;;  (load-theme 'almost-mono-black t))
 
-(use-package avy
-  :config
-  (global-set-key (kbd "C-;") 'avy-goto-char))
-
 (use-package evil-collection
   :after (evil)
   :config
@@ -316,9 +312,7 @@
   :config
   (company-auctex-init))
 
-(use-package latex-preview-pane)
-
-(use-package sage-shell-mode)
+;; executing sage in org babel
 (use-package ob-sagemath
   :config
   ;; Ob-sagemath supports only evaluating with a session.
@@ -327,9 +321,6 @@
   ;; C-c c for asynchronous evaluating (only for SageMath code blocks).
   (with-eval-after-load "org"
     (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
-
-;; display latex inline
-(use-package math-preview)
 
 ;; better built-in help/documentation
 (use-package helpful
@@ -344,16 +335,42 @@
   :config (yas-global-mode 1))
 
 ;; smooth scrolling over images
-(use-package iscroll
-  :hook
-  (org-mode . iscroll-mode)
-  :config
-  (evil-define-key '(normal visual) 'global-map (kbd "j") 'iscroll-next-line)
-  (evil-define-key '(normal visual) 'global-map (kbd "k") 'iscroll-previous-line))
+;;(use-package iscroll
+;;  :hook
+;;  (org-mode . iscroll-mode)
+;;  :config
+;;  (evil-define-key '(normal visual) 'global-map (kbd "j") 'iscroll-next-line)
+;;  (evil-define-key '(normal visual) 'global-map (kbd "k") 'iscroll-previous-line))
 
+;; highlight errors in code
 (use-package flycheck
   :config
   (global-flycheck-mode))
+
+;; edit multiple instances of a word simulataneously
+(use-package iedit)
+
+;; integration with powerthesaurus.org
+(use-package powerthesaurus)
+
+;; key guide
+(use-package guide-key
+  :config
+  (setq guide-key/guide-key-sequence t)
+  (guide-key-mode 1))
+
+;; highlight surrounding parentheses
+(use-package highlight-parentheses
+  :config
+  (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
+
+(use-package literate-calc-mode
+  :ensure t)
+
+;; generating linear ranges quickly
+(use-package tiny
+  :config
+  (global-set-key (kbd "C-c t") 'tiny-expand))
 
 (defun beautify-json ()
   "Function to beautify current buffer considering it is in json format."
@@ -364,7 +381,7 @@
                              "python -mjson.tool" (current-buffer) t)))
 
 ;; start server
-(server-start)
+(ignore-errors (server-start))
 
 ;; Set transparency of emacs
 (defun transparency (value)
@@ -399,7 +416,7 @@
           (insert "printf(")
           (end-of-line)
           (insert ");")))
-    (if (string= major-mode "emacs-lisp-mode")
+    (if (or (string= major-mode "emacs-lisp-mode") (string= major-mode "lisp-interaction-mode"))
         (progn
           (back-to-indentation)
           (insert "(message ")
@@ -438,6 +455,8 @@
    (lua . t)))
 ;; require org-tempo to enable <s expansion
 (require 'org-tempo)
+;; make org babel default to python3
+(setq org-babel-python-command "python3")
 
 ;; functions for working with images
 (defun insert-image-from-file (filepath)
@@ -562,16 +581,19 @@
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
 (defun get-latex-cache-dir-path ()
+  "return the path for the directory that contains the compiled pdf latex documents"
   (interactive)
   (setq dir-path (concat (expand-file-name user-emacs-directory) "latex/"))
   (ignore-errors (make-directory dir-path))
   dir-path)
 (defun compile-current-document ()
+  "compile the current latex document being edited"
   (interactive)
   ;;(call-process-shell-command (concat (concat "xelatex -output-directory=/tmp " (buffer-file-name)) "&"))
   (call-process-shell-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
   (message (concat "compiled " (buffer-file-name))))
 (defun open-current-document ()
+  "open the pdf of the current latex document that was generated"
   (interactive)
   ;;(compile-sagetex)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
@@ -583,35 +605,43 @@
    ;;(add-hook 'after-save-hook 'compile-current-document 0 t)))
    (add-hook 'after-save-hook 'compile-sagetex 0 t)))
 (defun compile-sagetex ()
+  "compile the current latex document and also compile sagetex by running sage on the resulted file"
   (interactive)
   (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
   (setq last-pdflatex-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")&"))
   (call-process-shell-command (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command))))
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
+  "change the text between 2 dollar signs surrounding the cursor"
   (interactive)
   (search-backward "$")
   (forward-char)
-  (zap-up-to-char 1 ?$))
+  (zap-up-to-char 1 ?$)
+  (evil-insert nil))
 (define-key evil-normal-state-map (kbd "SPC c") 'change-text-between-dollar-signs)
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
+  "search for file and open it similar to dmenu"
   (interactive)
-  (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex))))
+  (let ((my-file (helm-comp-read "select file: " (directory-files-recursively directory-path regex))))
     (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
 
 (defun search-open-file-in-emacs (directory-path regex)
-  (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex))))
+  (let ((my-file (helm-comp-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\)")))
+  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
-  (lambda () (interactive) (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\)")))
+  (lambda () (interactive)
+    (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
   (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
   (lambda () (interactive) (search-open-file "~/Desktop/books" "")))
 (define-key evil-normal-state-map (kbd "SPC f d")
   (lambda () (interactive) (search-open-file "~/Desktop" "")))
+(define-key evil-normal-state-map (kbd "SPC F d")
+  (lambda () (interactive)
+    (search-open-file-in-emacs "~/Desktop" "")))
