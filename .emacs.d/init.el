@@ -248,9 +248,10 @@
 (use-package yasnippet-snippets)
 (use-package yasnippet
   :config
-  (setq yas-snippet-dirs
-        `(,(concat user-emacs-directory "snippets")))
-  (yas-global-mode 1))
+  ;;(setq yas-snippet-dirs
+  ;;      `(,(concat user-emacs-directory "snippets")))
+  (yas-global-mode 1)
+  (global-set-key (kbd "C-'") 'yas-expand))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -281,14 +282,6 @@
 (use-package tiny
   :config
   (global-set-key (kbd "C-c t") 'tiny-expand))
-
-(defun beautify-json ()
-  "Function to beautify current buffer considering it is in json format."
-  (interactive)
-  (let ((b (if mark-active (min (point) (mark)) (point-min)))
-        (e (if mark-active (max (point) (mark)) (point-max))))
-    (shell-command-on-region b e
-                             "python -mjson.tool" (current-buffer) t)))
 
 ;; start server
 (ignore-errors (server-start))
