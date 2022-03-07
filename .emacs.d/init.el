@@ -344,22 +344,19 @@
    (js . t)
    (lisp . t)
    (java . t)
+   (latex . t)
    (lua . t)))
 ;; require org-tempo to enable <s expansion
 (require 'org-tempo)
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
 
-;; run shell command and show continuous output in new buffer
-(defun run-command-show-output ()
+(defun run-command-show-output (cmd)
+  "run shell command and show continuous output in new buffer"
   (interactive)
-  (setq cmd (read-from-minibuffer "$ "))
   (progn
     (start-process-shell-command cmd cmd cmd)
-    (switch-to-buffer-other-window cmd)
-    (evil-insert nil)
-    (end-of-buffer)))
-(global-set-key (kbd "C-x $") 'run-command-show-output)
+    (switch-to-buffer-other-window cmd)))
 
 ;; hide config
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
@@ -419,33 +416,50 @@
 (defun current-filename ()
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
+
 (defun get-latex-cache-dir-path ()
   "return the path for the directory that contains the compiled pdf latex documents"
   (interactive)
   (setq dir-path (concat (expand-file-name user-emacs-directory) "latex/"))
   (ignore-errors (make-directory dir-path))
   dir-path)
+
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
   (call-process-shell-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
   (message (concat "compiled " (buffer-file-name))))
+
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 (global-set-key (kbd "C-c z") 'open-current-document)
+
+(evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC x") 'compile-sagetex-show-output)
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
    (compile-sagetex)
    (add-hook 'after-save-hook 'compile-sagetex 0 t)))
-(defun compile-sagetex ()
-  "compile the current latex document and also compile sagetex by running sage on the resulted file"
+
+(defun compile-sagetex-command ()
+  "return the command needed to compile sagetex"
   (interactive)
   (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
-  (setq last-pdflatex-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")&"))
-  (call-process-shell-command (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command))))
+  (setq last-pdflatex-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")"))
+  (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command)))
+
+(defun compile-sagetex ()
+  "compile the current latex document with support for sagetex"
+  (interactive)
+  (call-process-shell-command (concat (compile-sagetex-command) "&")))
+
+(defun compile-sagetex-show-output ()
+  "compile sagetex and show compilation output in an emacs window"
+  (interactive)
+  (run-command-show-output (concat (compile-sagetex-command) "&& echo compilation succeeded || echo failed")))
+
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
   "change the text between 2 dollar signs surrounding the cursor"
@@ -468,7 +482,7 @@
     (find-file (expand-file-name my-file) "'")))
 
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\)")))
+  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
   (lambda () (interactive)
     (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
