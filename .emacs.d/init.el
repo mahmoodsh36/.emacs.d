@@ -69,6 +69,14 @@
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 
+;; smooth scrolling
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don"t accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+(setq scroll-conservatively 10000)
+(setq auto-window-vscroll nil)
+
 ;; general keys
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
@@ -89,17 +97,45 @@
   (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
   (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up))
 
+;; evil-surround for evil mode
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+
+;; exchange words more easily with evil
+(use-package evil-exchange
+  :config
+  (evil-exchange-install))
+
+;; search for the current visual selection with */#
+(use-package evil-visualstar
+  :config
+  (global-evil-visualstar-mode))
+
+;; support to make evil more compatible with the whole of emacs
+(use-package evil-collection
+  :after (evil)
+  :config
+  (setq evil-collection-mode-list '(dired)) ;; enable for dired
+  (evil-collection-init))
+
+;; display marks visually
+(use-package evil-visual-mark-mode
+  :config
+  (add-hook 'evil-mode-hook 'evil-visual-mark-mode))
+
+;; display visual hints for evil actions
+(use-package evil-goggles
+  :ensure t
+  :config
+  (evil-goggles-mode))
+
+;; for evil mode compatibility
+(use-package treemacs-evil)
+
 ;; evil-mode bindings here, after the package is installed
 ;; keybinding to quickly open config file
 (define-key evil-normal-state-map (kbd "SPC e") (lambda () (interactive) (find-file user-init-file)))
-
-;; smooth scrolling
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don"t accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboard scroll one line at a time
-(setq scroll-conservatively 10000)
-(setq auto-window-vscroll nil)
 
 ;; relative numbering
 (use-package linum-relative
@@ -118,19 +154,15 @@
 ;; projectile
 (use-package projectile
   :config
-  (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/workspace/"))
+  (setq projectile-completion-system 'helm)
+  (setq projectile-project-search-path '("~/Desktop/"))
   (projectile-mode +1)
-  ;; (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq projectile-globally-ignored-files (append '("*.py" "*.o" "*.so") projectile-globally-ignored-files)))
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
-;; evil-surround for evil mode
-(use-package evil-surround
-  :config
-  (global-evil-surround-mode 1))
+;; helm integration for projectile
+(use-package helm-projectile)
 
-;; ide-like features
+;; auto completion
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode)
@@ -140,7 +172,41 @@
   (eval-after-load 'company
     '(progn
        (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-       (define-key company-active-map [tab] 'company-complete-selection))))
+       (define-key company-active-map [tab] 'company-complete-selection)
+       (unbind-key "RET" company-active-map)
+       (unbind-key "<return>" company-active-map))))
+
+;; popup documentation for quick help for company
+(use-package company-quickhelp
+  :config
+  (company-quickhelp-mode))
+
+;; company completion with icons
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+;; company auctex support
+(use-package company-auctex
+  :config
+  (company-auctex-init))
+
+;; anaconda for python
+(use-package company-anaconda
+  :config
+  (eval-after-load "company"
+    '(add-to-list 'company-backends 'company-anaconda))
+  (add-hook 'python-mode-hook 'anaconda-mode))
+
+;; helm integration for company
+(use-package helm-company
+  :config
+  (eval-after-load 'company
+    '''(progn
+       (define-key company-mode-map (kbd "C-:") 'helm-company)
+       (define-key company-active-map (kbd "C-:") 'helm-company))))
+
+;; company for web mode
+(use-package company-web)
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -159,13 +225,6 @@
 (use-package gruvbox-theme
   :config
   (load-theme 'gruvbox t))
-
-;; support to make evil more compatible with the whole of emacs
-(use-package evil-collection
-  :after (evil)
-  :config
-  (setq evil-collection-mode-list '(dired)) ;; enable for dired
-  (evil-collection-init))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -215,20 +274,18 @@
   :config
   (global-command-log-mode))
 
+;; helm integration for the silver searcher
+(use-package helm-ag)
 ;; the silver searcher, an alternative to grep
 (use-package ag
   :config
-  (global-set-key (kbd "C-c g") 'counsel-ag))
+  (global-set-key (kbd "C-c g") 'helm-ag))
 
 ;; save undos/redos even when buffer is killed or emacs restarts
 (use-package undo-fu-session
   :config
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
   (global-undo-fu-session-mode))
-
-(use-package company-auctex
-  :config
-  (company-auctex-init))
 
 ;; executing sage in org babel
 (use-package ob-sagemath
@@ -286,6 +343,61 @@
 (use-package tiny
   :config
   (global-set-key (kbd "C-c t") 'tiny-expand))
+
+;; icons for dired
+(use-package all-the-icons)
+(use-package all-the-icons-dired
+  :config
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+;; modern API for working with files/dirs
+(use-package f)
+
+;; automatic pair insertion
+(use-package smartparens
+  :config
+  (smartparens-global-mode))
+
+;; language server protocol support
+(use-package lsp-mode
+  :config
+  (add-hook 'prog-mode-hook 'lsp-mode))
+
+;; show simple info on the right
+(use-package lsp-ui
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package lsp-treemacs
+  :config
+  (lsp-treemacs-sync-mode 1)
+  (treemacs-resize-icons 15))
+
+;; highlight uncommited changes
+(use-package diff-hl
+  :config
+  (add-hook 'prog-mode-hook 'diff-hl-mode))
+
+;; improved javascript editing mode
+(use-package js2-mode)
+
+;; ensure the PATH variable is set according to the users shell, solves some issues on macos
+(use-package exec-path-from-shell)
+
+;; jump to pair/match
+(use-package evil-matchit)
+
+;; provides command to restart emacs
+(use-package restart-emacs)
+
+;; display available keybindings
+(use-package which-key)
+
+;; small flash when evaluating a sexp
+(use-package eval-sexp-fu)
+
+;; other
+(use-package bash-completion)
 
 ;; start server
 (ignore-errors (server-start))
@@ -347,6 +459,7 @@
    (lisp . t)
    (java . t)
    (latex . t)
+   (C . t)
    (lua . t)))
 ;; require org-tempo to enable <s expansion
 (require 'org-tempo)
