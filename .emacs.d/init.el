@@ -136,7 +136,11 @@
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
   (setq company-idle-delay 0)
-  (setq company-require-match nil))
+  (setq company-require-match nil)
+  (eval-after-load 'company
+    '(progn
+       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+       (define-key company-active-map [tab] 'company-complete-selection))))
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -328,8 +332,6 @@
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
-;; Do not confirm before evaluation
-(setq org-confirm-babel-evaluate nil)
 ;; Show images when opening a file.
 (setq org-startup-with-inline-images t)
 ;; Show images after evaluating code blocks.
@@ -356,7 +358,8 @@
   (interactive)
   (progn
     (start-process-shell-command cmd cmd cmd)
-    (switch-to-buffer-other-window cmd)))
+    (display-buffer cmd)
+    (end-of-buffer-other-window nil)))
 
 ;; hide config
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
@@ -434,13 +437,13 @@
   "open the pdf of the current latex document that was generated"
   (interactive)
   (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
-(global-set-key (kbd "C-c z") 'open-current-document)
 
 (evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC x") 'compile-sagetex-show-output)
+(evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC v") 'open-current-document)
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
-   (compile-sagetex)
+   (compile-current-document)
    (add-hook 'after-save-hook 'compile-sagetex 0 t)))
 
 (defun compile-sagetex-command ()
@@ -495,3 +498,13 @@
 (define-key evil-normal-state-map (kbd "SPC F d")
   (lambda () (interactive)
     (search-open-file-in-emacs "~/Desktop" "")))
+
+;; automatically run script being edited, demonstrates how we can auto compile files on save
+(defun run-script ()
+  "run the current bash script being edited"
+  (interactive)
+  (run-command-show-output (buffer-file-name)))
+
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook 'run-script 0 t)))
