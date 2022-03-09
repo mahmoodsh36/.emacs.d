@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sage
+# key: sa
+# --
+\sage{$1}$0

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: sagesilent
+# key: ss
+# --
+\begin{sagesilent}
+  $0
+\end{sagesilent}
