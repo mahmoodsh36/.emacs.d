@@ -57,7 +57,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 105 59))
+(when window-system (set-frame-size (selected-frame) 130 59))
 ;; enable which-function-mode that shows the current function being edited in the bottom bar
 (add-hook 'prog-mode-hook 'which-function-mode)
 ;; key to start calc mode
@@ -130,9 +130,6 @@
   :config
   (evil-goggles-mode))
 
-;; for evil mode compatibility
-(use-package treemacs-evil)
-
 ;; evil-mode bindings here, after the package is installed
 ;; keybinding to quickly open config file
 (define-key evil-normal-state-map (kbd "SPC e") (lambda () (interactive) (find-file user-init-file)))
@@ -157,7 +154,8 @@
   (setq projectile-completion-system 'helm)
   (setq projectile-project-search-path '("~/Desktop/"))
   (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+  (define-key evil-normal-state-map (kbd "SPC p") 'projectile-command-map))
+
 
 ;; helm integration for projectile
 (use-package helm-projectile)
@@ -213,18 +211,18 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;; nice bullets for headlines instead of just stars
-(use-package org-bullets
+;; make headlines in org mode look better
+(use-package org-superstar
   :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
 ;; evil mode support for org
 (use-package evil-org)
 
-;; ====== gruvbox
-(use-package gruvbox-theme
+;; themes
+(use-package doom-themes
   :config
-  (load-theme 'gruvbox t))
+  (load-theme 'doom-gruvbox t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -260,9 +258,6 @@
 
 ;; package to help making http requests
 (use-package request)
-
-(use-package counsel
-  :config (ivy-mode t))
 
 ;; highlights color names with the corresponding color
 (use-package rainbow-mode
@@ -353,11 +348,6 @@
 ;; modern API for working with files/dirs
 (use-package f)
 
-;; automatic pair insertion
-(use-package smartparens
-  :config
-  (smartparens-global-mode))
-
 ;; language server protocol support
 (use-package lsp-mode
   :config
@@ -371,7 +361,13 @@
 (use-package lsp-treemacs
   :config
   (lsp-treemacs-sync-mode 1)
-  (treemacs-resize-icons 15))
+  (treemacs-resize-icons 15)
+  (treemacs-set-width 30))
+
+;; for evil mode compatibility
+(use-package treemacs-evil
+  :config
+  (define-key evil-normal-state-map (kbd "SPC t") (lambda () (interactive) (treemacs))))
 
 ;; highlight uncommited changes
 (use-package diff-hl
@@ -382,7 +378,9 @@
 (use-package js2-mode)
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
-(use-package exec-path-from-shell)
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
 
 ;; jump to pair/match
 (use-package evil-matchit)
@@ -430,7 +428,7 @@
           (insert "(message ")
           (end-of-line)
           (insert ")"))))
-(define-key evil-normal-state-map (kbd "SPC p") 'current-line-to-print-statement)
+;;(define-key evil-normal-state-map (kbd "SPC o") 'current-line-to-print-statement)
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
