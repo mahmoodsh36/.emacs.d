@@ -148,17 +148,17 @@
   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") #'helm-find-files))
 
+(use-package counsel
+  :config
+  (setq ivy-height 25))
+
 ;; projectile
 (use-package projectile
   :config
-  (setq projectile-completion-system 'helm)
-  (setq projectile-project-search-path '("~/Desktop/"))
+  (setq projectile-completion-system 'ivy)
+  ;;(setq projectile-project-search-path '("~/Desktop/"))
   (projectile-mode +1)
   (define-key evil-normal-state-map (kbd "SPC p") 'projectile-command-map))
-
-
-;; helm integration for projectile
-(use-package helm-projectile)
 
 ;; auto completion
 (use-package company
@@ -269,12 +269,10 @@
   :config
   (global-command-log-mode))
 
-;; helm integration for the silver searcher
-(use-package helm-ag)
 ;; the silver searcher, an alternative to grep
 (use-package ag
   :config
-  (global-set-key (kbd "C-c g") 'helm-ag))
+  (global-set-key (kbd "C-c g") 'counsel-ag))
 
 ;; save undos/redos even when buffer is killed or emacs restarts
 (use-package undo-fu-session
@@ -588,11 +586,11 @@
 (defun search-open-file (directory-path regex)
   "search for file and open it similar to dmenu"
   (interactive)
-  (let ((my-file (helm-comp-read "select file: " (directory-files-recursively directory-path regex))))
+  (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
 
 (defun search-open-file-in-emacs (directory-path regex)
-  (let ((my-file (helm-comp-read "select file: " (directory-files-recursively directory-path regex))))
+  (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
 (define-key evil-normal-state-map (kbd "SPC f c")
