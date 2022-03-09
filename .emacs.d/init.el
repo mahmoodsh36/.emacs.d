@@ -141,16 +141,14 @@
   ;; show current line number not '0'
   (setq linum-relative-current-symbol ""))
 
-;; helm
-(use-package helm
-  :config
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files))
-
 (use-package counsel
   :config
-  (setq ivy-height 25))
+  (ivy-mode)
+  (setq ivy-height 25)
+  (define-key evil-normal-state-map (kbd "SPC g") 'counsel-grep)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (define-key evil-normal-state-map (kbd "/") 'swiper))
 
 ;; projectile
 (use-package projectile
@@ -268,11 +266,6 @@
 (use-package command-log-mode
   :config
   (global-command-log-mode))
-
-;; the silver searcher, an alternative to grep
-(use-package ag
-  :config
-  (global-set-key (kbd "C-c g") 'counsel-ag))
 
 ;; save undos/redos even when buffer is killed or emacs restarts
 (use-package undo-fu-session
