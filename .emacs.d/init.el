@@ -65,7 +65,7 @@
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; set font
-;;(set-frame-font "Fantasque Sans Mono 12" nil t)
+(set-frame-font "Fantasque Sans Mono 11" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 
@@ -95,7 +95,9 @@
   (evil-set-undo-system 'undo-tree)
   (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
   (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
-  (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up))
+  (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up)
+  ;; make ESC cancel all
+  (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
 
 ;; evil-surround for evil mode
 (use-package evil-surround
@@ -246,9 +248,12 @@
 (use-package evil-org)
 
 ;; themes
-(use-package doom-themes
+;;(use-package doom-themes
+;;  :config
+;;  (load-theme 'doom-miramare t))
+(use-package almost-mono-themes
   :config
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'almost-mono-black t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -376,7 +381,7 @@
   :config
   (lsp-treemacs-sync-mode 1)
   (treemacs-resize-icons 15)
-  (treemacs-set-width 30))
+  (setq treemacs-width 30))
 
 ;; ivy integration for lsp
 (use-package lsp-ivy)
@@ -495,6 +500,12 @@
     (display-buffer cmd)
     (end-of-buffer-other-window nil)))
 
+(defun run-command-save-output (the-cmd command-name)
+  "run a shell command and save its output in a buffer"
+  (interactive)
+  (progn
+    (start-process-shell-command command-name command-name the-cmd)))
+
 ;; hide config
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 (setq dired-listing-switches "-l")
@@ -570,9 +581,8 @@
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
+  (call-process-shell-command (concat (concat "xdg-open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 
-(evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC x") 'compile-sagetex-show-output)
 (evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC v") 'open-current-document)
 (add-hook
  'LaTeX-mode-hook
@@ -590,12 +600,7 @@
 (defun compile-sagetex ()
   "compile the current latex document with support for sagetex"
   (interactive)
-  (call-process-shell-command (concat (compile-sagetex-command) "&")))
-
-(defun compile-sagetex-show-output ()
-  "compile sagetex and show compilation output in an emacs window"
-  (interactive)
-  (run-command-show-output (concat (compile-sagetex-command) "&& echo compilation succeeded || echo compilation failed")))
+  (start-process-shell-command "latex" "latex" (compile-sagetex-command)))
 
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
@@ -613,7 +618,7 @@
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
-    (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
+    (call-process-shell-command (concat "xdg-open '" (concat (expand-file-name my-file) "'")))))
 
 (defun search-open-file-in-emacs (directory-path regex)
   "search for a file recursively in a directory and open it in emacs"
@@ -621,16 +626,16 @@
     (find-file (expand-file-name my-file) "'")))
 
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+  (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
   (lambda () (interactive)
     (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
-  (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
+  (lambda () (interactive) (search-open-file "~/data/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
-  (lambda () (interactive) (search-open-file "~/Desktop/books" "")))
+  (lambda () (interactive) (search-open-file "~/data/books" "")))
 (define-key evil-normal-state-map (kbd "SPC f d")
-  (lambda () (interactive) (search-open-file "~/Desktop" "")))
+  (lambda () (interactive) (search-open-file "~/data" "")))
 (define-key evil-normal-state-map (kbd "SPC F d")
   (lambda () (interactive)
     (search-open-file-in-emacs "~/Desktop" "")))
