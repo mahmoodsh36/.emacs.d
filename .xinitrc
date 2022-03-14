@@ -32,9 +32,9 @@ xrdb -load ~/.Xresources &
 sudo rmmod pcspkr &
 
 # start some programs
-emacs &
-firefox &
-flatpak run com.client.Spotify || spotify &
+#emacs &
+#google-chrome-stable &
+#flatpak run com.client.Spotify || spotify &
 
 #xsetroot -cursor_name left_ptr
 exec awesome
