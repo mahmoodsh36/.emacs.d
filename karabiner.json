@@ -1,0 +1,461 @@
+{
+  "global": {
+    "check_for_updates_on_startup": false,
+    "show_in_menu_bar": true,
+    "show_profile_name_in_menu_bar": false
+  },
+  "profiles": [
+    {
+      "complex_modifications": {
+        "parameters": {
+          "basic.simultaneous_threshold_milliseconds": 50,
+          "basic.to_delayed_action_delay_milliseconds": 500,
+          "basic.to_if_alone_timeout_milliseconds": 1000,
+          "basic.to_if_held_down_threshold_milliseconds": 500,
+          "mouse_motion_to_scroll.speed": 100
+        },
+        "rules": [
+          {
+            "description": "keybinding to open a terminal",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "return_or_enter",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a kitty"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to open chrome",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "w",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a 'Google Chrome'"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to open emacs",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "e",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a emacs"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to open spotify",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "s",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a spotify"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to open discord",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "d",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a discord"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to increase volume",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "equal_sign",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "consumer_key_code": "volume_increment"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to decrease volume",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "hyphen",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "consumer_key_code": "volume_decrement"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "tell spotify to play/pause",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "p",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "osascript -e 'tell application \"Spotify\" to playpause'"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "tell spotify to skip to next track",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "close_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "osascript -e 'tell application \"Spotify\" to next track'"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "tell spotify to skip to previous track",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "open_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "osascript -e 'tell application \"Spotify\" to previous track'"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "key to increase brightness",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "0",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "consumer_key_code": "display_brightness_increment"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "key to decrease brightness",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "9",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "consumer_key_code": "display_brightness_decrement"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to open Skim",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "f",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a Skim"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "keybinding to open mpv",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "m",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a mpv"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          }
+        ]
+      },
+      "devices": [],
+      "fn_function_keys": [
+        {
+          "from": {
+            "key_code": "f1"
+          },
+          "to": [
+            {
+              "consumer_key_code": "display_brightness_decrement"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f2"
+          },
+          "to": [
+            {
+              "consumer_key_code": "display_brightness_increment"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f3"
+          },
+          "to": [
+            {
+              "apple_vendor_keyboard_key_code": "mission_control"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f4"
+          },
+          "to": [
+            {
+              "apple_vendor_keyboard_key_code": "spotlight"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f5"
+          },
+          "to": [
+            {
+              "consumer_key_code": "dictation"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f6"
+          },
+          "to": [
+            {
+              "key_code": "f6"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f7"
+          },
+          "to": [
+            {
+              "consumer_key_code": "rewind"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f8"
+          },
+          "to": [
+            {
+              "consumer_key_code": "play_or_pause"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f9"
+          },
+          "to": [
+            {
+              "consumer_key_code": "fast_forward"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f10"
+          },
+          "to": [
+            {
+              "consumer_key_code": "mute"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f11"
+          },
+          "to": [
+            {
+              "consumer_key_code": "volume_decrement"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "f12"
+          },
+          "to": [
+            {
+              "consumer_key_code": "volume_increment"
+            }
+          ]
+        }
+      ],
+      "name": "Default profile",
+      "parameters": {
+        "delay_milliseconds_before_open_device": 1000
+      },
+      "selected": true,
+      "simple_modifications": [
+        {
+          "from": {
+            "key_code": "caps_lock"
+          },
+          "to": [
+            {
+              "key_code": "escape"
+            }
+          ]
+        }
+      ],
+      "virtual_hid_keyboard": {
+        "country_code": 0,
+        "indicate_sticky_modifier_keys_state": true,
+        "mouse_key_xy_scale": 100
+      }
+    }
+  ]
+}

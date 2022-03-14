@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: matrixdet
+# key: det
+# --
+\left|
+  \begin{array}{$1}
+    $0
+  \end{array}
+\right|

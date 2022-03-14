@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: document
+# key: doc
+# --
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{indentfirst}
+\usepackage[margin=0.2in]{geometry}
+\usepackage{pgffor}
+\usepackage{sagetex}
+\usepackage{amssymb}
+\usepackage{cancel}
+
+\author{mahmood}
+\title{$1}
+
+\begin{document}
+\maketitle
+
+$0
+
+\end{document}
