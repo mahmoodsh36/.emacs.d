@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 
-for filename in .xinitrc .zshrc .zprofile .Xresources .vimrc .emacs .tmux.conf; do
+mkdir ~/.emacs.d/
+ln -s "$HOME/workspace/dotfiles/.emacs.d/init.el" "$HOME/.emacs.d/"
+ln -s "$HOME/workspace/dotfiles/.emacs.d/snippets" "$HOME/.emacs.d/"
+
+for filename in .xinitrc .zshrc .zprofile .Xresources .vimrc .tmux.conf; do
 	ln -s "$HOME/workspace/dotfiles/$filename" "$HOME/"
 done
 
