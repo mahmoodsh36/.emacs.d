@@ -57,7 +57,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 130 59))
+(when window-system (set-frame-size (selected-frame) 115 58))
 ;; enable which-function-mode that shows the current function being edited in the bottom bar
 (add-hook 'prog-mode-hook 'which-function-mode)
 ;; key to start calc mode
@@ -130,6 +130,28 @@
   :config
   (evil-goggles-mode))
 
+;; increase/decrease numbers like in vim
+(use-package evil-numbers
+  :config
+  (global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
+  (global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
+  (global-set-key (kbd "C-c C-+") 'evil-numbers/inc-at-pt-incremental)
+  (global-set-key (kbd "C-c C--") 'evil-numbers/dec-at-pt-incremental))
+
+;; multiple cursors for evil mode
+(use-package evil-mc
+  :config
+  (global-evil-mc-mode 1))
+
+;; make line a text object - yil dil cil, etc..
+(use-package evil-textobj-line)
+
+;; quick commenting
+(use-package evil-leader) ;; this provides the leader key needed for nerd commenter
+(use-package evil-nerd-commenter
+  :config
+  (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
+
 ;; evil-mode bindings here, after the package is installed
 ;; keybinding to quickly open config file
 (define-key evil-normal-state-map (kbd "SPC e") (lambda () (interactive) (find-file user-init-file)))
@@ -148,7 +170,8 @@
   (define-key evil-normal-state-map (kbd "SPC g") 'counsel-ag)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (define-key evil-normal-state-map (kbd "/") 'swiper))
+  (define-key evil-normal-state-map (kbd "/") 'swiper)
+  (define-key evil-normal-state-map (kbd "?") 'swiper-backward))
 
 ;; projectile
 (use-package projectile
@@ -181,7 +204,7 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
-;; company auctex support
+;; company auctex support for latex
 (use-package company-auctex
   :config
   (company-auctex-init))
@@ -198,11 +221,16 @@
   :config
   (eval-after-load 'company
     '''(progn
-       (define-key company-mode-map (kbd "C-:") 'helm-company)
-       (define-key company-active-map (kbd "C-:") 'helm-company))))
+         (define-key company-mode-map (kbd "C-:") 'helm-company)
+         (define-key company-active-map (kbd "C-:") 'helm-company))))
 
 ;; company for web mode
 (use-package company-web)
+
+;; company for shell scripting
+(use-package company-shell
+  :config
+  (add-to-list 'company-backends '(company-shell company-shell-env)))
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -311,12 +339,6 @@
 ;; integration with powerthesaurus.org
 (use-package powerthesaurus)
 
-;; key guide
-(use-package guide-key
-  :config
-  (setq guide-key/guide-key-sequence t)
-  (guide-key-mode 1))
-
 ;; highlight surrounding parentheses
 (use-package highlight-parentheses
   :config
@@ -349,16 +371,20 @@
   :config
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
+;; lsp support for treemacs
 (use-package lsp-treemacs
   :config
   (lsp-treemacs-sync-mode 1)
   (treemacs-resize-icons 15)
   (treemacs-set-width 30))
 
+;; ivy integration for lsp
+(use-package lsp-ivy)
+
 ;; for evil mode compatibility
 (use-package treemacs-evil
   :config
-  (define-key evil-normal-state-map (kbd "SPC t") (lambda () (interactive) (treemacs))))
+  (define-key evil-normal-state-map (kbd "SPC t") 'treemacs))
 
 ;; highlight uncommited changes
 (use-package diff-hl
@@ -374,19 +400,25 @@
   (exec-path-from-shell-initialize))
 
 ;; jump to pair/match
-(use-package evil-matchit)
+(use-package evil-matchit
+  :config
+  (global-evil-matchit-mode))
 
 ;; provides command to restart emacs
 (use-package restart-emacs)
 
 ;; display available keybindings
-(use-package which-key)
+(use-package which-key
+  :config
+  (which-key-mode 1))
 
 ;; small flash when evaluating a sexp
 (use-package eval-sexp-fu)
 
-;; other
-(use-package bash-completion)
+;; a package to fetch lyrics
+(use-package lyrics-fetcher
+  :config
+  (lyrics-fetcher-use-backend 'neteasecloud))
 
 ;; start server
 (ignore-errors (server-start))
@@ -563,7 +595,7 @@
 (defun compile-sagetex-show-output ()
   "compile sagetex and show compilation output in an emacs window"
   (interactive)
-  (run-command-show-output (concat (compile-sagetex-command) "&& echo compilation succeeded || echo failed")))
+  (run-command-show-output (concat (compile-sagetex-command) "&& echo compilation succeeded || echo compilation failed")))
 
 ;; this is a function to change the text between two $'s since i do that alot in latex
 (defun change-text-between-dollar-signs ()
@@ -577,12 +609,14 @@
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
+  "search for a file recursively in a directory and open it - works on macos"
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
 
 (defun search-open-file-in-emacs (directory-path regex)
+  "search for a file recursively in a directory and open it in emacs"
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
