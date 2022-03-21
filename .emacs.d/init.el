@@ -65,7 +65,7 @@
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; set font
-(set-frame-font "Fantasque Sans Mono 11" nil t)
+;;(set-frame-font "Fantasque Sans Mono 11" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 
@@ -82,17 +82,12 @@
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
 
-;; fix evil-mode issue with undo, this is required
-(setq evil-want-keybinding nil)
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode))
 
 ;; evil-mode
+(setq evil-want-keybinding nil)
 (use-package evil
   :config
   (evil-mode 1)
-  (evil-set-undo-system 'undo-tree)
   (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
   (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
   (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up)
@@ -171,9 +166,7 @@
   (setq ivy-height 25)
   (define-key evil-normal-state-map (kbd "SPC g") 'counsel-ag)
   (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (define-key evil-normal-state-map (kbd "/") 'swiper)
-  (define-key evil-normal-state-map (kbd "?") 'swiper-backward))
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file))
 
 ;; projectile
 (use-package projectile
@@ -243,12 +236,9 @@
 (use-package evil-org)
 
 ;; themes
-;; (use-package doom-themes
-;;   :config
-;;   (load-theme 'doom-homage-black t))
-(use-package almost-mono-themes
- :config
- (load-theme 'almost-mono-black t))
+(use-package doom-themes
+  :config
+  (load-theme 'doom-gruvbox-light t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -574,7 +564,7 @@
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (call-process-shell-command (concat (concat "xdg-open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
+  (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 
 (evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC v") 'open-current-document)
 (add-hook
@@ -611,7 +601,7 @@
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
-    (call-process-shell-command (concat "xdg-open '" (concat (expand-file-name my-file) "'")))))
+    (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
 
 (defun search-open-file-in-emacs (directory-path regex)
   "search for a file recursively in a directory and open it in emacs"
@@ -619,19 +609,19 @@
     (find-file (expand-file-name my-file) "'")))
 
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
   (lambda () (interactive)
     (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
-  (lambda () (interactive) (search-open-file "~/data/p" "")))
+  (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
-  (lambda () (interactive) (search-open-file "~/data/books" "")))
+  (lambda () (interactive) (search-open-file "~/Desktop/books" "")))
 (define-key evil-normal-state-map (kbd "SPC f d")
-  (lambda () (interactive) (search-open-file "~/data" "")))
+  (lambda () (interactive) (search-open-file "~/Desktop" "")))
 (define-key evil-normal-state-map (kbd "SPC F d")
   (lambda () (interactive)
-    (search-open-file-in-emacs "~/data" "")))
+    (search-open-file-in-emacs "~/Desktop" "")))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
