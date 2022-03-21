@@ -67,7 +67,7 @@ export PYTHON_HISTORY_FILE=$HOME/.python_history
 alias l="ls"
 alias ls="ls --color"
 alias grep="grep --color=auto"
-alias o="open.sh"
+alias o="xdg-open"
 alias vim="nvim"
 alias v="vim"
 alias pi="sudo pacman -S --noconfirm"
