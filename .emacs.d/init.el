@@ -239,21 +239,16 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;; make headlines in org mode look better
-(use-package org-superstar
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
 ;; evil mode support for org
 (use-package evil-org)
 
 ;; themes
-;;(use-package doom-themes
-;;  :config
-;;  (load-theme 'doom-miramare t))
+;; (use-package doom-themes
+;;   :config
+;;   (load-theme 'doom-homage-black t))
 (use-package almost-mono-themes
-  :config
-  (load-theme 'almost-mono-black t))
+ :config
+ (load-theme 'almost-mono-black t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -331,7 +326,7 @@
   ;;(setq yas-snippet-dirs
   ;;      `(,(concat user-emacs-directory "snippets")))
   (yas-global-mode 1)
-  (global-set-key (kbd "C-'") 'yas-expand))
+  (global-set-key (kbd "M-<tab>") 'yas-expand))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -396,18 +391,10 @@
   :config
   (add-hook 'prog-mode-hook 'diff-hl-mode))
 
-;; improved javascript editing mode
-(use-package js2-mode)
-
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
-
-;; jump to pair/match
-(use-package evil-matchit
-  :config
-  (global-evil-matchit-mode))
 
 ;; provides command to restart emacs
 (use-package restart-emacs)
@@ -420,10 +407,7 @@
 ;; small flash when evaluating a sexp
 (use-package eval-sexp-fu)
 
-;; a package to fetch lyrics
-(use-package lyrics-fetcher
-  :config
-  (lyrics-fetcher-use-backend 'neteasecloud))
+;;(use-package vterm)
 
 ;; start server
 (ignore-errors (server-start))
@@ -456,7 +440,7 @@
           (insert "(message ")
           (end-of-line)
           (insert ")"))))
-;;(define-key evil-normal-state-map (kbd "SPC o") 'current-line-to-print-statement)
+(define-key evil-normal-state-map (kbd "SPC o") 'current-line-to-print-statement)
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
@@ -467,6 +451,8 @@
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
 ;; org mode config
+;; keybinding to export to html
+(evil-define-key 'normal 'org-mode-map (kbd "SPC x") 'org-html-export-to-html)
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
@@ -486,6 +472,7 @@
    (java . t)
    (latex . t)
    (C . t)
+   (shell . t)
    (lua . t)))
 ;; require org-tempo to enable <s expansion
 (require 'org-tempo)
@@ -559,6 +546,12 @@
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
 
 ;; my config for latex
+;; make vip/vap/dap/cip etc.. in latex work properly
+(defun my-LaTeX-mode-hook()
+  (setq paragraph-start "\f\\|[ 	]*$")
+  (setq paragraph-separate "[ 	\f]*$"))
+(add-hook 'LaTeX-mode-hook 'my-LaTeX-mode-hook)
+
 ;; this disables the error when trying to insert dollar after \(
 (define-key TeX-mode-map "$" nil)
 (defun current-filename ()
@@ -638,7 +631,7 @@
   (lambda () (interactive) (search-open-file "~/data" "")))
 (define-key evil-normal-state-map (kbd "SPC F d")
   (lambda () (interactive)
-    (search-open-file-in-emacs "~/Desktop" "")))
+    (search-open-file-in-emacs "~/data" "")))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
