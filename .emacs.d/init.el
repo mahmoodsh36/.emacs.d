@@ -65,7 +65,7 @@
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; set font
-;;(set-frame-font "Fantasque Sans Mono 11" nil t)
+(set-frame-font "Fantasque Sans Mono 11" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 
@@ -82,6 +82,8 @@
 (global-set-key (kbd "C-x D") 'image-dired)
 (global-set-key (kbd "C-c f") 'find-function-at-point)
 
+;; needed for evil mode
+(use-package undo-fu)
 
 ;; evil-mode
 (setq evil-want-keybinding nil)
@@ -91,6 +93,9 @@
   (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
   (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
   (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up)
+  ;; undo/redo keys
+  (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+  (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
   ;; make ESC cancel all
   (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
 
@@ -238,7 +243,7 @@
 ;; themes
 (use-package doom-themes
   :config
-  (load-theme 'doom-gruvbox-light t))
+  (load-theme 'doom-gruvbox t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -397,10 +402,8 @@
 ;; small flash when evaluating a sexp
 (use-package eval-sexp-fu)
 
-;;(use-package vterm)
-
 ;; start server
-(ignore-errors (server-start))
+(server-start)
 
 ;; Set transparency of emacs
 (defun transparency (value)
@@ -564,7 +567,7 @@
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (call-process-shell-command (concat (concat "open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
+  (call-process-shell-command (concat (concat "xdg-open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
 
 (evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC v") 'open-current-document)
 (add-hook
@@ -601,34 +604,42 @@
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
-    (call-process-shell-command (concat "open '" (concat (expand-file-name my-file) "'")))))
+    (call-process-shell-command (concat "xdg-open '" (concat (expand-file-name my-file) "'")))))
 
 (defun search-open-file-in-emacs (directory-path regex)
   "search for a file recursively in a directory and open it in emacs"
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
+;; keys to search for files
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+  (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
   (lambda () (interactive)
     (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
-  (lambda () (interactive) (search-open-file "~/Desktop/p" "")))
+  (lambda () (interactive) (search-open-file "~/data/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
-  (lambda () (interactive) (search-open-file "~/Desktop/books" "")))
+  (lambda () (interactive) (search-open-file "~/data/books" "")))
 (define-key evil-normal-state-map (kbd "SPC f d")
-  (lambda () (interactive) (search-open-file "~/Desktop" "")))
+  (lambda () (interactive) (search-open-file "~/data" "")))
 (define-key evil-normal-state-map (kbd "SPC F d")
   (lambda () (interactive)
-    (search-open-file-in-emacs "~/Desktop" "")))
+    (search-open-file-in-emacs "~/data" "")))
+
+;; keys to open directories
+(define-key evil-normal-state-map (kbd "SPC r d")
+  (lambda () (interactive)
+    (dired "~/dl/")))
+(define-key evil-normal-state-map (kbd "SPC r a")
+  (lambda () (interactive)
+    (dired "~/data/")))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
   "run the current bash script being edited"
   (interactive)
   (run-command-show-output (buffer-file-name)))
-
 (add-hook 'sh-mode-hook
           (lambda ()
             (add-hook 'after-save-hook 'run-script 0 t)))
