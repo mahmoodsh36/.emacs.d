@@ -77,11 +77,6 @@
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
 
-;; general keys
-(global-set-key (kbd "C-M-S-x") 'eval-region)
-(global-set-key (kbd "C-x D") 'image-dired)
-(global-set-key (kbd "C-c f") 'find-function-at-point)
-
 ;; needed for evil mode
 (use-package undo-fu)
 
@@ -243,7 +238,7 @@
 ;; themes
 (use-package doom-themes
   :config
-  (load-theme 'doom-gruvbox t))
+  (load-theme 'doom-molokai t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -627,13 +622,17 @@
   (lambda () (interactive)
     (search-open-file-in-emacs "~/data" "")))
 
-;; keys to open directories
-(define-key evil-normal-state-map (kbd "SPC r d")
-  (lambda () (interactive)
-    (dired "~/dl/")))
-(define-key evil-normal-state-map (kbd "SPC r a")
-  (lambda () (interactive)
-    (dired "~/data/")))
+;; other keybindings
+(global-set-key (kbd "C-M-S-x") 'eval-region)
+(global-set-key (kbd "C-x D") 'image-dired)
+(global-set-key (kbd "C-c f") 'find-function-at-point)
+(define-key evil-normal-state-map (kbd "SPC r d") (lambda () (interactive) (dired "~/dl/")))
+(define-key evil-normal-state-map (kbd "SPC r a") (lambda () (interactive) (dired "~/data/")))
+(define-key evil-normal-state-map (kbd "SPC f f") 'counsel-find-file)
+(define-key evil-normal-state-map (kbd "SPC SPC") 'counsel-M-x)
+(define-key evil-normal-state-map (kbd "SPC b k") 'kill-this-buffer)
+(define-key evil-normal-state-map (kbd "SPC b K") 'kill-buffer-and-window)
+(define-key evil-normal-state-map (kbd "SPC b s") 'counsel-switch-buffer)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
