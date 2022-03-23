@@ -7,5 +7,5 @@ map u scroll half-up
 map r reload
 map g goto top
 map D toggle_page_mode
-set window-height 900
-set window-width 700
+set window-height 1000
+set window-width 900
