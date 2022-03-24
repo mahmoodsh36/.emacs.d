@@ -40,16 +40,12 @@
       `((".*" . ,"~/.emacs.d/backup/")))
 (setq auto-save-file-name-transforms
       `((".*" ,"~/.emacs.d/backup/" t)))
-;; kill current buffer without prompt
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
 ;; disable cursor blink
 (blink-cursor-mode 0)
 ;; treat underscore as part of word
 (defun underscore-part-of-word-hook ()
   (modify-syntax-entry ?_ "w"))
 (add-hook 'prog-mode-hook 'underscore-part-of-word-hook)
-;; kill buffer and window shortcut
-(global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 ;; highlight current line
 (global-hl-line-mode)
 ;; reload file automatically
@@ -60,8 +56,6 @@
 (when window-system (set-frame-size (selected-frame) 115 58))
 ;; enable which-function-mode that shows the current function being edited in the bottom bar
 (add-hook 'prog-mode-hook 'which-function-mode)
-;; key to start calc mode
-(global-set-key (kbd "C-c c") 'calc)
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; set font
@@ -236,9 +230,12 @@
 (use-package evil-org)
 
 ;; themes
-(use-package doom-themes
+;; (use-package doom-themes
+;;   :config
+;;   (load-theme 'doom-gruvbox t))
+(use-package gruvbox-theme
   :config
-  (load-theme 'doom-molokai t))
+  (load-theme 'gruvbox t))
 
 ;; helps with dart/flutter dev
 (use-package dart-mode)
@@ -371,10 +368,15 @@
 ;; ivy integration for lsp
 (use-package lsp-ivy)
 
+;; makes binding keys less painful, is used later on in the config
+(use-package general
+  :config
+  (general-evil-setup))
+
 ;; for evil mode compatibility
 (use-package treemacs-evil
   :config
-  (define-key evil-normal-state-map (kbd "SPC t") 'treemacs))
+  (general-define-key :states '(normal motion treemacs) :keymaps 'override "SPC t" 'treemacs))
 
 ;; highlight uncommited changes
 (use-package diff-hl
@@ -439,8 +441,6 @@
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
 ;; org mode config
-;; keybinding to export to html
-(evil-define-key 'normal 'org-mode-map (kbd "SPC x") 'org-html-export-to-html)
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
@@ -622,17 +622,18 @@
   (lambda () (interactive)
     (search-open-file-in-emacs "~/data" "")))
 
-;; other keybindings
+;; keybindings
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
-(global-set-key (kbd "C-c f") 'find-function-at-point)
-(define-key evil-normal-state-map (kbd "SPC r d") (lambda () (interactive) (dired "~/dl/")))
-(define-key evil-normal-state-map (kbd "SPC r a") (lambda () (interactive) (dired "~/data/")))
-(define-key evil-normal-state-map (kbd "SPC f f") 'counsel-find-file)
-(define-key evil-normal-state-map (kbd "SPC SPC") 'counsel-M-x)
-(define-key evil-normal-state-map (kbd "SPC b k") 'kill-this-buffer)
-(define-key evil-normal-state-map (kbd "SPC b K") 'kill-buffer-and-window)
-(define-key evil-normal-state-map (kbd "SPC b s") 'counsel-switch-buffer)
+(general-define-key :states '(normal motion) :keymaps 'override "SPC r d" (lambda () (interactive) (dired "~/dl/")))
+(general-define-key :states '(normal motion) :keymaps 'override "SPC r a" (lambda () (interactive) (dired "~/data/")))
+(general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
+(general-define-key :states '(normal motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
+(general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
+(general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
+(general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
+(general-define-key :states '(normal motion) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
+(general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
