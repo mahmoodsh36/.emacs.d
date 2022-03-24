@@ -599,7 +599,7 @@
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
-    (call-process-shell-command (concat "xdg-open '" (concat (expand-file-name my-file) "'")))))
+    (call-process-shell-command (concat (concat "xdg-open '" (concat (expand-file-name my-file) "'")) "&"))))
 
 (defun search-open-file-in-emacs (directory-path regex)
   "search for a file recursively in a directory and open it in emacs"
