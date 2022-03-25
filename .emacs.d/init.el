@@ -143,10 +143,6 @@
   :config
   (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
 
-;; evil-mode bindings here, after the package is installed
-;; keybinding to quickly open config file
-(define-key evil-normal-state-map (kbd "SPC e") (lambda () (interactive) (find-file user-init-file)))
-
 ;; relative numbering
 (use-package linum-relative
   :config
@@ -399,6 +395,9 @@
 ;; small flash when evaluating a sexp
 (use-package eval-sexp-fu)
 
+;; vterm, the best terminal emulation for emacs
+;;(use-package vterm)
+
 ;; start server
 (server-start)
 
@@ -562,7 +561,7 @@
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (call-process-shell-command (concat (concat "xdg-open " (get-latex-cache-dir-path)) (concat (current-filename) ".pdf &"))))
+  (browse-url (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
 
 (evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC v") 'open-current-document)
 (add-hook
@@ -599,7 +598,7 @@
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
-    (call-process-shell-command (concat (concat "xdg-open '" (concat (expand-file-name my-file) "'")) "&"))))
+    (browse-url (expand-file-name my-file))))
 
 (defun search-open-file-in-emacs (directory-path regex)
   "search for a file recursively in a directory and open it in emacs"
@@ -611,7 +610,7 @@
   (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
   (lambda () (interactive)
-    (search-open-file-in-emacs "~/Desktop/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+    (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
   (lambda () (interactive) (search-open-file "~/data/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
@@ -634,6 +633,7 @@
 (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
 (general-define-key :states '(normal motion) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
 (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
+(general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
