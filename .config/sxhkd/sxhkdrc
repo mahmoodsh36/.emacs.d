@@ -22,7 +22,7 @@ super + x ; {h,m,R,c,T,o}
      {cd $HOME; file="$(find | cut -c3- | rofi -async-pre-read -dmenu -i -p 'file')"; [ ! -z "$file" ] && xdg-open "$file",\
       notify-send 'launched scrcpy' && scrcpy,\
       notify-send 'launched Envision' && java -jar ~/data/dl/Envision\ Loader.jar,\
-      rm -r ~/.emacs.d/latex/* && notify-send "cleared latex cache",\
+      emacsclient -c,\
       pgrep transmission-da || transmission-daemon; terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\"",\
       terminal_with_cmd.sh top}
 
