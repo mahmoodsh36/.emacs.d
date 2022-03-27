@@ -59,7 +59,7 @@
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; set font
-(set-frame-font "Fantasque Sans Mono 11" nil t)
+(set-frame-font "Inconsolata 11" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 
@@ -394,8 +394,10 @@
 (use-package flutter)
 (use-package lsp-dart)
 
-;; vterm, the best terminal emulation for emacs
-;;(use-package vterm)
+;; make org mode look better (bullets and more)
+(use-package org-superstar
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
 ;; start server
 (server-start)
