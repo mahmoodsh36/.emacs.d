@@ -201,14 +201,6 @@
     '(add-to-list 'company-backends 'company-anaconda))
   (add-hook 'python-mode-hook 'anaconda-mode))
 
-;; helm integration for company
-(use-package helm-company
-  :config
-  (eval-after-load 'company
-    '''(progn
-         (define-key company-mode-map (kbd "C-:") 'helm-company)
-         (define-key company-active-map (kbd "C-:") 'helm-company))))
-
 ;; company for web mode
 (use-package company-web)
 
@@ -232,9 +224,6 @@
 (use-package gruvbox-theme
   :config
   (load-theme 'gruvbox t))
-
-;; helps with dart/flutter dev
-(use-package dart-mode)
 
 (use-package web-mode
   :config
@@ -372,7 +361,7 @@
 ;; for evil mode compatibility
 (use-package treemacs-evil
   :config
-  (general-define-key :states '(normal motion treemacs) :keymaps 'override "SPC t" 'treemacs))
+  (general-define-key :states '(normal motion treemacs emacs) :keymaps 'override "SPC t" 'treemacs))
 
 ;; highlight uncommited changes
 (use-package diff-hl
@@ -394,6 +383,16 @@
 
 ;; small flash when evaluating a sexp
 (use-package eval-sexp-fu)
+
+;; flutter setup
+(use-package highlight-indent-guides)
+(use-package dart-mode
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (general-define-key :states '(normal motion emacs) :keymaps 'dart-mode-map "SPC x" 'treemacs))
+(use-package flutter)
+(use-package lsp-dart)
 
 ;; vterm, the best terminal emulation for emacs
 ;;(use-package vterm)
@@ -624,16 +623,16 @@
 ;; keybindings
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
-(general-define-key :states '(normal motion) :keymaps 'override "SPC r d" (lambda () (interactive) (dired "~/dl/")))
-(general-define-key :states '(normal motion) :keymaps 'override "SPC r a" (lambda () (interactive) (dired "~/data/")))
-(general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
-(general-define-key :states '(normal motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
-(general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
-(general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
-(general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
-(general-define-key :states '(normal motion) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
-(general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
-(general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r d" (lambda () (interactive) (dired "~/dl/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r a" (lambda () (interactive) (dired "~/data/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b k" 'kill-this-buffer)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
+(general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
+(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
