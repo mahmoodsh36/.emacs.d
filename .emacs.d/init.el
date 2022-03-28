@@ -107,7 +107,6 @@
 (use-package evil-collection
   :after (evil)
   :config
-  (setq evil-collection-mode-list '(dired)) ;; enable for dired
   (evil-collection-init))
 
 ;; display marks visually
@@ -402,7 +401,10 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install)
-  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))))
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
+  (setq pdf-view-midnight-colors '("#fff" . "#1d2021"))
+  ;;(evil-set-initial-state 'pdf-view-mode 'normal)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode))
 
 ;; start server
 (server-start)
@@ -486,7 +488,7 @@
   (progn
     (start-process-shell-command command-name command-name the-cmd)))
 
-;; hide config
+;; hide unnecessary stuff
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 (setq dired-listing-switches "-la")
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
