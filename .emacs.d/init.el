@@ -137,7 +137,6 @@
 (use-package evil-textobj-line)
 
 ;; quick commenting
-(use-package evil-leader) ;; this provides the leader key needed for nerd commenter
 (use-package evil-nerd-commenter
   :config
   (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
@@ -187,11 +186,6 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
-;; company auctex support for latex
-(use-package company-auctex
-  :config
-  (company-auctex-init))
-
 ;; anaconda for python
 (use-package company-anaconda
   :config
@@ -215,13 +209,9 @@
 ;; evil mode support for org
 (use-package evil-org)
 
-;; themes
-;; (use-package doom-themes
-;;   :config
-;;   (load-theme 'doom-gruvbox t))
-(use-package gruvbox-theme
-  :config
-  (load-theme 'gruvbox t))
+(use-package doom-themes)
+(use-package gruvbox-theme)
+(load-theme 'doom-molokai t)
 
 (use-package web-mode
   :config
@@ -348,9 +338,6 @@
   (treemacs-resize-icons 15)
   (setq treemacs-width 30))
 
-;; ivy integration for lsp
-(use-package lsp-ivy)
-
 ;; makes binding keys less painful, is used later on in the config
 (use-package general
   :config
@@ -360,11 +347,6 @@
 (use-package treemacs-evil
   :config
   (general-define-key :states '(normal motion emacs treemacs) :keymaps 'override "SPC t" 'treemacs))
-
-;; highlight uncommited changes
-(use-package diff-hl
-  :config
-  (add-hook 'prog-mode-hook 'diff-hl-mode))
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
 (use-package exec-path-from-shell
@@ -397,11 +379,10 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
-;; theme needs to be loaded after pdf-tools so that midnight colors would get configured by the theme
 (use-package pdf-tools
   :config
-  (pdf-tools-install)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
+  (pdf-tools-install t)
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; start server
@@ -546,10 +527,8 @@
 (defun my-LaTeX-mode-hook()
   (setq paragraph-start "\f\\|[ 	]*$")
   (setq paragraph-separate "[ 	\f]*$"))
-(add-hook 'LaTeX-mode-hook 'my-LaTeX-mode-hook)
+(add-hook 'tex-mode-hook 'my-LaTeX-mode-hook)
 
-;; this disables the error when trying to insert dollar after \(
-(define-key TeX-mode-map "$" nil)
 (defun current-filename ()
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
@@ -564,26 +543,26 @@
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
-  (call-process-shell-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
+  (start-process-shell-command "latex" "latex" (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
   (message (concat "compiled " (buffer-file-name))))
 
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (browse-url (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
+  (find-file-other-window (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
 
-(evil-define-key 'normal 'LaTeX-mode-map (kbd "SPC v") 'open-current-document)
+(evil-define-key 'normal 'tex-mode-map (kbd "SPC v") 'open-current-document)
 (add-hook
- 'LaTeX-mode-hook
+ 'tex-mode-hook
  (lambda ()
-   (compile-sagetex)
-   (add-hook 'after-save-hook 'compile-sagetex 0 t)))
+   (compile-current-document)
+   (add-hook 'after-save-hook 'compile-current-document 0 t)))
 
 (defun compile-sagetex-command ()
   "return the command needed to compile sagetex"
   (interactive)
-  (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
-  (setq last-pdflatex-command (concat (concat (concat "pdflatex -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")"))
+  (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
+  (setq last-pdflatex-command (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")"))
   (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command)))
 
 (defun compile-sagetex ()
@@ -599,7 +578,7 @@
   (forward-char)
   (zap-up-to-char 1 ?$)
   (evil-insert nil))
-(general-define-key :states 'normal :keymaps 'LaTeX-mode-map "SPC c" 'change-text-between-dollar-signs)
+(general-define-key :states 'normal :keymaps 'tex-mode-map "SPC c" 'change-text-between-dollar-signs)
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
@@ -647,6 +626,9 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
+(general-define-key :states 'normal :keymaps 'tex-mode-map "SPC x" 'compile-sagetex)
+(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
+(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
