@@ -399,6 +399,11 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
+(use-package pdf-tools
+  :config
+  (pdf-tools-install)
+  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))))
+
 ;; start server
 (server-start)
 
@@ -483,9 +488,12 @@
 
 ;; hide config
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-(setq dired-listing-switches "-l")
+(setq dired-listing-switches "-la")
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
+;; keys to navigate without opening too many buffers
+(general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-alternate-file)
+(general-define-key :states 'normal :keymaps 'dired-mode-map "h" (lambda () (interactive) (find-alternate-file "..")))
 
 ;; function to get size of files in dired
 (defun dired-get-size ()
@@ -568,7 +576,7 @@
 (add-hook
  'LaTeX-mode-hook
  (lambda ()
-   (compile-current-document)
+   (compile-sagetex)
    (add-hook 'after-save-hook 'compile-sagetex 0 t)))
 
 (defun compile-sagetex-command ()
@@ -591,7 +599,7 @@
   (forward-char)
   (zap-up-to-char 1 ?$)
   (evil-insert nil))
-(define-key evil-normal-state-map (kbd "SPC c") 'change-text-between-dollar-signs)
+(general-define-key :states 'normal :keymaps 'LaTeX-mode-map "SPC c" 'change-text-between-dollar-signs)
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
@@ -625,8 +633,10 @@
 ;; keybindings
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r d" (lambda () (interactive) (dired "~/dl/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r a" (lambda () (interactive) (dired "~/data/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b k" 'kill-this-buffer)
@@ -635,6 +645,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
@@ -644,3 +655,22 @@
 (add-hook 'sh-mode-hook
           (lambda ()
             (add-hook 'after-save-hook 'run-script 0 t)))
+
+;; eshell configs
+;; key to clear the screen
+(defun run-this-in-eshell (cmd)
+  "Runs the command 'cmd' in eshell."
+  (with-current-buffer "*eshell*"
+    (end-of-buffer)
+    (eshell-kill-input)
+    (message (concat "Running in Eshell: " cmd))
+    (insert cmd)
+    (eshell-send-input)
+    (end-of-buffer)
+    (eshell-bol)
+    (yank)))
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
+;; make the cursor stay at the prompt when scrolling
+(setq eshell-scroll-to-bottom-on-input t)
