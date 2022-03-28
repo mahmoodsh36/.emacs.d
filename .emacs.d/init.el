@@ -162,8 +162,7 @@
   :config
   (setq projectile-completion-system 'ivy)
   ;;(setq projectile-project-search-path '("~/Desktop/"))
-  (projectile-mode +1)
-  (define-key evil-normal-state-map (kbd "SPC p") 'projectile-command-map))
+  (projectile-mode +1))
 
 ;; auto completion
 (use-package company
@@ -360,7 +359,7 @@
 ;; for evil mode compatibility
 (use-package treemacs-evil
   :config
-  (general-define-key :states '(normal motion treemacs emacs) :keymaps 'override "SPC t" 'treemacs))
+  (general-define-key :states '(normal motion emacs treemacs) :keymaps 'override "SPC t" 'treemacs))
 
 ;; highlight uncommited changes
 (use-package diff-hl
@@ -398,13 +397,12 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
+;; theme needs to be loaded after pdf-tools so that midnight colors would get configured by the theme
 (use-package pdf-tools
   :config
   (pdf-tools-install)
   (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
-  (setq pdf-view-midnight-colors '("#fff" . "#1d2021"))
-  ;;(evil-set-initial-state 'pdf-view-mode 'normal)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode))
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; start server
 (server-start)
@@ -648,6 +646,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
