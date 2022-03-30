@@ -62,6 +62,9 @@
 (set-frame-font "Inconsolata 11" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+;; kill buffer without confirmation when its tied to a process
+(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -212,6 +215,7 @@
 (use-package doom-themes)
 (use-package gruvbox-theme)
 (load-theme 'doom-molokai t)
+;;(load-theme 'doom-gruvbox-light t)
 
 (use-package web-mode
   :config
@@ -474,7 +478,7 @@
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
 ;; keys to navigate without opening too many buffers
 (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-alternate-file)
-(general-define-key :states 'normal :keymaps 'dired-mode-map "h" (lambda () (interactive) (find-alternate-file "..")))
+(general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 
 ;; function to get size of files in dired
 (defun dired-get-size ()
@@ -543,8 +547,7 @@
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
-  (start-process-shell-command "latex" "latex" (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) "&"))
-  (message (concat "compiled " (buffer-file-name))))
+  (start-process-shell-command "latex" "latex" (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name))))
 
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
