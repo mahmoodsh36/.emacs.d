@@ -389,6 +389,16 @@
   (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
+;; for fetching packages from github
+(use-package quelpa)
+(use-package quelpa-use-package)
+
+(use-package dired+
+  :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
+  ;;:config
+  ;; reuse same buffer when navigating
+  ;;(setq diredp-toggle-find-file-reuse-dir t))
+
 ;; start server
 (server-start)
 
@@ -476,9 +486,6 @@
 (setq dired-listing-switches "-la")
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
-;; keys to navigate without opening too many buffers
-(general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-alternate-file)
-(general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 
 ;; function to get size of files in dired
 (defun dired-get-size ()
@@ -553,8 +560,13 @@
   "open the pdf of the current latex document that was generated"
   (interactive)
   (find-file-other-window (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
+(defun open-current-document-this-window ()
+  (interactive)
+  (find-file (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
 
 (evil-define-key 'normal 'tex-mode-map (kbd "SPC v") 'open-current-document)
+(evil-define-key 'normal 'tex-mode-map (kbd "SPC V") 'open-current-document-this-window)
+
 (add-hook
  'tex-mode-hook
  (lambda ()
@@ -632,6 +644,10 @@
 (general-define-key :states 'normal :keymaps 'tex-mode-map "SPC x" 'compile-sagetex)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
+(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
+(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
+(general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
+(general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
