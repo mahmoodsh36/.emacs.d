@@ -61,9 +61,11 @@
 ;; set font
 (set-frame-font "Inconsolata 11" nil t)
 ;; display only buffer name in modeline
-(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+;;(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+;; linum makes viewing images slower
+(add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
 
 
 ;; smooth scrolling
@@ -399,6 +401,14 @@
   ;; reuse same buffer when navigating
   ;;(setq diredp-toggle-find-file-reuse-dir t))
 
+;; latex company backend
+(use-package company-math
+  :config
+  (add-to-list 'company-backends 'company-math-symbols-unicode))
+
+;; csharp setup
+(use-package csharp-mode)
+
 ;; start server
 (server-start)
 
@@ -408,29 +418,6 @@
   (interactive "nTransparency Value 0 - 100 opaque:")
   (set-frame-parameter (selected-frame) 'alpha value))
 ;;(transparency 90)
-
-;; function to make printing easier for many languages
-(defun current-line-to-print-statement ()
-    (interactive)
-    (if (string= major-mode "python-mode")
-        (progn
-          (back-to-indentation)
-          (insert "print(")
-          (end-of-line)
-          (insert ")")))
-    (if (string= major-mode "c-mode")
-        (progn
-          (back-to-indentation)
-          (insert "printf(")
-          (end-of-line)
-          (insert ");")))
-    (if (or (string= major-mode "emacs-lisp-mode") (string= major-mode "lisp-interaction-mode"))
-        (progn
-          (back-to-indentation)
-          (insert "(message ")
-          (end-of-line)
-          (insert ")"))))
-(define-key evil-normal-state-map (kbd "SPC o") 'current-line-to-print-statement)
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
