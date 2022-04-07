@@ -67,7 +67,6 @@
 ;; linum makes viewing images slower
 (add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
 
-
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don"t accelerate scrolling
@@ -157,7 +156,6 @@
   :config
   (ivy-mode)
   (setq ivy-height 25)
-  (define-key evil-normal-state-map (kbd "SPC g") 'counsel-ag)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file))
 
@@ -217,7 +215,9 @@
 (use-package doom-themes)
 (use-package gruvbox-theme)
 (load-theme 'doom-molokai t)
-;;(load-theme 'doom-gruvbox-light t)
+;;(load-theme 'doom-material-dark t)
+;;(load-theme 'doom-old-hope t)
+;;(load-theme 'gruvbox t)
 
 (use-package web-mode
   :config
@@ -291,8 +291,7 @@
   :config
   ;;(setq yas-snippet-dirs
   ;;      `(,(concat user-emacs-directory "snippets")))
-  (yas-global-mode 1)
-  (global-set-key (kbd "M-<tab>") 'yas-expand))
+  (yas-global-mode 1))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -402,12 +401,21 @@
   ;;(setq diredp-toggle-find-file-reuse-dir t))
 
 ;; latex company backend
-(use-package company-math
+(use-package company-auctex
   :config
-  (add-to-list 'company-backends 'company-math-symbols-unicode))
+  (company-auctex-init))
 
 ;; csharp setup
 (use-package csharp-mode)
+
+;; history for ivy completion
+(use-package ivy-prescient
+  :config
+  (ivy-prescient-mode))
+
+(use-package org-fragtog
+  :config
+  (add-hook 'org-mode-hook 'org-fragtog-mode))
 
 ;; start server
 (server-start)
@@ -426,6 +434,20 @@
          '(try-expand-line)))
     (call-interactively 'hippie-expand)))
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
+
+;; more text objects
+(defmacro define-and-bind-text-object (key start-regex end-regex)
+  (let ((inner-name (make-symbol "inner-name"))
+        (outer-name (make-symbol "outer-name")))
+    `(progn
+       (evil-define-text-object ,inner-name (count &optional beg end type)
+         (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+       (evil-define-text-object ,outer-name (count &optional beg end type)
+         (evil-select-paren ,start-regex ,end-regex beg end type count t))
+       (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+       (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
+(define-and-bind-text-object "$" "\\$" "\\$")
+(define-and-bind-text-object "|" "|" "|")
 
 ;; org mode config
 (setq org-clock-persist 'history)
@@ -525,7 +547,7 @@
 (defun my-LaTeX-mode-hook()
   (setq paragraph-start "\f\\|[ 	]*$")
   (setq paragraph-separate "[ 	\f]*$"))
-(add-hook 'tex-mode-hook 'my-LaTeX-mode-hook)
+(add-hook 'TeX-mode-hook 'my-LaTeX-mode-hook)
 
 (defun current-filename ()
   (file-name-sans-extension
@@ -551,11 +573,11 @@
   (interactive)
   (find-file (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
 
-(evil-define-key 'normal 'tex-mode-map (kbd "SPC v") 'open-current-document)
-(evil-define-key 'normal 'tex-mode-map (kbd "SPC V") 'open-current-document-this-window)
+(evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document)
+(evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
 
 (add-hook
- 'tex-mode-hook
+ 'TeX-mode-hook
  (lambda ()
    (compile-current-document)
    (add-hook 'after-save-hook 'compile-current-document 0 t)))
@@ -571,16 +593,6 @@
   "compile the current latex document with support for sagetex"
   (interactive)
   (start-process-shell-command "latex" "latex" (compile-sagetex-command)))
-
-;; this is a function to change the text between two $'s since i do that alot in latex
-(defun change-text-between-dollar-signs ()
-  "change the text between 2 dollar signs surrounding the cursor"
-  (interactive)
-  (search-backward "$")
-  (forward-char)
-  (zap-up-to-char 1 ?$)
-  (evil-insert nil))
-(general-define-key :states 'normal :keymaps 'tex-mode-map "SPC c" 'change-text-between-dollar-signs)
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
@@ -617,6 +629,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -624,11 +637,12 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
 (general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
-(general-define-key :states 'normal :keymaps 'tex-mode-map "SPC x" 'compile-sagetex)
+(general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-sagetex)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
@@ -663,3 +677,13 @@
             (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
+
+;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
+(defun org-to-pdf ()
+  (interactive)
+  (let ((outfile (concat (get-latex-cache-dir-path) (concat (current-filename) ".tex"))))
+    (org-export-to-file 'latex outfile
+      t nil nil nil nil
+      #'org-latex-compile)))
+;; only export manually executed code blocks
+;;(setq org-export-babel-evaluate nil)
