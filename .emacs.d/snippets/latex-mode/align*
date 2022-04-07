@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: align*
-# key: ali*
+# key: a
 # --
 \begin{align*}
   $0

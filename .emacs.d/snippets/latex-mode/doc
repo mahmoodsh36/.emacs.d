@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: document
-# key: doc
+# key: do
 # --
 \documentclass[a4paper,12pt]{article}
 \usepackage{amsmath}
@@ -11,6 +11,9 @@
 \usepackage{sagetex}
 \usepackage{amssymb}
 \usepackage{cancel}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
 
 \author{mahmood}
 \title{$1}

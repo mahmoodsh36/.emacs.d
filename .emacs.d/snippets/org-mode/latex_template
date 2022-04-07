@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: latex_template
+# key: la
+# --
+#+OPTIONS: toc:nil
+#+STARTUP: latexpreview
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper,12pt]
+#+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+#+LATEX_HEADER: \usepackage{indentfirst}
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \usepackage{pgffor}
+#+LATEX_HEADER: \usepackage{sagetex}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{cancel}
+#+LATEX_HEADER: \usepackage{amsthm}
+#+LATEX_HEADER: \usepackage{theorem}{Theorem}[section]
+#+LATEX_HEADER: \usepackage{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \usepackage{polynom}
+
+$0
