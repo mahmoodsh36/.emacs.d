@@ -687,3 +687,19 @@
       #'org-latex-compile)))
 ;; only export manually executed code blocks
 ;;(setq org-export-babel-evaluate nil)
+;; change latex images cache location
+(setq org-preview-latex-image-directory (get-latex-cache-dir-path))
+;; make latex preview bigger
+;;(plist-put org-format-latex-options :scale 1.5)
+;; allow usage of #+BIND in latex exports
+(setq org-export-allow-bind-keywords t)
+;; make images default to their original size in latex exports
+(setq org-latex-image-default-scale "1")
+
+;; enable latex snippets in org mode
+(defun my-org-latex-yas ()
+  "Activate org and LaTeX yas expansion in org-mode buffers."
+  (yas-minor-mode)
+  (yas-activate-extra-mode 'latex-mode))
+
+(add-hook 'org-mode-hook #'my-org-latex-yas)
