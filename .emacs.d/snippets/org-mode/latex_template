@@ -4,6 +4,7 @@
 # --
 #+OPTIONS: toc:nil
 #+STARTUP: latexpreview
+#+BIND: org-latex-image-default-scale 1
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
 #+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
@@ -16,8 +17,9 @@
 #+LATEX_HEADER: \usepackage{amssymb}
 #+LATEX_HEADER: \usepackage{cancel}
 #+LATEX_HEADER: \usepackage{amsthm}
-#+LATEX_HEADER: \usepackage{theorem}{Theorem}[section]
-#+LATEX_HEADER: \usepackage{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
 #+LATEX_HEADER: \usepackage{polynom}
+
 
 $0
