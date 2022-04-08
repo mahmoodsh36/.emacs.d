@@ -4,7 +4,6 @@
 # --
 #+OPTIONS: toc:nil
 #+STARTUP: latexpreview
-#+BIND: org-latex-image-default-scale 1
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
 #+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
