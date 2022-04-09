@@ -20,5 +20,4 @@
 #+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
 #+LATEX_HEADER: \usepackage{polynom}
 
-
 $0
