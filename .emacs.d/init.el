@@ -430,6 +430,7 @@
   (sp-pair "(" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
   (sp-pair "[" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
   (sp-pair "{" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
+  (sp-pair "\"" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
   (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p sp-point-before-same-p))
   (smartparens-global-mode))
 
@@ -699,8 +700,9 @@
   (interactive)
   (let ((outfile (concat (get-latex-cache-dir-path) (concat (current-filename) ".tex"))))
     (org-export-to-file 'latex outfile
-      t nil nil nil nil
-      #'org-latex-compile)))
+      nil nil nil nil nil
+      #'org-latex-compile))
+  (run-at-time "4 sec" nil #'call-process-shell-command "rm -r _minted*"))
 ;; only export manually executed code blocks
 ;;(setq org-export-babel-evaluate nil)
 ;; change latex images cache location
@@ -723,5 +725,5 @@
 (setq org-latex-listings 'minted
       org-latex-packages-alist '(("" "minted"))
       org-latex-pdf-process
-      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+      `(,(concat (concat "pdflatex -shell-escape -interaction nonstopmode -output-directory " (get-latex-cache-dir-path)) " %f")
+        ,(concat (concat "pdflatex -shell-escape -interaction nonstopmode -output-directory " (get-latex-cache-dir-path)) " %f")))
