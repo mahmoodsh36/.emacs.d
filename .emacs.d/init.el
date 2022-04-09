@@ -15,12 +15,13 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-;; set tabs to 2 spaces
+;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2)
 (setq-default js-indent-level 2)
-(setq-default python-indent-offset 4)
 (setq-default c-basic-offset 2)
 (setq-default indent-tabs-mode nil)
+(setq evil-shift-width 2)
+(setq-default python-indent-offset 4)
 ;; set line numbers
 (global-linum-mode 1)
 ;; overwrite highlighted text
@@ -425,6 +426,11 @@
 
 (use-package smartparens
   :config
+  ;; dont insert pair when cursor is before text
+  (sp-pair "(" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
+  (sp-pair "[" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
+  (sp-pair "{" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
+  (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p sp-point-before-same-p))
   (smartparens-global-mode))
 
 ;; start server
