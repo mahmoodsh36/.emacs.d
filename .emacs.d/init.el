@@ -66,6 +66,8 @@
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; linum makes viewing images slower
 (add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
+;; make tab actually insert tab..
+(global-set-key "\t" 'self-insert-command)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -417,6 +419,14 @@
   :config
   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
+(use-package aggressive-indent
+  :config
+  (aggressive-indent-global-mode))
+
+(use-package smartparens
+  :config
+  (smartparens-global-mode))
+
 ;; start server
 (server-start)
 
@@ -690,16 +700,22 @@
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
-;;(plist-put org-format-latex-options :scale 1.5)
+(plist-put org-format-latex-options :scale 1.2)
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; make images default to their original size in latex exports
 (setq org-latex-image-default-scale "1")
-
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
   (yas-minor-mode)
   (yas-activate-extra-mode 'latex-mode))
-
 (add-hook 'org-mode-hook #'my-org-latex-yas)
+;; preserve all line breaks when exporting
+(setq org-export-preserve-breaks t)
+;; tell org to use latex's minted package to generate code with syntax highlighting
+(setq org-latex-listings 'minted
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
