@@ -392,8 +392,8 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
+;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
 (use-package quelpa)
@@ -767,3 +767,7 @@
          org-html-style-default)))
 ;; better than the default, works for tikzpicture
 (setq org-preview-latex-default-process 'imagemagick)
+(add-hook
+ 'org-mode-hook
+ (lambda ()
+   (add-hook 'after-save-hook 'org-to-pdf 0 t)))
