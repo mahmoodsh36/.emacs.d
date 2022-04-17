@@ -2,7 +2,7 @@
 # name: latex_template
 # key: la
 # --
-#+OPTIONS: toc:nil creator:nil author:nil timestamp:nil num:t validate:nil
+#+OPTIONS: toc:nil creator:nil timestamp:nil num:t validate:nil
 #+STARTUP: latexpreview
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
@@ -19,5 +19,7 @@
 #+LATEX_HEADER: \usepackage{polynom}
 #+LATEX_HEADER: \usepackage{minted}
 #+LATEX: \setlength{\parindent}{0pt}
+#+AUTHOR: mahmood
+#+TITLE: $1
 
 $0
