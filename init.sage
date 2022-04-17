@@ -7,4 +7,4 @@ def pset(set):
   return Set(list(powerset(set)))
 
 # enable ascii art by default
-%display ascii_art
+%display unicode_art
