@@ -66,9 +66,9 @@
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; linum makes viewing images slower
-(add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
+(add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with image-mode
 ;; make tab actually insert tab..
-(global-set-key "\t" 'self-insert-command)
+(global-set-key "\t" 'tab-to-tab-stop)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -134,11 +134,6 @@
   (global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
   (global-set-key (kbd "C-c C-+") 'evil-numbers/inc-at-pt-incremental)
   (global-set-key (kbd "C-c C--") 'evil-numbers/dec-at-pt-incremental))
-
-;; multiple cursors for evil mode
-(use-package evil-mc
-  :config
-  (global-evil-mc-mode 1))
 
 ;; make line a text object - yil dil cil, etc..
 (use-package evil-textobj-line)
@@ -215,9 +210,17 @@
 ;; evil mode support for org
 (use-package evil-org)
 
-(use-package doom-themes)
+;;(use-package doom-themes
+;;  :config
+;;  (setq doom-themes-enable-bold t
+;;        doom-themes-enable-italic t)
+;;  (load-theme 'doom-molokai t)
+;;  (doom-themes-org-config)
+;;  (doom-themes-treemacs-config)
+;;  (doom-themes-visual-bell-config))
 (use-package gruvbox-theme)
-(load-theme 'doom-molokai t)
+(use-package leuven-theme)
+(load-theme 'leuven t)
 ;;(load-theme 'doom-material-dark t)
 ;;(load-theme 'doom-old-hope t)
 ;;(load-theme 'gruvbox t)
@@ -373,12 +376,11 @@
 (use-package eval-sexp-fu)
 
 ;; flutter setup
-(use-package highlight-indent-guides)
-(use-package dart-mode
+(use-package highlight-indent-guides
   :config
   (setq highlight-indent-guides-method 'character)
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (general-define-key :states '(normal motion emacs) :keymaps 'dart-mode-map "SPC x" 'treemacs))
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+(use-package dart-mode)
 (use-package flutter)
 (use-package lsp-dart)
 
@@ -397,8 +399,8 @@
 (use-package quelpa)
 (use-package quelpa-use-package)
 
-(use-package dired+
-  :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
+;;(use-package dired+
+;;  :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
   ;;:config
   ;; reuse same buffer when navigating
   ;;(setq diredp-toggle-find-file-reuse-dir t))
@@ -416,33 +418,64 @@
   :config
   (ivy-prescient-mode))
 
+;; auto preview latex fragments in org mode
 (use-package org-fragtog
   :config
   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
+;;(use-package org-appear
+;;  :config
+;;  (setq org-appear-inside-latex t)
+;;  (setq org-appear-autoentities t)
+;;  (setq org-appear-autoemphasis t)
+;;  (setq org-appear-autolinks t)
+;;  (setq org-appear-autosubmarkers t)
+;;  (setq org-appear-autokeywords t)
+;;  (add-hook 'org-mode-hook 'org-appear-mode))
+
+;; auto indentation
 (use-package aggressive-indent
   :config
   (aggressive-indent-global-mode))
 
+;; auto pairs insertion
 (use-package smartparens
   :config
   ;; dont insert pair when cursor is before text
-  (sp-pair "(" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
-  (sp-pair "[" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
-  (sp-pair "{" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
-  (sp-pair "\"" nil :unless '(sp-point-before-word-p sp-point-before-same-p))
-  (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p sp-point-before-same-p))
+  (sp-pair "(" nil :unless '(sp-point-before-word-p))
+  (sp-pair "[" nil :unless '(sp-point-before-word-p))
+  (sp-pair "{" nil :unless '(sp-point-before-word-p))
+  (sp-pair "\"" nil :unless '(sp-point-before-word-p))
+  (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p))
   (smartparens-global-mode))
+
+;; multiple cursors for evil mode
+(use-package evil-mc
+  :config
+  (global-evil-mc-mode))
+
+;; provides syntax highlighting when exporting from org mode to html
+(use-package htmlize)
+
+;; static website generation for org mode
+(use-package ox-hugo
+  :config
+  (setq org-hugo-base-dir "/home/mahmooz/workspace/blog/")
+  (setq org-hugo-section "math")
+  (add-hook 'org-mode-hook 'org-hugo-auto-export-mode)
+
+(use-package ox-pandoc)
+
+;; (use-package xenops
+;;   :quelpa (dired+ :fetcher github :repo "dandavison/xenops")
+;;   :config
+;;   (setq xenops-reveal-on-entry t)
+;;   (add-hook 'LaTeX-mode-hook #'xenops-mode)
+;;   (add-hook 'org-mode-hook #'xenops-mode)
+;;   (add-hook 'xenops-mode-hook 'xenops-render))
 
 ;; start server
 (server-start)
-
-;; Set transparency of emacs
-(defun transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque:")
-  (set-frame-parameter (selected-frame) 'alpha value))
-;;(transparency 90)
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
@@ -474,6 +507,8 @@
 (setq org-startup-with-inline-images t)
 ;; Show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+;; render latex preview after evaluating code blocks
+(add-hook 'org-babel-after-execute-hook 'org-latex-preview)
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 ;; enable more code block languages for org mode
@@ -500,12 +535,6 @@
     (start-process-shell-command cmd cmd cmd)
     (display-buffer cmd)
     (end-of-buffer-other-window nil)))
-
-(defun run-command-save-output (the-cmd command-name)
-  "run a shell command and save its output in a buffer"
-  (interactive)
-  (progn
-    (start-process-shell-command command-name command-name the-cmd)))
 
 ;; hide unnecessary stuff
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
@@ -561,10 +590,10 @@
 
 ;; my config for latex
 ;; make vip/vap/dap/cip etc.. in latex work properly
-(defun my-LaTeX-mode-hook()
-  (setq paragraph-start "\f\\|[ 	]*$")
-  (setq paragraph-separate "[ 	\f]*$"))
-(add-hook 'TeX-mode-hook 'my-LaTeX-mode-hook)
+;;(defun my-LaTeX-mode-hook()
+;;  (setq paragraph-start "\f\\|[ 	]*$")
+;;  (setq paragraph-separate "[ 	\f]*$"))
+;;(add-hook 'TeX-mode-hook 'my-LaTeX-mode-hook)
 
 (defun current-filename ()
   (file-name-sans-extension
@@ -699,10 +728,10 @@
 (defun org-to-pdf ()
   (interactive)
   (let ((outfile (concat (get-latex-cache-dir-path) (concat (current-filename) ".tex"))))
+    (call-process-shell-command (format "rm %s*%s*" (get-latex-cache-dir-path) (current-filename)))
     (org-export-to-file 'latex outfile
-      nil nil nil nil nil
-      #'org-latex-compile))
-  (run-at-time "4 sec" nil #'call-process-shell-command "rm -r _minted*"))
+      nil nil nil nil nil nil)
+    (start-process-shell-command "latex" "latex" (concat (concat "(cd " (get-latex-cache-dir-path)) (concat (concat "; pdflatex --synctex=1 -shell-escape -output-directory=" (concat (get-latex-cache-dir-path) " ")) (concat outfile ")"))))))
 ;; only export manually executed code blocks
 ;;(setq org-export-babel-evaluate nil)
 ;; change latex images cache location
@@ -721,9 +750,20 @@
 (add-hook 'org-mode-hook #'my-org-latex-yas)
 ;; preserve all line breaks when exporting
 (setq org-export-preserve-breaks t)
-;; tell org to use latex's minted package to generate code with syntax highlighting
-(setq org-latex-listings 'minted
-      org-latex-packages-alist '(("" "minted"))
-      org-latex-pdf-process
-      `(,(concat (concat "pdflatex -shell-escape -interaction nonstopmode -output-directory " (get-latex-cache-dir-path)) " %f")
-        ,(concat (concat "pdflatex -shell-escape -interaction nonstopmode -output-directory " (get-latex-cache-dir-path)) " %f")))
+;; tell org mode to use minted for syntax highlighting in exported code
+(setq org-latex-listings 'minted)
+(setq org-publish-project-alist '(("blog" :base-directory "/home/mahmooz/workspace/blog/" :publishing-directory "/home/mahmooz/workspace/blog/")))
+;; this makes latex' tikzpicture works better with org mode
+;;(setq org-latex-create-formula-image-program 'dvisvgm)
+(add-to-list 'org-latex-packages-alist '("" "tikz" t))
+(add-to-list 'org-latex-packages-alist '("" "tkz-euclide" t))
+(add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
+(add-to-list 'org-latex-default-packages-alist '("" "tikz" t))
+(with-eval-after-load 'ox-html
+  (setq org-html-head
+        (replace-regexp-in-string
+         ".org-svg { width: 90%; }"
+         ".org-svg { width: auto; }"
+         org-html-style-default)))
+;; better than the default, works for tikzpicture
+(setq org-preview-latex-default-process 'imagemagick)
