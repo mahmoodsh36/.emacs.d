@@ -69,6 +69,8 @@
 (add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with image-mode
 ;; make tab actually insert tab..
 (global-set-key "\t" 'tab-to-tab-stop)
+;; save open buffers on exit
+(desktop-save-mode 1)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -461,8 +463,8 @@
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir "/home/mahmooz/workspace/blog/")
-  (setq org-hugo-section "math")
-  (add-hook 'org-mode-hook 'org-hugo-auto-export-mode)
+  (setq org-hugo-section "math"))
+;;(add-hook 'org-mode-hook 'org-hugo-auto-export-mode))
 
 (use-package ox-pandoc)
 
@@ -688,7 +690,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
-(general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-sagetex)
+(general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
@@ -732,8 +734,11 @@
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
     (start-process-shell-command "latex" "latex" (concat (concat "(cd " (get-latex-cache-dir-path)) (concat (concat "; pdflatex --synctex=1 -shell-escape -output-directory=" (concat (get-latex-cache-dir-path) " ")) (concat outfile ")"))))))
-;; only export manually executed code blocks
-;;(setq org-export-babel-evaluate nil)
+(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
+                    (lambda ()
+                      (interactive)
+                      (org-to-pdf)
+                      (org-hugo-export-to-md)))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
@@ -753,8 +758,6 @@
 ;; tell org mode to use minted for syntax highlighting in exported code
 (setq org-latex-listings 'minted)
 (setq org-publish-project-alist '(("blog" :base-directory "/home/mahmooz/workspace/blog/" :publishing-directory "/home/mahmooz/workspace/blog/")))
-;; this makes latex' tikzpicture works better with org mode
-;;(setq org-latex-create-formula-image-program 'dvisvgm)
 (add-to-list 'org-latex-packages-alist '("" "tikz" t))
 (add-to-list 'org-latex-packages-alist '("" "tkz-euclide" t))
 (add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
@@ -767,7 +770,16 @@
          org-html-style-default)))
 ;; better than the default, works for tikzpicture
 (setq org-preview-latex-default-process 'imagemagick)
-(add-hook
- 'org-mode-hook
- (lambda ()
-   (add-hook 'after-save-hook 'org-to-pdf 0 t)))
+;; syntax highlighting for latex fragments in org mode
+(setq org-highlight-latex-and-related '(native latex script entities))
+(require 'org-src)
+(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+
+(defun insert-random-string (NUM)
+  "Insert a random alphanumerics string of length 6."
+  (interactive "P")
+  (let* (($charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+         ($baseCount (length $charset)))
+    (dotimes (_ (if (numberp NUM) (abs NUM) 6))
+      (insert (elt $charset (random $baseCount))))))
+(global-set-key (kbd "C-c r") 'insert-random-string))
