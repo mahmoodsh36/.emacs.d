@@ -1,0 +1,24 @@
+#+OPTIONS: toc:nil creator:nil timestamp:nil num:t validate:nil
+#+STARTUP: latexpreview
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper,12pt]
+#+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amsfonts}
+#+LATEX_HEADER: \usepackage{indentfirst}
+#+LATEX_HEADER: \usepackage{pgffor}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{cancel}
+#+LATEX_HEADER: \usepackage{amsthm}
+#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
+#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
+#+LATEX_HEADER: \usepackage{polynom}
+#+LATEX_HEADER: \usepackage{minted}
+#+LATEX: \setlength{\parindent}{0pt}
+#+AUTHOR: mahmood
+#+HTML_HEAD: <style type="text/css">
+#+HTML_HEAD:   proof, lemma {
+#+HTML_HEAD:     background-color: tan;
+#+HTML_HEAD:   }
+#+HTML_HEAD: </style>
+#+TITLE: $1
