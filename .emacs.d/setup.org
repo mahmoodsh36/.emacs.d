@@ -16,9 +16,10 @@
 #+LATEX_HEADER: \usepackage{minted}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
-#+HTML_HEAD: <style type="text/css">
-#+HTML_HEAD:   proof, lemma {
-#+HTML_HEAD:     background-color: tan;
-#+HTML_HEAD:   }
-#+HTML_HEAD: </style>
-#+TITLE: $1
+#+begin_export html
+<style>
+  .lemma, .proof {
+    background-color: tan;
+  }
+</style>
+#+end_export
