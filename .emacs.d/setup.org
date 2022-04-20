@@ -19,6 +19,9 @@
 #+begin_export html
 <style>
   .lemma, .proof {
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
     background-color: tan;
   }
 </style>
