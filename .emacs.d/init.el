@@ -222,10 +222,10 @@
 ;;  (doom-themes-visual-bell-config))
 (use-package gruvbox-theme)
 (use-package leuven-theme)
-(load-theme 'leuven t)
+;;(load-theme 'leuven t)
 ;;(load-theme 'doom-material-dark t)
 ;;(load-theme 'doom-old-hope t)
-;;(load-theme 'gruvbox t)
+(load-theme 'gruvbox t)
 
 (use-package web-mode
   :config
@@ -394,8 +394,8 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
-;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
 (use-package quelpa)
@@ -737,8 +737,12 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
                     (lambda ()
                       (interactive)
+                      (disable-theme 'gruvbox)
+                      (load-theme 'leuven t)
                       (org-to-pdf)
-                      (org-hugo-export-to-md)))
+                      (org-hugo-export-to-md)
+                      (disable-theme 'leuven)
+                      (load-theme 'gruvbox t)))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
@@ -783,3 +787,10 @@
     (dotimes (_ (if (numberp NUM) (abs NUM) 6))
       (insert (elt $charset (random $baseCount))))))
 (global-set-key (kbd "C-c r") 'insert-random-string))
+
+
+(defun prerender-latex-previews (dirpath)
+  "pre-render latex previews in all org files in a specific directory"
+  (dolist (file (directory-files-recursively dirpath ".*.org$"))
+    (find-file file))
+  (kill-matching-buffers ".*org" nil t))
