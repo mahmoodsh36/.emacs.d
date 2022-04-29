@@ -409,8 +409,10 @@
 ;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
+(setq quelpa-update-melpa-p nil) ;; enable updating melpa package list on startup, annoying af
 (use-package quelpa)
 (use-package quelpa-use-package)
+
 
 ;; latex company backend
 (use-package company-auctex
