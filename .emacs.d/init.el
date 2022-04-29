@@ -62,7 +62,12 @@
 ;; set font
 (set-frame-font "Inconsolata 11" nil t)
 ;; display only buffer name in modeline
-;;(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+;; restore default status line for pdf mode
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+            (interactive)
+            (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; linum makes viewing images slower
@@ -102,7 +107,7 @@
   :config
   (global-evil-surround-mode 1))
 
-;; exchange words more easily with evil
+;; exchange portions of text more easily with evil
 (use-package evil-exchange
   :config
   (evil-exchange-install))
@@ -222,10 +227,10 @@
 ;;  (doom-themes-visual-bell-config))
 (use-package gruvbox-theme)
 (use-package leuven-theme)
-;;(load-theme 'leuven t)
+(load-theme 'leuven t)
 ;;(load-theme 'doom-material-dark t)
 ;;(load-theme 'doom-old-hope t)
-(load-theme 'gruvbox t)
+;;(load-theme 'gruvbox t)
 
 (use-package web-mode
   :config
@@ -281,7 +286,8 @@
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
                                              (:results . "output")))
-  ;; C-c c for asynchronous evaluating (only for SageMath code blocks).
+  ;; we want latex output to be printed literally without escape characters
+  (add-to-list 'org-babel-default-header-args:sage '(:results . "drawer"))
   (with-eval-after-load "org"
     (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
 
@@ -299,7 +305,10 @@
   :config
   ;;(setq yas-snippet-dirs
   ;;      `(,(concat user-emacs-directory "snippets")))
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  ;; prevent warnings about snippets using elisp
+  (require 'warnings)
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -308,9 +317,6 @@
 
 ;; edit multiple instances of a word simulataneously
 (use-package iedit)
-
-;; integration with powerthesaurus.org
-(use-package powerthesaurus)
 
 ;; highlight surrounding parentheses
 (use-package highlight-parentheses
@@ -361,13 +367,18 @@
   :config
   (general-define-key :states '(normal motion emacs treemacs) :keymaps 'override "SPC t" 'treemacs))
 
+;; indentation-based text objects for evil
+(use-package evil-indent-plus
+  :config
+  (define-key evil-inner-text-objects-map "i" 'evil-indent-plus-i-indent)
+  (define-key evil-outer-text-objects-map "i" 'evil-indent-plus-a-indent)
+  (define-key evil-inner-text-objects-map "I" 'evil-indent-plus-i-indent-up-down)
+  (define-key evil-outer-text-objects-map "I" 'evil-indent-plus-a-indent-up-down))
+
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
-
-;; provides command to restart emacs
-(use-package restart-emacs)
 
 ;; display available keybindings
 (use-package which-key
@@ -394,18 +405,12 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
+;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
 (use-package quelpa)
 (use-package quelpa-use-package)
-
-;;(use-package dired+
-;;  :quelpa (dired+ :fetcher github :repo "emacsmirror/dired-plus"))
-  ;;:config
-  ;; reuse same buffer when navigating
-  ;;(setq diredp-toggle-find-file-reuse-dir t))
 
 ;; latex company backend
 (use-package company-auctex
@@ -421,35 +426,25 @@
   (ivy-prescient-mode))
 
 ;; auto preview latex fragments in org mode
-(use-package org-fragtog
-  :config
-  (add-hook 'org-mode-hook 'org-fragtog-mode))
-
-;;(use-package org-appear
-;;  :config
-;;  (setq org-appear-inside-latex t)
-;;  (setq org-appear-autoentities t)
-;;  (setq org-appear-autoemphasis t)
-;;  (setq org-appear-autolinks t)
-;;  (setq org-appear-autosubmarkers t)
-;;  (setq org-appear-autokeywords t)
-;;  (add-hook 'org-mode-hook 'org-appear-mode))
+;; (use-package org-fragtog
+;;   :config
+;;   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
 ;; auto indentation
-(use-package aggressive-indent
-  :config
-  (aggressive-indent-global-mode))
+;; (use-package aggressive-indent
+;;   :config
+;;   (aggressive-indent-global-mode))
 
 ;; auto pairs insertion
-(use-package smartparens
-  :config
-  ;; dont insert pair when cursor is before text
-  (sp-pair "(" nil :unless '(sp-point-before-word-p))
-  (sp-pair "[" nil :unless '(sp-point-before-word-p))
-  (sp-pair "{" nil :unless '(sp-point-before-word-p))
-  (sp-pair "\"" nil :unless '(sp-point-before-word-p))
-  (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p))
-  (smartparens-global-mode))
+;; (use-package smartparens
+;;   :config
+;;   ;; dont insert pair when cursor is before text
+;;   (sp-pair "(" nil :unless '(sp-point-before-word-p))
+;;   (sp-pair "[" nil :unless '(sp-point-before-word-p))
+;;   (sp-pair "{" nil :unless '(sp-point-before-word-p))
+;;   (sp-pair "\"" nil :unless '(sp-point-before-word-p))
+;;   (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p))
+;;   (smartparens-global-mode))
 
 ;; multiple cursors for evil mode
 (use-package evil-mc
@@ -468,13 +463,14 @@
 
 (use-package ox-pandoc)
 
-;; (use-package xenops
-;;   :quelpa (dired+ :fetcher github :repo "dandavison/xenops")
-;;   :config
-;;   (setq xenops-reveal-on-entry t)
-;;   (add-hook 'LaTeX-mode-hook #'xenops-mode)
-;;   (add-hook 'org-mode-hook #'xenops-mode)
-;;   (add-hook 'xenops-mode-hook 'xenops-render))
+;; best latex preview functionality
+(use-package xenops
+  :quelpa (xenops :fetcher github :repo "dandavison/xenops")
+  :config
+  (setq xenops-reveal-on-entry t)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
+  (add-hook 'xenops-mode-hook 'xenops-render))
 
 ;; start server
 (server-start)
@@ -529,6 +525,8 @@
 (require 'org-tempo)
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
+;; make long lines break into multiple ones
+(add-hook 'org-mode-hook 'visual-line-mode)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -554,7 +552,7 @@
                (progn 
                  (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
- (define-key dired-mode-map (kbd "?") 'dired-get-size)
+(define-key dired-mode-map (kbd "?") 'dired-get-size)
 
 ;; vim like keys for dired image viewer
 (setq image-dired-show-all-from-dir-max-files 100000000)
@@ -590,13 +588,6 @@
   (define-key image-dired-thumbnail-mode-map (kbd "$") 'image-dired-eol))
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
 
-;; my config for latex
-;; make vip/vap/dap/cip etc.. in latex work properly
-;;(defun my-LaTeX-mode-hook()
-;;  (setq paragraph-start "\f\\|[ 	]*$")
-;;  (setq paragraph-separate "[ 	\f]*$"))
-;;(add-hook 'TeX-mode-hook 'my-LaTeX-mode-hook)
-
 (defun current-filename ()
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
@@ -608,10 +599,15 @@
   (ignore-errors (make-directory dir-path))
   dir-path)
 
+(defun compile-latex-file (path)
+  (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape --synctex=1 -output-directory=%s %s" (get-latex-cache-dir-path) path))
+  ;; the minted library annoyingly creates directories named _minted-something, get rid of those
+  (run-at-time "4 sec" nil #'call-process-shell-command "rmdir _minted-*"))
+
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
-  (start-process-shell-command "latex" "latex" (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name))))
+  (compile-latex-file (buffer-file-name)))
 
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
@@ -624,19 +620,20 @@
 (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document)
 (evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
 
+;; tex hook to auto compile on save
 (add-hook
  'TeX-mode-hook
  (lambda ()
    (compile-current-document)
    (add-hook 'after-save-hook 'compile-current-document 0 t)))
 
+;; the next 2 functions need to be rewritten
 (defun compile-sagetex-command ()
   "return the command needed to compile sagetex"
   (interactive)
   (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
   (setq last-pdflatex-command (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")"))
   (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command)))
-
 (defun compile-sagetex ()
   "compile the current latex document with support for sagetex"
   (interactive)
@@ -644,7 +641,7 @@
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
-  "search for a file recursively in a directory and open it - works on macos"
+  "search for a file recursively in a directory and open it"
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
@@ -657,19 +654,19 @@
 
 ;; keys to search for files
 (define-key evil-normal-state-map (kbd "SPC f c")
-  (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+            (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
 (define-key evil-normal-state-map (kbd "SPC F c")
-  (lambda () (interactive)
-    (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+            (lambda () (interactive)
+              (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (define-key evil-normal-state-map (kbd "SPC f p")
-  (lambda () (interactive) (search-open-file "~/data/p" "")))
+            (lambda () (interactive) (search-open-file "~/data/p" "")))
 (define-key evil-normal-state-map (kbd "SPC f b")
-  (lambda () (interactive) (search-open-file "~/data/books" "")))
+            (lambda () (interactive) (search-open-file "~/data/books" "")))
 (define-key evil-normal-state-map (kbd "SPC f d")
-  (lambda () (interactive) (search-open-file "~/data" "")))
+            (lambda () (interactive) (search-open-file "~/data" "")))
 (define-key evil-normal-state-map (kbd "SPC F d")
-  (lambda () (interactive)
-    (search-open-file-in-emacs "~/data" "")))
+            (lambda () (interactive)
+              (search-open-file-in-emacs "~/data" "")))
 
 ;; keybindings
 (global-set-key (kbd "C-M-S-x") 'eval-region)
@@ -733,16 +730,12 @@
     (call-process-shell-command (format "rm %s*%s*" (get-latex-cache-dir-path) (current-filename)))
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
-    (start-process-shell-command "latex" "latex" (concat (concat "(cd " (get-latex-cache-dir-path)) (concat (concat "; pdflatex --synctex=1 -shell-escape -output-directory=" (concat (get-latex-cache-dir-path) " ")) (concat outfile ")"))))))
+    (compile-latex-file outfile)))
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
                     (lambda ()
                       (interactive)
-                      (disable-theme 'gruvbox)
-                      (load-theme 'leuven t)
                       (org-to-pdf)
-                      (org-hugo-export-to-md)
-                      (disable-theme 'leuven)
-                      (load-theme 'gruvbox t)))
+                      (org-hugo-export-to-md)))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
@@ -761,11 +754,10 @@
 (setq org-export-preserve-breaks t)
 ;; tell org mode to use minted for syntax highlighting in exported code
 (setq org-latex-listings 'minted)
-(setq org-publish-project-alist '(("blog" :base-directory "/home/mahmooz/workspace/blog/" :publishing-directory "/home/mahmooz/workspace/blog/")))
-(add-to-list 'org-latex-packages-alist '("" "tikz" t))
-(add-to-list 'org-latex-packages-alist '("" "tkz-euclide" t))
 (add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
 (add-to-list 'org-latex-default-packages-alist '("" "tikz" t))
+(add-to-list 'org-latex-default-packages-alist '("" "cancel" t))
+;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
         (replace-regexp-in-string
@@ -778,19 +770,18 @@
 (setq org-highlight-latex-and-related '(native latex script entities))
 (require 'org-src)
 (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+;; make org-babel java act like other langs
+(setq org-babel-default-header-args:java
+      '((:dir . nil)
+        (:results . "value")))
+;; make generic classes work properly with org mode
+(setq org-babel-java--class-re "^[[:space:]]*\\(?:public[[:space:]]+\\)?class[[:space:]]+\\([_[:ascii:]]+\\)[[:space:]]*{")
 
 (defun insert-random-string (NUM)
-  "Insert a random alphanumerics string of length 6."
+  "Insert a random alphanumerics string of length NUM."
   (interactive "P")
   (let* (($charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
          ($baseCount (length $charset)))
-    (dotimes (_ (if (numberp NUM) (abs NUM) 6))
+    (dotimes (_ (if (numberp NUM) (abs NUM) NUM))
       (insert (elt $charset (random $baseCount))))))
-(global-set-key (kbd "C-c r") 'insert-random-string))
-
-
-(defun prerender-latex-previews (dirpath)
-  "pre-render latex previews in all org files in a specific directory"
-  (dolist (file (directory-files-recursively dirpath ".*.org$"))
-    (find-file file))
-  (kill-matching-buffers ".*org" nil t))
+(global-set-key (kbd "C-c r") (lambda () (interactive) (insert-random-string 6)))
