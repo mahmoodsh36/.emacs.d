@@ -1,5 +1,4 @@
 #+OPTIONS: toc:nil creator:nil timestamp:nil num:t validate:nil
-#+STARTUP: latexpreview
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
 #+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
@@ -14,15 +13,58 @@
 #+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
 #+LATEX_HEADER: \usepackage{polynom}
 #+LATEX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage{tikz}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 #+begin_export html
-<style>
+  <style>
   .lemma, .proof {
     border-radius: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    background-color: tan;
+    background-color: beige;
+    border-style: groove;
+    border-width: 1px;
   }
-</style>
+  .lemma:before {
+    content: "lemma:";
+  }
+  .proof:before {
+    content: "proof:";
+  }
+  .note {
+    background-color: wheat;
+    border-style: groove;
+  }
+  .note:before {
+    content: url(/note.png) "note:";
+  }
+  p {
+    margin: 0px;
+    padding: 0px;
+  }
+   img {
+     display: block;
+     margin-left: auto;
+     margin-right: auto;
+   }
+   .hide {
+     display: none;
+   }
+  </style>
+  <script>
+  // auto load modules like cancel
+  window.MathJax = {
+    loader: {load: ['[tex]/autoload']},
+    tex: {packages: {'[+]': ['autoload']}}
+  };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+  </script>
+#+end_export
+
+#+begin_export latex
+\newenvironment{title}{\begin{center}}{\end{center}}
+\newenvironment{note}{\begin{center}}{\end{center}}
 #+end_export
