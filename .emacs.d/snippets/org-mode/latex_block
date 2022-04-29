@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: latex code block
+# key: <l
+# --
+#+begin_src latex :results file graphics :exports results :file /tmp/`(insert-random-string 6)`.png
+  $0
+#+end_src
