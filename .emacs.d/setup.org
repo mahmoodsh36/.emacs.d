@@ -24,7 +24,13 @@
     padding-right: 5px;
     background-color: beige;
     border-style: groove;
-    border-width: 1px;
+    border-width: 3px;
+  }
+  .proof {
+    background-color: moccasin;
+    margin: 5px;
+    border-style: double;
+    border-width: 4px;
   }
   .lemma:before {
     content: "lemma:";
@@ -50,6 +56,10 @@
    }
    .hide {
      display: none;
+   }
+   .definition {
+    background-color: snow;
+    border-style: groove;
    }
   </style>
   <script>
