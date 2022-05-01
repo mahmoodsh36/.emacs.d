@@ -67,4 +67,5 @@
 #+begin_export latex
 \newenvironment{title}{\begin{center}}{\end{center}}
 \newenvironment{note}{\begin{center}}{\end{center}}
+\newenvironment{definition}{\begin{center}}{\end{center}}
 #+end_export
