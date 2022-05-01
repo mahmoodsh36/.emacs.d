@@ -130,7 +130,6 @@
 
 ;; display visual hints for evil actions
 (use-package evil-goggles
-  :ensure t
   :config
   (evil-goggles-mode))
 
@@ -180,10 +179,10 @@
   (setq company-require-match nil)
   (eval-after-load 'company
     '(progn
-       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-       (define-key company-active-map [tab] 'company-complete-selection)
-       (unbind-key "RET" company-active-map)
-       (unbind-key "<return>" company-active-map))))
+      (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+      (define-key company-active-map [tab] 'company-complete-selection)
+      (unbind-key "RET" company-active-map)
+      (unbind-key "<return>" company-active-map))))
 
 ;; popup documentation for quick help for company
 (use-package company-quickhelp
@@ -285,9 +284,7 @@
   :config
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
-                                             (:results . "output")))
-  ;; we want latex output to be printed literally without escape characters
-  (add-to-list 'org-babel-default-header-args:sage '(:results . "drawer"))
+                                             (:results . "drawer")))
   (with-eval-after-load "org"
     (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
 
@@ -323,8 +320,7 @@
   :config
   (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
 
-(use-package literate-calc-mode
-  :ensure t)
+(use-package literate-calc-mode)
 
 ;; generating linear ranges quickly
 (use-package tiny
@@ -409,10 +405,9 @@
 ;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
-(setq quelpa-update-melpa-p nil) ;; enable updating melpa package list on startup, annoying af
+(setq quelpa-update-melpa-p nil) ;; disable updating melpa package list on startup, annoying af
 (use-package quelpa)
 (use-package quelpa-use-package)
-
 
 ;; latex company backend
 (use-package company-auctex
@@ -472,7 +467,14 @@
   (setq xenops-reveal-on-entry t)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
-  (add-hook 'xenops-mode-hook 'xenops-render))
+  (add-hook 'xenops-mode-hook 'xenops-render)
+  (add-hook 'org-babel-after-execute-hook (lambda ()
+                                            (interactive)
+                                            (ignore-errors (xenops-render)))))
+
+;; (use-package mixed-pitch
+;;   :hook
+;;   (text-mode . mixed-pitch-mode))
 
 ;; start server
 (server-start)
@@ -508,7 +510,7 @@
 ;; Show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 ;; render latex preview after evaluating code blocks
-(add-hook 'org-babel-after-execute-hook 'org-latex-preview)
+;; (add-hook 'org-babel-after-execute-hook 'org-latex-preview)
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 ;; enable more code block languages for org mode
