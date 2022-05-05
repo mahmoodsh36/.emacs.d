@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: c++ code block
+# key: <p
+# --
+#+begin_src C++
+  $0
+#+end_src
