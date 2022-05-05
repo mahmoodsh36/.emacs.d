@@ -76,6 +76,9 @@
 (global-set-key "\t" 'tab-to-tab-stop)
 ;; save open buffers on exit
 (desktop-save-mode 1)
+;; save minibuffer history
+(savehist-mode 1)
+(setq savehist-file "~/data/emacs_savehist")
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -225,11 +228,12 @@
 ;;  (doom-themes-treemacs-config)
 ;;  (doom-themes-visual-bell-config))
 (use-package gruvbox-theme)
-(use-package leuven-theme)
-(load-theme 'leuven t)
+(use-package modus-themes)
+;;(load-theme 'leuven t)
 ;;(load-theme 'doom-material-dark t)
 ;;(load-theme 'doom-old-hope t)
 ;;(load-theme 'gruvbox t)
+(load-theme 'modus-operandi t)
 
 (use-package web-mode
   :config
@@ -402,7 +406,6 @@
   :config
   (pdf-tools-install t)
   (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
-;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
 (setq quelpa-update-melpa-p nil) ;; disable updating melpa package list on startup, annoying af
@@ -420,7 +423,9 @@
 ;; history for ivy completion
 (use-package ivy-prescient
   :config
-  (ivy-prescient-mode))
+  (ivy-prescient-mode)
+  (prescient-persist-mode 1)
+  (setq prescient-save-file (expand-file-name "~/data/emacs_prescient"))) ;; save history to filesystem
 
 ;; auto preview latex fragments in org mode
 ;; (use-package org-fragtog
@@ -531,6 +536,8 @@
 (setq org-babel-python-command "python3")
 ;; make long lines break into multiple ones
 (add-hook 'org-mode-hook 'visual-line-mode)
+;; increase org table max lines
+(setq org-table-convert-region-max-lines 10000)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -604,9 +611,9 @@
   dir-path)
 
 (defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape --synctex=1 -output-directory=%s %s" (get-latex-cache-dir-path) path))
+  (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
   ;; the minted library annoyingly creates directories named _minted-something, get rid of those
-  (run-at-time "4 sec" nil #'call-process-shell-command "rmdir _minted-*"))
+  ;;(run-at-time "4 sec" nil #'call-process-shell-command "rmdir _minted-*"))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -688,6 +695,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
+(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC '" 'org-ctrl-c-ctrl-c)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
@@ -698,6 +706,7 @@
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
@@ -756,11 +765,15 @@
 (add-hook 'org-mode-hook #'my-org-latex-yas)
 ;; preserve all line breaks when exporting
 (setq org-export-preserve-breaks t)
-;; tell org mode to use minted for syntax highlighting in exported code
-(setq org-latex-listings 'minted)
+;; use listings package for latex code blocks
+(setq org-latex-listings t)
+;; some extra libraries to use with latex
 (add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
 (add-to-list 'org-latex-default-packages-alist '("" "tikz" t))
 (add-to-list 'org-latex-default-packages-alist '("" "cancel" t))
+(add-to-list 'org-latex-default-packages-alist '("" "mathtools" t))
+(setq org-format-latex-header (concat org-format-latex-header "\\usetikzlibrary{tikzmark,calc,fit,matrix}
+"))
 ;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
@@ -778,8 +791,6 @@
 (setq org-babel-default-header-args:java
       '((:dir . nil)
         (:results . "value")))
-;; make generic classes work properly with org mode
-(setq org-babel-java--class-re "^[[:space:]]*\\(?:public[[:space:]]+\\)?class[[:space:]]+\\([_[:ascii:]]+\\)[[:space:]]*{")
 
 (defun insert-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -789,3 +800,43 @@
     (dotimes (_ (if (numberp NUM) (abs NUM) NUM))
       (insert (elt $charset (random $baseCount))))))
 (global-set-key (kbd "C-c r") (lambda () (interactive) (insert-random-string 6)))
+
+;; org mode exports the #+RESULTS of code block executions using verbatim env for latex, this replaces the occurences of verbatim with lstlistings which is better
+(defun my-latex-export-example-blocks (text backend info)
+  "Export example blocks as listings env."
+  (when (org-export-derived-backend-p backend 'latex)
+    (with-temp-buffer
+      (insert text)
+      ;; replace verbatim env by listings
+      (goto-char (point-min))
+      (replace-string "{verbatim}" "{lstlisting}")
+      (buffer-substring-no-properties (point-min) (point-max)))))
+(add-to-list 'org-export-filter-final-output-functions
+         'my-latex-export-example-blocks)
+
+;; load some files into org babel library
+(org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
+
+(defun switch-to-dark-theme ()
+  "switch to dark theme"
+  (interactive)
+  (disable-theme 'modus-operandi)
+  (load-theme 'gruvbox t)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (set-themed-pdf 1))
+
+(defun switch-to-light-theme ()
+  "switch to light theme"
+  (interactive)
+  (disable-theme 'gruvbox)
+  (load-theme 'modus-operandi t)
+  (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (set-themed-pdf 0))
+
+(defun set-themed-pdf (should-be-themed)
+  "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
+  (dolist (buffer (buffer-list))
+    (if (buffer-name buffer)
+        (if (string-match ".*.pdf$" (buffer-name buffer))
+            (with-current-buffer (buffer-name buffer)
+              (pdf-view-themed-minor-mode should-be-themed))))))
