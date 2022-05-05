@@ -12,70 +12,111 @@
 #+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
 #+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
 #+LATEX_HEADER: \usepackage{polynom}
-#+LATEX_HEADER: \usepackage{minted}
 #+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usepackage[tikz]{bclogo}
+#+LATEX_HEADER: \usepackage{listings}
+
+#+begin_export latex
+\definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{lightlightgray}{gray}{0.9}
+\lstset{
+  language=C,                             % Code langugage
+  basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
+  keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
+  commentstyle=\color{gray},              % Comments font
+  numbers=left,                           % Line nums position
+  numberstyle=\tiny,                      % Line-numbers fonts
+  stepnumber=1,                           % Step between two line-numbers
+  numbersep=5pt,                          % How far are line-numbers from code
+  backgroundcolor=\color{lightlightgray}, % Choose background color
+  frame=single,                             % A frame around the code
+  tabsize=2,                              % Default tab size
+  captionpos=b,                           % Caption-position = bottom
+  breaklines=true,                        % Automatic line breaking?
+  breakatwhitespace=false,                % Automatic breaks only at whitespace?
+  showspaces=false,                       % Dont make spaces visible
+  showtabs=false,                         % Dont make tabls visible
+  columns=flexible,                       % Column format
+  morekeywords={__global__, __device__},  % CUDA specific keywords
+  showstringspaces=false,                 % dont show spaces in strings
+}
+#+end_export
+
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 #+begin_export html
-  <style>
-  .lemma, .proof {
-    border-radius: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
-    background-color: beige;
-    border-style: groove;
-    border-width: 3px;
-  }
-  .proof {
-    background-color: moccasin;
-    margin: 5px;
-    border-style: double;
-    border-width: 4px;
-  }
-  .lemma:before {
-    content: "lemma:";
-  }
-  .proof:before {
-    content: "proof:";
-  }
-  .note {
-    background-color: wheat;
-    border-style: groove;
-  }
-  .note:before {
-    content: url(/note.png) "note:";
-  }
-  p {
-    margin: 0px;
-    padding: 0px;
-  }
-   img {
-     display: block;
-     margin-left: auto;
-     margin-right: auto;
-   }
-   .hide {
-     display: none;
-   }
-   .definition {
-    background-color: snow;
-    border-style: groove;
-   }
-  </style>
-  <script>
-  // auto load modules like cancel
-  window.MathJax = {
-    loader: {load: ['[tex]/autoload']},
-    tex: {packages: {'[+]': ['autoload']}}
-  };
-  </script>
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-  </script>
+<style>
+.lemma, .proof, .entailment, .definition {
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: beige;
+  border-style: groove;
+  border-width: 3px;
+}
+.proof, .entailment {
+  background-color: moccasin;
+  margin: 5px;
+  border-style: double;
+  border-width: 4px;
+}
+.lemma:before {
+  content: "lemma:";
+}
+.proof:before {
+  content: "proof:";
+}
+.entailment:before {
+  content: "entailment (logical consequence):";
+}
+.note {
+  background-color: wheat;
+  border-style: groove;
+}
+.note:before {
+  content: url(/note.png) "note:";
+}
+p {
+  margin: 0px;
+  padding: 0px;
+}
+img {
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+}
+.hide {
+  display: none;
+}
+.definition {
+  background-color: snow;
+  border-style: groove;
+}
+</style>
+<script>
+// auto load modules like cancel
+window.MathJax = {
+  loader: {load: ['[tex]/autoload']},
+  tex: {packages: {'[+]': ['autoload']}}
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
 #+end_export
 
 #+begin_export latex
 \newenvironment{title}{\begin{center}}{\end{center}}
-\newenvironment{note}{\begin{center}}{\end{center}}
 \newenvironment{definition}{\begin{center}}{\end{center}}
+\newenvironment{entailment}{\begin{center}}{\end{center}}
+\newenvironment{note}
+  {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
+  {\end{bclogo}}
+\newenvironment{attention}
+  {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true, 
+                couleur=red!15]{Important!}}
+  {\end{bclogo}}
+
 #+end_export
