@@ -15,6 +15,8 @@
 #+LATEX_HEADER: \usepackage{tikz}
 #+LATEX_HEADER: \usepackage[tikz]{bclogo}
 #+LATEX_HEADER: \usepackage{listings}
+#+LATEX: \setlength{\parindent}{0pt}
+#+AUTHOR: mahmood
 
 #+begin_export latex
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -42,10 +44,10 @@
   morekeywords={__global__, __device__},  % CUDA specific keywords
   showstringspaces=false,                 % dont show spaces in strings
 }
+% so that latex doesnt complain about latex not being a language
+\lstdefinelanguage{sage}{}
 #+end_export
 
-#+LATEX: \setlength{\parindent}{0pt}
-#+AUTHOR: mahmood
 #+begin_export html
 <style>
 .lemma, .proof, .entailment, .definition {
