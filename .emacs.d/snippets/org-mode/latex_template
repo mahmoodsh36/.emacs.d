@@ -3,6 +3,7 @@
 # key: la
 # --
 #+INCLUDE: ~/.emacs.d/setup.org
+#+DESCRIPTION: $2
 #+TITLE: $1
 
 $0
