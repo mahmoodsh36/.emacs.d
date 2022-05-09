@@ -217,22 +217,28 @@
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; evil mode support for org
-(use-package evil-org)
+(use-package evil-org
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
+  ;; the package annoyingly binds O to another function so here im just restoring it
+  (general-define-key :states '(normal motion emacs) :keymaps 'override "O" (lambda ()
+                                                                              (interactive)
+                                                                              (evil-open-above 1))))
 
-;;(use-package doom-themes
-;;  :config
-;;  (setq doom-themes-enable-bold t
-;;        doom-themes-enable-italic t)
-;;  (load-theme 'doom-molokai t)
-;;  (doom-themes-org-config)
-;;  (doom-themes-treemacs-config)
-;;  (doom-themes-visual-bell-config))
-(use-package gruvbox-theme)
+;; (use-package doom-themes
+;;   :config
+;;   (setq doom-themes-enable-bold t
+;;         doom-themes-enable-italic t)
+;;   (load-theme 'doom-molokai t)
+;;   (doom-themes-org-config)
+;;   (doom-themes-treemacs-config)
+;;   (doom-themes-visual-bell-config))
 (use-package modus-themes)
-;;(load-theme 'leuven t)
 ;;(load-theme 'doom-material-dark t)
 ;;(load-theme 'doom-old-hope t)
-;;(load-theme 'gruvbox t)
 (load-theme 'modus-operandi t)
 
 (use-package web-mode
@@ -405,7 +411,8 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)) ;; linum doesnt work well with pdf-tools
 
 ;; for fetching packages from github
 (setq quelpa-update-melpa-p nil) ;; disable updating melpa package list on startup, annoying af
@@ -470,12 +477,16 @@
   :quelpa (xenops :fetcher github :repo "dandavison/xenops")
   :config
   (setq xenops-reveal-on-entry t)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  ;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
-                                            (ignore-errors (xenops-render)))))
+                                            (ignore-errors (xenops-render))))
+  (setcar (cdr (car xenops-elements))
+          '(:delimiters
+            ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
+            ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]"))))
 
 ;; (use-package mixed-pitch
 ;;   :hook
@@ -535,7 +546,7 @@
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
 ;; make long lines break into multiple ones
-(add-hook 'org-mode-hook 'visual-line-mode)
+;;(add-hook 'org-mode-hook 'visual-line-mode)
 ;; increase org table max lines
 (setq org-table-convert-region-max-lines 10000)
 
@@ -686,6 +697,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -707,6 +719,15 @@
 (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
+
+;; keybinding to evaluate math expressions
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
+                    (lambda ()
+                      (interactive)
+                      (setq result (calc-eval (buffer-substring (region-beginning) (region-end))))
+                      (end-of-line)
+                      (insert " ")
+                      (insert result)))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
@@ -747,8 +768,10 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
                     (lambda ()
                       (interactive)
+                      ;;(switch-to-light-theme)
                       (org-to-pdf)
                       (org-hugo-export-to-md)))
+                      ;;(switch-to-dark-theme)))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
@@ -770,10 +793,10 @@
 ;; some extra libraries to use with latex
 (add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
 (add-to-list 'org-latex-default-packages-alist '("" "tikz" t))
+(add-to-list 'org-latex-default-packages-alist '("" "pgfplots" t))
 (add-to-list 'org-latex-default-packages-alist '("" "cancel" t))
 (add-to-list 'org-latex-default-packages-alist '("" "mathtools" t))
-(setq org-format-latex-header (concat org-format-latex-header "\\usetikzlibrary{tikzmark,calc,fit,matrix}
-"))
+(setq org-format-latex-header (concat org-format-latex-header "\\usetikzlibrary{tikzmark,calc,fit,matrix}"))
 ;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
@@ -821,14 +844,14 @@
   "switch to dark theme"
   (interactive)
   (disable-theme 'modus-operandi)
-  (load-theme 'gruvbox t)
+  (load-theme 'doom-molokai t)
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'gruvbox)
+  (disable-theme 'doom-molokai)
   (load-theme 'modus-operandi t)
   (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 0))
@@ -840,3 +863,15 @@
         (if (string-match ".*.pdf$" (buffer-name buffer))
             (with-current-buffer (buffer-name buffer)
               (pdf-view-themed-minor-mode should-be-themed))))))
+
+(defun kill-all-dired-buffers ()
+  "Kill all dired buffers."
+  (interactive)
+  (save-excursion
+    (let ((count 0))
+      (dolist (buffer (buffer-list))
+        (set-buffer buffer)
+        (when (equal major-mode 'dired-mode)
+          (setq count (1+ count))
+          (kill-buffer buffer)))
+      (message "Killed %i dired buffer(s)." count))))
