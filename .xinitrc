@@ -14,6 +14,7 @@ nm-applet &
 # songs_progress_monitor.py &
 picom --config ~/.config/compton.conf &
 setxkbmap -option caps:swapescape &
+setxkbmap -option ctrl:ralt_rctrl
 #setxkbmap -option ctrl:nocaps
 feh --bg-fill ~/.cache/wallpaper &
 unclutter -root &
