@@ -228,18 +228,18 @@
                                                                               (interactive)
                                                                               (evil-open-above 1))))
 
-;; (use-package doom-themes
-;;   :config
-;;   (setq doom-themes-enable-bold t
-;;         doom-themes-enable-italic t)
-;;   (load-theme 'doom-molokai t)
-;;   (doom-themes-org-config)
-;;   (doom-themes-treemacs-config)
-;;   (doom-themes-visual-bell-config))
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (load-theme 'doom-molokai t)
+  (doom-themes-org-config)
+  (doom-themes-treemacs-config)
+  (doom-themes-visual-bell-config))
 (use-package modus-themes)
 ;;(load-theme 'doom-material-dark t)
 ;;(load-theme 'doom-old-hope t)
-(load-theme 'modus-operandi t)
+;; (load-theme 'modus-operandi t)
 
 (use-package web-mode
   :config
@@ -411,8 +411,7 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)) ;; linum doesnt work well with pdf-tools
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
 
 ;; for fetching packages from github
 (setq quelpa-update-melpa-p nil) ;; disable updating melpa package list on startup, annoying af
@@ -467,7 +466,9 @@
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir "/home/mahmooz/workspace/blog/")
-  (setq org-hugo-section "math"))
+  (setq org-hugo-section "math")
+  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
+  (ignore-errors (make-directory org-more-dir)))
 ;;(add-hook 'org-mode-hook 'org-hugo-auto-export-mode))
 
 (use-package ox-pandoc)
@@ -483,6 +484,7 @@
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
+  (setq xenops-math-image-scale-factor 1.3)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -491,6 +493,16 @@
 ;; (use-package mixed-pitch
 ;;   :hook
 ;;   (text-mode . mixed-pitch-mode))
+
+;; show hidden elements when cursor is over them like links/markers etc
+(use-package org-appear
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autoentities t
+        org-appear-autokeywords t
+        org-appear-autolinks t
+        org-appear-autosubmarkers t)
+  (add-hook 'org-mode-hook 'org-appear-mode))
 
 ;; start server
 (server-start)
@@ -719,6 +731,7 @@
 (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
 
 ;; keybinding to evaluate math expressions
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
@@ -768,10 +781,10 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
                     (lambda ()
                       (interactive)
-                      ;;(switch-to-light-theme)
+                      (switch-to-light-theme)
                       (org-to-pdf)
-                      (org-hugo-export-to-md)))
-                      ;;(switch-to-dark-theme)))
+                      (org-hugo-export-to-md)
+                      (switch-to-dark-theme)))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
