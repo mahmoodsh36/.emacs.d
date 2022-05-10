@@ -14,6 +14,7 @@
 #+LATEX_HEADER: \usepackage{polynom}
 #+LATEX_HEADER: \usepackage{tikz}
 #+LATEX_HEADER: \usepackage[tikz]{bclogo}
+#+LATEX_HEADER: \usepackage{tikz-3dplot}
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
