@@ -9,12 +9,9 @@
 #+LATEX_HEADER: \usepackage{amssymb}
 #+LATEX_HEADER: \usepackage{cancel}
 #+LATEX_HEADER: \usepackage{amsthm}
-#+LATEX_HEADER: \newtheorem{theorem}{Theorem}[section]
-#+LATEX_HEADER: \newtheorem{lemma}[theorem]{Lemma}
 #+LATEX_HEADER: \usepackage{polynom}
 #+LATEX_HEADER: \usepackage{tikz}
 #+LATEX_HEADER: \usepackage[tikz]{bclogo}
-#+LATEX_HEADER: \usepackage{tikz-3dplot}
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
@@ -51,7 +48,7 @@
 
 #+begin_export html
 <style>
-.lemma, .proof, .entailment, .definition {
+.lemma, .proof, .entailment, .definition, .note, .my_example {
   border-radius: 10px;
   padding-left: 5px;
   padding-right: 5px;
@@ -80,6 +77,12 @@
 }
 .note:before {
   content: url(/note.png) "note:";
+}
+.my_example {
+  background-color: thistle
+}
+.my_example:before {
+  content: "example:";
 }
 p {
   margin: 0px;
@@ -112,8 +115,6 @@ window.MathJax = {
 
 #+begin_export latex
 \newenvironment{title}{\begin{center}}{\end{center}}
-\newenvironment{definition}{\begin{center}}{\end{center}}
-\newenvironment{entailment}{\begin{center}}{\end{center}}
 \newenvironment{note}
   {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
   {\end{bclogo}}
@@ -121,5 +122,19 @@ window.MathJax = {
   {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true, 
                 couleur=red!15]{Important!}}
   {\end{bclogo}}
-
+\newenvironment{my_example}
+  {\begin{mdframed}[backgroundcolor=blue!10]example:\\}
+  {\end{mdframed}}
+\newenvironment{definition}
+  {\begin{mdframed}[backgroundcolor=purple!10]\\}
+  {\end{mdframed}}
+\newenvironment{entailment}
+  {\begin{mdframed}[backgroundcolor=green!10]entailment:\\}
+  {\end{mdframed}}
+\renewenvironment{proof}
+  {\begin{mdframed}[backgroundcolor=red!10]proof:\\}
+  {\end{mdframed}}
+\newenvironment{lemma}
+  {\begin{mdframed}[backgroundcolor=green!10]lemma:\\}
+  {\end{mdframed}}
 #+end_export
