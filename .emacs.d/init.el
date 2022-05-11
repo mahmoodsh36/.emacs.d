@@ -732,6 +732,7 @@
 (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
 
 ;; keybinding to evaluate math expressions
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
