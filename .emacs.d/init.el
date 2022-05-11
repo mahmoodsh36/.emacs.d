@@ -733,6 +733,7 @@
 (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
 
 ;; keybinding to evaluate math expressions
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
@@ -838,21 +839,9 @@
       (insert (elt $charset (random $baseCount))))))
 (global-set-key (kbd "C-c r") (lambda () (interactive) (insert-random-string 6)))
 
-;; org mode exports the #+RESULTS of code block executions using verbatim env for latex, this replaces the occurences of verbatim with lstlistings which is better
-(defun my-latex-export-example-blocks (text backend info)
-  "Export example blocks as listings env."
-  (when (org-export-derived-backend-p backend 'latex)
-    (with-temp-buffer
-      (insert text)
-      ;; replace verbatim env by listings
-      (goto-char (point-min))
-      (replace-string "{verbatim}" "{lstlisting}")
-      (buffer-substring-no-properties (point-min) (point-max)))))
-(add-to-list 'org-export-filter-final-output-functions
-         'my-latex-export-example-blocks)
-
 ;; load some files into org babel library
 (org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
+(org-babel-lob-ingest "~/workspace/college/code/sage.org")
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
