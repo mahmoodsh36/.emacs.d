@@ -79,7 +79,7 @@
   content: url(/note.png) "note:";
 }
 .my_example {
-  background-color: thistle
+  background-color: #e8cfc8; 
 }
 .my_example:before {
   content: "example:";
@@ -126,15 +126,15 @@ window.MathJax = {
   {\begin{mdframed}[backgroundcolor=blue!10]example:\\}
   {\end{mdframed}}
 \newenvironment{definition}
-  {\begin{mdframed}[backgroundcolor=purple!10]}
+  {\begin{mdframed}[backgroundcolor=orange!10]}
   {\end{mdframed}}
 \newenvironment{entailment}
   {\begin{mdframed}[backgroundcolor=green!10]entailment:\\}
   {\end{mdframed}}
 \renewenvironment{proof}
-  {\begin{mdframed}[backgroundcolor=red!10]proof:\\}
+  {\begin{mdframed}[backgroundcolor=green!10]proof:\\}
   {\end{mdframed}}
 \newenvironment{lemma}
-  {\begin{mdframed}[backgroundcolor=green!10]lemma:\\}
+  {\begin{mdframed}[backgroundcolor=red!10]lemma:\\}
   {\end{mdframed}}
 #+end_export
