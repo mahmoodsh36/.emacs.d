@@ -136,14 +136,6 @@
   :config
   (evil-goggles-mode))
 
-;; increase/decrease numbers like in vim
-(use-package evil-numbers
-  :config
-  (global-set-key (kbd "C-c +") 'evil-numbers/inc-at-pt)
-  (global-set-key (kbd "C-c -") 'evil-numbers/dec-at-pt)
-  (global-set-key (kbd "C-c C-+") 'evil-numbers/inc-at-pt-incremental)
-  (global-set-key (kbd "C-c C--") 'evil-numbers/dec-at-pt-incremental))
-
 ;; make line a text object - yil dil cil, etc..
 (use-package evil-textobj-line)
 
@@ -170,7 +162,6 @@
 (use-package projectile
   :config
   (setq projectile-completion-system 'ivy)
-  ;;(setq projectile-project-search-path '("~/Desktop/"))
   (projectile-mode +1))
 
 ;; auto completion
@@ -294,9 +285,7 @@
   :config
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
-                                             (:results . "drawer")))
-  (with-eval-after-load "org"
-    (define-key org-mode-map (kbd "C-c E") 'ob-sagemath-execute-async)))
+                                             (:results . "drawer"))))
 
 ;; better built-in help/documentation
 (use-package helpful
@@ -408,6 +397,7 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
+;; best pdf viewer
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
@@ -432,11 +422,6 @@
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
   (setq prescient-save-file (expand-file-name "~/data/emacs_prescient"))) ;; save history to filesystem
-
-;; auto preview latex fragments in org mode
-;; (use-package org-fragtog
-;;   :config
-;;   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
 ;; auto indentation
 ;; (use-package aggressive-indent
@@ -470,8 +455,6 @@
   (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir)))
 ;;(add-hook 'org-mode-hook 'org-hugo-auto-export-mode))
-
-(use-package ox-pandoc)
 
 ;; best latex preview functionality
 (use-package xenops
@@ -710,6 +693,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -734,6 +718,11 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r"
+                    (lambda ()
+                      (interactive)
+                        (org-insert-time-stamp (current-time) t)))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/college/activity.org")))
 
 ;; keybinding to evaluate math expressions
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
@@ -803,8 +792,9 @@
 (add-hook 'org-mode-hook #'my-org-latex-yas)
 ;; preserve all line breaks when exporting
 (setq org-export-preserve-breaks t)
-;; use listings package for latex code blocks
-(setq org-latex-listings t)
+
+(setq org-latex-listings t ;; use listings package for latex code blocks
+      org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")) ;; timestamp with seconds
 ;; some extra libraries to use with latex
 (add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
 (add-to-list 'org-latex-default-packages-alist '("" "tikz" t))
