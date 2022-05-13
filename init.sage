@@ -23,6 +23,10 @@ def latex_all(*a):
 def latex_all_display(*a):
   print('\\[' + latex_all_str(*a) + '\\]')
 
+# aliases to shorten code
+l = latex_all
+ld = latex_all_display
+
 # square brackets look better
 latex.matrix_delimiters("[", "]")
 
