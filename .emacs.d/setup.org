@@ -48,41 +48,46 @@
 
 #+begin_export html
 <style>
-.lemma, .proof, .entailment, .definition, .note, .my_example {
+.lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption {
   border-radius: 10px;
-  padding-left: 5px;
-  padding-right: 5px;
-  background-color: beige;
+  padding: 4px;
   border-style: groove;
   border-width: 3px;
 }
-.proof, .entailment {
+.lemma {
+  background-color: beige;
+}
+.proof {
   background-color: moccasin;
-  margin: 5px;
-  border-style: double;
-  border-width: 4px;
+}
+.entailment {
+  background-color: lightsteelblue;
 }
 .lemma:before {
   content: "lemma:";
+  font-family: cursive;
 }
 .proof:before {
   content: "proof:";
+  font-family: cursive;
 }
 .entailment:before {
   content: "entailment (logical consequence):";
+  font-family: cursive;
 }
 .note {
-  background-color: wheat;
-  border-style: groove;
+  background-color: blanchedalmond;
 }
 .note:before {
   content: url(/note.png) "note:";
+  font-family: cursive;
 }
 .my_example {
   background-color: #e8cfc8; 
 }
 .my_example:before {
   content: "example:";
+  font-family: cursive;
 }
 p {
   margin: 0px;
@@ -98,7 +103,16 @@ img {
 }
 .definition {
   background-color: snow;
-  border-style: groove;
+}
+.characteristic {
+  background-color: #dfdada;
+}
+.characteristic:before {
+  content: "characteristic:";
+  font-family: cursive;
+}
+.assumption {
+  background-color: #65ad98;
 }
 </style>
 <script>
@@ -127,6 +141,9 @@ window.MathJax = {
   {\end{mdframed}}
 \newenvironment{definition}
   {\begin{mdframed}[backgroundcolor=orange!10]}
+  {\end{mdframed}}
+\newenvironment{characteristic}
+  {\begin{mdframed}[backgroundcolor=orange!5]}
   {\end{mdframed}}
 \newenvironment{entailment}
   {\begin{mdframed}[backgroundcolor=green!10]entailment:\\}
