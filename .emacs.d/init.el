@@ -169,8 +169,10 @@
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
-  (setq company-idle-delay 0)
-  (setq company-require-match nil)
+  (setq company-idle-delay 0
+        company-require-match nil
+        company-tooltip-limit 30
+        company-tooltip-align-annotations t)
   (eval-after-load 'company
     '(progn
       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
@@ -487,6 +489,26 @@
         org-appear-autosubmarkers t)
   (add-hook 'org-mode-hook 'org-appear-mode))
 
+;; enables multiple major modes in org-mode for proper code completion using company and more
+;; (use-package poly-org)
+
+(use-package async)
+
+;; more text objects using tree-sitter
+(use-package evil-textobj-tree-sitter)
+
+;; text aligning
+(use-package evil-lion)
+
+;; preview registers and marks before actually using them
+(use-package evil-owl)
+
+;; communicate with jupyter kernels
+(use-package jupyter)
+
+;; might help with links
+(use-package org-super-links)
+
 ;; start server
 (server-start)
 
@@ -638,11 +660,11 @@
 (evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
 
 ;; tex hook to auto compile on save
-(add-hook
- 'TeX-mode-hook
- (lambda ()
-   (compile-current-document)
-   (add-hook 'after-save-hook 'compile-current-document 0 t)))
+;; (add-hook
+;;  'TeX-mode-hook
+;;  (lambda ()
+;;    (compile-current-document)
+;;    (add-hook 'after-save-hook 'compile-current-document 0 t)))
 
 ;; the next 2 functions need to be rewritten
 (defun compile-sagetex-command ()
