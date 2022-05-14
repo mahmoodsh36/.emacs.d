@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: note block
-# key: <n
+# key: nb
 # --
 #+begin_note
   $0
