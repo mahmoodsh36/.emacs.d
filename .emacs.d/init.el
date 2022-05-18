@@ -1,3 +1,18 @@
+;; setup straight.el package manager
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(setq package-enable-at-startup nil)
+
 ;; disable customization using the interactive interface
 (setq custom-file "/dev/null")
 ;; get rid of the stupid startup screen
@@ -217,9 +232,10 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
   ;; the package annoyingly binds O to another function so here im just restoring it
-  (general-define-key :states '(normal motion emacs) :keymaps 'override "O" (lambda ()
-                                                                              (interactive)
-                                                                              (evil-open-above 1))))
+  (general-define-key :states '(normal motion emacs) :keymaps 'override "O"
+                      (lambda ()
+                        (interactive)
+                        (evil-open-above 1))))
 
 (use-package doom-themes
   :config
@@ -403,7 +419,8 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1)))) ;; linum doesnt work well with pdf-tools
+  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; for fetching packages from github
 (setq quelpa-update-melpa-p nil) ;; disable updating melpa package list on startup, annoying af
@@ -489,13 +506,15 @@
         org-appear-autosubmarkers t)
   (add-hook 'org-mode-hook 'org-appear-mode))
 
+;; jump to matching tags
+(use-package evil-matchit
+  :config
+  (global-evil-matchit-mode 1))
+
 ;; enables multiple major modes in org-mode for proper code completion using company and more
 ;; (use-package poly-org)
 
 (use-package async)
-
-;; more text objects using tree-sitter
-(use-package evil-textobj-tree-sitter)
 
 ;; text aligning
 (use-package evil-lion)
@@ -506,8 +525,8 @@
 ;; communicate with jupyter kernels
 (use-package jupyter)
 
-;; might help with links
-(use-package org-super-links)
+(use-package org-super-agenda)
+(use-package org-web-tools)
 
 ;; start server
 (server-start)
@@ -725,7 +744,6 @@
 (general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
-(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC '" 'org-ctrl-c-ctrl-c)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
@@ -798,6 +816,12 @@
                       (org-to-pdf)
                       (org-hugo-export-to-md)
                       (switch-to-dark-theme)))
+;; function to execute buffer with light theme
+(defun org-execute-buffer-with-light-theme ()
+  (interactive)
+  (switch-to-light-theme)
+  (org-babel-execute-buffer)
+  (switch-to-dark-theme))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
@@ -854,6 +878,7 @@
 ;; load some files into org babel library
 (org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
 (org-babel-lob-ingest "~/workspace/college/code/sage.org")
+(org-babel-lob-ingest "~/workspace/college/code/tikz.org")
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
