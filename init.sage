@@ -1,3 +1,5 @@
+import re
+
 # make sxiv the default image viewer
 from sage.misc.viewer import viewer
 viewer.png_viewer('sxiv')
@@ -32,3 +34,13 @@ latex.matrix_delimiters("[", "]")
 
 # enable ascii art by default
 %display unicode_art
+
+# functions to format a string with the latex of values of variables instead of the value itself
+def handle(match):
+  try:
+    return latex_all_str(eval(match.group()[1:-1]))
+  except:
+    return match.group()
+def my_format(mystr):
+  print(re.sub(r"{.+?}", handle, mystr))
+fm = my_format
