@@ -13,6 +13,7 @@
 #+LATEX_HEADER: \usepackage{tikz}
 #+LATEX_HEADER: \usepackage[tikz]{bclogo}
 #+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage[most]{tcolorbox}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 
@@ -48,11 +49,21 @@
 
 #+begin_export html
 <style>
-.lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption {
+.lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step {
   border-radius: 10px;
   padding: 4px;
   border-style: groove;
-  border-width: 3px;
+  border-width: 4px;
+}
+.lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before {
+  background-color: white;
+  position: relative;
+  left: -5px;
+  top: -7px;
+  border-radius: 10px 0 10px 0;
+  padding-right: 7px;
+  padding-left: 7px;
+  font-family: cursive;
 }
 .lemma {
   background-color: beige;
@@ -65,29 +76,25 @@
 }
 .lemma:before {
   content: "lemma:";
-  font-family: cursive;
 }
 .proof:before {
   content: "proof:";
-  font-family: cursive;
 }
 .entailment:before {
   content: "entailment (logical consequence):";
-  font-family: cursive;
 }
 .note {
   background-color: blanchedalmond;
 }
 .note:before {
-  content: url(/note.png) "note:";
-  font-family: cursive;
+  /* content: url(/note.png) "note:"; */
+  content: "note:";
 }
 .my_example {
   background-color: #e8cfc8; 
 }
 .my_example:before {
   content: "example:";
-  font-family: cursive;
 }
 p {
   margin: 0px;
@@ -104,15 +111,41 @@ img {
 .definition {
   background-color: snow;
 }
+.definition:before {
+  content: "definition:";
+}
 .characteristic {
   background-color: #dfdada;
 }
 .characteristic:before {
   content: "characteristic:";
-  font-family: cursive;
 }
 .assumption {
   background-color: #65ad98;
+}
+.question {
+  background-color: #e1c6c6;
+}
+.question:before {
+  content: "question:";
+}
+.subquestion {
+  background-color: #e5e2d8;
+}
+.subquestion:before {
+  content: "subquestion:";
+}
+.answer {
+  background-color: #beabc5;
+}
+.answer:before {
+  content: "answer:";
+}
+.step {
+  background-color: #b4d3ad;
+}
+.step:before {
+  content: "step:";
 }
 </style>
 <script>
@@ -137,21 +170,33 @@ window.MathJax = {
                 couleur=red!15]{Important!}}
   {\end{bclogo}}
 \newenvironment{my_example}
-  {\begin{mdframed}[backgroundcolor=blue!10]example:\\}
-  {\end{mdframed}}
+  {\begin{tcolorbox}[colback=blue!10, breakable, enhanced]example:\\}
+  {\end{tcolorbox}}
 \newenvironment{definition}
-  {\begin{mdframed}[backgroundcolor=orange!10]}
-  {\end{mdframed}}
+  {\begin{tcolorbox}[colback=orange!10, breakable, enhanced]}
+  {\end{tcolorbox}}
 \newenvironment{characteristic}
-  {\begin{mdframed}[backgroundcolor=orange!5]}
-  {\end{mdframed}}
+  {\begin{tcolorbox}[colback=orange!5, breakable, enhanced]}
+  {\end{tcolorbox}}
 \newenvironment{entailment}
-  {\begin{mdframed}[backgroundcolor=green!10]entailment:\\}
-  {\end{mdframed}}
+  {\begin{tcolorbox}[colback=green!10, breakable, enhanced]entailment:\\}
+  {\end{tcolorbox}}
 \renewenvironment{proof}
-  {\begin{mdframed}[backgroundcolor=green!10]proof:\\}
-  {\end{mdframed}}
+  {\begin{tcolorbox}[colback=green!10, breakable, enhanced]proof:\\}
+  {\end{tcolorbox}}
 \newenvironment{lemma}
-  {\begin{mdframed}[backgroundcolor=red!10]lemma:\\}
-  {\end{mdframed}}
+  {\begin{tcolorbox}[colback=red!10, breakable, enhanced]lemma:\\}
+  {\end{tcolorbox}}
+\newenvironment{question}
+  {\begin{tcolorbox}[colback=pink!10, breakable, enhanced]question:\\}
+  {\end{tcolorbox}}
+\newenvironment{subquestion}
+  {\begin{tcolorbox}[colback=gray!10, breakable, enhanced]subquestion:\\}
+  {\end{tcolorbox}}
+\newenvironment{answer}
+  {\begin{tcolorbox}[colback=purple!10, breakable, enhanced]answer:\\}
+  {\end{tcolorbox}}
+\newenvironment{step}
+  {\begin{tcolorbox}[colback=red!5, breakable, enhanced]step:\\}
+  {\end{tcolorbox}}
 #+end_export
