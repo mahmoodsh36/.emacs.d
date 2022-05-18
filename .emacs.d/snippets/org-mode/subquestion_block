@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: subquestion block
+# key: sb
+# --
+#+begin_subquestion
+$0
+#+end_subquestion

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: answer block
+# key: wb
+# --
+#+begin_answer
+$0
+#+end_answer
