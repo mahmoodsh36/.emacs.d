@@ -2,6 +2,7 @@
 # name: latex code block
 # key: <l
 # --
-#+begin_src latex :results file graphics :exports results :file ~/.emacs.d/latex/`(insert-random-string 6)`.png
+#+begin_src latex :results file graphics :exports results :file ~/.emacs.d/latex/`(insert-random-string 6)`.png :noweb strip-export :cache yes
+  <<transparent>>
   $0
 #+end_src
