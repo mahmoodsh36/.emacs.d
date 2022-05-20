@@ -1,5 +1,10 @@
 import re
 
+# better latex support when displaying text in graphics
+from matplotlib import rc
+rc('text', usetex=True)
+rc('text.latex', preamble=r'\usepackage{amsmath}')
+
 # make sxiv the default image viewer
 from sage.misc.viewer import viewer
 viewer.png_viewer('sxiv')
@@ -19,11 +24,19 @@ def latex_set(o):
 def latex_all_str(*a):
   return ' '.join(obj if type(obj) == str else latex_set_str(obj) if isinstance(obj, sage.sets.set.Set_object) else ' '.join(latex(obj).splitlines()) for obj in a)
 
-def latex_all(*a):
-  print('$' + latex_all_str(*a) + '$')
+def latex_all(*a, should_print=True):
+  mystr = '$' + latex_all_str(*a) + '$'
+  if should_print:
+    print(mystr)
+  else:
+    return mystr
 
-def latex_all_display(*a):
-  print('\\[' + latex_all_str(*a) + '\\]')
+def latex_all_display(*a, should_print=True):
+  mystr = '\\[' + latex_all_str(*a) + '\\]'
+  if should_print:
+    print(mystr)
+  else:
+    return mystr
 
 # aliases to shorten code
 l = latex_all
@@ -32,7 +45,7 @@ ld = latex_all_display
 # square brackets look better
 latex.matrix_delimiters("[", "]")
 
-# enable ascii art by default
+# enable unicode art by default
 %display unicode_art
 
 # functions to format a string with the latex of values of variables instead of the value itself
