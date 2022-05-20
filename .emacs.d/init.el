@@ -303,7 +303,9 @@
   :config
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
-                                             (:results . "drawer"))))
+                                             (:results . "drawer")))
+  (setq sage-shell:input-history-cache-file "~/data/sage_history")
+  (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
 (use-package helpful
@@ -527,6 +529,7 @@
 
 (use-package org-super-agenda)
 (use-package org-web-tools)
+(use-package evil-textobj-tree-sitter)
 
 ;; start server
 (server-start)
@@ -552,6 +555,8 @@
        (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
 (define-and-bind-text-object "$" "\\$" "\\$")
 (define-and-bind-text-object "|" "|" "|")
+(define-and-bind-text-object "/" "/" "/")
+(define-and-bind-text-object "*" "*" "*")
 
 ;; org mode config
 (setq org-clock-persist 'history)
@@ -581,8 +586,6 @@
 (require 'org-tempo)
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
-;; make long lines break into multiple ones
-;;(add-hook 'org-mode-hook 'visual-line-mode)
 ;; increase org table max lines
 (setq org-table-convert-region-max-lines 10000)
 
@@ -596,7 +599,7 @@
 
 ;; hide unnecessary stuff
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-(setq dired-listing-switches "-la")
+(setq dired-listing-switches "-l")
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
 
@@ -735,6 +738,7 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -812,10 +816,13 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
                     (lambda ()
                       (interactive)
-                      (switch-to-light-theme)
+                      (setq previous-theme (car custom-enabled-themes))
+                      (if (not (eq previous-theme 'modus-operandi))
+                          (switch-to-light-theme))
                       (org-to-pdf)
                       (org-hugo-export-to-md)
-                      (switch-to-dark-theme)))
+                      (if (not (eq previous-theme 'modus-operandi))
+                          (switch-to-dark-theme))))
 ;; function to execute buffer with light theme
 (defun org-execute-buffer-with-light-theme ()
   (interactive)
