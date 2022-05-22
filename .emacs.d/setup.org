@@ -18,8 +18,5 @@
 #+AUTHOR: mahmood
 
 # some needed operators to not lose my sanity
-
 #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\rank}{rank}\)</p>
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\spn}{span}\)</p>
