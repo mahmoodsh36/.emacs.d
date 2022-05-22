@@ -50,10 +50,12 @@ latex.matrix_delimiters("[", "]")
 
 # functions to format a string with the latex of values of variables instead of the value itself
 def handle(match):
+  if match == '':
+    return ''
   try:
-    return latex_all_str(eval(match.group()[1:-1]))
+    return latex_all_str(eval(match[1:-1]))
   except:
-    return match.group()
+    return match[0] + handle(match[1:])
 def my_format(mystr):
-  print(re.sub(r"{.+?}", handle, mystr))
+  print(re.sub(r"{.+?}", lambda match: handle(match.group()), mystr))
 fm = my_format
