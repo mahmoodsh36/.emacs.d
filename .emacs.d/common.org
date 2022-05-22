@@ -29,6 +29,19 @@
 }
 % so that latex doesnt complain about sage not being a language
 \lstdefinelanguage{sage}{}
+
+% environment definition for special blocks
+\theoremstyle{definition}
+\newtheorem{my_example}{Example}
+\newtheorem{definition}{Definition}
+\newtheorem{characteristic}{Characteristic}
+\newtheorem{entailment}{Entailment}
+%\newtheore*{proof}{Proof}
+\newtheorem{lemma}{Lemma}
+\newtheorem{question}{Question}
+\newtheorem{subquestion}{Subquestion}[question]
+\newtheorem{answer}{Answer}[question]
+\newtheorem{step}{Step}[answer]
 #+end_export
 
 #+begin_export html
@@ -160,7 +173,8 @@ window.MathJax = {
 </script>
 #+end_export
 
-#+begin_export latex
+# i stopped using this because latex cant handle nested breakable frames
+#+begin_comment
 \newenvironment{title}{\begin{center}}{\end{center}}
 \newenvironment{note}
   {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
@@ -199,4 +213,4 @@ window.MathJax = {
 \newenvironment{step}
   {\begin{tcolorbox}[colback=red!5, enforce breakable, enhanced]step:\\}
   {\end{tcolorbox}}
-#+end_export
+#+end_comment
