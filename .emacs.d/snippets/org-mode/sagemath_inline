@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inline sagemath code
+# key: ss
+# --
+src_sage{fm(r'$0')}
