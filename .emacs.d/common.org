@@ -1,3 +1,6 @@
+#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\rank}{rank}\)</p>
+#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\spn}{span}\)</p>
+
 #+begin_export latex
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
 \definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
@@ -13,7 +16,7 @@
   stepnumber=1,                           % Step between two line-numbers
   numbersep=5pt,                          % How far are line-numbers from code
   backgroundcolor=\color{lightlightgray}, % Choose background color
-  frame=single,                             % A frame around the code
+  frame=single,                           % A frame around the code
   tabsize=2,                              % Default tab size
   captionpos=b,                           % Caption-position = bottom
   breaklines=true,                        % Automatic line breaking?
@@ -167,33 +170,33 @@ window.MathJax = {
                 couleur=red!15]{Important!}}
   {\end{bclogo}}
 \newenvironment{my_example}
-  {\begin{tcolorbox}[colback=blue!10, breakable, enhanced]example:\\}
+  {\begin{tcolorbox}[colback=blue!10, enforce breakable, enhanced]example:\\}
   {\end{tcolorbox}}
 \newenvironment{definition}
-  {\begin{tcolorbox}[colback=orange!10, breakable, enhanced]}
+  {\begin{tcolorbox}[colback=orange!10, enforce breakable, enhanced]}
   {\end{tcolorbox}}
 \newenvironment{characteristic}
-  {\begin{tcolorbox}[colback=orange!5, breakable, enhanced]}
+  {\begin{tcolorbox}[colback=orange!5, enforce breakable, enhanced]}
   {\end{tcolorbox}}
 \newenvironment{entailment}
-  {\begin{tcolorbox}[colback=green!10, breakable, enhanced]entailment:\\}
+  {\begin{tcolorbox}[colback=green!10, enforce breakable, enhanced]entailment:\\}
   {\end{tcolorbox}}
 \renewenvironment{proof}
-  {\begin{tcolorbox}[colback=green!10, breakable, enhanced]proof:\\}
+  {\begin{tcolorbox}[colback=green!10, enforce breakable, enhanced]proof:\\}
   {\end{tcolorbox}}
 \newenvironment{lemma}
-  {\begin{tcolorbox}[colback=red!10, breakable, enhanced]lemma:\\}
+  {\begin{tcolorbox}[colback=red!10, enforce breakable, enhanced]lemma:\\}
   {\end{tcolorbox}}
 \newenvironment{question}
-  {\begin{tcolorbox}[colback=pink!10, breakable, enhanced]question:\\}
+  {\begin{tcolorbox}[colback=pink!10, enforce breakable, enhanced]question:\\}
   {\end{tcolorbox}}
 \newenvironment{subquestion}
-  {\begin{tcolorbox}[colback=gray!10, breakable, enhanced]subquestion:\\}
+  {\begin{tcolorbox}[colback=gray!10, enforce breakable, enhanced]subquestion:\\}
   {\end{tcolorbox}}
 \newenvironment{answer}
-  {\begin{tcolorbox}[colback=purple!10, breakable, enhanced]answer:\\}
+  {\begin{tcolorbox}[colback=purple!10, enforce breakable, enhanced]answer:\\}
   {\end{tcolorbox}}
 \newenvironment{step}
-  {\begin{tcolorbox}[colback=red!5, breakable, enhanced]step:\\}
+  {\begin{tcolorbox}[colback=red!5, enforce breakable, enhanced]step:\\}
   {\end{tcolorbox}}
 #+end_export
