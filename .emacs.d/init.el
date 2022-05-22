@@ -28,7 +28,10 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t
+      package-native-compile t
+      native-comp-async-report-warnings-errors nil)
+
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2)
