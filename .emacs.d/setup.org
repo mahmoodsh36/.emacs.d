@@ -20,3 +20,5 @@
 # some needed operators to not lose my sanity
 #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
+#+LATEX_HEADER: \DeclareMathOperator{\dom}{domain}
+#+LATEX_HEADER: \DeclareMathOperator{\ran}{range}

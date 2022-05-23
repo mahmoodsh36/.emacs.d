@@ -1,5 +1,7 @@
 #+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\rank}{rank}\)</p>
 #+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\spn}{span}\)</p>
+#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\dom}{domain}\)</p>
+#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\ran}{range}\)</p>
 
 #+begin_export latex
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -40,7 +42,10 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{question}{Question}
 \newtheorem{subquestion}{Subquestion}[question]
-\newtheorem{answer}{Answer}[question]
+\newtheorem{note}{Note}
+\newtheorem{answer}{Answer}
+\counterwithin{answer}{question}
+\counterwithin{answer}{subquestion}
 \newtheorem{step}{Step}[answer]
 #+end_export
 
