@@ -11,27 +11,14 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil
+      straight-use-package-by-default t
+      native-comp-async-report-warnings-errors nil)
 
 ;; disable customization using the interactive interface
 (setq custom-file "/dev/null")
-;; get rid of the stupid startup screen
 (setq inhibit-startup-screen t)
-
-;; setup use-package
-(require 'package)
-(package-initialize)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/")
-             '("gnu" . "http://elpa.gnu.org/packages/"))
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(require 'use-package)
-(setq use-package-always-ensure t
-      package-native-compile t
-      native-comp-async-report-warnings-errors nil)
-
+(straight-use-package 'use-package)
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2)
@@ -168,6 +155,11 @@
   (linum-relative-mode)
   ;; show current line number not '0'
   (setq linum-relative-current-symbol ""))
+
+;; makes binding keys less painful, is used later on in the config
+(use-package general
+  :config
+  (general-evil-setup))
 
 (use-package counsel
   :config
@@ -375,11 +367,6 @@
   (treemacs-resize-icons 15)
   (setq treemacs-width 30))
 
-;; makes binding keys less painful, is used later on in the config
-(use-package general
-  :config
-  (general-evil-setup))
-
 ;; for evil mode compatibility
 (use-package treemacs-evil
   :config
@@ -427,11 +414,6 @@
   (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
-;; for fetching packages from github
-(setq quelpa-update-melpa-p nil) ;; disable updating melpa package list on startup, annoying af
-(use-package quelpa)
-(use-package quelpa-use-package)
-
 ;; latex company backend
 (use-package company-auctex
   :config
@@ -446,6 +428,9 @@
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
   (setq prescient-save-file (expand-file-name "~/data/emacs_prescient"))) ;; save history to filesystem
+(use-package company-prescient
+  :config
+  (company-prescient-mode))
 
 ;; auto indentation
 ;; (use-package aggressive-indent
@@ -482,7 +467,6 @@
 
 ;; best latex preview functionality
 (use-package xenops
-  :quelpa (xenops :fetcher github :repo "dandavison/xenops")
   :config
   (setq xenops-reveal-on-entry t)
   ;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
@@ -516,6 +500,8 @@
   :config
   (global-evil-matchit-mode 1))
 
+(use-package org-sidebar)
+
 ;; enables multiple major modes in org-mode for proper code completion using company and more
 ;; (use-package poly-org)
 
@@ -528,7 +514,7 @@
 (use-package evil-owl)
 
 ;; communicate with jupyter kernels
-(use-package jupyter)
+(straight-use-package 'jupyter)
 
 (use-package org-super-agenda)
 (use-package org-web-tools)
@@ -762,6 +748,8 @@
 (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
+(general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
+(general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
