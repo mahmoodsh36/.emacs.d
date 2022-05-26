@@ -64,8 +64,6 @@
 (add-hook 'prog-mode-hook 'which-function-mode)
 ;; no damn fringes dude!
 (set-fringe-style 0)
-;; set font
-(set-frame-font "Inconsolata 11" nil t)
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
@@ -102,13 +100,13 @@
   :config
   (evil-mode 1)
   (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
-  (define-key evil-insert-state-map (kbd "C-e") 'evil-scroll-line-down)
-  (define-key evil-insert-state-map (kbd "C-y") 'evil-scroll-line-up)
   ;; undo/redo keys
   (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
   (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
   ;; make ESC cancel all
-  (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
+  (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+  ;;dont copy the overwritten text when overwriting text by pasting
+  (setq-default evil-kill-on-visual-paste nil))
 
 ;; evil-surround for evil mode
 (use-package evil-surround
@@ -190,6 +188,10 @@
       (unbind-key "RET" company-active-map)
       (unbind-key "<return>" company-active-map))))
 
+(use-package company-posframe
+  :config
+  (company-posframe-mode 1))
+
 ;; popup documentation for quick help for company
 (use-package company-quickhelp
   :config
@@ -232,18 +234,16 @@
                         (interactive)
                         (evil-open-above 1))))
 
-(use-package doom-themes
+(use-package poet-theme
   :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (load-theme 'doom-molokai t)
-  (doom-themes-org-config)
-  (doom-themes-treemacs-config)
-  (doom-themes-visual-bell-config))
-(use-package modus-themes)
-;;(load-theme 'doom-material-dark t)
-;;(load-theme 'doom-old-hope t)
-;; (load-theme 'modus-operandi t)
+  (set-face-attribute 'default nil :family "Inconsolata" :height 130)
+  (set-face-attribute 'fixed-pitch nil :family "Inconsolata")
+  (set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
+  (load-theme 'poet t)
+  (add-hook 'text-mode-hook
+            (lambda ()
+              (variable-pitch-mode 1)))
+  (set-face-background hl-line-face "PeachPuff3"))
 
 (use-package web-mode
   :config
@@ -475,7 +475,7 @@
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  (setq xenops-math-image-scale-factor 1.3)
+  (setq xenops-math-image-scale-factor 1.5)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -500,18 +500,47 @@
   :config
   (global-evil-matchit-mode 1))
 
-(use-package org-sidebar)
+(use-package org-roam
+  :custom
+  (org-roam-directory (file-truename "~/workspace/college/"))
+  :config
+  (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
+  (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
+  (general-define-key :states 'normal :keymaps 'override "SPC r g" 'org-roam-graph)
+  (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
+  (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-roam-capture)
+  (general-define-key :states 'normal :keymaps 'override "SPC r d" 'org-roam-dailies-capture-today)
+  (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
+
+(use-package org-roam-timestamps
+  :config
+  (org-roam-timestamps-mode))
+
+(use-package org-roam-ui)
+
+(use-package magit)
+
+(use-package slime
+  :config
+  (setq inferior-lisp-program "sbcl"))
 
 ;; enables multiple major modes in org-mode for proper code completion using company and more
 ;; (use-package poly-org)
 
-(use-package async)
+(use-package aio)
 
 ;; text aligning
 (use-package evil-lion)
 
 ;; preview registers and marks before actually using them
-(use-package evil-owl)
+(use-package evil-owl
+  :config
+  (evil-owl-mode))
 
 ;; communicate with jupyter kernels
 (straight-use-package 'jupyter)
@@ -577,6 +606,8 @@
 (setq org-babel-python-command "python3")
 ;; increase org table max lines
 (setq org-table-convert-region-max-lines 10000)
+;; to increase depth of the imenu in treemacs
+(setq org-imenu-depth 4)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -747,13 +778,16 @@
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
 (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
-(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l" 'xenops-render)
+(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
+(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
+(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
+(general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
 (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
 (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r"
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC i"
                     (lambda ()
                       (interactive)
                         (org-insert-time-stamp (current-time) t)))
@@ -807,13 +841,13 @@
 (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
                     (lambda ()
                       (interactive)
-                      (setq previous-theme (car custom-enabled-themes))
-                      (if (not (eq previous-theme 'modus-operandi))
-                          (switch-to-light-theme))
+                      ;; (setq previous-theme (car custom-enabled-themes))
+                      ;; (if (not (eq previous-theme 'poet))
+                      ;;     (switch-to-light-theme))
                       (org-to-pdf)
-                      (org-hugo-export-to-md)
-                      (if (not (eq previous-theme 'modus-operandi))
-                          (switch-to-dark-theme))))
+                      (org-hugo-export-to-md)))
+                      ;; (if (not (eq previous-theme 'poet))
+                      ;;     (switch-to-dark-theme))))
 ;; function to execute buffer with light theme
 (defun org-execute-buffer-with-light-theme ()
   (interactive)
@@ -863,6 +897,8 @@
 (setq org-babel-default-header-args:java
       '((:dir . nil)
         (:results . "value")))
+;; use unique id's to identify headers, better than using names cuz names could change
+(setq org-id-link-to-org-use-id t)
 
 (defun insert-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -881,18 +917,19 @@
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'modus-operandi)
-  (load-theme 'doom-molokai t)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-themed-pdf 1))
+  (disable-theme 'poet)
+  (load-theme 'poet-dark t))
+  ;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  ;;(set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'doom-molokai)
-  (load-theme 'modus-operandi t)
-  (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-themed-pdf 0))
+  (disable-theme 'poet-dark)
+  (load-theme 'poet t)
+  ;;(remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (set-face-background hl-line-face "PeachPuff3"))
+  ;;(set-themed-pdf 0))
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
@@ -913,3 +950,17 @@
           (setq count (1+ count))
           (kill-buffer buffer)))
       (message "Killed %i dired buffer(s)." count))))
+
+;; make org roam insert link after cursor in evil mode
+(defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
+  "If in evil normal mode and cursor is on a whitespace character, then go into
+append mode first before inserting the link. This is to put the link after the
+space rather than before."
+  (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
+                                     (not (bound-and-true-p evil-insert-state-minor-mode))
+                                     (looking-at "[[:blank:]]"))))
+    (if (not is-in-evil-normal-mode)
+        ad-do-it
+      (evil-append 0)
+      ad-do-it
+      (evil-normal-state))))
