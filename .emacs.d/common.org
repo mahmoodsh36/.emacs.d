@@ -35,7 +35,11 @@
 % environment definition for special blocks
 \theoremstyle{definition}
 \newtheorem{my_example}{Example}
+\counterwithin{my_example}{section}
+\counterwithin{my_example}{subsection}
 \newtheorem{definition}{Definition}
+\counterwithin{definition}{section}
+\counterwithin{definition}{subsection}
 \newtheorem{characteristic}{Characteristic}
 \newtheorem{entailment}{Entailment}
 %\newtheore*{proof}{Proof}
