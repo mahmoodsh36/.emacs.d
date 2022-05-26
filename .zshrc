@@ -183,4 +183,7 @@ load_plugins() {
     source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 }
 
+# ssh issues with kitty fix
+export TERM=xterm-256color
+
 load_plugins 2>/dev/null
