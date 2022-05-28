@@ -27,8 +27,6 @@
 (setq-default indent-tabs-mode nil)
 (setq evil-shift-width 2)
 (setq-default python-indent-offset 4)
-;; set line numbers
-(global-linum-mode 1)
 ;; overwrite highlighted text
 (delete-selection-mode 1)
 ;; show matching parenthases
@@ -73,8 +71,6 @@
             (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
-;; linum makes viewing images slower
-(add-hook 'image-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with image-mode
 ;; make tab actually insert tab..
 (global-set-key "\t" 'tab-to-tab-stop)
 ;; save open buffers on exit
@@ -82,6 +78,8 @@
 ;; save minibuffer history
 (savehist-mode 1)
 (setq savehist-file "~/data/emacs_savehist")
+;; wrap lines
+;;(global-visual-line-mode)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -147,13 +145,6 @@
   :config
   (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
 
-;; relative numbering
-(use-package linum-relative
-  :config
-  (linum-relative-mode)
-  ;; show current line number not '0'
-  (setq linum-relative-current-symbol ""))
-
 ;; makes binding keys less painful, is used later on in the config
 (use-package general
   :config
@@ -175,7 +166,7 @@
 ;; auto completion
 (use-package company
   :config
-  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'prog-mode-hook 'company-mode)
   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
   (setq company-idle-delay 0
         company-require-match nil
@@ -229,21 +220,23 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
   ;; the package annoyingly binds O to another function so here im just restoring it
-  (general-define-key :states '(normal motion emacs) :keymaps 'override "O"
+  (general-define-key :states 'normal :keymaps 'override "O"
                       (lambda ()
                         (interactive)
-                        (evil-open-above 1))))
+                        (evil-open-above 1)))
+  (general-define-key :states '(normal visual) :keymaps 'override "0" 'evil-beginning-of-line)
+  (general-define-key :states '(normal visual) :keymaps 'override "$" 'evil-end-of-line)
+  (general-define-key :states '(normal visual) :keymaps 'override "^" 'evil-first-non-blank))
 
 (use-package poet-theme
   :config
   (set-face-attribute 'default nil :family "Inconsolata" :height 130)
   (set-face-attribute 'fixed-pitch nil :family "Inconsolata")
   (set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
-  (load-theme 'poet t)
+  (load-theme 'poet-dark t)
   (add-hook 'text-mode-hook
             (lambda ()
-              (variable-pitch-mode 1)))
-  (set-face-background hl-line-face "PeachPuff3"))
+              (variable-pitch-mode 1))))
 
 (use-package web-mode
   :config
@@ -411,7 +404,6 @@
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook (lambda () (linum-mode -1))) ;; linum doesnt work well with pdf-tools
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; latex company backend
@@ -503,6 +495,7 @@
 (use-package org-roam
   :custom
   (org-roam-directory (file-truename "~/workspace/college/"))
+  (org-roam-completion-everywhere t)
   :config
   (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
   (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -511,17 +504,26 @@
   (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-roam-capture)
   (general-define-key :states 'normal :keymaps 'override "SPC r d" 'org-roam-dailies-capture-today)
   (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
+  (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
   ;; If you're using a vertical completion framework, you might want a more informative completion interface
-  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  ;;(setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (org-roam-db-autosync-mode)
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
 
 (use-package org-roam-timestamps
   :config
-  (org-roam-timestamps-mode))
+  (org-roam-timestamps-mode)
+  (setq org-roam-timestamps-remember-timestamps t))
+
+(use-package evil-tex
+  :config
+  (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
+  (add-hook 'org-mode-hook #'evil-tex-mode))
 
 (use-package org-roam-ui)
+(use-package org-transclusion)
+;;(use-package roam-block)
 
 (use-package magit)
 
@@ -542,12 +544,10 @@
   :config
   (evil-owl-mode))
 
-;; communicate with jupyter kernels
-(straight-use-package 'jupyter)
-
 (use-package org-super-agenda)
 (use-package org-web-tools)
 (use-package evil-textobj-tree-sitter)
+(use-package evil-embrace)
 
 ;; start server
 (server-start)
@@ -792,6 +792,10 @@
                       (interactive)
                         (org-insert-time-stamp (current-time) t)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/college/activity.org")))
+(general-define-key org-mode-map (kbd "s-l") #'org-edit-src-code)
+(define-key org-src-mode-map (kbd "s-l") #'org-edit-src-exit)
+(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC '" 'org-edit-special)
+(general-define-key :states '(normal motion emacs) :keymaps 'org-src-mode-map "SPC '" 'org-edit-src-exit)
 
 ;; keybinding to evaluate math expressions
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
@@ -899,6 +903,25 @@
         (:results . "value")))
 ;; use unique id's to identify headers, better than using names cuz names could change
 (setq org-id-link-to-org-use-id t)
+;; org agenda
+(setq org-agenda-files '("/home/mahmooz/workspace/college/agenda.org"))
+;; load some files into org babel library
+(org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
+(org-babel-lob-ingest "~/workspace/college/code/sage.org")
+(org-babel-lob-ingest "~/workspace/college/code/tikz.org")
+;; creation dates for TODOs
+(defun my/log-todo-creation-date (&rest ignore)
+  "Log TODO creation time in the property drawer under the key 'CREATED'."
+  (when (and (org-get-todo-state)
+             (not (org-entry-get nil "CREATED")))
+    (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
+(add-hook 'org-after-todo-state-change-hook #'my/log-todo-creation-date)
+;; better editing in org src blocks
+;; src block indentation / editing / syntax highlighting
+(setq org-src-fontify-natively t
+      org-src-window-setup 'current-window ;; edit in current window
+      org-src-strip-leading-and-trailing-blank-lines t
+      org-src-tab-acts-natively t)
 
 (defun insert-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -908,11 +931,6 @@
     (dotimes (_ (if (numberp NUM) (abs NUM) NUM))
       (insert (elt $charset (random $baseCount))))))
 (global-set-key (kbd "C-c r") (lambda () (interactive) (insert-random-string 6)))
-
-;; load some files into org babel library
-(org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
-(org-babel-lob-ingest "~/workspace/college/code/sage.org")
-(org-babel-lob-ingest "~/workspace/college/code/tikz.org")
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
@@ -964,3 +982,28 @@ space rather than before."
       (evil-append 0)
       ad-do-it
       (evil-normal-state))))
+
+;; workaround for pdf-tools not reopening to last-viewed page of the pdf:
+;; https://github.com/politza/pdf-tools/issues/18#issuecomment-269515117
+(defun brds/pdf-set-last-viewed-bookmark ()
+  (interactive)
+  (when (eq major-mode 'pdf-view-mode)
+    (bookmark-set (brds/pdf-generate-bookmark-name))))
+(defun brds/pdf-jump-last-viewed-bookmark ()
+  (bookmark-set "fake") ; this is new
+  (when
+      (brds/pdf-has-last-viewed-bookmark)
+    (bookmark-jump (brds/pdf-generate-bookmark-name))))
+(defun brds/pdf-has-last-viewed-bookmark ()
+  (assoc
+    (brds/pdf-generate-bookmark-name) bookmark-alist))
+(defun brds/pdf-generate-bookmark-name ()
+  (concat "PDF-LAST-VIEWED: " (buffer-file-name)))
+(defun brds/pdf-set-all-last-viewed-bookmarks ()
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+        (brds/pdf-set-last-viewed-bookmark))))
+(add-hook 'kill-buffer-hook 'brds/pdf-set-last-viewed-bookmark)
+(add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
+(unless noninteractive  ; as `save-place-mode' does
+  (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
