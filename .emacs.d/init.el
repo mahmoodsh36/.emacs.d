@@ -49,7 +49,7 @@
 ;; treat underscore as part of word
 (defun underscore-part-of-word-hook ()
   (modify-syntax-entry ?_ "w"))
-(add-hook 'prog-mode-hook 'underscore-part-of-word-hook)
+(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
 ;; highlight current line
 (global-hl-line-mode)
 ;; reload file automatically
@@ -57,9 +57,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 115 58))
-;; enable which-function-mode that shows the current function being edited in the bottom bar
-(add-hook 'prog-mode-hook 'which-function-mode)
+;;(when window-system (set-frame-size (selected-frame) 115 58))
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; display only buffer name in modeline
@@ -77,9 +75,8 @@
 (desktop-save-mode 1)
 ;; save minibuffer history
 (savehist-mode 1)
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 (setq savehist-file "~/data/emacs_savehist")
-;; wrap lines
-;;(global-visual-line-mode)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -88,6 +85,8 @@
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
+
+(use-package org)
 
 ;; needed for evil mode
 (use-package undo-fu)
@@ -395,11 +394,6 @@
 (use-package flutter)
 (use-package lsp-dart)
 
-;; make org mode look better (bullets and more)
-(use-package org-superstar
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
 ;; best pdf viewer
 (use-package pdf-tools
   :config
@@ -461,7 +455,8 @@
 (use-package xenops
   :config
   (setq xenops-reveal-on-entry t)
-  ;;(add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (setq xenops-math-latex-max-tasks-in-flight 6)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
@@ -473,9 +468,9 @@
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]"))))
 
-;; (use-package mixed-pitch
-;;   :hook
-;;   (text-mode . mixed-pitch-mode))
+(use-package mixed-pitch
+  :hook
+  (text-mode . mixed-pitch-mode))
 
 ;; show hidden elements when cursor is over them like links/markers etc
 (use-package org-appear
@@ -492,6 +487,7 @@
   :config
   (global-evil-matchit-mode 1))
 
+;; the key to building a second brain in org mode
 (use-package org-roam
   :custom
   (org-roam-directory (file-truename "~/workspace/college/"))
@@ -511,15 +507,22 @@
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
 
+;; add edition/creation timestamps to headers and files
 (use-package org-roam-timestamps
   :config
   (org-roam-timestamps-mode)
   (setq org-roam-timestamps-remember-timestamps t))
 
+;; text evil objects for latex
 (use-package evil-tex
   :config
   (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
   (add-hook 'org-mode-hook #'evil-tex-mode))
+
+;; give org mode a better look
+(use-package org-modern
+  :config
+  (global-org-modern-mode))
 
 (use-package org-roam-ui)
 (use-package org-transclusion)
@@ -530,9 +533,6 @@
 (use-package slime
   :config
   (setq inferior-lisp-program "sbcl"))
-
-;; enables multiple major modes in org-mode for proper code completion using company and more
-;; (use-package poly-org)
 
 (use-package aio)
 
@@ -792,10 +792,6 @@
                       (interactive)
                         (org-insert-time-stamp (current-time) t)))
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/college/activity.org")))
-(general-define-key org-mode-map (kbd "s-l") #'org-edit-src-code)
-(define-key org-src-mode-map (kbd "s-l") #'org-edit-src-exit)
-(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC '" 'org-edit-special)
-(general-define-key :states '(normal motion emacs) :keymaps 'org-src-mode-map "SPC '" 'org-edit-src-exit)
 
 ;; keybinding to evaluate math expressions
 (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
@@ -805,6 +801,7 @@
                       (end-of-line)
                       (insert " ")
                       (insert result)))
+(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
@@ -874,6 +871,8 @@
 (add-hook 'org-mode-hook #'my-org-latex-yas)
 ;; preserve all line breaks when exporting
 (setq org-export-preserve-breaks t)
+;; indent headings properly
+(add-hook 'org-mode-hook 'org-indent-mode)
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")) ;; timestamp with seconds
@@ -883,7 +882,7 @@
 (add-to-list 'org-latex-default-packages-alist '("" "pgfplots" t))
 (add-to-list 'org-latex-default-packages-alist '("" "cancel" t))
 (add-to-list 'org-latex-default-packages-alist '("" "mathtools" t))
-(setq org-format-latex-header (concat org-format-latex-header "\\usetikzlibrary{tikzmark,calc,fit,matrix}"))
+;;(setq org-format-latex-header (concat org-format-latex-header "\\usetikzlibrary{tikzmark,calc,fit,matrix}"))
 ;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
@@ -916,12 +915,9 @@
              (not (org-entry-get nil "CREATED")))
     (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
 (add-hook 'org-after-todo-state-change-hook #'my/log-todo-creation-date)
-;; better editing in org src blocks
 ;; src block indentation / editing / syntax highlighting
-(setq org-src-fontify-natively t
-      org-src-window-setup 'current-window ;; edit in current window
-      org-src-strip-leading-and-trailing-blank-lines t
-      org-src-tab-acts-natively t)
+(setq org-src-window-setup 'current-window
+      org-src-strip-leading-and-trailing-blank-lines t)
 
 (defun insert-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
