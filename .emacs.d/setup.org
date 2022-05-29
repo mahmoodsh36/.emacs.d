@@ -15,6 +15,7 @@
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX_HEADER: \usepackage[most]{tcolorbox}
 #+LATEX_HEADER: \usepackage{forest}
+#+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 
@@ -23,3 +24,6 @@
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
 #+LATEX_HEADER: \DeclareMathOperator{\dom}{domain}
 #+LATEX_HEADER: \DeclareMathOperator{\ran}{range}
+
+# startup with headlines folded
+#+STARTUP: content
