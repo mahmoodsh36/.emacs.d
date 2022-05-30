@@ -49,7 +49,7 @@
 ;; treat underscore as part of word
 (defun underscore-part-of-word-hook ()
   (modify-syntax-entry ?_ "w"))
-(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
+;;(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
 ;; highlight current line
 (global-hl-line-mode)
 ;; reload file automatically
@@ -101,9 +101,9 @@
   (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
   (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
   ;; make ESC cancel all
-  (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+  (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
   ;;dont copy the overwritten text when overwriting text by pasting
-  (setq-default evil-kill-on-visual-paste nil))
+  ;;(setq-default evil-kill-on-visual-paste nil))
 
 ;; evil-surround for evil mode
 (use-package evil-surround
@@ -525,7 +525,7 @@
   (global-org-modern-mode))
 
 (use-package org-roam-ui)
-(use-package org-transclusion)
+;;(use-package org-transclusion)
 ;;(use-package roam-block)
 
 (use-package magit)
@@ -608,6 +608,8 @@
 (setq org-table-convert-region-max-lines 10000)
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
+;; who cares about annoying broken links errors..
+(setq org-export-with-broken-links t)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -932,9 +934,9 @@
   "switch to dark theme"
   (interactive)
   (disable-theme 'poet)
-  (load-theme 'poet-dark t))
+  (load-theme 'poet-dark t)
   ;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  ;;(set-themed-pdf 1))
+  (set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
@@ -942,8 +944,8 @@
   (disable-theme 'poet-dark)
   (load-theme 'poet t)
   ;;(remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-face-background hl-line-face "PeachPuff3"))
-  ;;(set-themed-pdf 0))
+  (set-face-background hl-line-face "PeachPuff3")
+  (set-themed-pdf 1))
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
@@ -951,7 +953,8 @@
     (if (buffer-name buffer)
         (if (string-match ".*.pdf$" (buffer-name buffer))
             (with-current-buffer (buffer-name buffer)
-              (pdf-view-themed-minor-mode should-be-themed))))))
+              (pdf-view-themed-minor-mode should-be-themed)
+              (pdf-view-refresh-themed-buffer t))))))
 
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
