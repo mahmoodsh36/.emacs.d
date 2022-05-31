@@ -46,11 +46,36 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{question}{Question}
 \newtheorem{subquestion}{Subquestion}[question]
-\newtheorem{note}{Note}
+%\newtheorem{note}{Note}
 \newtheorem{answer}{Answer}
 \counterwithin{answer}{question}
 \counterwithin{answer}{subquestion}
 \newtheorem{step}{Step}[answer]
+
+% the following snippet auto resizes images to fit properly
+% Determine if the image is too wide for the page.
+% \makeatletter
+% \def\ScaleIfNeeded{%
+%   \ifdim\Gin@nat@width>\linewidth
+%     \linewidth
+%   \else
+%     \Gin@nat@width
+%   \fi
+% }
+% \makeatother
+% % Resize figures that are too wide for the page.
+% \let\oldincludegraphics\includegraphics
+% \renewcommand\includegraphics[2][]{%
+%   \oldincludegraphics[width=\ScaleIfNeeded]{#2}
+% }
+
+\newenvironment{note}
+  {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
+  {\end{bclogo}}
+\newenvironment{attention}
+  {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true, 
+                couleur=red!15]{Important!}}
+  {\end{bclogo}}
 #+end_export
 
 #+begin_export html
@@ -185,13 +210,6 @@ window.MathJax = {
 # i stopped using this because latex cant handle nested breakable frames
 #+begin_comment
 \newenvironment{title}{\begin{center}}{\end{center}}
-\newenvironment{note}
-  {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
-  {\end{bclogo}}
-\newenvironment{attention}
-  {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true, 
-                couleur=red!15]{Important!}}
-  {\end{bclogo}}
 \newenvironment{my_example}
   {\begin{tcolorbox}[colback=blue!10, enforce breakable, enhanced]example:\\}
   {\end{tcolorbox}}
