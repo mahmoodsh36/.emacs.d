@@ -15,6 +15,9 @@
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX_HEADER: \usepackage[most]{tcolorbox}
 #+LATEX_HEADER: \usepackage{forest}
+#+LATEX_HEADER: \usepackage{adjustbox}
+#+LATEX_HEADER: \usepackage{tikz-3dplot}
+
 #+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
 #+LATEX: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
