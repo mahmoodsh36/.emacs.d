@@ -178,10 +178,6 @@
       (unbind-key "RET" company-active-map)
       (unbind-key "<return>" company-active-map))))
 
-(use-package company-posframe
-  :config
-  (company-posframe-mode 1))
-
 ;; popup documentation for quick help for company
 (use-package company-quickhelp
   :config
@@ -227,15 +223,15 @@
   (general-define-key :states '(normal visual) :keymaps 'override "$" 'evil-end-of-line)
   (general-define-key :states '(normal visual) :keymaps 'override "^" 'evil-first-non-blank))
 
-(use-package poet-theme
-  :config
-  (set-face-attribute 'default nil :family "Inconsolata" :height 130)
-  (set-face-attribute 'fixed-pitch nil :family "Inconsolata")
-  (set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
-  (load-theme 'poet-dark t)
-  (add-hook 'text-mode-hook
-            (lambda ()
-              (variable-pitch-mode 1))))
+;; (use-package poet-theme
+;;   :config
+;;   (set-face-attribute 'default nil :family "Inconsolata" :height 130)
+;;   (set-face-attribute 'fixed-pitch nil :family "Inconsolata")
+;;   (set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
+;;   (load-theme 'poet t)
+;;   (add-hook 'text-mode-hook
+;;             (lambda ()
+;;               (variable-pitch-mode 1))))
 
 (use-package web-mode
   :config
@@ -491,7 +487,6 @@
 (use-package org-roam
   :custom
   (org-roam-directory (file-truename "~/workspace/college/"))
-  (org-roam-completion-everywhere t)
   :config
   (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
   (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -860,11 +855,11 @@
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
-(plist-put org-format-latex-options :scale 1.2)
+;;(plist-put org-format-latex-options :scale 1.2)
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; make images default to their original size in latex exports
-(setq org-latex-image-default-scale "1")
+(setq org-latex-image-default-scale "0.6")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -1006,3 +1001,9 @@ space rather than before."
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
+
+;; gotta keep this here at the end so nothing overrides it.
+(set-face-attribute 'default nil :family "Inconsolata" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Noto Sans Mono")
+(set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
+(load-theme 'modus-operandi t)
