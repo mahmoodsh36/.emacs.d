@@ -17,16 +17,19 @@
 #+LATEX_HEADER: \usepackage{forest}
 #+LATEX_HEADER: \usepackage{adjustbox}
 #+LATEX_HEADER: \usepackage{tikz-3dplot}
-
+#+LATEX_HEADER: \usepackage{mathtools}
+#+LATEX_HEADER: \usepackage{pgfplots}
 #+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
-#+LATEX: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: \usepackage{centernot}
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
-
 # some needed operators to not lose my sanity
 #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
 #+LATEX_HEADER: \DeclareMathOperator{\dom}{domain}
 #+LATEX_HEADER: \DeclareMathOperator{\ran}{range}
+#+LATEX_HEADER: \DeclareMathOperator{\rng}{range}
+#+LATEX_HEADER: \DeclareMathOperator{\img}{Im}
 
 # startup with headlines folded
 #+STARTUP: content
