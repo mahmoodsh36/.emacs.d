@@ -2,6 +2,8 @@
 #+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\spn}{span}\)</p>
 #+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\dom}{domain}\)</p>
 #+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\ran}{range}\)</p>
+#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\rng}{range}\)</p>
+#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\img}{Im}\)</p>
 
 #+begin_export latex
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -178,7 +180,22 @@ img {
 .step:before {
   content: "step:";
 }
-/*
+
+table {
+  margin: auto;
+  border-collapse: collapse;
+}
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+table tr:nth-child(even){background-color: #f2f2f2;}
+table tr:hover {background-color: #ddd;}
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+}/*
 pre {
   margin: 0;
 }
