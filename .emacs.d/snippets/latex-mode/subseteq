@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: subseteq
+# key: su
+# --
+\subseteq $0
