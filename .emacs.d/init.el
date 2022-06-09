@@ -21,12 +21,12 @@
 (straight-use-package 'use-package)
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default tab-width 2)
-(setq-default js-indent-level 2)
-(setq-default c-basic-offset 2)
-(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2
+              js-indent-level 2
+              c-basic-offset 2
+              indent-tabs-mode nil
+              python-indent-offset 4)
 (setq evil-shift-width 2)
-(setq-default python-indent-offset 4)
 ;; overwrite highlighted text
 (delete-selection-mode 1)
 ;; show matching parenthases
@@ -70,13 +70,15 @@
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab actually insert tab..
-(global-set-key "\t" 'tab-to-tab-stop)
+;; (global-set-key "\t" 'tab-to-tab-stop)
 ;; save open buffers on exit
 (desktop-save-mode 1)
 ;; save minibuffer history
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 (setq savehist-file "~/data/emacs_savehist")
+;; break long lines into multiple
+(global-visual-line-mode)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -86,68 +88,280 @@
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
 
+;;(setq evil-disable-insert-state-bindings t)
+(setq enable-evil t)
+
+;; the all-powerful org mode
 (use-package org)
+
+;; the key to building a second brain in org mode
+(use-package org-roam
+  :custom
+  (org-roam-directory (file-truename "~/workspace/college/"))
+  (org-roam-completion-everywhere t)
+  :config
+  ;; (setq org-roam-node-display-template (concat "${title}	" (propertize "${file}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
+
+;; side tree
+(use-package treemacs)
+
+;; makes binding keys less painful, is used later on in the config
+(use-package general)
 
 ;; needed for evil mode
 (use-package undo-fu)
 
 ;; evil-mode
-(setq evil-want-keybinding nil)
-(use-package evil
-  :config
-  (evil-mode 1)
-  (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
-  ;; undo/redo keys
-  (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-  (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
-  ;; make ESC cancel all
-  (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
-  ;;dont copy the overwritten text when overwriting text by pasting
-  ;;(setq-default evil-kill-on-visual-paste nil))
+(if enable-evil
+    (progn
+      (setq evil-want-keybinding nil)
+      (use-package evil
+        :config
+        (evil-mode 1)
+        (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
+        ;; undo/redo keys
+        (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+        (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+        ;; make ESC cancel all
+        (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
+      ;;dont copy the overwritten text when overwriting text by pasting
+      ;;(setq-default evil-kill-on-visual-paste nil))
 
-;; evil-surround for evil mode
-(use-package evil-surround
-  :config
-  (global-evil-surround-mode 1))
+      ;; evil-surround for evil mode
+      (use-package evil-surround
+        :config
+        (global-evil-surround-mode 1))
 
-;; exchange portions of text more easily with evil
-(use-package evil-exchange
-  :config
-  (evil-exchange-install))
+      ;; exchange portions of text more easily with evil
+      (use-package evil-exchange
+        :config
+        (evil-exchange-install))
 
-;; search for the current visual selection with */#
-(use-package evil-visualstar
-  :config
-  (global-evil-visualstar-mode))
+      ;; search for the current visual selection with */#
+      (use-package evil-visualstar
+        :config
+        (global-evil-visualstar-mode))
 
-;; support to make evil more compatible with the whole of emacs
-(use-package evil-collection
-  :after (evil)
-  :config
-  (evil-collection-init))
+      ;; support to make evil more compatible with the whole of emacs
+      (use-package evil-collection
+        :after (evil)
+        :config
+        (evil-collection-init))
 
-;; display marks visually
-(use-package evil-visual-mark-mode
-  :config
-  (add-hook 'evil-mode-hook 'evil-visual-mark-mode))
+      ;; display visual hints for evil actions
+      (use-package evil-goggles
+        :config
+        (evil-goggles-mode))
 
-;; display visual hints for evil actions
-(use-package evil-goggles
-  :config
-  (evil-goggles-mode))
+      ;; make line a text object - yil dil cil, etc..
+      (use-package evil-textobj-line)
 
-;; make line a text object - yil dil cil, etc..
-(use-package evil-textobj-line)
+      ;; quick commenting
+      (use-package evil-nerd-commenter
+        :config
+        (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
 
-;; quick commenting
-(use-package evil-nerd-commenter
-  :config
-  (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
+      ;; evil mode support for org
+      (use-package evil-org
+        :config
+        (add-hook 'org-mode-hook 'evil-org-mode)
+        (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading return calendar))
+        (require 'evil-org-agenda)
+        (evil-org-agenda-set-keys)
+        ;; the package annoyingly binds O to another function so here im just restoring it
+        (general-define-key :states 'normal :keymaps 'override "O"
+                            (lambda ()
+                              (interactive)
+                              (previous-line)
+                              (evil-org-append-line 1)
+                              (evil-ret 1)
+                              (indent-according-to-mode)))
+        ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
+        ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
+        ;; (general-define-key :states 'normal :keymaps 'override "o"
+        ;;                     (lambda ()
+        ;;                       (interactive)
+        ;;                       (evil-org-append-line 1)
+        ;;                       (evil-ret 1)
+        ;;                       (indent-according-to-mode)))
 
-;; makes binding keys less painful, is used later on in the config
-(use-package general
-  :config
-  (general-evil-setup))
+        (general-define-key :states '(normal visual) :keymaps 'override "0" 'evil-beginning-of-line)
+        (general-define-key :states '(normal visual) :keymaps 'override "$" 'evil-end-of-line)
+        (general-define-key :states '(normal visual) :keymaps 'override "^" 'evil-first-non-blank))
+
+      ;; for evil mode compatibility
+      (use-package treemacs-evil
+        :config
+        (general-define-key :states '(normal motion emacs treemacs) :keymaps 'override "SPC t" 'treemacs))
+
+      ;; indentation-based text objects for evil
+      (use-package evil-indent-plus
+        :config
+        (define-key evil-inner-text-objects-map "i" 'evil-indent-plus-i-indent)
+        (define-key evil-outer-text-objects-map "i" 'evil-indent-plus-a-indent)
+        (define-key evil-inner-text-objects-map "I" 'evil-indent-plus-i-indent-up-down)
+        (define-key evil-outer-text-objects-map "I" 'evil-indent-plus-a-indent-up-down))
+
+      ;; jump to matching tags
+      (use-package evil-matchit
+        :config
+        (global-evil-matchit-mode 1))
+
+      ;; text evil objects for latex
+      (use-package evil-tex
+        :config
+        (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
+        (add-hook 'org-mode-hook #'evil-tex-mode))
+
+      ;; preview registers and marks before actually using them
+      (use-package evil-owl
+        :config
+        (evil-owl-mode))
+
+      ;; interpret words of columns as a text object
+      (use-package evil-textobj-column
+        :config
+        (define-key evil-inner-text-objects-map "c" 'evil-textobj-column-word)
+        (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
+
+      ;; more text objects
+      (defmacro define-and-bind-text-object (key start-regex end-regex)
+        (let ((inner-name (make-symbol "inner-name"))
+              (outer-name (make-symbol "outer-name")))
+          `(progn
+             (evil-define-text-object ,inner-name (count &optional beg end type)
+               (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+             (evil-define-text-object ,outer-name (count &optional beg end type)
+               (evil-select-paren ,start-regex ,end-regex beg end type count t))
+             (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
+             (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
+      (define-and-bind-text-object "$" "\\$" "\\$")
+      (define-and-bind-text-object "|" "|" "|")
+      (define-and-bind-text-object "/" "/" "/")
+      (define-and-bind-text-object "*" "*" "*")
+
+      (general-evil-setup)
+
+      (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document)
+      (evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
+      (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
+                          (lambda ()
+                            (interactive)
+                            (org-to-pdf)
+                            (org-hugo-export-to-md)))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b k" 'kill-this-buffer)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
+      (general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
+      (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
+      (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
+      (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
+      (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
+      (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC i"
+                          (lambda ()
+                            (interactive)
+                            (org-insert-time-stamp (current-time) t)))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/college/agenda.org")))
+      ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+      (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
+      (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
+      (general-define-key :states 'normal :keymaps 'override "SPC r g" 'org-roam-graph)
+      (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
+      (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-roam-capture)
+      (general-define-key :states 'normal :keymaps 'override "SPC r d" 'org-roam-dailies-capture-today)
+      (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
+      (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
+
+      ;; keys to search for files
+      (define-key evil-normal-state-map (kbd "SPC f c")
+                  (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+      (define-key evil-normal-state-map (kbd "SPC F c")
+                  (lambda () (interactive)
+                    (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+      (define-key evil-normal-state-map (kbd "SPC f p")
+                  (lambda () (interactive) (search-open-file "~/data/p" "")))
+      (define-key evil-normal-state-map (kbd "SPC f b")
+                  (lambda () (interactive) (search-open-file "~/data/books" "")))
+      (define-key evil-normal-state-map (kbd "SPC f d")
+                  (lambda () (interactive) (search-open-file "~/data" "")))
+      (define-key evil-normal-state-map (kbd "SPC F d")
+                  (lambda () (interactive)
+                    (search-open-file-in-emacs "~/data" "")))
+
+      ;; keybinding to evaluate math expressions
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
+                          (lambda ()
+                            (interactive)
+                            (setq result (calc-eval (buffer-substring (region-beginning) (region-end))))
+                            (end-of-line)
+                            (insert " ")
+                            (insert result)))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
+      
+      ;; key to clear the screen in eshell
+      (defun run-this-in-eshell (cmd)
+        "Runs the command 'cmd' in eshell."
+        (with-current-buffer "*eshell*"
+          (end-of-buffer)
+          (eshell-kill-input)
+          (message (concat "Running in Eshell: " cmd))
+          (insert cmd)
+          (eshell-send-input)
+          (end-of-buffer)
+          (eshell-bol)
+          (yank)))
+      (add-hook 'eshell-mode-hook
+                (lambda ()
+                  (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
+
+      ;; interpret function arguments as a text object
+      (use-package evil-args)
+      (use-package evil-lion)
+      ;;(use-package evil-textobj-tree-sitter)
+      ;;(use-package evil-embrace)
+      ))
+
+;; (use-package god-mode
+;; :config
+;; (god-mode)
+;; (global-set-key (kbd "<escape>") #'god-mode-all)
+;; (setq god-exempt-major-modes nil)
+;; (setq god-exempt-predicates nil))
+
+;; (defun my-god-mode-update-cursor-type ()
+;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+
+;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
 (use-package counsel
   :config
@@ -162,21 +376,23 @@
   (setq projectile-completion-system 'ivy)
   (projectile-mode +1))
 
-;; auto completion
-(use-package company
-  :config
-  (add-hook 'prog-mode-hook 'company-mode)
-  (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
-  (setq company-idle-delay 0
-        company-require-match nil
-        company-tooltip-limit 30
-        company-tooltip-align-annotations t)
-  (eval-after-load 'company
-    '(progn
-      (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-      (define-key company-active-map [tab] 'company-complete-selection)
-      (unbind-key "RET" company-active-map)
-      (unbind-key "<return>" company-active-map))))
+;; ;; auto completion
+;; (use-package company
+;;   :config
+;;   (add-hook 'after-init-hook 'global-company-mode)
+;;   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
+;;   ;; disable non-smart completion
+;;   (delete 'company-dabbrev company-backends)
+;;   (setq company-idle-delay 0
+;;         company-require-match nil
+;;         company-tooltip-limit 20
+;;         company-tooltip-align-annotations t)
+;;   (eval-after-load 'company
+;;     '(progn
+;;        (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+;;        (define-key company-active-map [tab] 'company-complete-selection)
+;;        (unbind-key "RET" company-active-map)
+;;        (unbind-key "<return>" company-active-map))))
 
 ;; popup documentation for quick help for company
 (use-package company-quickhelp
@@ -207,31 +423,24 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;; evil mode support for org
-(use-package evil-org
+(use-package poet-theme
   :config
-  (add-hook 'org-mode-hook 'evil-org-mode)
-  (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading))
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys)
-  ;; the package annoyingly binds O to another function so here im just restoring it
-  (general-define-key :states 'normal :keymaps 'override "O"
-                      (lambda ()
-                        (interactive)
-                        (evil-open-above 1)))
-  (general-define-key :states '(normal visual) :keymaps 'override "0" 'evil-beginning-of-line)
-  (general-define-key :states '(normal visual) :keymaps 'override "$" 'evil-end-of-line)
-  (general-define-key :states '(normal visual) :keymaps 'override "^" 'evil-first-non-blank))
-
-;; (use-package poet-theme
+  ;;(set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
+  (set-face-attribute 'default nil :family "Monaco" :height 120)
+  (set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
+  (set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
+  (load-theme 'poet-dark t)
+  (add-hook 'text-mode-hook
+            (lambda ()
+              (variable-pitch-mode 1))))
+;; (use-package doom-themes
 ;;   :config
-;;   (set-face-attribute 'default nil :family "Inconsolata" :height 130)
-;;   (set-face-attribute 'fixed-pitch nil :family "Inconsolata")
-;;   (set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
-;;   (load-theme 'poet t)
-;;   (add-hook 'text-mode-hook
-;;             (lambda ()
-;;               (variable-pitch-mode 1))))
+;;   (setq doom-themes-enable-bold t
+;;         doom-themes-enable-italic t)
+;;   (load-theme 'doom-molokai t)
+;;   (doom-themes-org-config)
+;;   (doom-themes-treemacs-config)
+;;   (doom-themes-visual-bell-config))
 
 (use-package web-mode
   :config
@@ -310,9 +519,9 @@
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;; highlight errors in code
-(use-package flycheck
-  :config
-  (global-flycheck-mode))
+;; (use-package flycheck
+;;   :config
+;;   (global-flycheck-mode))
 
 ;; edit multiple instances of a word simulataneously
 (use-package iedit)
@@ -355,19 +564,6 @@
   (treemacs-resize-icons 15)
   (setq treemacs-width 30))
 
-;; for evil mode compatibility
-(use-package treemacs-evil
-  :config
-  (general-define-key :states '(normal motion emacs treemacs) :keymaps 'override "SPC t" 'treemacs))
-
-;; indentation-based text objects for evil
-(use-package evil-indent-plus
-  :config
-  (define-key evil-inner-text-objects-map "i" 'evil-indent-plus-i-indent)
-  (define-key evil-outer-text-objects-map "i" 'evil-indent-plus-a-indent)
-  (define-key evil-inner-text-objects-map "I" 'evil-indent-plus-i-indent-up-down)
-  (define-key evil-outer-text-objects-map "I" 'evil-indent-plus-a-indent-up-down))
-
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
 (use-package exec-path-from-shell
   :config
@@ -382,10 +578,10 @@
 (use-package eval-sexp-fu)
 
 ;; flutter setup
-(use-package highlight-indent-guides
-  :config
-  (setq highlight-indent-guides-method 'character)
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+;;(use-package highlight-indent-guides
+;;  :config
+;;  (setq highlight-indent-guides-method 'character)
+;;  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package dart-mode)
 (use-package flutter)
 (use-package lsp-dart)
@@ -414,7 +610,7 @@
   :config
   (company-prescient-mode))
 
-;; auto indentation
+;; ;; auto indentation
 ;; (use-package aggressive-indent
 ;;   :config
 ;;   (aggressive-indent-global-mode))
@@ -430,11 +626,6 @@
 ;;   (sp-local-pair '(latex-mode org-mode) "$" "$" :unless '(sp-point-before-word-p))
 ;;   (smartparens-global-mode))
 
-;; multiple cursors for evil mode
-(use-package evil-mc
-  :config
-  (global-evil-mc-mode))
-
 ;; provides syntax highlighting when exporting from org mode to html
 (use-package htmlize)
 
@@ -442,9 +633,10 @@
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir "/home/mahmooz/workspace/blog/")
-  (setq org-hugo-section "math")
+  (setq org-hugo-section "posts")
   (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
-  (ignore-errors (make-directory org-more-dir)))
+  (ignore-errors (make-directory org-more-dir))
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 ;;(add-hook 'org-mode-hook 'org-hugo-auto-export-mode))
 
 ;; best latex preview functionality
@@ -469,38 +661,14 @@
   (text-mode . mixed-pitch-mode))
 
 ;; show hidden elements when cursor is over them like links/markers etc
-(use-package org-appear
-  :config
-  (setq org-appear-autoemphasis t
-        org-appear-autoentities t
-        org-appear-autokeywords t
-        org-appear-autolinks t
-        org-appear-autosubmarkers t)
-  (add-hook 'org-mode-hook 'org-appear-mode))
-
-;; jump to matching tags
-(use-package evil-matchit
-  :config
-  (global-evil-matchit-mode 1))
-
-;; the key to building a second brain in org mode
-(use-package org-roam
-  :custom
-  (org-roam-directory (file-truename "~/workspace/college/"))
-  :config
-  (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
-  (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
-  (general-define-key :states 'normal :keymaps 'override "SPC r g" 'org-roam-graph)
-  (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
-  (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-roam-capture)
-  (general-define-key :states 'normal :keymaps 'override "SPC r d" 'org-roam-dailies-capture-today)
-  (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
-  (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
-  ;; If you're using a vertical completion framework, you might want a more informative completion interface
-  ;;(setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode)
-  ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
+;; (use-package org-appear
+;;   :config
+;;   (setq org-appear-autoemphasis t
+;;         org-appear-autoentities t
+;;         org-appear-autokeywords t
+;;         org-appear-autolinks t
+;;         org-appear-autosubmarkers t)
+;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
 ;; add edition/creation timestamps to headers and files
 (use-package org-roam-timestamps
@@ -508,41 +676,47 @@
   (org-roam-timestamps-mode)
   (setq org-roam-timestamps-remember-timestamps t))
 
-;; text evil objects for latex
-(use-package evil-tex
-  :config
-  (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
-  (add-hook 'org-mode-hook #'evil-tex-mode))
-
 ;; give org mode a better look
 (use-package org-modern
   :config
   (global-org-modern-mode))
 
+;; more featureful ivy menus
+(use-package ivy-rich
+  :config
+  (ivy-rich-mode 1)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+
+;; (use-package fussy
+;;   :ensure t
+;;   :config
+;;   (push 'fussy completion-styles)
+;;   (setq
+;;    ;; For example, project-find-file uses 'project-files which uses
+;;    ;; substring completion by default. Set to nil to make sure it's using
+;;    ;; flx.
+;;    completion-category-defaults nil
+;;    completion-category-overrides nil))
+
+(use-package alert)
+(use-package olivetti)
 (use-package org-roam-ui)
+
 ;;(use-package org-transclusion)
+;;(use-package orgajs) installed externally i think
 ;;(use-package roam-block)
-
-(use-package magit)
-
-(use-package slime
-  :config
-  (setq inferior-lisp-program "sbcl"))
-
-(use-package aio)
-
-;; text aligning
-(use-package evil-lion)
-
-;; preview registers and marks before actually using them
-(use-package evil-owl
-  :config
-  (evil-owl-mode))
-
-(use-package org-super-agenda)
-(use-package org-web-tools)
-(use-package evil-textobj-tree-sitter)
-(use-package evil-embrace)
+;; (use-package aio)
+;;(use-package slime
+;;  :config
+;;  (setq inferior-lisp-program "sbcl"))
+;;(use-package ob-async)
+;;(use-package magit)
+;;(use-package org-super-agenda)
+;;(use-package org-web-tools)
+;;(use-package system-packages)
+;;(use-package org-ql)
+;;(use-package delve)
+;;(use-package copilot)
 
 ;; start server
 (server-start)
@@ -553,23 +727,7 @@
   (let ((hippie-expand-try-functions-list
          '(try-expand-line)))
     (call-interactively 'hippie-expand)))
-(define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
-
-;; more text objects
-(defmacro define-and-bind-text-object (key start-regex end-regex)
-  (let ((inner-name (make-symbol "inner-name"))
-        (outer-name (make-symbol "outer-name")))
-    `(progn
-       (evil-define-text-object ,inner-name (count &optional beg end type)
-         (evil-select-paren ,start-regex ,end-regex beg end type count nil))
-       (evil-define-text-object ,outer-name (count &optional beg end type)
-         (evil-select-paren ,start-regex ,end-regex beg end type count t))
-       (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
-       (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
-(define-and-bind-text-object "$" "\\$" "\\$")
-(define-and-bind-text-object "|" "|" "|")
-(define-and-bind-text-object "/" "/" "/")
-(define-and-bind-text-object "*" "*" "*")
+(general-define-key "C-x C-l" 'my-expand-lines)
 
 ;; org mode config
 (setq org-clock-persist 'history)
@@ -679,8 +837,6 @@
 
 (defun compile-latex-file (path)
   (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
-  ;; the minted library annoyingly creates directories named _minted-something, get rid of those
-  ;;(run-at-time "4 sec" nil #'call-process-shell-command "rmdir _minted-*"))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -694,9 +850,6 @@
 (defun open-current-document-this-window ()
   (interactive)
   (find-file (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
-
-(evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document)
-(evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
 
 ;; tex hook to auto compile on save
 ;; (add-hook
@@ -730,75 +883,9 @@
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
-;; keys to search for files
-(define-key evil-normal-state-map (kbd "SPC f c")
-            (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
-(define-key evil-normal-state-map (kbd "SPC F c")
-            (lambda () (interactive)
-              (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
-(define-key evil-normal-state-map (kbd "SPC f p")
-            (lambda () (interactive) (search-open-file "~/data/p" "")))
-(define-key evil-normal-state-map (kbd "SPC f b")
-            (lambda () (interactive) (search-open-file "~/data/books" "")))
-(define-key evil-normal-state-map (kbd "SPC f d")
-            (lambda () (interactive) (search-open-file "~/data" "")))
-(define-key evil-normal-state-map (kbd "SPC F d")
-            (lambda () (interactive)
-              (search-open-file-in-emacs "~/data" "")))
-
 ;; keybindings
 (global-set-key (kbd "C-M-S-x") 'eval-region)
 (global-set-key (kbd "C-x D") 'image-dired)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d d" 'dired)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC f f" 'counsel-find-file)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b k" 'kill-this-buffer)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
-(general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
-(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
-(general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
-(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
-(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
-(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
-(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
-(general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
-(general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
-(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
-(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
-(general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
-(general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
-(general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
-(general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC i"
-                    (lambda ()
-                      (interactive)
-                        (org-insert-time-stamp (current-time) t)))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/college/activity.org")))
-
-;; keybinding to evaluate math expressions
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
-                    (lambda ()
-                      (interactive)
-                      (setq result (calc-eval (buffer-substring (region-beginning) (region-end))))
-                      (end-of-line)
-                      (insert " ")
-                      (insert result)))
-(general-define-key :states '(normal motion emacs) :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
@@ -810,21 +897,6 @@
             (add-hook 'after-save-hook 'run-script 0 t)))
 
 ;; eshell configs
-;; key to clear the screen
-(defun run-this-in-eshell (cmd)
-  "Runs the command 'cmd' in eshell."
-  (with-current-buffer "*eshell*"
-    (end-of-buffer)
-    (eshell-kill-input)
-    (message (concat "Running in Eshell: " cmd))
-    (insert cmd)
-    (eshell-send-input)
-    (end-of-buffer)
-    (eshell-bol)
-    (yank)))
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 
@@ -836,29 +908,13 @@
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
     (compile-latex-file outfile)))
-(general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
-                    (lambda ()
-                      (interactive)
-                      ;; (setq previous-theme (car custom-enabled-themes))
-                      ;; (if (not (eq previous-theme 'poet))
-                      ;;     (switch-to-light-theme))
-                      (org-to-pdf)
-                      (org-hugo-export-to-md)))
-                      ;; (if (not (eq previous-theme 'poet))
-                      ;;     (switch-to-dark-theme))))
-;; function to execute buffer with light theme
-(defun org-execute-buffer-with-light-theme ()
-  (interactive)
-  (switch-to-light-theme)
-  (org-babel-execute-buffer)
-  (switch-to-dark-theme))
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
 ;;(plist-put org-format-latex-options :scale 1.2)
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
-;; make images default to their original size in latex exports
+;; decrease image size in latex exports
 (setq org-latex-image-default-scale "0.6")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
@@ -873,13 +929,6 @@
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")) ;; timestamp with seconds
-;; some extra libraries to use with latex
-(add-to-list 'org-latex-default-packages-alist '("" "tkz-euclide" t))
-(add-to-list 'org-latex-default-packages-alist '("" "tikz" t))
-(add-to-list 'org-latex-default-packages-alist '("" "pgfplots" t))
-(add-to-list 'org-latex-default-packages-alist '("" "cancel" t))
-(add-to-list 'org-latex-default-packages-alist '("" "mathtools" t))
-;;(setq org-format-latex-header (concat org-format-latex-header "\\usetikzlibrary{tikzmark,calc,fit,matrix}"))
 ;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
@@ -887,12 +936,8 @@
          ".org-svg { width: 90%; }"
          ".org-svg { width: auto; }"
          org-html-style-default)))
-;; better than the default, works for tikzpicture
-(setq org-preview-latex-default-process 'imagemagick)
-;; syntax highlighting for latex fragments in org mode
-(setq org-highlight-latex-and-related '(native latex script entities))
+;; enable <s code block snippet
 (require 'org-src)
-(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 ;; make org-babel java act like other langs
 (setq org-babel-default-header-args:java
       '((:dir . nil)
@@ -915,6 +960,10 @@
 ;; src block indentation / editing / syntax highlighting
 (setq org-src-window-setup 'current-window
       org-src-strip-leading-and-trailing-blank-lines t)
+;; imagemagick is way better than the default especially for tikz
+(setq org-preview-latex-default-process 'imagemagick)
+;; latex syntax highlighting in org mode
+(setq org-highlight-latex-and-related '(latex))
 
 (defun insert-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -964,18 +1013,18 @@
       (message "Killed %i dired buffer(s)." count))))
 
 ;; make org roam insert link after cursor in evil mode
-(defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
-  "If in evil normal mode and cursor is on a whitespace character, then go into
-append mode first before inserting the link. This is to put the link after the
-space rather than before."
-  (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
-                                     (not (bound-and-true-p evil-insert-state-minor-mode))
-                                     (looking-at "[[:blank:]]"))))
-    (if (not is-in-evil-normal-mode)
-        ad-do-it
-      (evil-append 0)
-      ad-do-it
-      (evil-normal-state))))
+;; (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
+;;   "If in evil normal mode and cursor is on a whitespace character, then go into
+;; append mode first before inserting the link. This is to put the link after the
+;; space rather than before."
+;;   (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
+;;                                      (not (bound-and-true-p evil-insert-state-minor-mode))
+;;                                      (looking-at "[[:blank:]]"))))
+;;     (if (not is-in-evil-normal-mode)
+;;         ad-do-it
+;;       (evil-append 0)
+;;       ad-do-it
+;;       (evil-normal-state))))
 
 ;; workaround for pdf-tools not reopening to last-viewed page of the pdf:
 ;; https://github.com/politza/pdf-tools/issues/18#issuecomment-269515117
@@ -1001,9 +1050,3 @@ space rather than before."
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
-
-;; gotta keep this here at the end so nothing overrides it.
-(set-face-attribute 'default nil :family "Inconsolata" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Noto Sans Mono")
-(set-face-attribute 'variable-pitch nil :family "Noto Sans Mono")
-(load-theme 'modus-operandi t)
