@@ -4,6 +4,7 @@ import re
 from matplotlib import rc
 rc('text', usetex=True)
 rc('text.latex', preamble=r'\usepackage{amsmath}')
+rc('savefig', transparent=True)
 
 # make sxiv the default image viewer
 from sage.misc.viewer import viewer

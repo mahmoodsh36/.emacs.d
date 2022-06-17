@@ -2,4 +2,4 @@
 # name: cout
 # key: o
 # --
-std::cout << $0 << std::endl;
+std::cout << $1 << std::endl;$0
