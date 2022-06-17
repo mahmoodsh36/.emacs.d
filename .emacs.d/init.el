@@ -68,17 +68,17 @@
             (interactive)
             (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
-(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+;;(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab actually insert tab..
-;; (global-set-key "\t" 'tab-to-tab-stop)
+(global-set-key "\t" 'tab-to-tab-stop)
 ;; save open buffers on exit
 (desktop-save-mode 1)
 ;; save minibuffer history
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file "~/data/emacs_savehist")
+(setq savehist-file (expand-file-name "~/data/emacs_savehist"))
 ;; break long lines into multiple
-(global-visual-line-mode)
+;;(global-visual-line-mode)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -179,6 +179,7 @@
                               (evil-org-append-line 1)
                               (evil-ret 1)
                               (indent-according-to-mode)))
+
         ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
         ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
         ;; (general-define-key :states 'normal :keymaps 'override "o"
@@ -186,8 +187,7 @@
         ;;                       (interactive)
         ;;                       (evil-org-append-line 1)
         ;;                       (evil-ret 1)
-        ;;                       (indent-according-to-mode)))
-
+        ;;                       (indent-according-to-mode))))
         (general-define-key :states '(normal visual) :keymaps 'override "0" 'evil-beginning-of-line)
         (general-define-key :states '(normal visual) :keymaps 'override "$" 'evil-end-of-line)
         (general-define-key :states '(normal visual) :keymaps 'override "^" 'evil-first-non-blank))
@@ -227,6 +227,12 @@
         (define-key evil-inner-text-objects-map "c" 'evil-textobj-column-word)
         (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
 
+      ;; extend evil-surround functionality
+      (use-package evil-embrace
+        :config
+        (evil-embrace-enable-evil-surround-integration)
+        (add-hook 'org-mode-hook 'embrace-org-mode-hook))
+
       ;; more text objects
       (defmacro define-and-bind-text-object (key start-regex end-regex)
         (let ((inner-name (make-symbol "inner-name"))
@@ -242,6 +248,10 @@
       (define-and-bind-text-object "|" "|" "|")
       (define-and-bind-text-object "/" "/" "/")
       (define-and-bind-text-object "*" "*" "*")
+      ;; create "il"/"al" (inside/around) line text objects:
+      ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
+      ;; create "ia"/"aa" (inside/around) entire buffer text objects:
+      (define-and-bind-text-object "a" "\\`\\s-*" "\\s-*\\'")
 
       (general-evil-setup)
 
@@ -281,7 +291,7 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
+      ;;(general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
       (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
@@ -348,7 +358,6 @@
       (use-package evil-args)
       (use-package evil-lion)
       ;;(use-package evil-textobj-tree-sitter)
-      ;;(use-package evil-embrace)
       ))
 
 ;; (use-package god-mode
@@ -357,10 +366,8 @@
 ;; (global-set-key (kbd "<escape>") #'god-mode-all)
 ;; (setq god-exempt-major-modes nil)
 ;; (setq god-exempt-predicates nil))
-
 ;; (defun my-god-mode-update-cursor-type ()
 ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-
 ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
 (use-package counsel
@@ -376,23 +383,24 @@
   (setq projectile-completion-system 'ivy)
   (projectile-mode +1))
 
-;; ;; auto completion
-;; (use-package company
-;;   :config
-;;   (add-hook 'after-init-hook 'global-company-mode)
-;;   (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
-;;   ;; disable non-smart completion
-;;   (delete 'company-dabbrev company-backends)
-;;   (setq company-idle-delay 0
-;;         company-require-match nil
-;;         company-tooltip-limit 20
-;;         company-tooltip-align-annotations t)
-;;   (eval-after-load 'company
-;;     '(progn
-;;        (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-;;        (define-key company-active-map [tab] 'company-complete-selection)
-;;        (unbind-key "RET" company-active-map)
-;;        (unbind-key "<return>" company-active-map))))
+;; auto completion
+(use-package company
+  :config
+  (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
+  ;; disable non-smart completion
+  (delete 'company-dabbrev company-backends)
+  (setq company-idle-delay 0
+        company-require-match nil
+        company-tooltip-limit 20
+        company-tooltip-align-annotations t
+        company-show-quick-access t)
+  (eval-after-load 'company
+    '(progn
+       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+       (define-key company-active-map [tab] 'company-complete-selection)
+       (unbind-key "RET" company-active-map)
+       (unbind-key "<return>" company-active-map))))
 
 ;; popup documentation for quick help for company
 (use-package company-quickhelp
@@ -423,24 +431,27 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-(use-package poet-theme
+;; icons for dired
+(use-package all-the-icons
+  :custom
+  (all-the-icons-dired-monochrome nil))
+(use-package all-the-icons-dired
   :config
-  ;;(set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
-  (set-face-attribute 'default nil :family "Monaco" :height 120)
-  (set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
-  (set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
-  (load-theme 'poet-dark t)
-  (add-hook 'text-mode-hook
-            (lambda ()
-              (variable-pitch-mode 1))))
-;; (use-package doom-themes
-;;   :config
-;;   (setq doom-themes-enable-bold t
-;;         doom-themes-enable-italic t)
-;;   (load-theme 'doom-molokai t)
-;;   (doom-themes-org-config)
-;;   (doom-themes-treemacs-config)
-;;   (doom-themes-visual-bell-config))
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+;;(set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
+(set-face-attribute 'default nil :family "Monaco" :height 120)
+(set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
+(set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
+(load-theme 'modus-operandi t)
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+  ;;(load-theme 'doom-molokai t))
+  ;; (doom-themes-org-config)
+  ;; (doom-themes-treemacs-config)
+  ;; (doom-themes-visual-bell-config))
 
 (use-package web-mode
   :config
@@ -519,9 +530,9 @@
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;; highlight errors in code
-;; (use-package flycheck
-;;   :config
-;;   (global-flycheck-mode))
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
 
 ;; edit multiple instances of a word simulataneously
 (use-package iedit)
@@ -538,12 +549,6 @@
   :config
   (global-set-key (kbd "C-c t") 'tiny-expand))
 
-;; icons for dired
-(use-package all-the-icons)
-(use-package all-the-icons-dired
-  :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
 ;; modern API for working with files/dirs
 (use-package f)
 
@@ -555,7 +560,11 @@
 ;; show simple info on the right
 (use-package lsp-ui
   :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (setq lsp-ui-doc-delay 0)
+  (setq lsp-ui-sideline-delay 0)
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
 ;; lsp support for treemacs
 (use-package lsp-treemacs
@@ -565,9 +574,9 @@
   (setq treemacs-width 30))
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :config
+;;   (exec-path-from-shell-initialize))
 
 ;; display available keybindings
 (use-package which-key
@@ -596,9 +605,6 @@
 (use-package company-auctex
   :config
   (company-auctex-init))
-
-;; csharp setup
-(use-package csharp-mode)
 
 ;; history for ivy completion
 (use-package ivy-prescient
@@ -637,7 +643,6 @@
   (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
-;;(add-hook 'org-mode-hook 'org-hugo-auto-export-mode))
 
 ;; best latex preview functionality
 (use-package xenops
@@ -655,6 +660,10 @@
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]"))))
+
+;; (use-package org-fragtog
+;;   :config
+;;   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
 (use-package mixed-pitch
   :hook
@@ -687,29 +696,43 @@
   (ivy-rich-mode 1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
-;; (use-package fussy
-;;   :ensure t
-;;   :config
-;;   (push 'fussy completion-styles)
-;;   (setq
-;;    ;; For example, project-find-file uses 'project-files which uses
-;;    ;; substring completion by default. Set to nil to make sure it's using
-;;    ;; flx.
-;;    completion-category-defaults nil
-;;    completion-category-overrides nil))
+(use-package org-transclusion)
 
+(use-package elfeed-tube
+  :straight (:host github :repo "karthink/elfeed-tube")
+  :after elfeed
+  :demand t
+  :config
+  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
+  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
+
+(use-package format-all)
+
+(use-package embark)
+
+(use-package org-ref)
 (use-package alert)
 (use-package olivetti)
 (use-package org-roam-ui)
+(use-package ox-json)
+(use-package ob-async)
+(use-package csharp-mode)
 
-;;(use-package org-transclusion)
+;;(use-package org-tree-slide)
 ;;(use-package orgajs) installed externally i think
 ;;(use-package roam-block)
 ;; (use-package aio)
 ;;(use-package slime
 ;;  :config
 ;;  (setq inferior-lisp-program "sbcl"))
-;;(use-package ob-async)
 ;;(use-package magit)
 ;;(use-package org-super-agenda)
 ;;(use-package org-web-tools)
@@ -717,6 +740,15 @@
 ;;(use-package org-ql)
 ;;(use-package delve)
 ;;(use-package copilot)
+;;(use-package ox-pandoc)
+;;(use-package org-mouse)
+;;(use-package org-download)
+;;(use-package org-html-themes)
+;;(use-package org-ioslide)
+;;(use-package org-protocol-capture-html)
+;;(use-package google-this)
+;;(use-package google-translate)
+;;(use-package google-maps)
 
 ;; start server
 (server-start)
@@ -911,11 +943,11 @@
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
-;;(plist-put org-format-latex-options :scale 1.2)
+(plist-put org-format-latex-options :scale 1.5)
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; decrease image size in latex exports
-(setq org-latex-image-default-scale "0.6")
+(setq org-latex-image-default-scale "1")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -929,6 +961,7 @@
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")) ;; timestamp with seconds
+;;       org-latex-src-block-backend 'listings)
 ;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
@@ -946,10 +979,13 @@
 (setq org-id-link-to-org-use-id t)
 ;; org agenda
 (setq org-agenda-files '("/home/mahmooz/workspace/college/agenda.org"))
-;; load some files into org babel library
-(org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
-(org-babel-lob-ingest "~/workspace/college/code/sage.org")
-(org-babel-lob-ingest "~/workspace/college/code/tikz.org")
+(defun lob-reload ()
+  "load some files into org babel library"
+  (interactive)
+  (org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
+  (org-babel-lob-ingest "~/workspace/college/code/sage.org")
+  (org-babel-lob-ingest "~/workspace/college/code/tikz.org"))
+(lob-reload)
 ;; creation dates for TODOs
 (defun my/log-todo-creation-date (&rest ignore)
   "Log TODO creation time in the property drawer under the key 'CREATED'."
@@ -964,32 +1000,71 @@
 (setq org-preview-latex-default-process 'imagemagick)
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
+(setq org-html-mathjax-template "")
+(setq org-html-mathjax-options '())
+;; to enable imagemagick latex generation with :async
+(setq org-babel-default-header-args:latex
+      '((:results . "latex")
+        (:exports . "results")
+        (:fit . t)
+        (:imagemagick . t)
+        (:async . t)
+        (:eval . "no-export")
+        (:packages . ("\\usepackage{tikz}"
+                      "\\usepackage{forest}"
+                      "\\usepackage{amsmath}"
+                      "\\usepackage{amsfonts}"
+                      "\\usepackage{indentfirst}"
+                      "\\usepackage{pgffor}"
+                      "\\usepackage{amssymb}"
+                      "\\usepackage{cancel}"
+                      "\\usepackage{amsthm}"
+                      "\\usepackage{polynom}"
+                      "\\usepackage{tikz}"
+                      "\\usepackage[tikz]{bclogo}"
+                      "\\usepackage{listings}"
+                      "\\usepackage[most]{tcolorbox}"
+                      "\\usepackage{forest}"
+                      "\\usepackage{adjustbox}"
+                      "\\usepackage{tikz-3dplot}"
+                      "\\usepackage{mathtools}"
+                      "\\usepackage{pgfplots}"
+                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
+                      "\\usepackage{centernot}"))))
+;;(setq org-src-fontify-natively nil)
 
-(defun insert-random-string (NUM)
+(defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
   (interactive "P")
+  (setq random-str "")
   (let* (($charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
          ($baseCount (length $charset)))
     (dotimes (_ (if (numberp NUM) (abs NUM) NUM))
-      (insert (elt $charset (random $baseCount))))))
-(global-set-key (kbd "C-c r") (lambda () (interactive) (insert-random-string 6)))
+      (setq random-str (concat random-str (char-to-string (elt $charset (random $baseCount)))))))
+  random-str)
+(defun temp-file (EXT)
+  (setq dir-path (concat (expand-file-name user-emacs-directory) "tmp/"))
+  (ignore-errors (make-directory dir-path))
+  (format "%s%s.%s" dir-path (generate-random-string 7) EXT))
+(global-set-key (kbd "C-c r") (lambda () (interactive) (insert (generate-random-string 7))))
+
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'poet)
-  (load-theme 'poet-dark t)
-  ;;(add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (disable-theme 'modus-operandi)
+  (load-theme 'doom-molokai t)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'poet-dark)
-  (load-theme 'poet t)
-  ;;(remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-face-background hl-line-face "PeachPuff3")
-  (set-themed-pdf 1))
+  (disable-theme 'doom-molokai)
+  (load-theme 'modus-operandi t)
+  (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  ;;(set-face-background hl-line-face "PeachPuff3")
+  (set-themed-pdf 0))
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
@@ -1013,18 +1088,18 @@
       (message "Killed %i dired buffer(s)." count))))
 
 ;; make org roam insert link after cursor in evil mode
-;; (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
-;;   "If in evil normal mode and cursor is on a whitespace character, then go into
-;; append mode first before inserting the link. This is to put the link after the
-;; space rather than before."
-;;   (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
-;;                                      (not (bound-and-true-p evil-insert-state-minor-mode))
-;;                                      (looking-at "[[:blank:]]"))))
-;;     (if (not is-in-evil-normal-mode)
-;;         ad-do-it
-;;       (evil-append 0)
-;;       ad-do-it
-;;       (evil-normal-state))))
+(defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
+  "If in evil normal mode and cursor is on a whitespace character, then go into
+append mode first before inserting the link. This is to put the link after the
+space rather than before."
+  (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
+                                     (not (bound-and-true-p evil-insert-state-minor-mode))
+                                     (looking-at "[[:blank:]]"))))
+    (if (not is-in-evil-normal-mode)
+        ad-do-it
+      (evil-append 0)
+      ad-do-it
+      (evil-normal-state))))
 
 ;; workaround for pdf-tools not reopening to last-viewed page of the pdf:
 ;; https://github.com/politza/pdf-tools/issues/18#issuecomment-269515117
