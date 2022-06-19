@@ -57,7 +57,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-;;(when window-system (set-frame-size (selected-frame) 115 58))
+(when window-system (set-frame-size (selected-frame) 175 50))
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; display only buffer name in modeline
@@ -68,7 +68,7 @@
             (interactive)
             (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
-;;(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab actually insert tab..
 (global-set-key "\t" 'tab-to-tab-stop)
 ;; save open buffers on exit
@@ -279,7 +279,7 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
       (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
+      ;; (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
       (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
@@ -291,12 +291,12 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
-      ;;(general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
       (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC u" 'save-buffer)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'save-buffer)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC i"
                           (lambda ()
                             (interactive)
@@ -443,12 +443,12 @@
 (set-face-attribute 'default nil :family "Monaco" :height 120)
 (set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
 (set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
-(load-theme 'modus-operandi t)
 (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
-  ;;(load-theme 'doom-molokai t))
+        doom-themes-enable-italic t)
+  ;; (load-theme 'doom-molokai t))
+  (load-theme 'doom-gruvbox-light t))
   ;; (doom-themes-org-config)
   ;; (doom-themes-treemacs-config)
   ;; (doom-themes-visual-bell-config))
@@ -639,7 +639,7 @@
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir "/home/mahmooz/workspace/blog/")
-  (setq org-hugo-section "posts")
+  (setq org-hugo-section "post")
   (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
@@ -714,8 +714,10 @@
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
-(use-package format-all)
+(use-package jupyter)
+(use-package ein)
 
+(use-package format-all)
 (use-package embark)
 
 (use-package org-ref)
@@ -1010,8 +1012,7 @@
         (:imagemagick . t)
         (:async . t)
         (:eval . "no-export")
-        (:packages . ("\\usepackage{tikz}"
-                      "\\usepackage{forest}"
+        (:packages . ("\\usepackage{forest}"
                       "\\usepackage{amsmath}"
                       "\\usepackage{amsfonts}"
                       "\\usepackage{indentfirst}"
@@ -1052,7 +1053,7 @@
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'modus-operandi)
+  (disable-theme 'doom-gruvbox-light)
   (load-theme 'doom-molokai t)
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
@@ -1061,7 +1062,7 @@
   "switch to light theme"
   (interactive)
   (disable-theme 'doom-molokai)
-  (load-theme 'modus-operandi t)
+  (load-theme 'doom-gruvbox-light t)
   (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;;(set-face-background hl-line-face "PeachPuff3")
   (set-themed-pdf 0))
