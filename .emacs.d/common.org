@@ -180,35 +180,6 @@ img {
 .step:before {
   content: "step:";
 }
-
-table {
-  margin: auto;
-  border-collapse: collapse;
-}
-table td, table th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-table tr:nth-child(even){background-color: #f2f2f2;}
-table tr:hover {background-color: #ddd;}
-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-}/*
-pre {
-  margin: 0;
-}
-.highlight {
-    background-color: burlywood;
-    border: 2px groove red;
-    border-radius: 10px;
-    padding: 10px;
-}
-.highlight:before {
-  content: "{ Input: }";
-}
-*/
 </style>
 <script>
 // auto load modules like cancel
@@ -223,6 +194,38 @@ window.MathJax = {
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
 </script>
 #+end_export
+
+#+begin_comment
+/*
+table {
+  margin: auto;
+  border-collapse: collapse;
+}
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+table tr:nth-child(even){background-color: #f2f2f2;}
+table tr:hover {background-color: #ddd;}
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+}
+pre {
+  margin: 0;
+}
+.highlight {
+    background-color: burlywood;
+    border: 2px groove red;
+    border-radius: 10px;
+    padding: 10px;
+}
+.highlight:before {
+  content: "{ Input: }";
+}
+*/
+#+end_comment
 
 # i stopped using this because latex cant handle nested breakable frames
 #+begin_comment
