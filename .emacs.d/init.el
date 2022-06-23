@@ -61,7 +61,7 @@
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; display only buffer name in modeline
-(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
 ;; restore default status line for pdf mode
 (add-hook 'pdf-view-mode-hook
           (lambda ()
@@ -78,7 +78,7 @@
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 (setq savehist-file (expand-file-name "~/data/emacs_savehist"))
 ;; break long lines into multiple
-;;(global-visual-line-mode)
+(global-visual-line-mode)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -188,9 +188,9 @@
         ;;                       (evil-org-append-line 1)
         ;;                       (evil-ret 1)
         ;;                       (indent-according-to-mode))))
-        (general-define-key :states '(normal visual) :keymaps 'override "0" 'evil-beginning-of-line)
-        (general-define-key :states '(normal visual) :keymaps 'override "$" 'evil-end-of-line)
-        (general-define-key :states '(normal visual) :keymaps 'override "^" 'evil-first-non-blank))
+        (general-define-key :states '(normal visual motion operator) :keymaps 'override "0" 'evil-beginning-of-line)
+        (general-define-key :states '(normal visual motion operator) :keymaps 'override "$" 'evil-end-of-line)
+        (general-define-key :states '(normal visual motion operator) :keymaps 'override "^" 'evil-first-non-blank))
 
       ;; for evil mode compatibility
       (use-package treemacs-evil
@@ -233,25 +233,27 @@
         (evil-embrace-enable-evil-surround-integration)
         (add-hook 'org-mode-hook 'embrace-org-mode-hook))
 
-      ;; more text objects
-      (defmacro define-and-bind-text-object (key start-regex end-regex)
-        (let ((inner-name (make-symbol "inner-name"))
-              (outer-name (make-symbol "outer-name")))
+;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
+      (defmacro define-and-bind-quoted-text-object (name key start-regex end-regex)
+        (let ((inner-name (make-symbol (concat "evil-inner-" name)))
+              (outer-name (make-symbol (concat "evil-a-" name))))
           `(progn
              (evil-define-text-object ,inner-name (count &optional beg end type)
                (evil-select-paren ,start-regex ,end-regex beg end type count nil))
              (evil-define-text-object ,outer-name (count &optional beg end type)
                (evil-select-paren ,start-regex ,end-regex beg end type count t))
-             (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
-             (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
-      (define-and-bind-text-object "$" "\\$" "\\$")
-      (define-and-bind-text-object "|" "|" "|")
-      (define-and-bind-text-object "/" "/" "/")
-      (define-and-bind-text-object "*" "*" "*")
+             (define-key evil-inner-text-objects-map ,key #',inner-name)
+             (define-key evil-outer-text-objects-map ,key #',outer-name))))
+      (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
+      (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
+      (define-and-bind-quoted-text-object "slash" "/" "/" "/")
+      (define-and-bind-quoted-text-object "space" " " " " " ")
+      (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
+
       ;; create "il"/"al" (inside/around) line text objects:
       ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
       ;; create "ia"/"aa" (inside/around) entire buffer text objects:
-      (define-and-bind-text-object "a" "\\`\\s-*" "\\s-*\\'")
+      (define-and-bind-quoted-text-object "buffer" "a" "\\`\\s-*" "\\s-*\\'")
 
       (general-evil-setup)
 
@@ -291,7 +293,11 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'xenops-render)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" (lambda ()
+                                                                           (interactive)
+                                                                           (if (not xenops-mode)
+                                                                               (xenops-mode)
+                                                                             (xenops-render))))
       (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
@@ -311,6 +317,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r d" 'org-roam-dailies-capture-today)
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
+      (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
 
       ;; keys to search for files
       (define-key evil-normal-state-map (kbd "SPC f c")
@@ -446,12 +453,13 @@
 (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  ;; (load-theme 'doom-molokai t))
-  (load-theme 'doom-gruvbox-light t))
+        doom-themes-enable-italic t))
+  ;; (load-theme 'doom-gruvbox-light t))
   ;; (doom-themes-org-config)
   ;; (doom-themes-treemacs-config)
   ;; (doom-themes-visual-bell-config))
+(use-package darktooth-theme)
+(load-theme 'darktooth t)
 
 (use-package web-mode
   :config
@@ -524,6 +532,7 @@
   :config
   ;;(setq yas-snippet-dirs
   ;;      `(,(concat user-emacs-directory "snippets")))
+  (setq yas-triggers-in-field t)
   (yas-global-mode 1)
   ;; prevent warnings about snippets using elisp
   (require 'warnings)
@@ -649,8 +658,8 @@
   :config
   (setq xenops-reveal-on-entry t)
   (setq xenops-math-latex-max-tasks-in-flight 6)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
@@ -949,7 +958,7 @@
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; decrease image size in latex exports
-(setq org-latex-image-default-scale "1")
+(setq org-latex-image-default-scale "0.6")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -1014,25 +1023,31 @@
         (:eval . "no-export")
         (:packages . ("\\usepackage{forest}"
                       "\\usepackage{amsmath}"
-                      "\\usepackage{amsfonts}"
-                      "\\usepackage{indentfirst}"
-                      "\\usepackage{pgffor}"
-                      "\\usepackage{amssymb}"
-                      "\\usepackage{cancel}"
-                      "\\usepackage{amsthm}"
-                      "\\usepackage{polynom}"
+                      ;; "\\usepackage{svg}"
+                      ;; "\\usepackage{amsfonts}"
+                      ;; "\\usepackage{indentfirst}"
+                      ;; "\\usepackage{pgffor}"
+                      ;; "\\usepackage{amssymb}"
+                      ;; "\\usepackage{cancel}"
+                      ;; "\\usepackage{amsthm}"
+                      ;; "\\usepackage{polynom}"
                       "\\usepackage{tikz}"
-                      "\\usepackage[tikz]{bclogo}"
-                      "\\usepackage{listings}"
-                      "\\usepackage[most]{tcolorbox}"
+                      ;; "\\usepackage[tikz]{bclogo}"
+                      ;; "\\usepackage{listings}"
+                      ;; "\\usepackage[most]{tcolorbox}"
                       "\\usepackage{forest}"
-                      "\\usepackage{adjustbox}"
+                      ;; "\\usepackage{adjustbox}"
                       "\\usepackage{tikz-3dplot}"
-                      "\\usepackage{mathtools}"
+                      ;; "\\usepackage{mathtools}"
                       "\\usepackage{pgfplots}"
                       "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
-                      "\\usepackage{centernot}"))))
+                      ;; "\\usepackage{centernot}"
+                      ))))
 ;;(setq org-src-fontify-natively nil)
+;; make org export deeply nested headlines as headlines still
+(setq org-export-headline-levels 20)
+;; workaround to make yasnippet expand after dollar sign in org mode
+(add-hook 'org-mode-hook (lambda ()  (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1054,18 +1069,19 @@
   "switch to dark theme"
   (interactive)
   (disable-theme 'doom-gruvbox-light)
-  (load-theme 'doom-molokai t)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (load-theme 'darktooth t)
+  ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'doom-molokai)
+  ;; (disable-theme 'doom-molokai)
+  (disable-theme 'darktooth)
   (load-theme 'doom-gruvbox-light t)
-  (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;;(set-face-background hl-line-face "PeachPuff3")
-  (set-themed-pdf 0))
+  (set-themed-pdf 1))
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
