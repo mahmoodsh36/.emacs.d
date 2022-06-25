@@ -66,7 +66,7 @@ super + s; {w, W, q, f, a}
      terminal_with_cmd.sh 'nvim ~/data/lyrics/"$(current_spotify_song.sh)"',\
      rm "/home/mahmooz/data/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)",\
      choice=$(awk '\{print FILENAME ":" $0\}' ~/data/lyrics/* | rofi -dmenu -i -p lyrics); notify-send "$(echo $choice | cut -d ':' -f1 | rev | cut -d '/' -f1 | rev)" "$(cat "$(echo $choice | cut -d ':' -f1)")"}
-super + s; {d, a, A}
+super + s; {d, x, c}
      {~/workspace/spotify_scripts/rofi_play_track.sh,\
      google-chrome-stable "https://www.last.fm/music/$(current_spotify_song.sh | rev | cut -d '-' -f1 | rev | cut -c2-)",\
      google-chrome-stable "https://www.metal-archives.com/albums/$(current_spotify_song.sh | rev | cut -d '-' -f1 | rev | cut -c2-)"}
