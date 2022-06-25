@@ -72,11 +72,11 @@
 ;; make tab actually insert tab..
 (global-set-key "\t" 'tab-to-tab-stop)
 ;; save open buffers on exit
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 ;; save minibuffer history
+(setq savehist-file (expand-file-name "~/workspace/college/emacs_savehist"))
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file (expand-file-name "~/data/emacs_savehist"))
 ;; break long lines into multiple
 (global-visual-line-mode)
 
@@ -364,6 +364,7 @@
       ;; interpret function arguments as a text object
       (use-package evil-args)
       (use-package evil-lion)
+      (use-package evil-mc)
       ;;(use-package evil-textobj-tree-sitter)
       ))
 
@@ -515,7 +516,7 @@
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
                                              (:results . "drawer")))
-  (setq sage-shell:input-history-cache-file "~/data/sage_history")
+  (setq sage-shell:input-history-cache-file "~/workspace/college/sage_history")
   (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
@@ -620,7 +621,7 @@
   :config
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
-  (setq prescient-save-file (expand-file-name "~/data/emacs_prescient"))) ;; save history to filesystem
+  (setq prescient-save-file (expand-file-name "~/workspace/college/emacs_prescient"))) ;; save history to filesystem
 (use-package company-prescient
   :config
   (company-prescient-mode))
@@ -723,7 +724,7 @@
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
-(use-package jupyter)
+;; (use-package jupyter)
 (use-package ein)
 
 (use-package format-all)
@@ -773,6 +774,7 @@
 (general-define-key "C-x C-l" 'my-expand-lines)
 
 ;; org mode config
+;; save the clock history across sessions
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-log-done 'time)
@@ -805,7 +807,7 @@
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
-(setq org-export-with-broken-links t)
+;; (setq org-export-with-broken-links t)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -1035,7 +1037,6 @@
                       ;; "\\usepackage[tikz]{bclogo}"
                       ;; "\\usepackage{listings}"
                       ;; "\\usepackage[most]{tcolorbox}"
-                      "\\usepackage{forest}"
                       ;; "\\usepackage{adjustbox}"
                       "\\usepackage{tikz-3dplot}"
                       ;; "\\usepackage{mathtools}"
