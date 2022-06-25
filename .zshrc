@@ -158,7 +158,7 @@ export LESS_TERMCAP_us=$'\e[1;4;31m'
 # command history
 HISTSIZE=1000000
 SAVEHIST=1000000
-HISTFILE=~/data/zsh_history
+HISTFILE=~/workspace/college/zsh_history
 
 IFS='
 '
