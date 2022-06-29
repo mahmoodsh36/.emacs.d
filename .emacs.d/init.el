@@ -76,9 +76,13 @@
 ;; save minibuffer history
 (setq savehist-file (expand-file-name "~/workspace/college/emacs_savehist"))
 (savehist-mode 1)
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+(add-to-list 'savehist-additional-variables 'search-ring)
+(add-to-list 'savehist-additional-variables 'regexp-search-ring)
+(add-to-list 'savehist-additional-variables 'kill-ring)
 ;; break long lines into multiple
 (global-visual-line-mode)
+;; stop the annoying warnings from org mode cache
+(setq warning-minimum-level :emergency)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -101,18 +105,47 @@
   (org-roam-completion-everywhere t)
   :config
   ;; (setq org-roam-node-display-template (concat "${title}	" (propertize "${file}" 'face 'org-tag)))
+  (setq org-roam-node-display-template "${title:*} ${tags:*}")
   (org-roam-db-autosync-mode)
-  ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
+  (require 'org-roam-export)
+  (require 'org-roam-protocol)
+  (setq org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+           :unnarrowed t)
+          ("q" "quick note" plain "%?"
+           :target (file "quick/%<%Y%m%d%H%M%S>.org")
+           :head "#+filetags: quick-note"
+           :unnarrowed t)
+)))
+          ;; ("n" "note" plain (function org-roam-capture--get-point)
+          ;;  :file-name "literature/%<%Y%m%d%H%M>-${slug}"
+          ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %^{roam_tags}\n\nsource: \n\n%?"
+          ;;  :unnarrowed t)
+          ;; ("f" "fleeting" plain (function org-roam-capture--get-point)
+          ;;  :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
+          ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags:\n\n%?"
+          ;;  :unnarrowed t)
+          ;; ("p" "Permanent (prompt folder)" plain (function org-roam-capture--get-point)
+          ;;  :file-name "%(read-directory-name \"directory: \" org-directory)/%<%Y%m%d%H%M>-${slug}"
+          ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags:\n\n%?"
+          ;;  :unnarrowed t))))
 
 ;; side tree
 (use-package treemacs)
 
-;; makes binding keys less painful, is used later on in the config
+;; makes binding keys less painful
 (use-package general)
 
 ;; needed for evil mode
 (use-package undo-fu)
+
+(use-package counsel
+  :config
+  (ivy-mode)
+  (setq ivy-height 25)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file))
 
 ;; evil-mode
 (if enable-evil
@@ -233,7 +266,7 @@
         (evil-embrace-enable-evil-surround-integration)
         (add-hook 'org-mode-hook 'embrace-org-mode-hook))
 
-;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
+      ;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
       (defmacro define-and-bind-quoted-text-object (name key start-regex end-regex)
         (let ((inner-name (make-symbol (concat "evil-inner-" name)))
               (outer-name (make-symbol (concat "evil-a-" name))))
@@ -281,7 +314,6 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
       (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
-      ;; (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'eshell)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
       (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
@@ -318,6 +350,13 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
+      (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
+      (general-define-key :states 'normal :keymaps 'override "SPC r h" 'org-roam-capture)
+      (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
+      (general-define-key :states 'normal :keymaps 'override "SPC r q"
+                          (lambda ()
+                            (interactive)
+                            (org-roam-capture-no-title-prompt nil "q")))
 
       ;; keys to search for files
       (define-key evil-normal-state-map (kbd "SPC f c")
@@ -339,7 +378,7 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
                           (lambda ()
                             (interactive)
-                            (setq result (calc-eval (buffer-substring (region-beginning) (region-end))))
+                            (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
                             (end-of-line)
                             (insert " ")
                             (insert result)))
@@ -366,7 +405,31 @@
       (use-package evil-lion)
       (use-package evil-mc)
       ;;(use-package evil-textobj-tree-sitter)
+
+
+      ;; make org roam insert link after cursor in evil mode
+      (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
+        "If in evil normal mode and cursor is on a whitespace character, then go into
+append mode first before inserting the link. This is to put the link after the
+space rather than before."
+        (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
+                                           (not (bound-and-true-p evil-insert-state-minor-mode))
+                                           (looking-at "[[:blank:]]"))))
+          (if (not is-in-evil-normal-mode)
+              ad-do-it
+            (evil-append 0)
+            ad-do-it
+            (evil-normal-state))))
       ))
+
+(defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
+  (interactive "P")
+  (org-roam-capture- :goto goto
+                     :info info
+                     :keys keys
+                     :templates templates
+                     :node (org-roam-node-create :title "")
+                     :props '(:immediate-finish nil)))
 
 ;; (use-package god-mode
 ;; :config
@@ -378,13 +441,6 @@
 ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
 ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
-(use-package counsel
-  :config
-  (ivy-mode)
-  (setq ivy-height 25)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file))
-
 ;; projectile
 (use-package projectile
   :config
@@ -392,6 +448,7 @@
   (projectile-mode +1))
 
 ;; auto completion
+(setq completion-ignore-case t) ;; case-insensitivity
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode)
@@ -402,6 +459,7 @@
         company-require-match nil
         company-tooltip-limit 20
         company-tooltip-align-annotations t
+        company-dabbrev-downcase nil
         company-show-quick-access t)
   (eval-after-load 'company
     '(progn
@@ -451,16 +509,18 @@
 (set-face-attribute 'default nil :family "Monaco" :height 120)
 (set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
 (set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
-(use-package doom-themes
-  :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
+;; (use-package doom-themes
+;;   :config
+;;   (setq doom-themes-enable-bold t
+;;         doom-themes-enable-italic t))
   ;; (load-theme 'doom-gruvbox-light t))
   ;; (doom-themes-org-config)
   ;; (doom-themes-treemacs-config)
   ;; (doom-themes-visual-bell-config))
 (use-package darktooth-theme)
+(use-package modus-themes)
 (load-theme 'darktooth t)
+;; (modus-themes-load-operandi)
 
 (use-package web-mode
   :config
@@ -665,7 +725,7 @@
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  (setq xenops-math-image-scale-factor 1.5)
+  (setq xenops-math-image-scale-factor 1.4)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -698,6 +758,40 @@
 ;; give org mode a better look
 (use-package org-modern
   :config
+  
+  ;; (modify-all-frames-parameters
+  ;;  '((right-divider-width . 40)
+  ;;    (internal-border-width . 40)))
+  ;; (dolist (face '(window-divider
+  ;;                 window-divider-first-pixel
+  ;;                 window-divider-last-pixel))
+  ;;   (face-spec-reset-face face)
+  ;;   (set-face-foreground face (face-attribute 'default :background)))
+  ;; (set-face-background 'fringe (face-attribute 'default :background))
+
+  (setq
+   ;; Edit settings
+   org-auto-align-tags nil
+   org-tags-column 0
+   org-catch-invisible-edits 'show-and-error
+   org-special-ctrl-a/e t
+   org-insert-heading-respect-content t
+
+   ;; Org styling, hide markup etc.
+   ;; org-hide-emphasis-markers t
+   ;; org-pretty-entities t
+   ;; org-ellipsis "…"
+
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ now ─────────────────────────────────────────────────")
+
   (global-org-modern-mode))
 
 ;; more featureful ivy menus
@@ -727,8 +821,11 @@
 ;; (use-package jupyter)
 (use-package ein)
 
+;; (use-package delve
+;;   :straight (:repo "publicimageltd/delve" :host github))
 (use-package format-all)
 (use-package embark)
+(use-package orderless)
 
 (use-package org-ref)
 (use-package alert)
@@ -750,7 +847,6 @@
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
 ;;(use-package org-ql)
-;;(use-package delve)
 ;;(use-package copilot)
 ;;(use-package ox-pandoc)
 ;;(use-package org-mouse)
@@ -1025,25 +1121,13 @@
         (:eval . "no-export")
         (:packages . ("\\usepackage{forest}"
                       "\\usepackage{amsmath}"
-                      ;; "\\usepackage{svg}"
-                      ;; "\\usepackage{amsfonts}"
-                      ;; "\\usepackage{indentfirst}"
-                      ;; "\\usepackage{pgffor}"
-                      ;; "\\usepackage{amssymb}"
-                      ;; "\\usepackage{cancel}"
-                      ;; "\\usepackage{amsthm}"
-                      ;; "\\usepackage{polynom}"
                       "\\usepackage{tikz}"
-                      ;; "\\usepackage[tikz]{bclogo}"
-                      ;; "\\usepackage{listings}"
-                      ;; "\\usepackage[most]{tcolorbox}"
-                      ;; "\\usepackage{adjustbox}"
                       "\\usepackage{tikz-3dplot}"
-                      ;; "\\usepackage{mathtools}"
                       "\\usepackage{pgfplots}"
                       "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
-                      ;; "\\usepackage{centernot}"
                       ))))
+;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
+      
 ;;(setq org-src-fontify-natively nil)
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
@@ -1069,7 +1153,7 @@
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'doom-gruvbox-light)
+  (disable-theme 'modus-operandi)
   (load-theme 'darktooth t)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
@@ -1079,7 +1163,7 @@
   (interactive)
   ;; (disable-theme 'doom-molokai)
   (disable-theme 'darktooth)
-  (load-theme 'doom-gruvbox-light t)
+  (load-theme 'modus-operandi t)
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;;(set-face-background hl-line-face "PeachPuff3")
   (set-themed-pdf 1))
@@ -1104,20 +1188,6 @@
           (setq count (1+ count))
           (kill-buffer buffer)))
       (message "Killed %i dired buffer(s)." count))))
-
-;; make org roam insert link after cursor in evil mode
-(defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
-  "If in evil normal mode and cursor is on a whitespace character, then go into
-append mode first before inserting the link. This is to put the link after the
-space rather than before."
-  (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
-                                     (not (bound-and-true-p evil-insert-state-minor-mode))
-                                     (looking-at "[[:blank:]]"))))
-    (if (not is-in-evil-normal-mode)
-        ad-do-it
-      (evil-append 0)
-      ad-do-it
-      (evil-normal-state))))
 
 ;; workaround for pdf-tools not reopening to last-viewed page of the pdf:
 ;; https://github.com/politza/pdf-tools/issues/18#issuecomment-269515117
