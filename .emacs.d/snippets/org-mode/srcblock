@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: src block
+# key: ab
+# --
+#+begin_src ${1:python}
+  $0
+#+end_src

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sum
+# key: su
+# --
+\sum_{$1}^{$2} $0

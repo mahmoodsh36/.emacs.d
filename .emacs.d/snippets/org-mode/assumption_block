@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: assumption block
-# key: ab
-# --
-#+begin_assumption
-$0
-#+end_assumption
