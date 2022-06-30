@@ -110,14 +110,18 @@
   (require 'org-roam-export)
   (require 'org-roam-protocol)
   (setq org-roam-capture-templates
-        '(("d" "default" plain "%?"
-           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        '(("n" "note" plain "%?"
+           :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+           :kill-buffer
            :unnarrowed t)
           ("q" "quick note" plain "%?"
-           :target (file "quick/%<%Y%m%d%H%M%S>.org")
-           :head "#+filetags: quick-note"
+           :target (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
+           :kill-buffer
            :unnarrowed t)
-)))
+          ("t" "todo" entry "* TODO %?"
+           :target (file "agenda.org")
+           :kill-buffer
+           :unnarrowed t))))
           ;; ("n" "note" plain (function org-roam-capture--get-point)
           ;;  :file-name "literature/%<%Y%m%d%H%M>-${slug}"
           ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %^{roam_tags}\n\nsource: \n\n%?"
@@ -351,12 +355,19 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
       (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
-      (general-define-key :states 'normal :keymaps 'override "SPC r h" 'org-roam-capture)
+      (general-define-key :states 'normal :keymaps 'override "SPC r n"
+                          (lambda ()
+                            (interactive)
+                            (org-roam-capture nil "n")))
       (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r q"
                           (lambda ()
                             (interactive)
                             (org-roam-capture-no-title-prompt nil "q")))
+      (general-define-key :states 'normal :keymaps 'override "SPC r e"
+                          (lambda ()
+                            (interactive)
+                            (org-roam-capture nil "t")))
 
       ;; keys to search for files
       (define-key evil-normal-state-map (kbd "SPC f c")
@@ -505,7 +516,7 @@ space rather than before."
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-;;(set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
+;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 (set-face-attribute 'default nil :family "Monaco" :height 120)
 (set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
 (set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
@@ -591,8 +602,9 @@ space rather than before."
 (use-package yasnippet-snippets)
 (use-package yasnippet
   :config
-  ;;(setq yas-snippet-dirs
-  ;;      `(,(concat user-emacs-directory "snippets")))
+  ;; disable builtin snippets
+  (setq yas-snippet-dirs
+       `(,(concat user-emacs-directory "snippets")))
   (setq yas-triggers-in-field t)
   (yas-global-mode 1)
   ;; prevent warnings about snippets using elisp
@@ -800,8 +812,6 @@ space rather than before."
   (ivy-rich-mode 1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
-(use-package org-transclusion)
-
 (use-package elfeed-tube
   :straight (:host github :repo "karthink/elfeed-tube")
   :after elfeed
@@ -818,6 +828,8 @@ space rather than before."
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
+(use-package vuiet)
+
 ;; (use-package jupyter)
 (use-package ein)
 
@@ -826,6 +838,8 @@ space rather than before."
 (use-package format-all)
 (use-package embark)
 (use-package orderless)
+(use-package org-transclusion)
+(use-package svg-tag-mode)
 
 (use-package org-ref)
 (use-package alert)
@@ -894,8 +908,6 @@ space rather than before."
    (C . t)
    (shell . t)
    (lua . t)))
-;; require org-tempo to enable <s expansion
-(require 'org-tempo)
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
 ;; increase org table max lines
@@ -1067,6 +1079,16 @@ space rather than before."
 (setq org-export-preserve-breaks t)
 ;; indent headings properly
 (add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-todo-keywords
+  '((sequence
+     "TODO(t!)" ; Initial creation
+     "GO(g@)"; Work in progress
+     "WAIT(w@)" ; My choice to pause task
+     "REVIEW(r!)" ; Inspect or Share Time
+     "|" ; Remaining close task
+     "DONE(d@)" ; Normal completion
+     "CANCELED(c@)" ; Not going to od it
+     )))
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")) ;; timestamp with seconds
