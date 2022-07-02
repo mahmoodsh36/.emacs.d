@@ -23,6 +23,7 @@
 #+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
 #+LATEX_HEADER: \usepackage{centernot}
 #+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+LATEX_HEADER: \usepackage{lmodern}
 #+AUTHOR: mahmood
 # some needed operators to not lose my sanity
 #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
@@ -31,6 +32,4 @@
 #+LATEX_HEADER: \DeclareMathOperator{\ran}{range}
 #+LATEX_HEADER: \DeclareMathOperator{\rng}{range}
 #+LATEX_HEADER: \DeclareMathOperator{\img}{Im}
-
-# startup with headlines folded
-#+STARTUP: content
+#+LATEX_HEADER: \newcommand\dif[1]{\:\textrm{d}#1}
