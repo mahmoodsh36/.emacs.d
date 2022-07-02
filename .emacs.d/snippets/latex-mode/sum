@@ -2,4 +2,4 @@
 # name: sum
 # key: su
 # --
-\sum_{$1}^{$2} $0
+\sum_{$1}^{$2} ${0:$$(yas-delete-if-empty)}

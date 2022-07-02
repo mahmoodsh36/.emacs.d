@@ -2,4 +2,4 @@
 # name: integral
 # key: in
 # --
-\int_{$1}^{$2} $3 \text{ dx}$0
+\int_{$1}^{$2} ${3:$$(yas-delete-if-empty)} \dif{x}$0

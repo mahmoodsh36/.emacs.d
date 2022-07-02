@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: vertical bar
+# key: ve
+# --
+\left. $3 \right|_$1^$2$0
