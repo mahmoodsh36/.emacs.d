@@ -209,13 +209,7 @@
         (require 'evil-org-agenda)
         (evil-org-agenda-set-keys)
         ;; the package annoyingly binds O to another function so here im just restoring it
-        (general-define-key :states 'normal :keymaps 'override "O"
-                            (lambda ()
-                              (interactive)
-                              (previous-line)
-                              (evil-org-append-line 1)
-                              (evil-ret 1)
-                              (indent-according-to-mode)))
+        (general-define-key :states 'normal :keymaps 'override "O" 'evil-open-above)
 
         ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
         ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
@@ -296,11 +290,6 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document)
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
-      (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC c"
-                          (lambda ()
-                            (interactive)
-                            (org-to-pdf)
-                            (org-hugo-export-to-md)))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
@@ -368,6 +357,12 @@
                           (lambda ()
                             (interactive)
                             (org-roam-capture nil "t")))
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x"
+                          (lambda ()
+                            (interactive)
+                            (org-to-pdf)
+                            (org-hugo-export-to-md)))
+      (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
 
       ;; keys to search for files
       (define-key evil-normal-state-map (kbd "SPC f c")
@@ -731,8 +726,8 @@ space rather than before."
   :config
   (setq xenops-reveal-on-entry t)
   (setq xenops-math-latex-max-tasks-in-flight 6)
-  ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  ;; (add-hook 'org-mode-hook #'xenops-mode)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
@@ -770,30 +765,12 @@ space rather than before."
 ;; give org mode a better look
 (use-package org-modern
   :config
-  
-  ;; (modify-all-frames-parameters
-  ;;  '((right-divider-width . 40)
-  ;;    (internal-border-width . 40)))
-  ;; (dolist (face '(window-divider
-  ;;                 window-divider-first-pixel
-  ;;                 window-divider-last-pixel))
-  ;;   (face-spec-reset-face face)
-  ;;   (set-face-foreground face (face-attribute 'default :background)))
-  ;; (set-face-background 'fringe (face-attribute 'default :background))
-
   (setq
-   ;; Edit settings
    org-auto-align-tags nil
    org-tags-column 0
    org-catch-invisible-edits 'show-and-error
    org-special-ctrl-a/e t
    org-insert-heading-respect-content t
-
-   ;; Org styling, hide markup etc.
-   ;; org-hide-emphasis-markers t
-   ;; org-pretty-entities t
-   ;; org-ellipsis "…"
-
    ;; Agenda styling
    org-agenda-tags-column 0
    org-agenda-block-separator ?─
@@ -803,7 +780,6 @@ space rather than before."
      " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
    org-agenda-current-time-string
    "⭠ now ─────────────────────────────────────────────────")
-
   (global-org-modern-mode))
 
 ;; more featureful ivy menus
@@ -820,7 +796,6 @@ space rather than before."
   ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
   ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
   (elfeed-tube-setup)
-
   :bind (:map elfeed-show-mode-map
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)
@@ -915,7 +890,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
-;; (setq org-export-with-broken-links t)
+(setq org-export-with-broken-links t)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -989,7 +964,7 @@ space rather than before."
   dir-path)
 
 (defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
+  (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -1149,12 +1124,13 @@ space rather than before."
                       "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
                       ))))
 ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
-      
 ;;(setq org-src-fontify-natively nil)
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
 (add-hook 'org-mode-hook (lambda ()  (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
+;; startup with headlines folded
+(setq org-startup-folded 'content)
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1235,3 +1211,17 @@ space rather than before."
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
+
+(defun yas-delete-if-empty ()
+  "function to remove _{} or ^{} fields, used by some of my latex yasnippets"
+  (interactive)
+  (point-to-register 'my-stored-pos)
+  (save-excursion
+    (while (re-search-backward "\\(_{}\\)" (line-beginning-position) t)
+        (progn
+          (replace-match "" t t nil 1)
+          (jump-to-register 'my-stored-pos)))
+    (while (re-search-backward "\\(\\^{}\\)" (line-beginning-position) t)
+        (progn
+          (replace-match "" t t nil 1)
+          (jump-to-register 'my-stored-pos)))))
