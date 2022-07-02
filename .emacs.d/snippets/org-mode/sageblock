@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: sage code block
-# key: gb
+# key: ag
 # --
 #+begin_src sage
   $0
