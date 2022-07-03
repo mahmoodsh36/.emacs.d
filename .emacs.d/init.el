@@ -104,36 +104,20 @@
   (org-roam-directory (file-truename "~/workspace/college/"))
   (org-roam-completion-everywhere t)
   :config
-  ;; (setq org-roam-node-display-template (concat "${title}	" (propertize "${file}" 'face 'org-tag)))
   (setq org-roam-node-display-template "${title:*} ${tags:*}")
   (org-roam-db-autosync-mode)
   (require 'org-roam-export)
   (require 'org-roam-protocol)
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
-           :target (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
-           :kill-buffer
-           :unnarrowed t)
+           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+           :kill-buffer :unnarrowed t)
           ("q" "quick note" plain "%?"
-           :target (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
-           :kill-buffer
-           :unnarrowed t)
+           :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
+           :kill-buffer :unnarrowed t)
           ("t" "todo" entry "* TODO %?"
-           :target (file "agenda.org")
-           :kill-buffer
-           :unnarrowed t))))
-          ;; ("n" "note" plain (function org-roam-capture--get-point)
-          ;;  :file-name "literature/%<%Y%m%d%H%M>-${slug}"
-          ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags: %^{roam_tags}\n\nsource: \n\n%?"
-          ;;  :unnarrowed t)
-          ;; ("f" "fleeting" plain (function org-roam-capture--get-point)
-          ;;  :file-name "fleeting/%<%Y%m%d%H%M>-${slug}"
-          ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags:\n\n%?"
-          ;;  :unnarrowed t)
-          ;; ("p" "Permanent (prompt folder)" plain (function org-roam-capture--get-point)
-          ;;  :file-name "%(read-directory-name \"directory: \" org-directory)/%<%Y%m%d%H%M>-${slug}"
-          ;;  :head "#+title: ${title}\n#+author: %(concat user-full-name)\n#+email: %(concat user-mail-address)\n#+created: %(format-time-string \"[%Y-%m-%d %H:%M]\")\n#+roam_tags:\n\n%?"
-          ;;  :unnarrowed t))))
+           :if-new (file "agenda.org")
+           :kill-buffer :unnarrowed t))))
 
 ;; side tree
 (use-package treemacs)
@@ -1225,3 +1209,14 @@ space rather than before."
         (progn
           (replace-match "" t t nil 1)
           (jump-to-register 'my-stored-pos)))))
+
+;; disable stupid ox-hugo relative path exports
+(defun non-relative-path (obj)
+  "return non-relative path for hugo"
+  (interactive)
+  (if (eq (type-of obj) 'string)
+      (progn
+        ;; (message (format "filename: %s" obj))
+        (file-name-nondirectory obj))
+    obj))
+(advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
