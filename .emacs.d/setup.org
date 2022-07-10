@@ -3,7 +3,6 @@
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
 #+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
 #+LATEX_HEADER: \usepackage{amsmath}
-# #+LATEX_HEADER: \usepackage{svg}
 #+LATEX_HEADER: \usepackage{amsfonts}
 #+LATEX_HEADER: \usepackage{indentfirst}
 #+LATEX_HEADER: \usepackage{pgffor}
@@ -22,9 +21,11 @@
 #+LATEX_HEADER: \usepackage{pgfplots}
 #+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
 #+LATEX_HEADER: \usepackage{centernot}
-#+LATEX_HEADER: \setlength{\parindent}{0pt}
 #+LATEX_HEADER: \usepackage{lmodern}
 #+AUTHOR: mahmood
+#+LATEX_HEADER: \tikzstyle{every picture}+=[remember picture]
+#+LATEX_HEADER: \setlength{\parindent}{0pt}
+
 # some needed operators to not lose my sanity
 #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
@@ -33,3 +34,5 @@
 #+LATEX_HEADER: \DeclareMathOperator{\rng}{range}
 #+LATEX_HEADER: \DeclareMathOperator{\img}{Im}
 #+LATEX_HEADER: \newcommand\dif[1]{\:\textrm{d}#1}
+#+LATEX_HEADER: \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+#+LATEX_HEADER: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}

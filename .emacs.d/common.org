@@ -1,9 +1,16 @@
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\rank}{rank}\)</p>
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\spn}{span}\)</p>
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\dom}{domain}\)</p>
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\ran}{range}\)</p>
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\rng}{range}\)</p>
-#+HTML: <p style="height:0px; display: none;">\(\DeclareMathOperator{\img}{Im}\)</p>
+#+begin_export html
+<p style="height:0px; display: none;">
+  \(\DeclareMathOperator{\rank}{rank}\)
+  \(\DeclareMathOperator{\spn}{span}\)
+  \(\DeclareMathOperator{\dom}{domain}\)
+  \(\DeclareMathOperator{\ran}{range}\)
+  \(\DeclareMathOperator{\rng}{range}\)
+  \(\DeclareMathOperator{\img}{Im}\)
+  \(\newcommand\dif[1]{\:\textrm{d}#1}\)
+  \(\DeclarePairedDelimiter\ceil{\lceil}{\rceil}\)
+  \(\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}\)
+</p>
+#+end_export
 
 #+begin_export latex
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -181,6 +188,8 @@ img {
   content: "step:";
 }
 </style>
+
+<!-- mathjax -->
 <script>
 // auto load modules like cancel
 window.MathJax = {
@@ -191,7 +200,7 @@ window.MathJax = {
 };
 </script>
 <script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
 </script>
 #+end_export
 
