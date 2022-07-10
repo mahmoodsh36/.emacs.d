@@ -57,7 +57,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 175 50))
+(when window-system (set-frame-size (selected-frame) 100 50))
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; display only buffer name in modeline
@@ -120,7 +120,9 @@
            :kill-buffer :unnarrowed t))))
 
 ;; side tree
-(use-package treemacs)
+(use-package treemacs
+  :config
+  (treemacs-follow-mode -1))
 
 ;; makes binding keys less painful
 (use-package general)
@@ -263,6 +265,7 @@
       (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
       (define-and-bind-quoted-text-object "slash" "/" "/" "/")
       (define-and-bind-quoted-text-object "space" " " " " " ")
+      (define-and-bind-quoted-text-object "tilda" "~" "~" "~")
       (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
 
       ;; create "il"/"al" (inside/around) line text objects:
@@ -272,8 +275,7 @@
 
       (general-evil-setup)
 
-      (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document)
-      (evil-define-key 'normal 'TeX-mode-map (kbd "SPC V") 'open-current-document-this-window)
+      (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
@@ -292,7 +294,7 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC p" 'projectile-command-map)
-      (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
+      ;; (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
@@ -346,6 +348,10 @@
                             (interactive)
                             (org-to-pdf)
                             (org-hugo-export-to-md)))
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r ]" 'org-clock-in)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r [" 'org-clock-out)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r -" 'org-clock-cancel)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
       (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
 
       ;; keys to search for files
@@ -390,10 +396,14 @@
                 (lambda ()
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
 
+      ;; evil mode multiple cursors
+      (use-package evil-mc
+        :config
+        (global-evil-mc-mode))
+
       ;; interpret function arguments as a text object
       (use-package evil-args)
       (use-package evil-lion)
-      (use-package evil-mc)
       ;;(use-package evil-textobj-tree-sitter)
 
 
@@ -499,17 +509,13 @@ space rather than before."
 (set-face-attribute 'default nil :family "Monaco" :height 120)
 (set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
 (set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
-;; (use-package doom-themes
-;;   :config
-;;   (setq doom-themes-enable-bold t
-;;         doom-themes-enable-italic t))
-  ;; (load-theme 'doom-gruvbox-light t))
-  ;; (doom-themes-org-config)
-  ;; (doom-themes-treemacs-config)
-  ;; (doom-themes-visual-bell-config))
 (use-package darktooth-theme)
 (use-package modus-themes)
-(load-theme 'darktooth t)
+(use-package ample-theme)
+(use-package anti-zenburn-theme)
+(use-package zenburn-theme)
+(load-theme 'zenburn t)
+;; (load-theme 'darktooth t)
 ;; (modus-themes-load-operandi)
 
 (use-package web-mode
@@ -710,8 +716,8 @@ space rather than before."
   :config
   (setq xenops-reveal-on-entry t)
   (setq xenops-math-latex-max-tasks-in-flight 6)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
@@ -721,10 +727,6 @@ space rather than before."
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]"))))
-
-;; (use-package org-fragtog
-;;   :config
-;;   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
 (use-package mixed-pitch
   :hook
@@ -787,7 +789,10 @@ space rather than before."
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
-(use-package vuiet)
+(use-package lastfm)
+(use-package vuiet
+  :config
+  (setq browse-url-browser-function 'browse-url-chrome))
 
 ;; (use-package jupyter)
 (use-package ein)
@@ -1050,8 +1055,8 @@ space rather than before."
      )))
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
-      org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")) ;; timestamp with seconds
-;;       org-latex-src-block-backend 'listings)
+      org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>") ;; timestamp with seconds
+      org-latex-src-block-backend 'listings)
 ;; give svg's a proper width when exporting with dvisvgm
 (with-eval-after-load 'ox-html
   (setq org-html-head
@@ -1115,6 +1120,8 @@ space rather than before."
 (add-hook 'org-mode-hook (lambda ()  (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
 ;; startup with headlines folded
 (setq org-startup-folded 'content)
+;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
+(setq org-image-actual-width nil)
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1135,7 +1142,7 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'modus-operandi)
+  (disable-theme 'zenburn)
   (load-theme 'darktooth t)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
@@ -1145,7 +1152,7 @@ space rather than before."
   (interactive)
   ;; (disable-theme 'doom-molokai)
   (disable-theme 'darktooth)
-  (load-theme 'modus-operandi t)
+  (load-theme 'zenburn t)
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;;(set-face-background hl-line-face "PeachPuff3")
   (set-themed-pdf 1))
