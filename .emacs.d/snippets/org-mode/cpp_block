@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: c++ code block
-# key: <p
+# name: cpp code block
+# key: ap
 # --
 #+begin_src C++
   $0

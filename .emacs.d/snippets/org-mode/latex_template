@@ -2,9 +2,9 @@
 # name: latex_template
 # key: la
 # --
-#+SETUPFILE: ~/.emacs.d/setup.org
-#+INCLUDE: ~/.emacs.d/common.org
-#+DESCRIPTION: $2$1
-#+TITLE: ${1:title}
+#+setupfile: ~/.emacs.d/setup.org
+#+include: ~/.emacs.d/common.org
+#+description: $2$1
+#+title: ${1:title}
 
 $0

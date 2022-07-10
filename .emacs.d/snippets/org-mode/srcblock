@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: src block
-# key: ab
+# key: as
 # --
 #+begin_src ${1:python}
   $0

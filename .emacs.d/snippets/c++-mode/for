@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for
+# key: fo
+# --
+for (${1:int i = 0}; ${2:i < len}; ${3:++i}) {
+  $0
+}

@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: latex code block
-# key: <l
+# key: ax
 # --
 #+begin_src latex :results file graphics :exports results :file ~/.emacs.d/latex/`(generate-random-string 7)`.png :noweb strip-export
   <<transparent>>
