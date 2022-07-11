@@ -74,7 +74,7 @@
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
 ;; save minibuffer history
-(setq savehist-file (expand-file-name "~/workspace/college/emacs_savehist"))
+(setq savehist-file (expand-file-name "~/workspace/brain/emacs_savehist"))
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'search-ring)
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
@@ -101,7 +101,7 @@
 ;; the key to building a second brain in org mode
 (use-package org-roam
   :custom
-  (org-roam-directory (file-truename "~/workspace/college/"))
+  (org-roam-directory (file-truename "~/workspace/brain/"))
   (org-roam-completion-everywhere t)
   :config
   (setq org-roam-node-display-template "${title:*} ${tags:*}")
@@ -278,7 +278,7 @@
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/college/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/workspace/brain/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
@@ -318,7 +318,7 @@
                           (lambda ()
                             (interactive)
                             (org-insert-time-stamp (current-time) t)))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/college/agenda.org")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/workspace/brain/agenda.org")))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -329,6 +329,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
+      (general-define-key :states 'normal :keymaps 'override "SPC r A" 'org-attach-open)
       (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r n"
                           (lambda ()
@@ -348,10 +349,11 @@
                             (interactive)
                             (org-to-pdf)
                             (org-hugo-export-to-md)))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r ]" 'org-clock-in)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r [" 'org-clock-out)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r [" 'org-clock-in)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r ]" 'org-clock-out)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r -" 'org-clock-cancel)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r b" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
 
       ;; keys to search for files
@@ -514,7 +516,7 @@ space rather than before."
 (use-package ample-theme)
 (use-package anti-zenburn-theme)
 (use-package zenburn-theme)
-(load-theme 'zenburn t)
+(use-package poet)
 ;; (load-theme 'darktooth t)
 ;; (modus-themes-load-operandi)
 
@@ -572,7 +574,7 @@ space rather than before."
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
                                              (:results . "drawer")))
-  (setq sage-shell:input-history-cache-file "~/workspace/college/sage_history")
+  (setq sage-shell:input-history-cache-file "~/workspace/brain/sage_history")
   (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
@@ -678,7 +680,7 @@ space rather than before."
   :config
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
-  (setq prescient-save-file (expand-file-name "~/workspace/college/emacs_prescient"))) ;; save history to filesystem
+  (setq prescient-save-file (expand-file-name "~/workspace/brain/emacs_prescient"))) ;; save history to filesystem
 (use-package company-prescient
   :config
   (company-prescient-mode))
@@ -1073,13 +1075,13 @@ space rather than before."
 ;; use unique id's to identify headers, better than using names cuz names could change
 (setq org-id-link-to-org-use-id t)
 ;; org agenda
-(setq org-agenda-files '("/home/mahmooz/workspace/college/agenda.org"))
+(setq org-agenda-files '("/home/mahmooz/workspace/brain/agenda.org"))
 (defun lob-reload ()
   "load some files into org babel library"
   (interactive)
-  (org-babel-lob-ingest "~/workspace/college/data_structures/data_structures.org")
-  (org-babel-lob-ingest "~/workspace/college/code/sage.org")
-  (org-babel-lob-ingest "~/workspace/college/code/tikz.org"))
+  (org-babel-lob-ingest "~/workspace/brain/data_structures/data_structures.org")
+  (org-babel-lob-ingest "~/workspace/brain/code/sage.org")
+  (org-babel-lob-ingest "~/workspace/brain/code/tikz.org"))
 (lob-reload)
 ;; creation dates for TODOs
 (defun my/log-todo-creation-date (&rest ignore)
@@ -1122,6 +1124,8 @@ space rather than before."
 (setq org-startup-folded 'content)
 ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
 (setq org-image-actual-width nil)
+;; get rid of background colors of block lines bleeding all over folded headlines
+(setq org-fontify-whole-block-delimiter-line nil)
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1142,20 +1146,22 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'zenburn)
-  (load-theme 'darktooth t)
+  (disable-theme 'poet)
+  (load-theme 'darktooth t))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-themed-pdf 1))
+  ;; (set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
   ;; (disable-theme 'doom-molokai)
   (disable-theme 'darktooth)
-  (load-theme 'zenburn t)
+  (load-theme 'poet t)
+  (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  ;;(set-face-background hl-line-face "PeachPuff3")
-  (set-themed-pdf 1))
+  ;; (set-themed-pdf 1))
+
+(switch-to-light-theme)
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
