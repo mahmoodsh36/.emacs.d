@@ -517,6 +517,7 @@ space rather than before."
 (use-package anti-zenburn-theme)
 (use-package zenburn-theme)
 (use-package poet-theme)
+(use-package gruvbox-theme)
 ;; (load-theme 'darktooth t)
 ;; (modus-themes-load-operandi)
 
@@ -791,6 +792,18 @@ space rather than before."
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
+(use-package procress
+  :straight (:host github :repo "haji-ali/procress")
+  :commands tex-procress-mode
+  :init
+  (add-hook 'LaTeX-mode-hook 'tex-procress-mode)
+  :config
+  (procress-load-default-svg-images))
+
+(use-package evil-escape
+  :config
+  (evil-escape-mode))
+
 (use-package lastfm)
 (use-package vuiet
   :config
@@ -831,7 +844,6 @@ space rather than before."
 ;;(use-package org-ql)
 ;;(use-package copilot)
 ;;(use-package ox-pandoc)
-;;(use-package org-mouse)
 ;;(use-package org-download)
 ;;(use-package org-html-themes)
 ;;(use-package org-ioslide)
@@ -1148,7 +1160,7 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'poet)
+  (disable-theme 'gruvbox-light-medium)
   (load-theme 'darktooth t))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1157,12 +1169,12 @@ space rather than before."
   "switch to light theme"
   (interactive)
   (disable-theme 'darktooth)
-  (load-theme 'poet t)
-  (set-face-background hl-line-face "PeachPuff3"))
+  (load-theme 'gruvbox-light-medium t))
+  ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
-(switch-to-dark-theme)
+(switch-to-light-theme)
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
