@@ -39,7 +39,7 @@ super + R
 super + {e,shift+e}
     {choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*' -not -path './mnt/*'\
     | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice,\
-    choice=$(find workspace/college/ | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice,\}
+    choice=$(find brain/ | rofi -dmenu -i -p file); [ ! -z $choice ] && notify-send "opened $choice"; open.sh $choice,\}
 
 # screenshot
 super + {_,shift +} p
