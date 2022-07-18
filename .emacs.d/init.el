@@ -314,7 +314,6 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC s" 'save-buffer)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC i"
                           (lambda ()
                             (interactive)
@@ -805,31 +804,33 @@ space rather than before."
   :config
   (evil-escape-mode))
 
-(use-package lastfm)
-(use-package vuiet
-  :config
-  (setq browse-url-browser-function 'browse-url-chrome))
+(use-package ob-async)
+(use-package csharp-mode)
+(use-package format-all)
 
+;; (use-package lastfm)
+;; (use-package vuiet
+;;   :config
+;;   (setq browse-url-browser-function 'browse-url-chrome))
+
+(use-package dirvish)
 (use-package org-ml)
 
 ;; (use-package jupyter)
-(use-package ein)
+;; (use-package ein)
 
 ;; (use-package delve
 ;;   :straight (:repo "publicimageltd/delve" :host github))
-(use-package format-all)
-(use-package embark)
-(use-package orderless)
-(use-package org-transclusion)
-(use-package svg-tag-mode)
+;; (use-package embark)
+;; (use-package orderless)
+;; (use-package org-transclusion)
+;; (use-package svg-tag-mode)
 
-(use-package org-ref)
-(use-package alert)
-(use-package olivetti)
-(use-package org-roam-ui)
-(use-package ox-json)
-(use-package ob-async)
-(use-package csharp-mode)
+;; (use-package org-ref)
+;; (use-package alert)
+;; (use-package olivetti)
+;; (use-package org-roam-ui)
+;; (use-package ox-json)
 
 ;;(use-package org-tree-slide)
 ;;(use-package orgajs) installed externally i think
