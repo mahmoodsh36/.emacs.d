@@ -49,7 +49,7 @@ latex.matrix_delimiters("[", "]")
 # enable unicode art by default
 %display unicode_art
 
-# functions to format a string with the latex of values of variables instead of the value itself
+# functions to format a string with the latex of values of variables instead of the value itself, notice that eval() cant see function-local variables :(
 def handle(match):
   if match == '':
     return ''
