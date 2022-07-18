@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: cout
-# key: o
+# key: ou
 # --
 std::cout << $1 << std::endl;$0
