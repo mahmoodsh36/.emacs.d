@@ -88,4 +88,4 @@ super + v; {n,1,2}
      terminal_with_cmd.sh 'ssh server2 -i ~/data/keys/server2/id_ed25519'}
 
 super + b; {f}
-    {notify-send 'connecting to freebuds'; terminal_with_cmd.sh bluetoothctl connect A0:DE:0F:CA:59:42}
+    {notify-send 'connecting to freebuds'; terminal_with_cmd.sh 'bluetoothctl power on; bluetoothctl connect A0:DE:0F:CA:59:42'}
