@@ -91,18 +91,18 @@
 <style>
 .lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step {
   border-radius: 10px;
-  padding: 4px;
+  padding: 3px;
   border-style: groove;
-  border-width: 4px;
+  border-width: 3px;
 }
 .lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before {
-  background-color: white;
+  background-color: #bbb;
   position: relative;
-  left: -5px;
-  top: -7px;
-  border-radius: 10px 0 10px 0;
-  padding-right: 7px;
-  padding-left: 7px;
+  border-radius: 10px;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   font-family: cursive;
 }
 .lemma {
