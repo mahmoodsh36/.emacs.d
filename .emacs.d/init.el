@@ -300,16 +300,17 @@
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
-      (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
-      (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+      ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
+      ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" (lambda ()
-                                                                           (interactive)
-                                                                           (if (not xenops-mode)
-                                                                               (xenops-mode)
-                                                                             (xenops-render))))
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
+                          (lambda ()
+                            (interactive)
+                            (if (not xenops-mode)
+                                (xenops-mode)
+                              (xenops-render))))
       (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
@@ -365,7 +366,7 @@
       (define-key evil-normal-state-map (kbd "SPC f p")
                   (lambda () (interactive) (search-open-file "~/data/p" "")))
       (define-key evil-normal-state-map (kbd "SPC f b")
-                  (lambda () (interactive) (search-open-file "~/data/books" "")))
+                  (lambda () (interactive) (search-open-file "~/brain/" "")))
       (define-key evil-normal-state-map (kbd "SPC f d")
                   (lambda () (interactive) (search-open-file "~/data" "")))
       (define-key evil-normal-state-map (kbd "SPC F d")
@@ -403,11 +404,16 @@
         :config
         (global-evil-mc-mode))
 
+      (use-package evil-escape
+        :config
+        (evil-escape-mode))
+
       ;; interpret function arguments as a text object
       (use-package evil-args)
       (use-package evil-lion)
-      ;;(use-package evil-textobj-tree-sitter)
 
+      (use-package evil-extra-operator)
+      ;;(use-package evil-textobj-tree-sitter)
 
       ;; make org roam insert link after cursor in evil mode
       (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
@@ -508,9 +514,10 @@ space rather than before."
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
-(set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'fixed-pitch nil :family "Monaco" :height 120)
-(set-face-attribute 'variable-pitch nil :family "Monaco" :height 120)
+;; (set-face-attribute 'default nil :family "Monaco" :height 120)
+(set-face-attribute 'default nil :family "Cascadia Code" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Cascadia Code" :height 120)
+(set-face-attribute 'variable-pitch nil :family "Cascadia Code" :height 120)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -518,6 +525,7 @@ space rather than before."
 (use-package zenburn-theme)
 (use-package poet-theme)
 (use-package gruvbox-theme)
+(use-package inkpot-theme)
 ;; (load-theme 'darktooth t)
 ;; (modus-themes-load-operandi)
 
@@ -657,10 +665,10 @@ space rather than before."
 (use-package eval-sexp-fu)
 
 ;; flutter setup
-;;(use-package highlight-indent-guides
-;;  :config
-;;  (setq highlight-indent-guides-method 'character)
-;;  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+(use-package highlight-indent-guides
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package dart-mode)
 (use-package flutter)
 (use-package lsp-dart)
@@ -676,7 +684,7 @@ space rather than before."
   :config
   (company-auctex-init))
 
-;; history for ivy completion
+;; history for ivy completion, it sometimes makes ivy really slow, so maybe remove the cache file every once in a while
 (use-package ivy-prescient
   :config
   (ivy-prescient-mode)
@@ -687,9 +695,9 @@ space rather than before."
   (company-prescient-mode))
 
 ;; ;; auto indentation
-;; (use-package aggressive-indent
-;;   :config
-;;   (aggressive-indent-global-mode))
+(use-package aggressive-indent
+  :config
+  (aggressive-indent-global-mode))
 
 ;; auto pairs insertion
 ;; (use-package smartparens
@@ -719,7 +727,7 @@ space rather than before."
   :config
   (setq xenops-reveal-on-entry t)
   (setq xenops-math-latex-max-tasks-in-flight 6)
-  ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  (add-hook 'LaTeX-mode-hook #'xenops-mode)
   ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
@@ -792,28 +800,29 @@ space rather than before."
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
-(use-package procress
-  :straight (:host github :repo "haji-ali/procress")
-  :commands tex-procress-mode
-  :init
-  (add-hook 'LaTeX-mode-hook 'tex-procress-mode)
-  :config
-  (procress-load-default-svg-images))
-
-(use-package evil-escape
-  :config
-  (evil-escape-mode))
+;; progress in mode line
+;; (use-package procress
+;;   :straight (:host github :repo "haji-ali/procress")
+;;   :commands tex-procress-mode
+;;   :init
+;;   (add-hook 'LaTeX-mode-hook 'tex-procress-mode)
+;;   :config
+;;   (procress-load-default-svg-images))
 
 (use-package ob-async)
 (use-package csharp-mode)
 (use-package format-all)
+(use-package org-roam-ui)
+;; (use-package corfu
+;;   :init
+;;   (global-corfu-mode))
+;; (use-package code-compass)
 
 ;; (use-package lastfm)
 ;; (use-package vuiet
 ;;   :config
 ;;   (setq browse-url-browser-function 'browse-url-chrome))
 
-(use-package dirvish)
 (use-package org-ml)
 
 ;; (use-package jupyter)
@@ -829,13 +838,12 @@ space rather than before."
 ;; (use-package org-ref)
 ;; (use-package alert)
 ;; (use-package olivetti)
-;; (use-package org-roam-ui)
 ;; (use-package ox-json)
 
 ;;(use-package org-tree-slide)
 ;;(use-package orgajs) installed externally i think
 ;;(use-package roam-block)
-;; (use-package aio)
+;;(use-package aio)
 ;;(use-package slime
 ;;  :config
 ;;  (setq inferior-lisp-program "sbcl"))
@@ -853,6 +861,7 @@ space rather than before."
 ;;(use-package google-this)
 ;;(use-package google-translate)
 ;;(use-package google-maps)
+;;(use-package plantuml-mode)
 
 ;; start server
 (server-start)
@@ -1098,7 +1107,6 @@ space rather than before."
   (org-babel-lob-ingest "~/brain/data_structures/data_structures.org")
   (org-babel-lob-ingest "~/brain/code/sage.org")
   (org-babel-lob-ingest "~/brain/code/tikz.org"))
-(lob-reload)
 ;; creation dates for TODOs
 ;; (defun my/log-todo-creation-date (&rest ignore)
 ;;   "Log TODO creation time in the property drawer under the key 'CREATED'."
@@ -1136,12 +1144,14 @@ space rather than before."
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
 (add-hook 'org-mode-hook (lambda ()  (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
-;; startup with headlines folded
+;; startup with headlines and blocks folded
 (setq org-startup-folded 'content)
+      ;; org-hide-block-startup t)
 ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
 (setq org-image-actual-width nil)
 ;; get rid of background colors of block lines bleeding all over folded headlines
 (setq org-fontify-whole-block-delimiter-line nil)
+(setq org-fold-catch-invisible-edits 'smart)
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1176,7 +1186,8 @@ space rather than before."
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
-(switch-to-light-theme)
+(switch-to-dark-theme)
+(lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
@@ -1230,13 +1241,13 @@ space rather than before."
   (point-to-register 'my-stored-pos)
   (save-excursion
     (while (re-search-backward "\\(_{}\\)" (line-beginning-position) t)
-        (progn
-          (replace-match "" t t nil 1)
-          (jump-to-register 'my-stored-pos)))
+      (progn
+        (replace-match "" t t nil 1)
+        (jump-to-register 'my-stored-pos)))
     (while (re-search-backward "\\(\\^{}\\)" (line-beginning-position) t)
-        (progn
-          (replace-match "" t t nil 1)
-          (jump-to-register 'my-stored-pos)))))
+      (progn
+        (replace-match "" t t nil 1)
+        (jump-to-register 'my-stored-pos)))))
 
 ;; disable stupid ox-hugo relative path exports
 (defun non-relative-path (obj)
@@ -1248,3 +1259,32 @@ space rather than before."
         (file-name-nondirectory obj))
     obj))
 (advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
+
+;; move over text object
+;; (evil-define-motion evil-forward-text-object
+;;   (count &optional text-object)
+;;   "move to the end of following input text-object define 
+;; in evil-inner-text-objects-map ."
+;;   (unless text-object
+;;       (setf text-object
+;;             (let ((key (read-key-sequence "text-object:")))
+;;               (lookup-key evil-inner-text-objects-map key))))
+;;   (let* ((region (funcall text-object count))
+;;          (end (nth 1 region)))
+;;     (goto-char end)))
+;; (define-key evil-motion-state-map (kbd "M-w")
+;;   #'evil-forward-text-object)
+
+;; (evil-define-motion evil-backward-text-object
+;;   (count &optional text-object)
+;;   "move to the begin of following input text-object define 
+;; in evil-inner-text-objects-map ."
+;;   (unless text-object
+;;       (setf text-object
+;;             (let ((key (read-key-sequence "text-object:")))
+;;               (lookup-key evil-inner-text-objects-map key))))
+;;   (let* ((region (funcall text-object count))
+;;          (start (nth 0 region)))
+;;     (goto-char start)))
+;; (define-key evil-motion-state-map (kbd "M-b")
+;;   #'evil-backward-text-object)
