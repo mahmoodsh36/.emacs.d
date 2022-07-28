@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: latex vertical bars
+# key: lv
+# --
+\left|$1\right|$0

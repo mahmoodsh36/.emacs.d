@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: displaymode
-# key: [
+# key: dm
 # --
 \[
   $0

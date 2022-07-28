@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: latex brackets
+# key: lr
+# --
+\left[$1\right]$0

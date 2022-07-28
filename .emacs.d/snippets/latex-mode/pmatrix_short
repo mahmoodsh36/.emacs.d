@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: pmatrix short
+# key: pmq
+# --
+\pmqty{$1}$0

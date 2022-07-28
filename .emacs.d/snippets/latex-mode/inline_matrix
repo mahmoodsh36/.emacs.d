@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inline matrix
+# key: ima
+# --
+\left(\begin{array}{$1} $0 \end{array}\right)

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inline vmatrix
+# key: ivm
+# --
+\begin{vmatrix} $1 \end{vmatrix}$0

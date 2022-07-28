@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bmatrix short
+# key: bmq
+# --
+\bmqty{$1}$0

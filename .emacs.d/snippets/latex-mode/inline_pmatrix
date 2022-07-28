@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inline pmatrix
+# key: ipm
+# --
+\begin{pmatrix} $1 \end{pmatrix}$0
