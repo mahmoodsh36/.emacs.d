@@ -1,3 +1,6 @@
+:PROPERTIES:
+:ID:       ed11aafc-f255-45f0-86ec-9caec7c554f0
+:END:
 #+OPTIONS: toc:nil creator:nil timestamp:nil num:t validate:nil
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
@@ -22,12 +25,12 @@
 #+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
 #+LATEX_HEADER: \usepackage{centernot}
 #+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{physics}
 #+AUTHOR: mahmood
 #+LATEX_HEADER: \tikzstyle{every picture}+=[remember picture]
 #+LATEX_HEADER: \setlength{\parindent}{0pt}
 
 # some needed operators to not lose my sanity
-#+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
 #+LATEX_HEADER: \DeclareMathOperator{\dom}{domain}
 #+LATEX_HEADER: \DeclareMathOperator{\ran}{range}
@@ -36,3 +39,5 @@
 #+LATEX_HEADER: \newcommand\dif[1]{\:\textrm{d}#1}
 #+LATEX_HEADER: \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 #+LATEX_HEADER: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+# apparently the physics package has the \rank operator so i dont gotta define it.
+# #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
