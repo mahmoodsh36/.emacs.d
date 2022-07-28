@@ -1,6 +1,5 @@
 #+begin_export html
 <p style="height:0px; display: none;">
-  \(\DeclareMathOperator{\rank}{rank}\)
   \(\DeclareMathOperator{\spn}{span}\)
   \(\DeclareMathOperator{\dom}{domain}\)
   \(\DeclareMathOperator{\ran}{range}\)
@@ -91,7 +90,6 @@
 <style>
 .lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step {
   border-radius: 10px;
-  padding: 3px;
   border-style: groove;
   border-width: 3px;
 }
@@ -99,11 +97,13 @@
   background-color: #bbb;
   position: relative;
   border-radius: 10px;
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 1px;
+  padding-bottom: 1px;
   font-family: cursive;
+  border: 1px solid black;
+  font-size: 13px;
 }
 .lemma {
   background-color: beige;
@@ -193,11 +193,24 @@ img {
 <script>
 // auto load modules like cancel
 window.MathJax = {
-  loader: {load: ['[tex]/autoload', '[tex]/mathtools']},
+  loader: {load: ['[tex]/autoload', '[tex]/mathtools', '[tex]/physics']},
   tex: {
-    packages: {'[+]': ['autoload', 'mathtools']}
+    packages: {'[+]': ['autoload', 'mathtools', 'physics']}
   }
 };
+/* since i've configured org mode to insert a new line after every line i need to get rid of those that mess up my html */
+function removeNewlineAfterDisplayMath() {
+    elems = document.querySelectorAll('mjx-container')
+    for (i = 0; i < elems.length; ++i) {
+        elem = elems[i]
+        nextElem = elem.nextElementSibling
+        if (nextElem !== null && nextElem.tagName === 'BR')
+            nextElem.remove()
+    }
+}
+window.onload = function() {
+  removeNewlineAfterDisplayMath()
+}
 </script>
 <script type="text/javascript" id="MathJax-script" async
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
