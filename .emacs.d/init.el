@@ -57,7 +57,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 100 50))
+(when window-system (set-frame-size (selected-frame) 100 45))
 ;; no damn fringes dude!
 (set-fringe-style 0)
 ;; display only buffer name in modeline
@@ -514,10 +514,11 @@ space rather than before."
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
+;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :family "Cascadia Code" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Cascadia Code" :height 120)
-(set-face-attribute 'variable-pitch nil :family "Cascadia Code" :height 120)
+(set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono" :height 120)
+(set-face-attribute 'variable-pitch nil :family "DejaVu Sans Mono" :height 120)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -669,9 +670,9 @@ space rather than before."
   :config
   (setq highlight-indent-guides-method 'character)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
-(use-package dart-mode)
+;;(use-package dart-mode)
 (use-package flutter)
-(use-package lsp-dart)
+;;(use-package lsp-dart)
 
 ;; best pdf viewer
 (use-package pdf-tools
@@ -1167,7 +1168,6 @@ space rather than before."
   (ignore-errors (make-directory dir-path))
   (format "%s%s.%s" dir-path (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c r") (lambda () (interactive) (insert (generate-random-string 7))))
-
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
