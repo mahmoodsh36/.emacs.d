@@ -696,9 +696,9 @@ space rather than before."
   (company-prescient-mode))
 
 ;; ;; auto indentation
-(use-package aggressive-indent
-  :config
-  (aggressive-indent-global-mode))
+;; (use-package aggressive-indent
+;;   :config
+;;   (aggressive-indent-global-mode))
 
 ;; auto pairs insertion
 ;; (use-package smartparens
@@ -726,8 +726,9 @@ space rather than before."
 ;; best latex preview functionality
 (use-package xenops
   :config
-  (setq xenops-reveal-on-entry t)
-  (setq xenops-math-latex-max-tasks-in-flight 6)
+  (setq xenops-reveal-on-entry t
+        xenops-math-latex-max-tasks-in-flight 6
+        xenops-math-latex-process 'imagemagick)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
   ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
