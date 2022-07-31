@@ -101,9 +101,7 @@
   padding-left: 5px;
   padding-top: 1px;
   padding-bottom: 1px;
-  font-family: cursive;
   border: 1px solid black;
-  font-size: 13px;
 }
 .lemma {
   background-color: beige;
