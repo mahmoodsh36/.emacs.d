@@ -5,6 +5,7 @@
   \(\DeclareMathOperator{\ran}{range}\)
   \(\DeclareMathOperator{\rng}{range}\)
   \(\DeclareMathOperator{\img}{Im}\)
+  \(\DeclareMathOperator{\adj}{adj}\)
   \(\newcommand\dif[1]{\:\textrm{d}#1}\)
   \(\DeclarePairedDelimiter\ceil{\lceil}{\rceil}\)
   \(\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}\)

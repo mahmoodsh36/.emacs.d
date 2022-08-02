@@ -36,6 +36,7 @@
 #+LATEX_HEADER: \DeclareMathOperator{\ran}{range}
 #+LATEX_HEADER: \DeclareMathOperator{\rng}{range}
 #+LATEX_HEADER: \DeclareMathOperator{\img}{Im}
+#+LATEX_HEADER: \DeclareMathOperator{\adj}{adj}
 #+LATEX_HEADER: \newcommand\dif[1]{\:\textrm{d}#1}
 #+LATEX_HEADER: \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 #+LATEX_HEADER: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
