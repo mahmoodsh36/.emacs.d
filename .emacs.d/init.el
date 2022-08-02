@@ -654,9 +654,9 @@ space rather than before."
   (setq treemacs-width 30))
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
-;; (use-package exec-path-from-shell
-;;   :config
-;;   (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
 
 ;; display available keybindings
 (use-package which-key
