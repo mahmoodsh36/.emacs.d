@@ -97,6 +97,7 @@
 
 ;; the all-powerful org mode
 (use-package org)
+(use-package org-contrib)
 
 ;; the key to building a second brain in org mode
 (use-package org-roam
@@ -811,6 +812,7 @@ space rather than before."
 ;;   :config
 ;;   (procress-load-default-svg-images))
 
+(use-package dumb-jump)
 (use-package ob-async)
 (use-package csharp-mode)
 (use-package format-all)
@@ -827,6 +829,7 @@ space rather than before."
 
 (use-package org-ml)
 
+;; (use-package lispy)
 ;; (use-package jupyter)
 ;; (use-package ein)
 
@@ -908,7 +911,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
-(setq org-export-with-broken-links t)
+;; (setq org-export-with-broken-links t)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -998,11 +1001,11 @@ space rather than before."
   (find-file (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
 
 ;; tex hook to auto compile on save
-;; (add-hook
-;;  'TeX-mode-hook
-;;  (lambda ()
-;;    (compile-current-document)
-;;    (add-hook 'after-save-hook 'compile-current-document 0 t)))
+(add-hook
+ 'TeX-mode-hook
+ (lambda ()
+   (compile-current-document)
+   (add-hook 'after-save-hook 'compile-current-document 0 t)))
 
 ;; the next 2 functions need to be rewritten
 (defun compile-sagetex-command ()
@@ -1187,7 +1190,7 @@ space rather than before."
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
-(switch-to-dark-theme)
+(switch-to-light-theme)
 (lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
