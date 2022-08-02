@@ -34,7 +34,7 @@ super + r
     sh -c "$(echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | rofi -dmenu -i -p command)"
 
 super + R
-    terminal_with_cmd.sh "$(cat ~/data/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
+    terminal_with_cmd.sh "$(cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
 
 super + {e,shift+e}
     {choice=$(find -not -path '*.emacs.d/*' -not -path './data/flutter/*' -not -path '*.git/*' -not -path '*node_modules/*' -not -path '*.cache/*' -not -path '*build/*' -not -path '*./.mozilla*' -not -path './mnt/*'\
