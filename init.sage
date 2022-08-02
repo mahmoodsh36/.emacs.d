@@ -60,3 +60,5 @@ def handle(match):
 def my_format(mystr):
   print(re.sub(r"{.+?}", lambda match: handle(match.group()), mystr))
 fm = my_format
+
+implicit_multiplication(True)
