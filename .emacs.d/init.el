@@ -320,7 +320,7 @@
                           (lambda ()
                             (interactive)
                             (org-insert-time-stamp (current-time) t)))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "/home/mahmooz/brain/agenda.org")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "~/brain/agenda.org")))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -383,6 +383,9 @@
                             (insert " ")
                             (insert result)))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w m"
+                          (lambda () (interactive)
+                            (when window-system (set-frame-size (selected-frame) 165 55))))
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -403,7 +406,9 @@
       ;; evil mode multiple cursors
       (use-package evil-mc
         :config
-        (global-evil-mc-mode))
+        (global-evil-mc-mode)
+        (general-define-key :states '(normal motion emacs) :keymaps 'override "g . p" 'evil-mc-pause-cursors)
+        (general-define-key :states '(normal motion emacs) :keymaps 'override "g . r" 'evil-mc-resume-cursors))
 
       (use-package evil-escape
         :config
@@ -457,49 +462,71 @@ space rather than before."
   (projectile-mode +1))
 
 ;; auto completion
+(setq enable-company t)
 (setq completion-ignore-case t) ;; case-insensitivity
-(use-package company
-  :config
-  (add-hook 'after-init-hook 'global-company-mode)
-  (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
-  ;; disable non-smart completion
-  (delete 'company-dabbrev company-backends)
-  (setq company-idle-delay 0
-        company-require-match nil
-        company-tooltip-limit 20
-        company-tooltip-align-annotations t
-        company-dabbrev-downcase nil
-        company-show-quick-access t)
-  (eval-after-load 'company
-    '(progn
-       (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-       (define-key company-active-map [tab] 'company-complete-selection)
-       (unbind-key "RET" company-active-map)
-       (unbind-key "<return>" company-active-map))))
+(if enable-company
+    (progn
+      (use-package company
+        :config
+        (add-hook 'after-init-hook 'global-company-mode)
+        (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
+        ;; disable non-smart completion
+        (delete 'company-dabbrev company-backends)
+        (setq company-idle-delay 0
+              company-require-match nil
+              company-tooltip-limit 20
+              company-tooltip-align-annotations t
+              company-dabbrev-downcase nil
+              company-show-quick-access t)
+        (eval-after-load 'company
+          '(progn
+             (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+             (define-key company-active-map [tab] 'company-complete-selection)
+             (unbind-key "RET" company-active-map)
+             (unbind-key "<return>" company-active-map))))
 
-;; popup documentation for quick help for company
-(use-package company-quickhelp
-  :config
-  (company-quickhelp-mode))
+      ;; popup documentation for quick help for company
+      (use-package company-quickhelp
+        :config
+        (company-quickhelp-mode))
 
-;; company completion with icons
-(use-package company-box
-  :hook (company-mode . company-box-mode))
+      ;; company completion with icons
+      (use-package company-box
+        :hook (company-mode . company-box-mode))
 
-;; anaconda for python
-(use-package company-anaconda
-  :config
-  (eval-after-load "company"
-    '(add-to-list 'company-backends 'company-anaconda))
-  (add-hook 'python-mode-hook 'anaconda-mode))
+      ;; anaconda for python
+      (use-package company-anaconda
+        :config
+        (eval-after-load "company"
+          '(add-to-list 'company-backends 'company-anaconda))
+        (add-hook 'python-mode-hook 'anaconda-mode))
 
-;; company for web mode
-(use-package company-web)
+      ;; company for web mode
+      (use-package company-web)
 
-;; company for shell scripting
-(use-package company-shell
-  :config
-  (add-to-list 'company-backends '(company-shell company-shell-env)))
+      ;; company for shell scripting
+      (use-package company-shell
+        :config
+        (add-to-list 'company-backends '(company-shell company-shell-env)))
+
+      ;; latex company backend
+      (use-package company-auctex
+        :config
+        (company-auctex-init))
+
+      (use-package company-prescient
+        :config
+        (company-prescient-mode))
+      )
+  (progn ;; corfu autocompletion
+    (use-package corfu
+      :init
+      (global-corfu-mode)
+      :custom
+      (corfu-cycle t)
+      (corfu-auto t)
+      (corfu-auto-delay 0))
+    ))
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -517,9 +544,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono" :height 120)
-(set-face-attribute 'variable-pitch nil :family "DejaVu Sans Mono" :height 120)
+(set-face-attribute 'default nil :family "Cascadia Code" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Cascadia Code" :height 130)
+(set-face-attribute 'variable-pitch nil :family "Cascadia Code" :height 130)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -671,9 +698,8 @@ space rather than before."
   :config
   (setq highlight-indent-guides-method 'character)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
-;;(use-package dart-mode)
 (use-package flutter)
-;;(use-package lsp-dart)
+(use-package lsp-dart)
 
 ;; best pdf viewer
 (use-package pdf-tools
@@ -681,20 +707,12 @@ space rather than before."
   (pdf-tools-install t)
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
-;; latex company backend
-(use-package company-auctex
-  :config
-  (company-auctex-init))
-
 ;; history for ivy completion, it sometimes makes ivy really slow, so maybe remove the cache file every once in a while
 (use-package ivy-prescient
   :config
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
   (setq prescient-save-file (expand-file-name "~/brain/emacs_prescient"))) ;; save history to filesystem
-(use-package company-prescient
-  :config
-  (company-prescient-mode))
 
 ;; ;; auto indentation
 ;; (use-package aggressive-indent
@@ -736,7 +754,7 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  (setq xenops-math-image-scale-factor 1.4)
+  ;; (setq xenops-math-image-scale-factor 0.7)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -817,9 +835,6 @@ space rather than before."
 (use-package csharp-mode)
 (use-package format-all)
 (use-package org-roam-ui)
-;; (use-package corfu
-;;   :init
-;;   (global-corfu-mode))
 ;; (use-package code-compass)
 
 ;; (use-package lastfm)
@@ -985,7 +1000,7 @@ space rather than before."
   dir-path)
 
 (defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
+  (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -1001,11 +1016,11 @@ space rather than before."
   (find-file (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
 
 ;; tex hook to auto compile on save
-(add-hook
- 'TeX-mode-hook
- (lambda ()
-   (compile-current-document)
-   (add-hook 'after-save-hook 'compile-current-document 0 t)))
+;; (add-hook
+;;  'TeX-mode-hook
+;;  (lambda ()
+;;    (compile-current-document)
+;;    (add-hook 'after-save-hook 'compile-current-document 0 t)))
 
 ;; the next 2 functions need to be rewritten
 (defun compile-sagetex-command ()
@@ -1105,7 +1120,7 @@ space rather than before."
 ;; use unique id's to identify headers, better than using names cuz names could change
 (setq org-id-link-to-org-use-id t)
 ;; org agenda
-(setq org-agenda-files '("/home/mahmooz/brain/agenda.org"))
+(setq org-agenda-files '("~/brain/agenda.org"))
 (defun lob-reload ()
   "load some files into org babel library"
   (interactive)
@@ -1134,7 +1149,7 @@ space rather than before."
         (:exports . "results")
         (:fit . t)
         (:imagemagick . t)
-        (:async . t)
+        ;; (:async . t)
         (:eval . "no-export")
         (:packages . ("\\usepackage{forest}"
                       "\\usepackage{amsmath}"
@@ -1144,7 +1159,6 @@ space rather than before."
                       "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
                       ))))
 ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
-;;(setq org-src-fontify-natively nil)
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -1190,7 +1204,7 @@ space rather than before."
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
-(switch-to-light-theme)
+(switch-to-dark-theme)
 (lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
