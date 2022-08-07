@@ -148,7 +148,7 @@
         (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
         ;; undo/redo keys
         (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-        (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+        (define-key evil-normal-state-map "r" 'undo-fu-only-redo)
         ;; make ESC cancel all
         (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
       ;;dont copy the overwritten text when overwriting text by pasting
@@ -278,7 +278,7 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/brain/")))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
@@ -357,10 +357,11 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r b" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r k" 'org-insert-link)
 
       ;; keys to search for files
       (define-key evil-normal-state-map (kbd "SPC f c")
-                  (lambda () (interactive) (search-open-file "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+                  (lambda () (interactive) (search-open-file "~/brain/" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
       (define-key evil-normal-state-map (kbd "SPC F c")
                   (lambda () (interactive)
                     (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
@@ -375,13 +376,14 @@
                     (search-open-file-in-emacs "~/data" "")))
 
       ;; keybinding to evaluate math expressions
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
-                          (lambda ()
-                            (interactive)
-                            (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
-                            (end-of-line)
-                            (insert " ")
-                            (insert result)))
+      ;; (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
+      ;;                     (lambda ()
+      ;;                       (interactive)
+      ;;                       (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
+      ;;                       (end-of-line)
+      ;;                       (insert " ")
+      ;;                       (insert result)))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m" 'man)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w m"
                           (lambda () (interactive)
@@ -525,8 +527,8 @@ space rather than before."
       :custom
       (corfu-cycle t)
       (corfu-auto t)
-      (corfu-auto-delay 0))
-    ))
+      (corfu-auto-delay 0)))
+  )
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -736,9 +738,9 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir "/home/mahmooz/workspace/blog/")
+  (setq org-hugo-base-dir (file-truename "~/blog/"))
   (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
+  (setq org-more-dir (expand-file-name "~/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
@@ -746,10 +748,10 @@ space rather than before."
 (use-package xenops
   :config
   (setq xenops-reveal-on-entry t
-        xenops-math-latex-max-tasks-in-flight 6
+        xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'imagemagick)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  ;; (add-hook 'org-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
@@ -806,6 +808,8 @@ space rather than before."
   (ivy-rich-mode 1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
+(use-package vulpea)
+
 (use-package elfeed-tube
   :straight (:host github :repo "karthink/elfeed-tube")
   :after elfeed
@@ -821,28 +825,20 @@ space rather than before."
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
 
-;; progress in mode line
-;; (use-package procress
-;;   :straight (:host github :repo "haji-ali/procress")
-;;   :commands tex-procress-mode
-;;   :init
-;;   (add-hook 'LaTeX-mode-hook 'tex-procress-mode)
-;;   :config
-;;   (procress-load-default-svg-images))
-
 (use-package dumb-jump)
 (use-package ob-async)
 (use-package csharp-mode)
 (use-package format-all)
 (use-package org-roam-ui)
 ;; (use-package code-compass)
+;; (use-package org-ref)
 
 ;; (use-package lastfm)
 ;; (use-package vuiet
 ;;   :config
 ;;   (setq browse-url-browser-function 'browse-url-chrome))
 
-(use-package org-ml)
+;; (use-package org-ml)
 
 ;; (use-package lispy)
 ;; (use-package jupyter)
@@ -855,7 +851,6 @@ space rather than before."
 ;; (use-package org-transclusion)
 ;; (use-package svg-tag-mode)
 
-;; (use-package org-ref)
 ;; (use-package alert)
 ;; (use-package olivetti)
 ;; (use-package ox-json)
@@ -1204,7 +1199,7 @@ space rather than before."
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
-(switch-to-dark-theme)
+(switch-to-light-theme)
 (lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
@@ -1306,3 +1301,70 @@ space rather than before."
 ;;     (goto-char start)))
 ;; (define-key evil-motion-state-map (kbd "M-b")
 ;;   #'evil-backward-text-object)
+
+;; org-roam TODOs https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html
+(add-to-list 'org-tags-exclude-from-inheritance "todo")
+(defun vulpea-todo-p ()
+  "Return non-nil if current buffer has any todo entry.
+
+TODO entries marked as done are ignored, meaning the this
+function returns nil if current buffer contains only completed
+tasks."
+  (org-element-map
+       (org-element-parse-buffer 'headline)
+       'headline
+     (lambda (h)
+       (eq (org-element-property :todo-type h)
+           'todo))
+     nil 'first-match))
+(add-hook 'find-file-hook #'vulpea-todo-update-tag)
+(add-hook 'before-save-hook #'vulpea-todo-update-tag)
+(defun vulpea-todo-update-tag ()
+      "Update TODO tag in the current buffer."
+      (when (and (not (active-minibuffer-window))
+                 (vulpea-buffer-p))
+        (save-excursion
+          (goto-char (point-min))
+          (let* ((tags (vulpea-buffer-tags-get))
+                 (original-tags tags))
+            (if (vulpea-todo-p)
+                (setq tags (cons "todo" tags))
+              (setq tags (remove "todo" tags)))
+
+            ;; cleanup duplicates
+            (setq tags (seq-uniq tags))
+
+            ;; update tags if changed
+            (when (or (seq-difference tags original-tags)
+                      (seq-difference original-tags tags))
+              (apply #'vulpea-buffer-tags-set tags))))))
+(defun vulpea-buffer-p ()
+  "Return non-nil if the currently visited buffer is a note."
+  (and buffer-file-name
+       (string-prefix-p
+        (expand-file-name (file-name-as-directory org-roam-directory))
+        (file-name-directory buffer-file-name))))
+(defun vulpea-todo-files ()
+  "Return a list of note files containing 'todo' tag." ;
+  (seq-uniq
+   (seq-map
+    #'car
+    (org-roam-db-query
+     [:select [nodes:file]
+      :from tags
+      :left-join nodes
+      :on (= tags:node-id nodes:id)
+      :where (like tag (quote "%\"todo\"%"))]))))
+(setq org-agenda-files (vulpea-todo-files))
+(defun vulpea-agenda-files-update (&rest _)
+  "Update the value of `org-agenda-files'."
+  (setq org-agenda-files (vulpea-todo-files)))
+(advice-add 'org-agenda :before #'vulpea-agenda-files-update)
+(advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
+
+;(dolist (file (org-roam-list-files))
+  ;(message "processing %s" file)
+  ;(with-current-buffer (or (find-buffer-visiting file)
+                           ;(find-file-noselect file))
+    ;(vulpea-todo-update-tag)
+    ;(save-buffer)))
