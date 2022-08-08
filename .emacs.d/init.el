@@ -555,7 +555,7 @@ space rather than before."
 (use-package anti-zenburn-theme)
 (use-package zenburn-theme)
 (use-package poet-theme)
-(use-package gruvbox-theme)
+;; (use-package gruvbox-theme)
 (use-package inkpot-theme)
 ;; (load-theme 'darktooth t)
 ;; (modus-themes-load-operandi)
@@ -751,7 +751,7 @@ space rather than before."
         xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'imagemagick)
   (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
@@ -760,7 +760,13 @@ space rather than before."
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
-            ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]"))))
+            ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
+  (advice-add 'xenops-math-latex-get-colors :filter-return
+              (lambda (col)
+                (interactive)
+                (list (org-latex-color :foreground) (org-latex-color :background))))
+  (plist-put org-format-latex-options :foreground "black")
+  )
 
 (use-package mixed-pitch
   :hook
@@ -1139,21 +1145,21 @@ space rather than before."
 (setq org-html-mathjax-template "")
 (setq org-html-mathjax-options '())
 ;; to enable imagemagick latex generation with :async
-(setq org-babel-default-header-args:latex
-      '((:results . "latex")
-        (:exports . "results")
-        (:fit . t)
-        (:imagemagick . t)
-        ;; (:async . t)
-        (:eval . "no-export")
-        (:packages . ("\\usepackage{forest}"
-                      "\\usepackage{amsmath}"
-                      "\\usepackage{tikz}"
-                      "\\usepackage{tikz-3dplot}"
-                      "\\usepackage{pgfplots}"
-                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
-                      ))))
-;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
+;; (setq org-babel-default-header-args:latex
+;;       '((:results . "latex")
+;;         (:exports . "results")
+;;         (:fit . t)
+;;         (:imagemagick . t)
+;;         ;; (:async . t)
+;;         (:eval . "no-export")
+;;         (:packages . ("\\usepackage{forest}"
+;;                       "\\usepackage{amsmath}"
+;;                       "\\usepackage{tikz}"
+;;                       "\\usepackage{tikz-3dplot}"
+;;                       "\\usepackage{pgfplots}"
+;;                       "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
+;;                       ))))
+(add-to-list 'org-babel-default-header-args:latex '(:eval . "no-export"))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -1199,7 +1205,8 @@ space rather than before."
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
-(switch-to-light-theme)
+;; (switch-to-light-theme)
+(switch-to-dark-theme)
 (lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
