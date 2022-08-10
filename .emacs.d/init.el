@@ -58,8 +58,8 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 (when window-system (set-frame-size (selected-frame) 100 45))
-;; no damn fringes dude!
-(set-fringe-style 0)
+;; space around the windows
+(set-fringe-style '(12 . 0))
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
 ;; restore default status line for pdf mode
@@ -320,7 +320,7 @@
                           (lambda ()
                             (interactive)
                             (org-insert-time-stamp (current-time) t)))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (find-file "~/brain/agenda.org")))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda-list)))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -578,8 +578,7 @@ space rather than before."
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
-  (setq web-mode-content-types-alist
-        '(("jsx" . "\\.js[x]?\\'")))
+  (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
@@ -792,20 +791,22 @@ space rather than before."
 (use-package org-modern
   :config
   (setq
+   org-modern-hide-stars nil
    org-auto-align-tags nil
    org-tags-column 0
    org-catch-invisible-edits 'show-and-error
    org-special-ctrl-a/e t
    org-insert-heading-respect-content t
    ;; Agenda styling
-   org-agenda-tags-column 0
-   org-agenda-block-separator ?─
-   org-agenda-time-grid
-   '((daily today require-timed)
-     (800 1000 1200 1400 1600 1800 2000)
-     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-   org-agenda-current-time-string
-   "⭠ now ─────────────────────────────────────────────────")
+   ;; org-agenda-tags-column 0
+   ;; org-agenda-block-separator ?─
+   ;; org-agenda-time-grid
+   ;; '((daily today require-timed)
+   ;;   (800 1000 1200 1400 1600 1800 2000)
+   ;;   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   ;; org-agenda-current-time-string
+   ;; "⭠ now ─────────────────────────────────────────────────"
+   )
   (global-org-modern-mode))
 
 ;; more featureful ivy menus
@@ -815,6 +816,7 @@ space rather than before."
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 (use-package vulpea)
+(use-package dap-mode)
 
 (use-package elfeed-tube
   :straight (:host github :repo "karthink/elfeed-tube")
@@ -836,6 +838,8 @@ space rather than before."
 (use-package csharp-mode)
 (use-package format-all)
 (use-package org-roam-ui)
+(use-package jupyter)
+(use-package plantuml-mode)
 ;; (use-package code-compass)
 ;; (use-package org-ref)
 
@@ -847,7 +851,6 @@ space rather than before."
 ;; (use-package org-ml)
 
 ;; (use-package lispy)
-;; (use-package jupyter)
 ;; (use-package ein)
 
 ;; (use-package delve
@@ -882,7 +885,6 @@ space rather than before."
 ;;(use-package google-this)
 ;;(use-package google-translate)
 ;;(use-package google-maps)
-;;(use-package plantuml-mode)
 
 ;; start server
 (server-start)
@@ -920,6 +922,8 @@ space rather than before."
    (C . t)
    (shell . t)
    (lua . t)))
+;; make g++ compile with std=c++17 flag
+(setq org-babel-C++-compiler "g++ -std=c++17")
 ;; make org babel default to python3
 (setq org-babel-python-command "python3")
 ;; increase org table max lines
@@ -1090,7 +1094,7 @@ space rather than before."
 ;; preserve all line breaks when exporting
 (setq org-export-preserve-breaks t)
 ;; indent headings properly
-(add-hook 'org-mode-hook 'org-indent-mode)
+;; (add-hook 'org-mode-hook 'org-indent-mode)
 (setq org-todo-keywords
   '((sequence
      "TODO(t!)" ; Initial creation
@@ -1369,9 +1373,24 @@ tasks."
 (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
 (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
 
-;(dolist (file (org-roam-list-files))
-  ;(message "processing %s" file)
-  ;(with-current-buffer (or (find-buffer-visiting file)
-                           ;(find-file-noselect file))
-    ;(vulpea-todo-update-tag)
-    ;(save-buffer)))
+(defun roam-math-files ()
+  (interactive)
+  "Return a list of note files containing 'todo' tag." ;
+  (seq-uniq
+   (seq-map
+    #'car
+    (org-roam-db-query
+     [:select [nodes:file]
+      :from tags
+      :left-join nodes
+      :on (= tags:node-id nodes:id)
+      :where (like tag "math")]))))
+
+(defun go-through-math-files ()
+  (interactive)
+  (dolist (file (roam-math-files))
+    (message "processing %s" file)
+    (with-current-buffer (or (find-buffer-visiting file)
+                            (find-file-noselect file))
+      ;; (vulpea-todo-update-tag)
+      (save-buffer))))
