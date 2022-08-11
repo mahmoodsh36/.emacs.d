@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: floor
+# key: fl
+# --
+\floor*{$1}$0
