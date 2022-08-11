@@ -749,7 +749,7 @@ space rather than before."
   (setq xenops-reveal-on-entry t
         xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'imagemagick)
-  (add-hook 'LaTeX-mode-hook #'xenops-mode)
+  ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
   ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
@@ -1316,7 +1316,7 @@ space rather than before."
 ;; org-roam TODOs https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html
 (add-to-list 'org-tags-exclude-from-inheritance "todo")
 (defun vulpea-todo-p ()
-  "Return non-nil if current buffer has any todo entry.
+  "Return non-nil if current buffer has any todo/done entries.
 
 TODO entries marked as done are ignored, meaning the this
 function returns nil if current buffer contains only completed
@@ -1325,8 +1325,10 @@ tasks."
        (org-element-parse-buffer 'headline)
        'headline
      (lambda (h)
-       (eq (org-element-property :todo-type h)
-           'todo))
+       (or (eq (org-element-property :todo-type h)
+               'todo)
+           (eq (org-element-property :todo-type h)
+               'done)))
      nil 'first-match))
 (add-hook 'find-file-hook #'vulpea-todo-update-tag)
 (add-hook 'before-save-hook #'vulpea-todo-update-tag)
@@ -1381,16 +1383,16 @@ tasks."
     #'car
     (org-roam-db-query
      [:select [nodes:file]
-      :from tags
-      :left-join nodes
-      :on (= tags:node-id nodes:id)
-      :where (like tag "math")]))))
+              :from tags
+              :left-join nodes
+              :on (= tags:node-id nodes:id)
+              :where (like tag "math")]))))
 
 (defun go-through-math-files ()
   (interactive)
   (dolist (file (roam-math-files))
     (message "processing %s" file)
     (with-current-buffer (or (find-buffer-visiting file)
-                            (find-file-noselect file))
+                             (find-file-noselect file))
       ;; (vulpea-todo-update-tag)
       (save-buffer))))
