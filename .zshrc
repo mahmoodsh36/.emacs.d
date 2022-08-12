@@ -42,7 +42,7 @@ zstyle ':completion:*' completer _complete_alias _complete _ignored
 setopt AUTO_CD
 setopt ALWAYS_TO_END
 setopt COMPLETE_ALIASES
-# setopt SHARE_HISTORY
+setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt RM_STARSILENT
 setopt EXTENDED_HISTORY
@@ -51,7 +51,6 @@ setopt HIST_FIND_NO_DUPS
 setopt interactivecomments
 
 # prompt
-# export PS1="[%m@%1~]$ "
 if [ -n "$SSH_CLIENT" ]; then
   ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1 | head -1)
   export PS1="[$ip_addr %1~]$ "
@@ -60,6 +59,7 @@ elif [[ ! -z "$IN_NIX_SHELL" ]]; then
 else
   export PS1="[%1~]$ "
 fi
+
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/.python_history
 
@@ -100,7 +100,7 @@ alias calc="bc -l"
 alias bde="bg; disown; exit"
 alias psg="ps -e | grep -i"
 alias mt="file --mime-type -b"
-alias cp="rsync -a --info=progress2"
+alias cp="rsync -a"
 alias fr="adb reverse tcp:5000 tcp:5000; flutter run"
 alias ytdl='yt-dlp'
 alias nrs="sudo nixos-rebuild switch"
@@ -111,27 +111,6 @@ alias se="sudoedit"
 alias nix-shell="nix-shell --command zsh"
 alias dla="yt-dlp -f bestaudio --extract-audio --add-metadata --split-chapters --embed-thumbnail" # short for download album
 
-update_trackify_android_apk() {
-    rsync -P ~/workspace/trackify_android/build/app/outputs/flutter-apk/app-release.apk \
-        trackifyapp.net:/home/mahmooz/workspace/trackify/trackify/webapp/static/trackify.apk
-}
-
-#rm() {
-#    rsync -a --info=progress2 --remove-source-files $1 mahmooz@home:trash/
-#}
-
-# find files with a certain mimetype
-ffwm() {
-    mime="$1"
-    find -type f | parallel -j+1 mimetype | grep --color=no "$mime" | rev | cut -d ':' -f2- | rev
-}
-
-# get the difference in percentage between 2 images
-cmp_image() {
-    convert "$1" "$2" -compose Difference -composite \
-        -colorspace gray -format '%[fx:mean*100]' info:
-}
-
 # cd and ls into directory
 c() {
     cd $@; ls
@@ -139,12 +118,6 @@ c() {
 
 # do some math
 math() { awk "BEGIN {print ${@:1}}"; }
-
-# connect to a server of mine using the ssh key
-sr() {
-  num=$1
-  ssh server$num -i ~/data/keys/server$num/id_ed25519
-}
 
 # colors for man pages
 export LESS_TERMCAP_mb=$'\e[1;32m'
@@ -170,6 +143,11 @@ setup_plugins() {
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
     git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 }
+load_plugins() {
+    source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+}
+load_plugins 2>/dev/null
+
 setup_yay() {
     sudo pacman -S --needed git base-devel
     git clone https://aur.archlinux.org/yay.git
@@ -179,11 +157,5 @@ setup_yay() {
     rm -rf yay
 }
 
-load_plugins() {
-    source ~/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-}
-
 # ssh issues with kitty fix
 export TERM=xterm-256color
-
-load_plugins 2>/dev/null
