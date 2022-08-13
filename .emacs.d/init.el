@@ -92,6 +92,19 @@
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
 
+(defun kill-all-buffers ()
+  "kill all buffers including internal buffers (buffers starting with a space)"
+  (interactive)
+  (setq list (buffer-list))
+  (while list
+    (let* ((buffer (car list))
+	   (name (buffer-name buffer)))
+      (and name
+	   (not (string-equal name ""))
+	   (/= (aref name 0) ?\s)
+	   (kill-buffer buffer)))
+    (setq list (cdr list))))
+
 ;;(setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
 
@@ -290,6 +303,7 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b a" 'kill-all-buffers)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
       (general-define-key :states '(normal motion emacs) :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC g" 'counsel-ag)
@@ -556,6 +570,7 @@ space rather than before."
 (use-package zenburn-theme)
 (use-package poet-theme)
 ;; (use-package gruvbox-theme)
+(use-package doom-themes)
 (use-package inkpot-theme)
 ;; (load-theme 'darktooth t)
 ;; (modus-themes-load-operandi)
@@ -1061,9 +1076,9 @@ space rather than before."
   "run the current bash script being edited"
   (interactive)
   (run-command-show-output (buffer-file-name)))
-(add-hook 'sh-mode-hook
-          (lambda ()
-            (add-hook 'after-save-hook 'run-script 0 t)))
+;; (add-hook 'sh-mode-hook
+;;           (lambda ()
+;;             (add-hook 'after-save-hook 'run-script 0 t)))
 
 ;; eshell configs
 ;; make the cursor stay at the prompt when scrolling
@@ -1175,7 +1190,8 @@ space rather than before."
 (setq org-image-actual-width nil)
 ;; get rid of background colors of block lines bleeding all over folded headlines
 (setq org-fontify-whole-block-delimiter-line nil)
-(setq org-fold-catch-invisible-edits 'smart)
+(setq org-fold-catch-invisible-edits 'smart
+      org-agenda-span 'fortnight)
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1195,7 +1211,7 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'gruvbox-light-medium)
+  (disable-theme 'doom-gruvbox-light)
   (load-theme 'darktooth t))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1204,7 +1220,7 @@ space rather than before."
   "switch to light theme"
   (interactive)
   (disable-theme 'darktooth)
-  (load-theme 'gruvbox-light-medium t))
+  (load-theme 'doom-gruvbox-light t))
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1330,7 +1346,7 @@ tasks."
            (eq (org-element-property :todo-type h)
                'done)))
      nil 'first-match))
-(add-hook 'find-file-hook #'vulpea-todo-update-tag)
+;; (add-hook 'find-file-hook #'vulpea-todo-update-tag) this causes problems on exporting from org where emacs begins to ask whether to kill modified buffers as the todo tags for some reason get deleted
 (add-hook 'before-save-hook #'vulpea-todo-update-tag)
 (defun vulpea-todo-update-tag ()
       "Update TODO tag in the current buffer."
