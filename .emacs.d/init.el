@@ -401,7 +401,7 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w m"
                           (lambda () (interactive)
-                            (when window-system (set-frame-size (selected-frame) 165 55))))
+                            (when window-system (set-frame-size (selected-frame) 165 50))))
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -560,9 +560,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :family "Cascadia Code" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Cascadia Code" :height 130)
-(set-face-attribute 'variable-pitch nil :family "Cascadia Code" :height 130)
+(set-face-attribute 'default nil :family "Monaco" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Monaco" :height 130)
+(set-face-attribute 'variable-pitch nil :family "Monaco" :height 130)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -947,6 +947,9 @@ space rather than before."
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
 ;; (setq org-export-with-broken-links t)
+;; thought org caching was the bottleneck for ox-hugo exports but it isnt
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -1132,15 +1135,13 @@ space rather than before."
          ".org-svg { width: auto; }"
          org-html-style-default)))
 ;; enable <s code block snippet
-(require 'org-src)
+;; (require 'org-src)
 ;; make org-babel java act like other langs
 (setq org-babel-default-header-args:java
       '((:dir . nil)
         (:results . "value")))
 ;; use unique id's to identify headers, better than using names cuz names could change
 (setq org-id-link-to-org-use-id t)
-;; org agenda
-(setq org-agenda-files '("~/brain/agenda.org"))
 (defun lob-reload ()
   "load some files into org babel library"
   (interactive)
@@ -1374,7 +1375,7 @@ tasks."
         (expand-file-name (file-name-as-directory org-roam-directory))
         (file-name-directory buffer-file-name))))
 (defun vulpea-todo-files ()
-  "Return a list of note files containing 'todo' tag." ;
+  "Return a list of note files containing 'todo' tag.";
   (seq-uniq
    (seq-map
     #'car
@@ -1392,8 +1393,8 @@ tasks."
 (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
 
 (defun roam-math-files ()
+  "Return a list of note files containing 'math' tag.";
   (interactive)
-  "Return a list of note files containing 'todo' tag." ;
   (seq-uniq
    (seq-map
     #'car
@@ -1403,7 +1404,6 @@ tasks."
               :left-join nodes
               :on (= tags:node-id nodes:id)
               :where (like tag "math")]))))
-
 (defun go-through-math-files ()
   (interactive)
   (dolist (file (roam-math-files))
