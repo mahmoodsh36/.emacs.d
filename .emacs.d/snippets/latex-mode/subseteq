@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: subseteq
-# key: s
+# key: st
 # --
-\subseteq$0
+\subseteq $0

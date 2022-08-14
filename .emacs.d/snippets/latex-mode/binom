@@ -2,4 +2,4 @@
 # name: binom
 # key: bi
 # --
-\binom{${1:n}}{${2:k}} = \frac{$1!}{($1-$2)!$2!}
+\binom{${1:n}}{${2:k}} = \frac{$1!}{($1-$2)!$2!} = ${2:$(calc-eval (format "(%s!)/((%s-%s)!%s!)" (or (yas-field-value 1) "0") (or (yas-field-value 1) "0") (or yas-text "0") (or yas-text "0")))}
