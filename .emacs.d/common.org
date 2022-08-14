@@ -91,8 +91,9 @@
 <style>
 .lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step {
   border-radius: 10px;
-  border-style: groove;
-  border-width: 3px;
+  box-shadow: 10px 10px 15px rgba(0,0,0,.1);
+  padding: 2px;
+  border: 1px black solid;
 }
 .lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before {
   background-color: #bbb;
@@ -195,7 +196,8 @@ window.MathJax = {
   loader: {load: ['[tex]/autoload', '[tex]/mathtools', '[tex]/physics']},
   tex: {
     packages: {'[+]': ['autoload', 'mathtools', 'physics']}
-  }
+  },
+  tex2jax: {preview: "none"}
 };
 /* since i've configured org mode to insert a new line after every line i need to get rid of those that mess up my html */
 function removeNewlineAfterDisplayMath() {
@@ -211,8 +213,7 @@ window.onload = function() {
   removeNewlineAfterDisplayMath()
 }
 </script>
-<script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+<script type="text/javascript" id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
 </script>
 #+end_export
 
