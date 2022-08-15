@@ -300,7 +300,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states 'normal :keymaps 'override "SPC f f" 'counsel-find-file)
-      (general-define-key :states '(normal emacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
+      (general-define-key :states '(normal emacs treemacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states 'normal :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states 'normal :keymaps 'override "SPC b K" 'kill-buffer-and-window)
       (general-define-key :states 'normal :keymaps 'override "SPC b a" 'kill-all-buffers)
@@ -367,10 +367,13 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r k" 'org-clock-out)
       (general-define-key :states 'normal :keymaps 'override "SPC r b" 'org-clock-cancel)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r g" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-insert-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
+      (general-define-key :states 'normal :keymaps 'override "SPC r g"
+                          (lambda ()
+                            (interactive)
+                            (find-file org-cite-global-bibliography)))
       (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
 
       ;; keys to search for files
@@ -857,8 +860,11 @@ space rather than before."
 (use-package org-roam-ui)
 (use-package jupyter)
 (use-package plantuml-mode)
+(use-package org-ref
+  :config
+  (setq bibtex-completion-bibliography '("~/brain/bib.bib")
+        org-cite-global-bibliography "~/brain/bib.bib"))
 ;; (use-package code-compass)
-;; (use-package org-ref)
 
 ;; (use-package lastfm)
 ;; (use-package vuiet
@@ -949,7 +955,7 @@ space rather than before."
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
 ;; (setq org-export-with-broken-links t)
-;; thought org caching was the bottleneck for ox-hugo exports but it isnt
+;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is..)
 ;; (setq org-element-cache-persistent nil)
 ;; (setq org-element-use-cache nil)
 
