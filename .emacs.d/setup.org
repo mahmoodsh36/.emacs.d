@@ -26,9 +26,11 @@
 #+LATEX_HEADER: \usepackage{centernot}
 #+LATEX_HEADER: \usepackage{lmodern}
 #+LATEX_HEADER: \usepackage{physics}
-#+AUTHOR: mahmood
+#+LATEX_HEADER: \usepackage{algpseudocode}
 #+LATEX_HEADER: \tikzstyle{every picture}+=[remember picture]
 #+LATEX_HEADER: \setlength{\parindent}{0pt}
+#+AUTHOR: mahmood
+
 
 # some needed operators to not lose my sanity
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
