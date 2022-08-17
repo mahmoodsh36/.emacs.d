@@ -300,11 +300,11 @@
       (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states 'normal :keymaps 'override "SPC f f" 'counsel-find-file)
-      (general-define-key :states '(normal emacs treemacs) :keymaps 'override "SPC SPC" 'counsel-M-x)
-      (general-define-key :states 'normal :keymaps 'override "SPC b k" 'kill-this-buffer)
-      (general-define-key :states 'normal :keymaps 'override "SPC b K" 'kill-buffer-and-window)
-      (general-define-key :states 'normal :keymaps 'override "SPC b a" 'kill-all-buffers)
-      (general-define-key :states 'normal :keymaps 'override "SPC b s" 'counsel-switch-buffer)
+      (general-define-key :states '(normal emacs treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
       (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
       (general-define-key :states 'normal :keymaps 'override "SPC g" 'counsel-ag)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
@@ -334,7 +334,7 @@
                           (lambda ()
                             (interactive)
                             (org-insert-time-stamp (current-time) t)))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda-list)))
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda)))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -367,7 +367,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r k" 'org-clock-out)
       (general-define-key :states 'normal :keymaps 'override "SPC r b" 'org-clock-cancel)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-insert-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
       (general-define-key :states 'normal :keymaps 'override "SPC r g"
@@ -377,15 +377,11 @@
       (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
 
       ;; keys to search for files
-      (define-key evil-normal-state-map (kbd "SPC f c")
-                  (lambda () (interactive) (search-open-file "~/brain/" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
-      (define-key evil-normal-state-map (kbd "SPC F c")
-                  (lambda () (interactive)
-                    (search-open-file-in-emacs "~/workspace/college" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
-      (define-key evil-normal-state-map (kbd "SPC f p")
-                  (lambda () (interactive) (search-open-file "~/data/p" "")))
-      (define-key evil-normal-state-map (kbd "SPC f b")
-                  (lambda () (interactive) (search-open-file "~/brain/" "")))
+      (general-define-key :states 'normal :keymaps 'override "SPC f b"
+                          (lambda () (interactive) (search-open-file "~/brain/" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+      (general-define-key :states 'normal :keymaps 'override "SPC F b"
+                  (lambda () (interactive) (search-open-file-in-emacs "~/brain/" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+
       (define-key evil-normal-state-map (kbd "SPC f d")
                   (lambda () (interactive) (search-open-file "~/data" "")))
       (define-key evil-normal-state-map (kbd "SPC F d")
@@ -791,16 +787,6 @@ space rather than before."
   :hook
   (text-mode . mixed-pitch-mode))
 
-;; show hidden elements when cursor is over them like links/markers etc
-;; (use-package org-appear
-;;   :config
-;;   (setq org-appear-autoemphasis t
-;;         org-appear-autoentities t
-;;         org-appear-autokeywords t
-;;         org-appear-autolinks t
-;;         org-appear-autosubmarkers t)
-;;   (add-hook 'org-mode-hook 'org-appear-mode))
-
 ;; add edition/creation timestamps to headers and files
 (use-package org-roam-timestamps
   :config
@@ -828,6 +814,16 @@ space rather than before."
    ;; "⭠ now ─────────────────────────────────────────────────"
    )
   (global-org-modern-mode))
+
+;; show hidden elements when cursor is over them like links/markers etc
+(use-package org-appear
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autoentities t
+        org-appear-autokeywords t
+        org-appear-autolinks t
+        org-appear-autosubmarkers t)
+  (add-hook 'org-mode-hook 'org-appear-mode))
 
 ;; more featureful ivy menus
 (use-package ivy-rich
@@ -862,8 +858,8 @@ space rather than before."
 (use-package plantuml-mode)
 (use-package org-ref
   :config
-  (setq bibtex-completion-bibliography '("~/brain/bib.bib")
-        org-cite-global-bibliography "~/brain/bib.bib"))
+  ;; (setq bibtex-completion-bibliography '("~/brain/bib.bib")
+  (setq org-cite-global-bibliography '("~/brain/bib.bib")))
 ;; (use-package code-compass)
 
 ;; (use-package lastfm)
@@ -956,8 +952,8 @@ space rather than before."
 ;; who cares about annoying broken links errors..
 ;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is..)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+(setq org-element-cache-persistent nil)
+(setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
