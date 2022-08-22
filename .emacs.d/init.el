@@ -32,7 +32,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode -1)
+;; (menu-bar-mode -1) enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
@@ -70,7 +70,7 @@
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab actually insert tab..
-(global-set-key "\t" 'tab-to-tab-stop)
+(global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
 ;; save minibuffer history
@@ -83,6 +83,8 @@
 (global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
+;; use imagemagick for formats like webp
+(setq image-use-external-converter t)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -105,7 +107,8 @@
 	   (kill-buffer buffer)))
     (setq list (cdr list))))
 
-;;(setq evil-disable-insert-state-bindings t)
+;; enable emacs keys in evil insert mode
+(setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
 
 ;; the all-powerful org mode
@@ -298,6 +301,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
+      (general-define-key :states 'normal :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states 'normal :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states '(normal emacs treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -373,12 +377,12 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r g"
                           (lambda ()
                             (interactive)
-                            (find-file org-cite-global-bibliography)))
+                            (find-file "~/brain/bib.bib")))
       (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
-                          (lambda () (interactive) (search-open-file "~/brain/" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\)")))
+                          (lambda () (interactive) (search-open-file "~/brain/" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
       (general-define-key :states 'normal :keymaps 'override "SPC F b"
                   (lambda () (interactive) (search-open-file-in-emacs "~/brain/" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 
@@ -401,8 +405,8 @@
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
                             (when window-system (set-frame-size (selected-frame) 165 50))))
-      (general-define-key :states 'normal :keymaps 'override "SPC j" 'evil-scroll-page-down)
-      (general-define-key :states 'normal :keymaps 'override "SPC k" 'evil-scroll-page-up)
+      (general-define-key :states '(normal treemacs) :keymaps 'override "SPC j" 'evil-scroll-page-down)
+      (general-define-key :states '(normal treemacs) :keymaps 'override "SPC k" 'evil-scroll-page-up)
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -617,11 +621,11 @@ space rather than before."
   :config
   (global-command-log-mode))
 
-;; save undos/redos even when buffer is killed or emacs restarts
-(use-package undo-fu-session
-  :config
-  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-  (global-undo-fu-session-mode))
+;; save undos/redos even when buffer is killed or emacs restarts, this package is really buggy so i disabled it
+;; (use-package undo-fu-session
+;;   :config
+;;   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
+;;   (global-undo-fu-session-mode))
 
 ;; executing sage in org babel
 (use-package ob-sagemath
@@ -764,7 +768,7 @@ space rather than before."
   :config
   (setq xenops-reveal-on-entry t
         xenops-math-latex-max-tasks-in-flight 3
-        xenops-math-latex-process 'imagemagick)
+        xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
   ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
@@ -858,8 +862,9 @@ space rather than before."
 (use-package plantuml-mode)
 (use-package org-ref
   :config
-  ;; (setq bibtex-completion-bibliography '("~/brain/bib.bib")
-  (setq org-cite-global-bibliography '("~/brain/bib.bib")))
+  (setq bibtex-completion-bibliography '("~/brain/bib.bib"))
+  (setq org-cite-global-bibliography '("~/brain/bib.bib"))
+  (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
 ;; (use-package lastfm)
@@ -1162,28 +1167,31 @@ space rather than before."
 ;; src block indentation / editing / syntax highlighting
 (setq org-src-window-setup 'current-window
       org-src-strip-leading-and-trailing-blank-lines t)
-;; imagemagick is way better than the default especially for tikz
-(setq org-preview-latex-default-process 'imagemagick)
+;; not sure why tikz doesnt work with dvisvgm
+(setq org-preview-latex-default-process 'imagemagick) ;; inkscape is required for .svg
+;; dunno why \def\pgfsysdriver is needed... gonna override the variable cuz that causes errors
+(setq org-babel-latex-preamble
+  (lambda (_)
+    "\\documentclass[preview]{standalone}"))
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
 (setq org-html-mathjax-template "")
 (setq org-html-mathjax-options '())
 ;; to enable imagemagick latex generation with :async
-;; (setq org-babel-default-header-args:latex
-;;       '((:results . "latex")
-;;         (:exports . "results")
-;;         (:fit . t)
-;;         (:imagemagick . t)
-;;         ;; (:async . t)
-;;         (:eval . "no-export")
-;;         (:packages . ("\\usepackage{forest}"
-;;                       "\\usepackage{amsmath}"
-;;                       "\\usepackage{tikz}"
-;;                       "\\usepackage{tikz-3dplot}"
-;;                       "\\usepackage{pgfplots}"
-;;                       "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
-;;                       ))))
-(add-to-list 'org-babel-default-header-args:latex '(:eval . "no-export"))
+(setq org-babel-default-header-args:latex
+      '((:results . "file graphics")
+        (:exports . "results")
+        ;; (:fit . t)
+        ;; (:imagemagick . t)
+        ;; (:async . t)
+        (:eval . "no-export")
+        (:headers . ("\\usepackage{forest}"
+                      "\\usepackage{amsmath}"
+                      "\\usepackage{tikz}"
+                      "\\usepackage{tikz-3dplot}"
+                      "\\usepackage{pgfplots}"
+                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
+                      ))))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -1197,6 +1205,11 @@ space rather than before."
 (setq org-fontify-whole-block-delimiter-line nil)
 (setq org-fold-catch-invisible-edits 'smart
       org-agenda-span 'fortnight)
+;; open agenda on startup
+(add-hook 'after-init-hook
+          (lambda ()
+            (org-agenda-list)
+            (delete-other-windows)))
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1231,7 +1244,7 @@ space rather than before."
   ;; (set-themed-pdf 1))
 
 ;; (switch-to-light-theme)
-(switch-to-dark-theme)
+(switch-to-light-theme)
 (lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
