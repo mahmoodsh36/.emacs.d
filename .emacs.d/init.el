@@ -121,7 +121,7 @@
   (org-roam-directory (file-truename "~/brain/"))
   (org-roam-completion-everywhere t)
   :config
-  (setq org-roam-node-display-template "${title:*} ${tags:*}")
+  ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
   (org-roam-db-autosync-mode)
   (require 'org-roam-export)
   (require 'org-roam-protocol)
@@ -296,10 +296,8 @@
       (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
       (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d c" (lambda () (interactive) (dired "~/brain/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-      (general-define-key :states 'normal :keymaps 'override "SPC d r" (lambda () (interactive) (dired "~/data/resources/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/workspace/blog/")))
+      (general-define-key :states 'normal :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/brain/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
@@ -341,7 +339,7 @@
       (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda)))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
-      (general-define-key :states 'normal :keymaps 'override "SPC r f" 'org-roam-node-find)
+      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r f" 'org-roam-node-find)
       (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
@@ -405,8 +403,8 @@
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
                             (when window-system (set-frame-size (selected-frame) 165 50))))
-      (general-define-key :states '(normal treemacs) :keymaps 'override "SPC j" 'evil-scroll-page-down)
-      (general-define-key :states '(normal treemacs) :keymaps 'override "SPC k" 'evil-scroll-page-up)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC j" 'evil-scroll-page-down)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC k" 'evil-scroll-page-up)
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -867,6 +865,9 @@ space rather than before."
   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
+;; (use-package math-symbol-lists)
+;; (use-package latex-math-preview)
+
 ;; (use-package lastfm)
 ;; (use-package vuiet
 ;;   :config
@@ -1107,11 +1108,11 @@ space rather than before."
 ;; change latex images cache location
 (setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
-(plist-put org-format-latex-options :scale 1.5)
+;; (plist-put org-format-latex-options :scale 1.5)
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; decrease image size in latex exports
-(setq org-latex-image-default-scale "0.6")
+;; (setq org-latex-image-default-scale "0.6")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -1186,12 +1187,14 @@ space rather than before."
         ;; (:async . t)
         (:eval . "no-export")
         (:headers . ("\\usepackage{forest}"
-                      "\\usepackage{amsmath}"
-                      "\\usepackage{tikz}"
-                      "\\usepackage{tikz-3dplot}"
-                      "\\usepackage{pgfplots}"
-                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
-                      ))))
+                     "\\usepackage{amsmath}"
+                     "\\usepackage{amssymb}"
+                     "\\usepackage{tikz}"
+                     "\\usepackage{tikz-3dplot}"
+                     "\\usepackage{pgfplots}"
+                     "\\usepackage{algpseudocode}"
+                     "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
+                     ))))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -1204,12 +1207,14 @@ space rather than before."
 ;; get rid of background colors of block lines bleeding all over folded headlines
 (setq org-fontify-whole-block-delimiter-line nil)
 (setq org-fold-catch-invisible-edits 'smart
-      org-agenda-span 'fortnight)
+      org-agenda-span 13)
 ;; open agenda on startup
 (add-hook 'after-init-hook
           (lambda ()
             (org-agenda-list)
             (delete-other-windows)))
+;; disable multiplication precedence over division
+(setq calc-multiplication-has-precedence nil)
 
 (defun generate-random-string (NUM)
   "Insert a random alphanumerics string of length NUM."
@@ -1229,7 +1234,7 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'doom-gruvbox-light)
+  (disable-theme 'modus-operandi)
   (load-theme 'darktooth t))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1238,7 +1243,7 @@ space rather than before."
   "switch to light theme"
   (interactive)
   (disable-theme 'darktooth)
-  (load-theme 'doom-gruvbox-light t))
+  (load-theme 'modus-operandi t))
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1425,7 +1430,17 @@ tasks."
   (interactive)
   (dolist (file (roam-math-files))
     (message "processing %s" file)
-    (with-current-buffer (or (find-buffer-visiting file)
-                             (find-file-noselect file))
-      ;; (vulpea-todo-update-tag)
-      (save-buffer))))
+    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file)))))
+
+(defun roam-files-with-tag (tag-name)
+  "Return a list of note files containing a specific tag.";
+  (seq-uniq
+   (seq-map
+    #'car
+    (org-roam-db-query
+     `(:select [nodes:file]
+                     :from tags
+                     :left-join nodes
+                     :on (= tags:node-id nodes:id)
+                     :where (like tag ,tag-name))))))
+(roam-files-with-tag "music")
