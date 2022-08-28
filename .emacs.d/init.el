@@ -310,7 +310,7 @@
       (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
       (general-define-key :states 'normal :keymaps 'override "SPC g" 'counsel-ag)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
-      (general-define-key :states 'normal :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
       (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
       ;; (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
@@ -1125,14 +1125,22 @@ space rather than before."
 ;; (add-hook 'org-mode-hook 'org-indent-mode)
 (setq org-todo-keywords
   '((sequence
-     "TODO(t!)" ; Initial creation
-     "GO(g@)"; Work in progress
-     "WAIT(w@)" ; My choice to pause task
-     "REVIEW(r!)" ; Inspect or Share Time
-     "|" ; Remaining close task
-     "DONE(d@)" ; Normal completion
-     "CANCELED(c@)" ; Not going to od it
+     "TODO(t!)"
+     "GO(g@)";
+     "WAIT(w@)"
+     "REVIEW(r!)"
+     "|" ; remaining close task
+     "DONE(d@)"
+     "CANCELED(c@)"
      )))
+;; filter out entries with tag "repeat"
+(defun my/org-agenda-list-exclude-tags-advice (orig-fn &rest args)
+  "Exclude selected tags from `org-agenda-list'.
+Intended as :around advice for `org-agenda-list'."
+  (let ((org-agenda-tag-filter-preset '("-repeat")))
+    (apply orig-fn args)))
+(advice-add #'org-agenda-list :around #'my/org-agenda-list-exclude-tags-advice)
+
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>") ;; timestamp with seconds
@@ -1193,6 +1201,8 @@ space rather than before."
                      "\\usepackage{tikz-3dplot}"
                      "\\usepackage{pgfplots}"
                      "\\usepackage{algpseudocode}"
+                     "\\usepackage{karnaugh-map}"
+                     "\\usepackage{circuitikz}"
                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
                      ))))
 ;; make org export deeply nested headlines as headlines still
@@ -1217,7 +1227,7 @@ space rather than before."
 (setq calc-multiplication-has-precedence nil)
 
 (defun generate-random-string (NUM)
-  "Insert a random alphanumerics string of length NUM."
+  "generate a random alphanumerics string of length NUM."
   (interactive "P")
   (setq random-str "")
   (let* (($charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
