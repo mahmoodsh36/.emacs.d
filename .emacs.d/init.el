@@ -95,7 +95,7 @@
 (setq auto-window-vscroll nil)
 
 (defun kill-all-buffers ()
-  "kill all buffers including internal buffers (buffers starting with a space)"
+  "kill all buffers excluding internal buffers (buffers starting with a space)"
   (interactive)
   (setq list (buffer-list))
   (while list
@@ -398,6 +398,7 @@
       ;;                       (end-of-line)
       ;;                       (insert " ")
       ;;                       (insert result)))
+      ;; general keys
       (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
       (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
@@ -405,6 +406,10 @@
                             (when window-system (set-frame-size (selected-frame) 165 50))))
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC j" 'evil-scroll-page-down)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC k" 'evil-scroll-page-up)
+      (general-define-key :states 'normal :keymaps 'override "SPC s d" 'switch-to-dark-theme)
+      (general-define-key :states 'normal :keymaps 'override "SPC s l" 'switch-to-light-theme)
+      (general-define-key :states 'normal :keymaps 'override "SPC s e" 'eshell)
+      (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -865,6 +870,9 @@ space rather than before."
   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
+;; best terminal emulation
+(use-package vterm)
+
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
 
@@ -1043,10 +1051,10 @@ space rather than before."
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (find-file-other-window (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
+  (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
 (defun open-current-document-this-window ()
   (interactive)
-  (find-file (concat (get-latex-cache-dir-path) (concat (current-filename) ".pdf"))))
+  (find-file (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
 
 ;; tex hook to auto compile on save
 ;; (add-hook
@@ -1059,7 +1067,7 @@ space rather than before."
 (defun compile-sagetex-command ()
   "return the command needed to compile sagetex"
   (interactive)
-  (setq first-pdflatex-command (concat "(" (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ";")))
+  (setq first-pdflatex-command (concat "(pdflatex --synctex=1 -output-directory=" (get-latex-cache-dir-path) " " (buffer-file-name) ";"))
   (setq last-pdflatex-command (concat (concat (concat "pdflatex --synctex=1 -output-directory=" (concat (get-latex-cache-dir-path) " ")) (buffer-file-name)) ")"))
   (concat first-pdflatex-command (concat (concat "(cd " (concat (get-latex-cache-dir-path) (concat "; sage " (concat (current-filename) ".sagetex.sage);")))) last-pdflatex-command)))
 (defun compile-sagetex ()
@@ -1100,7 +1108,7 @@ space rather than before."
 ;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
 (defun org-to-pdf ()
   (interactive)
-  (let ((outfile (concat (get-latex-cache-dir-path) (concat (current-filename) ".tex"))))
+  (let ((outfile (concat (get-latex-cache-dir-path) (current-filename) ".tex")))
     (call-process-shell-command (format "rm %s*%s*" (get-latex-cache-dir-path) (current-filename)))
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
@@ -1222,7 +1230,10 @@ Intended as :around advice for `org-agenda-list'."
 (add-hook 'after-init-hook
           (lambda ()
             (org-agenda-list)
-            (delete-other-windows)))
+            (delete-other-windows)
+            ;; (switch-to-light-theme)
+            (switch-to-dark-theme)
+            (lob-reload)))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
 
@@ -1257,10 +1268,6 @@ Intended as :around advice for `org-agenda-list'."
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
-
-;; (switch-to-light-theme)
-(switch-to-light-theme)
-(lob-reload)
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
@@ -1332,6 +1339,10 @@ Intended as :around advice for `org-agenda-list'."
         (file-name-nondirectory obj))
     obj))
 (advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
+;; make hugo page dates be the export date of the document
+(defun org-date-advice (whatever-time)
+  (org-format-time-string (cdr org-time-stamp-formats)))
+(advice-add 'org-hugo--get-date :filter-return 'org-date-advice)
 
 ;; move over text object
 ;; (evil-define-motion evil-forward-text-object
@@ -1374,10 +1385,11 @@ tasks."
        (org-element-parse-buffer 'headline)
        'headline
      (lambda (h)
-       (or (eq (org-element-property :todo-type h)
-               'todo)
-           (eq (org-element-property :todo-type h)
-               'done)))
+       (eq (org-element-property :todo-type h) 'todo))
+       ;; (or (eq (org-element-property :todo-type h)
+       ;;         'todo)
+       ;;     (eq (org-element-property :todo-type h)
+       ;;         'done)))
      nil 'first-match))
 ;; (add-hook 'find-file-hook #'vulpea-todo-update-tag) this causes problems on exporting from org where emacs begins to ask whether to kill modified buffers as the todo tags for some reason get deleted
 (add-hook 'before-save-hook #'vulpea-todo-update-tag)
@@ -1425,7 +1437,7 @@ tasks."
 (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
 
 (defun roam-math-files ()
-  "Return a list of note files containing 'math' tag.";
+  "return a list of note files containing 'math' tag.";
   (interactive)
   (seq-uniq
    (seq-map
