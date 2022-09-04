@@ -42,7 +42,7 @@ zstyle ':completion:*' completer _complete_alias _complete _ignored
 setopt AUTO_CD
 setopt ALWAYS_TO_END
 setopt COMPLETE_ALIASES
-setopt SHARE_HISTORY
+#setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt RM_STARSILENT
 setopt EXTENDED_HISTORY
@@ -53,11 +53,11 @@ setopt interactivecomments
 # prompt
 if [ -n "$SSH_CLIENT" ]; then
   ip_addr=$(ip addr | grep 'inet\s' | grep -v '127.0.0.1' | tr -s ' ' | cut -d ' ' -f3 | cut -d'/' -f1 | head -1)
-  export PS1="[$ip_addr %1~]$ "
+  export PS1="$ip_addr %1~ λ "
 elif [[ ! -z "$IN_NIX_SHELL" ]]; then
-  export PS1=$(echo '\033[0;32m[NIX]\033[0m[%1~]$ ')
+  export PS1=$(echo '\033[0;32m[NIX]\033[0m%1~ λ ')
 else
-  export PS1="[%1~]$ "
+  export PS1="%1~ λ "
 fi
 
 export PYTHONSTARTUP=$HOME/.pythonrc
@@ -159,3 +159,6 @@ setup_yay() {
 
 # ssh issues with kitty fix
 export TERM=xterm-256color
+
+# for macos
+eval "$(/usr/libexec/path_helper)" 2>/dev/null
