@@ -788,6 +788,20 @@ space rather than before."
                 (interactive)
                 (list (org-latex-color :foreground) (org-latex-color :background))))
   (plist-put org-format-latex-options :foreground "black")
+  ;; (plist-put (cdr (nth 2 xenops-math-latex-process-alist)) :image-output-type "svg") ;; make imagemagick output svg instead of png
+  (add-to-list 'xenops-math-latex-process-alist
+               '(mymath :programs ("latex" "dvisvgm")
+                        :description "pdf > svg"
+                        :message "you need to install the programs: latex and dvisvgm (they come together in texlive distro)."
+                        :image-input-type "dvi"
+                        :image-output-type "svg"
+                        :image-size-adjust (1.7 . 1.5)
+                        :latex-compiler ("latex -output-directory %o %f")
+                        :image-converter ("dvisvgm %f -o %O")))
+  ;; this fixes issues with dvisvgm, phhhewww, took me a long time to figure out.
+  (defun preamble-advice (preamble)
+    (concat "\\def\\pgfsysdriver{pgfsys-tex4ht.def}" preamble))
+  (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
   )
 
 (use-package mixed-pitch
@@ -1185,8 +1199,8 @@ Intended as :around advice for `org-agenda-list'."
 (setq org-src-window-setup 'current-window
       org-src-strip-leading-and-trailing-blank-lines t)
 ;; not sure why tikz doesnt work with dvisvgm
-(setq org-preview-latex-default-process 'imagemagick) ;; inkscape is required for .svg
-;; dunno why \def\pgfsysdriver is needed... gonna override the variable cuz that causes errors
+(setq org-preview-latex-default-process 'dvisvgm) ;; inkscape is required for .svg
+;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
 (setq org-babel-latex-preamble
   (lambda (_)
     "\\documentclass[preview]{standalone}"))
@@ -1194,7 +1208,6 @@ Intended as :around advice for `org-agenda-list'."
 (setq org-highlight-latex-and-related '(latex))
 (setq org-html-mathjax-template "")
 (setq org-html-mathjax-options '())
-;; to enable imagemagick latex generation with :async
 (setq org-babel-default-header-args:latex
       '((:results . "file graphics")
         (:exports . "results")
