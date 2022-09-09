@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: set
+# key: se
+# --
+void set_${2:member}(${1:type} $2) {
+  this->$2 = $2;$0
+}

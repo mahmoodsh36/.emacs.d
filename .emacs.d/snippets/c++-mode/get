@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: get
+# key: ge
+# --
+${1:type} get_${2:member}() {
+  return $2;$0
+}
