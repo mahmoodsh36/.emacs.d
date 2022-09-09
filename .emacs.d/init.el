@@ -410,6 +410,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC s l" 'switch-to-light-theme)
       (general-define-key :states 'normal :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
+      (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -1156,13 +1157,7 @@ space rather than before."
      "CANCELED(c@)"
      )))
 ;; filter out entries with tag "repeat"
-(defun my/org-agenda-list-exclude-tags-advice (orig-fn &rest args)
-  "Exclude selected tags from `org-agenda-list'.
-Intended as :around advice for `org-agenda-list'."
-  (let ((org-agenda-tag-filter-preset '("-repeat")))
-    (apply orig-fn args)))
-(advice-add #'org-agenda-list :around #'my/org-agenda-list-exclude-tags-advice)
-
+(setq org-agenda-tag-filter-preset '("-repeat"))
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>") ;; timestamp with seconds
