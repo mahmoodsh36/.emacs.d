@@ -40,10 +40,8 @@
 ;; y-or-n instead of yes-or-no
 (defalias 'yes-or-no-p 'y-or-n-p)
 ;; all backups to one folder
-(setq backup-directory-alist
-      `((".*" . ,"~/.emacs.d/backup/")))
-(setq auto-save-file-name-transforms
-      `((".*" ,"~/.emacs.d/backup/" t)))
+(setq backup-directory-alist `((".*" . ,"~/.emacs.d/backup/"))
+      auto-save-file-name-transforms `((".*" ,"~/.emacs.d/backup/" t)))
 ;; disable cursor blink
 (blink-cursor-mode 0)
 ;; treat underscore as part of word
@@ -72,7 +70,7 @@
 ;; make tab actually insert tab..
 (global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
-;; (desktop-save-mode 1)
+(desktop-save-mode 1)
 ;; save minibuffer history
 (setq savehist-file (expand-file-name "~/brain/emacs_savehist"))
 (savehist-mode 1)
@@ -139,6 +137,8 @@
 ;; side tree
 (use-package treemacs
   :config
+  (treemacs-resize-icons 15)
+  (setq treemacs-width 30)
   (treemacs-follow-mode -1))
 
 ;; makes binding keys less painful
@@ -310,6 +310,7 @@
       (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
       (general-define-key :states 'normal :keymaps 'override "SPC g" 'counsel-ag)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
+      (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
       (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
       ;; (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
@@ -376,7 +377,7 @@
                           (lambda ()
                             (interactive)
                             (find-file "~/brain/bib.bib")))
-      (general-define-key :states 'normal :keymaps 'override "SPC c" 'calc)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
@@ -427,6 +428,7 @@
       (add-hook 'eshell-mode-hook
                 (lambda ()
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
+      (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -530,9 +532,9 @@ space rather than before."
       (use-package company-web)
 
       ;; company for shell scripting
-      (use-package company-shell
-        :config
-        (add-to-list 'company-backends '(company-shell company-shell-env)))
+      ;; (use-package company-shell
+      ;;   :config
+      ;;   (add-to-list 'company-backends '(company-shell company-shell-env)))
 
       ;; latex company backend
       (use-package company-auctex
@@ -582,6 +584,7 @@ space rather than before."
 (use-package doom-themes)
 (use-package inkpot-theme)
 ;; (load-theme 'darktooth t)
+;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
 
 (use-package web-mode
@@ -649,12 +652,13 @@ space rather than before."
   (global-set-key (kbd "C-h k") #'helpful-key))
 
 ;; yasnippet
-(use-package yasnippet-snippets)
+;; (use-package yasnippet-snippets)
 (use-package yasnippet
   :config
   ;; disable builtin snippets
   (setq yas-snippet-dirs
        `(,(concat user-emacs-directory "snippets")))
+  ;; enalbe nested snippet expansion
   (setq yas-triggers-in-field t)
   (yas-global-mode 1)
   ;; prevent warnings about snippets using elisp
@@ -701,9 +705,7 @@ space rather than before."
 ;; lsp support for treemacs
 (use-package lsp-treemacs
   :config
-  (lsp-treemacs-sync-mode 1)
-  (treemacs-resize-icons 15)
-  (setq treemacs-width 30))
+  (lsp-treemacs-sync-mode 1))
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
 (use-package exec-path-from-shell
@@ -784,24 +786,26 @@ space rather than before."
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
+  ;; for inline previews
   (advice-add 'xenops-math-latex-get-colors :filter-return
               (lambda (col)
                 (interactive)
                 (list (org-latex-color :foreground) (org-latex-color :background))))
+                ;; (list (org-latex-color :foreground) (org-latex-color :background))))
+  ;; for code blocks i think, i make backgrounds transparent so dont gotta set a color
   (plist-put org-format-latex-options :foreground "black")
-  ;; (plist-put (cdr (nth 2 xenops-math-latex-process-alist)) :image-output-type "svg") ;; make imagemagick output svg instead of png
-  (add-to-list 'xenops-math-latex-process-alist
-               '(mymath :programs ("latex" "dvisvgm")
-                        :description "pdf > svg"
-                        :message "you need to install the programs: latex and dvisvgm (they come together in texlive distro)."
-                        :image-input-type "dvi"
-                        :image-output-type "svg"
-                        :image-size-adjust (1.7 . 1.5)
-                        :latex-compiler ("latex -output-directory %o %f")
-                        :image-converter ("dvisvgm %f -o %O")))
+  ;; (add-to-list 'xenops-math-latex-process-alist
+  ;;              '(mymath :programs ("latex" "dvisvgm")
+  ;;                       :description "pdf > svg"
+  ;;                       :message "you need to install the programs: latex and dvisvgm (they come together in texlive distro)."
+  ;;                       :image-input-type "dvi"
+  ;;                       :image-output-type "svg"
+  ;;                       :image-size-adjust (1.7 . 1.5)
+  ;;                       :latex-compiler ("latex -output-directory %o %f")
+  ;;                       :image-converter ("dvisvgm %f -o %O")))
   ;; this fixes issues with dvisvgm, phhhewww, took me a long time to figure out.
-  (defun preamble-advice (preamble)
-    (concat "\\def\\pgfsysdriver{pgfsys-tex4ht.def}" preamble))
+  (defun preamble-advice (document)
+    (concat "\\def\\pgfsysdriver{pgfsys-tex4ht.def}" document))
   (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
   )
 
@@ -887,6 +891,11 @@ space rather than before."
 
 ;; best terminal emulation
 (use-package vterm)
+
+(use-package keyfreq
+  :config
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1119,6 +1128,14 @@ space rather than before."
 ;; eshell configs
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
+;; file to store aliases automatically to
+(setq eshell-aliases-file (concat (expand-file-name user-emacs-directory) "eshell_aliases"))
+(defun eshell-cd-and-ls (&rest args)           ; all but first ignored
+  "cd into directory and list its contents"
+  (interactive "P")
+  (let ((path (car args)))
+    (cd path)
+    (eshell/ls)))
 
 ;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
 (defun org-to-pdf ()
@@ -1201,6 +1218,7 @@ space rather than before."
     "\\documentclass[preview]{standalone}"))
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
+;; disable org-mode's mathjax because my blog's code uses another version
 (setq org-html-mathjax-template "")
 (setq org-html-mathjax-options '())
 (setq org-babel-default-header-args:latex
@@ -1233,14 +1251,14 @@ space rather than before."
 ;; get rid of background colors of block lines bleeding all over folded headlines
 (setq org-fontify-whole-block-delimiter-line nil)
 (setq org-fold-catch-invisible-edits 'smart
-      org-agenda-span 13)
+      org-agenda-span 20)
 ;; open agenda on startup
 (add-hook 'after-init-hook
           (lambda ()
             (org-agenda-list)
             (delete-other-windows)
-            ;; (switch-to-light-theme)
-            (switch-to-dark-theme)
+            (switch-to-light-theme)
+            ;; (switch-to-dark-theme)
             (lob-reload)))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
@@ -1263,8 +1281,9 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'modus-operandi)
-  (load-theme 'darktooth t))
+  (disable-theme 'doom-gruvbox-light)
+  (load-theme 'darktooth t)
+  (global-org-modern-mode))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
 
@@ -1272,7 +1291,8 @@ space rather than before."
   "switch to light theme"
   (interactive)
   (disable-theme 'darktooth)
-  (load-theme 'modus-operandi t))
+  (load-theme 'doom-gruvbox-light t)
+  (global-org-modern-mode))
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
