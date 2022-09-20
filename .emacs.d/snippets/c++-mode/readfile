@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: readfile
+# key: rf
+# --
+std::string line;
+std::ifstream myfile("${1:filename.txt}");
+if (myfile.is_open()) {
+  while (getline(myfile, line)) {
+    ${2:std::cout << line << std::endl};
+  }
+  myfile.close();
+} else std::cout << "unable to open file"; 
+$0

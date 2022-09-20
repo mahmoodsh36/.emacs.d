@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: erase remove idiom
+# key: rm
+# --
+${1:vector}.erase(std::remove($1.begin(), $1.end(), ${2:value}), $1.end());$0

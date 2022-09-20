@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: split
+# key: sp
+# --
+size_t pos = 0;
+std::string token;
+std::string delimiter = ${1:" "};
+while ((pos = ${2:mystring}.find(delimiter)) != std::string::npos) {
+  token = $2.substr(0, pos);
+  ${3:std::cout << token << std::endl;}
+  $2.erase(0, pos + delimiter.length());
+}
+token = $2;
+$3$0
