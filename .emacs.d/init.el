@@ -83,6 +83,9 @@
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
 (setq image-use-external-converter t)
+;; display white spaces and newlines
+(setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
+(global-whitespace-mode)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -98,11 +101,11 @@
   (setq list (buffer-list))
   (while list
     (let* ((buffer (car list))
-	   (name (buffer-name buffer)))
+           (name (buffer-name buffer)))
       (and name
-	   (not (string-equal name ""))
-	   (/= (aref name 0) ?\s)
-	   (kill-buffer buffer)))
+           (not (string-equal name ""))
+           (/= (aref name 0) ?\s)
+           (kill-buffer buffer)))
     (setq list (cdr list))))
 
 ;; enable emacs keys in evil insert mode
@@ -301,7 +304,8 @@
       (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
-      (general-define-key :states 'normal :keymaps 'override "SPC f f" 'counsel-find-file)
+      (general-define-key :states 'normal :keymaps 'override "SPC f f" 'find-file)
+      (general-define-key :states 'normal :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal emacs treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
@@ -892,10 +896,13 @@ space rather than before."
 ;; best terminal emulation
 (use-package vterm)
 
+;; check which keys i press most
 (use-package keyfreq
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
+
+(use-package magit)
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -928,7 +935,6 @@ space rather than before."
 ;;(use-package slime
 ;;  :config
 ;;  (setq inferior-lisp-program "sbcl"))
-;;(use-package magit)
 ;;(use-package org-super-agenda)
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
@@ -1494,3 +1500,9 @@ tasks."
                      :on (= tags:node-id nodes:id)
                      :where (like tag ,tag-name))))))
 (roam-files-with-tag "music")
+
+(defun sudo-find-file (file-name)
+  "like find file, but opens the file as root using tramp"
+  (interactive (list (read-file-name "file: " "/sudo::/")))
+  (let ((tramp-file-name (expand-file-name file-name)))
+    (find-file tramp-file-name)))
