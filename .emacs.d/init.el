@@ -86,6 +86,8 @@
 ;; display white spaces and newlines
 (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
 (global-whitespace-mode)
+;; show zero-width characters
+(set-face-background 'glyphless-char "red")
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -416,6 +418,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
+      (general-define-key :states 'normal :keymaps 'override "K" 'evil-jump-to-tag)
       
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -695,7 +698,10 @@ space rather than before."
 ;; language server protocol support
 (use-package lsp-mode
   :config
-  (add-hook 'prog-mode-hook 'lsp-mode))
+  (add-hook 'prog-mode-hook 'lsp-mode)
+  (add-hook 'prog-mode-hook #'lsp-deferred)
+  ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
+  (setq lsp-auto-guess-root t))
 
 ;; show simple info on the right
 (use-package lsp-ui
@@ -727,7 +733,8 @@ space rather than before."
 ;; flutter setup
 (use-package highlight-indent-guides
   :config
-  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-responsive 'stack)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package flutter)
 (use-package lsp-dart)
@@ -873,11 +880,11 @@ space rather than before."
   ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
   (elfeed-tube-setup)
   :bind (:map elfeed-show-mode-map
-         ("F" . elfeed-tube-fetch)
-         ([remap save-buffer] . elfeed-tube-save)
-         :map elfeed-search-mode-map
-         ("F" . elfeed-tube-fetch)
-         ([remap save-buffer] . elfeed-tube-save)))
+              ("F" . elfeed-tube-fetch)
+              ([remap save-buffer] . elfeed-tube-save)
+              :map elfeed-search-mode-map
+              ("F" . elfeed-tube-fetch)
+              ([remap save-buffer] . elfeed-tube-save)))
 
 (use-package dumb-jump)
 (use-package ob-async)
@@ -903,6 +910,17 @@ space rather than before."
   (keyfreq-autosave-mode 1))
 
 (use-package magit)
+
+;; need the "global" package for gtags binary
+(use-package ggtags
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+                (ggtags-mode 1)))))
+(use-package counsel-gtags)
+
+(use-package git-auto-commit-mode)
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1170,15 +1188,15 @@ space rather than before."
 ;; indent headings properly
 ;; (add-hook 'org-mode-hook 'org-indent-mode)
 (setq org-todo-keywords
-  '((sequence
-     "TODO(t!)"
-     "GO(g@)";
-     "WAIT(w@)"
-     "REVIEW(r!)"
-     "|" ; remaining close task
-     "DONE(d@)"
-     "CANCELED(c@)"
-     )))
+      '((sequence
+         "TODO(t!)"
+         "GO(g@)";
+         "WAIT(w@)"
+         "REVIEW(r!)"
+         "|" ; remaining close task
+         "DONE(d@)"
+         "CANCELED(c@)"
+         )))
 ;; filter out entries with tag "repeat"
 (setq org-agenda-tag-filter-preset '("-repeat"))
 
@@ -1220,8 +1238,8 @@ space rather than before."
 (setq org-preview-latex-default-process 'dvisvgm) ;; inkscape is required for .svg
 ;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
 (setq org-babel-latex-preamble
-  (lambda (_)
-    "\\documentclass[preview]{standalone}"))
+      (lambda (_)
+        "\\documentclass[preview]{standalone}"))
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
 ;; disable org-mode's mathjax because my blog's code uses another version
@@ -1337,13 +1355,13 @@ space rather than before."
     (bookmark-jump (brds/pdf-generate-bookmark-name))))
 (defun brds/pdf-has-last-viewed-bookmark ()
   (assoc
-    (brds/pdf-generate-bookmark-name) bookmark-alist))
+   (brds/pdf-generate-bookmark-name) bookmark-alist))
 (defun brds/pdf-generate-bookmark-name ()
   (concat "PDF-LAST-VIEWED: " (buffer-file-name)))
 (defun brds/pdf-set-all-last-viewed-bookmarks ()
   (dolist (buf (buffer-list))
     (with-current-buffer buf
-        (brds/pdf-set-last-viewed-bookmark))))
+      (brds/pdf-set-last-viewed-bookmark))))
 (add-hook 'kill-buffer-hook 'brds/pdf-set-last-viewed-bookmark)
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
@@ -1416,36 +1434,34 @@ TODO entries marked as done are ignored, meaning the this
 function returns nil if current buffer contains only completed
 tasks."
   (org-element-map
-       (org-element-parse-buffer 'headline)
-       'headline
-     (lambda (h)
-       (eq (org-element-property :todo-type h) 'todo))
-       ;; (or (eq (org-element-property :todo-type h)
-       ;;         'todo)
-       ;;     (eq (org-element-property :todo-type h)
-       ;;         'done)))
-     nil 'first-match))
+      (org-element-parse-buffer 'headline)
+      'headline
+    (lambda (h)
+      (eq (org-element-property :todo-type h) 'todo))
+    ;; (or (eq (org-element-property :todo-type h)
+    ;;         'todo)
+    ;;     (eq (org-element-property :todo-type h)
+    ;;         'done)))
+    nil 'first-match))
 ;; (add-hook 'find-file-hook #'vulpea-todo-update-tag) this causes problems on exporting from org where emacs begins to ask whether to kill modified buffers as the todo tags for some reason get deleted
 (add-hook 'before-save-hook #'vulpea-todo-update-tag)
 (defun vulpea-todo-update-tag ()
-      "Update TODO tag in the current buffer."
-      (when (and (not (active-minibuffer-window))
-                 (vulpea-buffer-p))
-        (save-excursion
-          (goto-char (point-min))
-          (let* ((tags (vulpea-buffer-tags-get))
-                 (original-tags tags))
-            (if (vulpea-todo-p)
-                (setq tags (cons "todo" tags))
-              (setq tags (remove "todo" tags)))
-
-            ;; cleanup duplicates
-            (setq tags (seq-uniq tags))
-
-            ;; update tags if changed
-            (when (or (seq-difference tags original-tags)
-                      (seq-difference original-tags tags))
-              (apply #'vulpea-buffer-tags-set tags))))))
+  "Update TODO tag in the current buffer."
+  (when (and (not (active-minibuffer-window))
+             (vulpea-buffer-p))
+    (save-excursion
+      (goto-char (point-min))
+      (let* ((tags (vulpea-buffer-tags-get))
+             (original-tags tags))
+        (if (vulpea-todo-p)
+            (setq tags (cons "todo" tags))
+          (setq tags (remove "todo" tags)))
+        ;; cleanup duplicates
+        (setq tags (seq-uniq tags))
+        ;; update tags if changed
+        (when (or (seq-difference tags original-tags)
+                  (seq-difference original-tags tags))
+          (apply #'vulpea-buffer-tags-set tags))))))
 (defun vulpea-buffer-p ()
   "Return non-nil if the currently visited buffer is a note."
   (and buffer-file-name
@@ -1459,34 +1475,16 @@ tasks."
     #'car
     (org-roam-db-query
      [:select [nodes:file]
-      :from tags
-      :left-join nodes
-      :on (= tags:node-id nodes:id)
-      :where (like tag (quote "%\"todo\"%"))]))))
+              :from tags
+              :left-join nodes
+              :on (= tags:node-id nodes:id)
+              :where (like tag (quote "%\"todo\"%"))]))))
 (setq org-agenda-files (vulpea-todo-files))
 (defun vulpea-agenda-files-update (&rest _)
   "Update the value of `org-agenda-files'."
   (setq org-agenda-files (vulpea-todo-files)))
 (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
 (advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
-
-(defun roam-math-files ()
-  "return a list of note files containing 'math' tag.";
-  (interactive)
-  (seq-uniq
-   (seq-map
-    #'car
-    (org-roam-db-query
-     [:select [nodes:file]
-              :from tags
-              :left-join nodes
-              :on (= tags:node-id nodes:id)
-              :where (like tag "math")]))))
-(defun go-through-math-files ()
-  (interactive)
-  (dolist (file (roam-math-files))
-    (message "processing %s" file)
-    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file)))))
 
 (defun roam-files-with-tag (tag-name)
   "Return a list of note files containing a specific tag.";
@@ -1499,10 +1497,32 @@ tasks."
                      :left-join nodes
                      :on (= tags:node-id nodes:id)
                      :where (like tag ,tag-name))))))
-(roam-files-with-tag "music")
+(roam-files-with-tag "math")
+
+(defun go-through-files-with-tag (tag-name &optional callback)
+  "run a callback function on each file tagged with tag-name"
+  (interactive)
+  (dolist (file (roam-files-with-tag tag-name))
+    (if (not (eq callback nil))
+        (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+          (funcall callback)))))
+
+;; (go-through-files-with-tag "math" (lambda () (message buffer-file-name)))
+(defun publicize-files ()
+  (interactive)
+  (go-through-files-with-tag
+   "computer-science"
+   (lambda ()
+     (org-roam-tag-add '("public"))
+     (save-buffer))))
 
 (defun sudo-find-file (file-name)
   "like find file, but opens the file as root using tramp"
   (interactive (list (read-file-name "file: " "/sudo::/")))
   (let ((tramp-file-name (expand-file-name file-name)))
     (find-file tramp-file-name)))
+
+;; semantic
+;; (global-semanticdb-minor-mode 1)
+;; (global-semantic-idle-scheduler-mode 1)
+;; (semantic-mode 1)
