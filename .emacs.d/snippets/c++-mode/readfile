@@ -9,5 +9,4 @@ if (myfile.is_open()) {
     ${2:std::cout << line << std::endl};
   }
   myfile.close();
-} else std::cout << "unable to open file"; 
-$0
+} else std::cout << "unable to open file";$0
