@@ -70,7 +70,7 @@
 ;; make tab actually insert tab..
 (global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 ;; save minibuffer history
 (setq savehist-file (expand-file-name "~/brain/emacs_savehist"))
 (savehist-mode 1)
@@ -88,6 +88,8 @@
 (global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
+;; make it work with any theme
+(set-face-attribute 'whitespace-space nil :background nil)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -185,7 +187,7 @@
         :config
         (evil-exchange-install))
 
-      ;; search for the current visual selection with */#
+      ;; search for the current visual selection with *
       (use-package evil-visualstar
         :config
         (global-evil-visualstar-mode))
@@ -315,7 +317,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
       (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
       (general-define-key :states 'normal :keymaps 'override "SPC g" 'counsel-ag)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'space-x-with-latex-header-hack)
       (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
       (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
@@ -384,6 +386,7 @@
                             (interactive)
                             (find-file "~/brain/bib.bib")))
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
@@ -419,7 +422,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
       (general-define-key :states 'normal :keymaps 'override "K" 'evil-jump-to-tag)
-      
+
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
         "Runs the command 'cmd' in eshell."
@@ -496,7 +499,7 @@ space rather than before."
   (projectile-mode +1))
 
 ;; auto completion
-(setq enable-company t)
+(setq enable-company nil)
 (setq completion-ignore-case t) ;; case-insensitivity
 (if enable-company
     (progn
@@ -554,12 +557,62 @@ space rather than before."
       )
   (progn ;; corfu autocompletion
     (use-package corfu
+      :straight (:files (:defaults "extensions/*"))
       :init
       (global-corfu-mode)
       :custom
       (corfu-cycle t)
       (corfu-auto t)
-      (corfu-auto-delay 0)))
+      (corfu-quit-no-match 'separator)
+      (corfu-auto-delay 0)
+      (corfu-separator ?_) ;; Set to orderless separator, if not using space
+      (corfu-count 20)
+      (corfu-indexed-mode t)
+      ;; (corfu-quit-at-boundary nil) ;; dont stop completing when a space is inserted
+      (corfu-on-exact-match nil) ;; dont auto insert when there is an exact match
+      :config
+      (unbind-key "RET" corfu-map)
+      ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
+      ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)
+      )
+
+    (use-package kind-icon
+      :ensure t
+      :after corfu
+      :custom
+      (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+      :config
+      (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+    (use-package cape)
+
+    (use-package orderless
+      :init
+      ;; Configure a custom style dispatcher (see the Consult wiki)
+      ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+      ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+      (setq completion-styles '(orderless partial-completion basic);; '(orderless basic)
+            completion-category-defaults nil
+            completion-category-overrides nil))
+
+    (defun orderless-fast-dispatch (word index total)
+      (and (= index 0) (= total 1) (length< word 4)
+           `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
+
+    (orderless-define-completion-style orderless-fast
+                                       (orderless-style-dispatchers '(orderless-fast-dispatch))
+                                       (orderless-matching-styles '(orderless-literal orderless-regexp)))
+
+    ;; corfu completion in the minibuffer
+    (defun corfu-enable-in-minibuffer ()
+      "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+      (when (where-is-internal #'completion-at-point (list (current-local-map)))
+        ;; (setq-local corfu-auto nil) Enable/disable auto completion
+        (corfu-mode 1)))
+    (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+
+    (use-package pcmpl-args)
+    )
   )
 
 ;; colorful delimiters
@@ -590,6 +643,7 @@ space rather than before."
 ;; (use-package gruvbox-theme)
 (use-package doom-themes)
 (use-package inkpot-theme)
+(use-package minimal-theme)
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
@@ -701,7 +755,27 @@ space rather than before."
   (add-hook 'prog-mode-hook 'lsp-mode)
   (add-hook 'prog-mode-hook #'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
-  (setq lsp-auto-guess-root t))
+  (setq lsp-auto-guess-root t)
+  ;; another annoying warning
+  (setq lsp-warn-no-matched-clients nil)
+  )
+(if (not enable-company)
+    (use-package lsp-mode
+      :custom
+      (lsp-completion-provider :none) ;; we use Corfu!
+      :init
+      (defun my/orderless-dispatch-flex-first (_pattern index _total)
+        (and (eq index 0) 'orderless-flex))
+      (defun my/lsp-mode-setup-completion ()
+        (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+              '(orderless)))
+      ;; Optionally configure the first word as flex filtered.
+      (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+      ;; Optionally configure the cape-capf-buster.
+      (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
+      :hook
+      (lsp-completion-mode . my/lsp-mode-setup-completion)
+      ))
 
 ;; show simple info on the right
 (use-package lsp-ui
@@ -921,6 +995,34 @@ space rather than before."
 (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
+(use-package avy)
+(use-package auto-yasnippet)
+
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+
+(use-package embark
+  :ensure t
+
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -931,7 +1033,7 @@ space rather than before."
 ;;   (setq browse-url-browser-function 'browse-url-chrome))
 
 ;; (use-package org-ml)
-
+;; (use-package org-super-agenda)
 ;; (use-package lispy)
 ;; (use-package ein)
 
@@ -953,7 +1055,6 @@ space rather than before."
 ;;(use-package slime
 ;;  :config
 ;;  (setq inferior-lisp-program "sbcl"))
-;;(use-package org-super-agenda)
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
 ;;(use-package org-ql)
@@ -1240,6 +1341,14 @@ space rather than before."
 (setq org-babel-latex-preamble
       (lambda (_)
         "\\documentclass[preview]{standalone}"))
+;; to make gifs work
+;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
+;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
+;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
+(defun space-x-with-latex-header-hack ()
+  (interactive)
+  (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
+    (org-ctrl-c-ctrl-c)))
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
 ;; disable org-mode's mathjax because my blog's code uses another version
@@ -1261,7 +1370,7 @@ space rather than before."
                      "\\usepackage{algpseudocode}"
                      "\\usepackage{karnaugh-map}"
                      "\\usepackage{circuitikz}"
-                     "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}"
+                     "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes}"
                      ))))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
@@ -1305,8 +1414,10 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'doom-gruvbox-light)
-  (load-theme 'darktooth t)
+  (disable-theme 'minimal-light)
+  ;; (load-theme 'darktooth t)
+  (load-theme 'minimal t)
+  (set-face-attribute 'whitespace-space nil :background nil)
   (global-org-modern-mode))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1314,8 +1425,9 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'darktooth)
-  (load-theme 'doom-gruvbox-light t)
+  (disable-theme 'minimal)
+  (load-theme 'minimal-light t)
+  (set-face-attribute 'whitespace-space nil :background nil)
   (global-org-modern-mode))
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
@@ -1399,7 +1511,7 @@ space rather than before."
 ;; move over text object
 ;; (evil-define-motion evil-forward-text-object
 ;;   (count &optional text-object)
-;;   "move to the end of following input text-object define 
+;;   "move to the end of following input text-object define
 ;; in evil-inner-text-objects-map ."
 ;;   (unless text-object
 ;;       (setf text-object
@@ -1413,7 +1525,7 @@ space rather than before."
 
 ;; (evil-define-motion evil-backward-text-object
 ;;   (count &optional text-object)
-;;   "move to the begin of following input text-object define 
+;;   "move to the begin of following input text-object define
 ;; in evil-inner-text-objects-map ."
 ;;   (unless text-object
 ;;       (setf text-object
@@ -1507,6 +1619,13 @@ tasks."
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
           (funcall callback)))))
 
+(defun xenops-prerender ()
+  (interactive)
+  (go-through-files-with-tag
+   "math"
+   (lambda ()
+     (xenops-mode))))
+
 ;; (go-through-files-with-tag "math" (lambda () (message buffer-file-name)))
 (defun publicize-files ()
   (interactive)
@@ -1521,6 +1640,23 @@ tasks."
   (interactive (list (read-file-name "file: " "/sudo::/")))
   (let ((tramp-file-name (expand-file-name file-name)))
     (find-file tramp-file-name)))
+
+;; (defun org-babel-fold-all-latex-src-blocks ()
+;;   "toggle visibility of org-babel latex src blocks"
+;;   (interactive)
+;;   (save-excursion
+;;     (beginning-of-buffer)
+;;     (ignore-errors (org-babel-next-src-block))
+;;     (let ((old-point nil)
+;;           (current-point (point)))
+;;       (while (not (eq old-point current-point))
+;;         (progn
+;;           (if (string= (org-element-property :language (org-element-at-point)) "latex")
+;;               (org-fold-hide-block-toggle))
+;;           (ignore-errors (org-babel-next-src-block))
+;;           (setf old-point current-point)
+;;           (setf current-point (point)))))))
+;; (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
 
 ;; semantic
 ;; (global-semanticdb-minor-mode 1)
