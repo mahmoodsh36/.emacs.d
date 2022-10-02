@@ -9,6 +9,11 @@
   \(\newcommand\dif[1]{\:\textrm{d}#1}\)
   \(\DeclarePairedDelimiter\ceil{\lceil}{\rceil}\)
   \(\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}\)
+  \(\newcommand{\ihat}{\hat{\textbf{i}}}\)
+  \(\newcommand{\jhat}{\hat{\textbf{j}}}\)
+  \(\newcommand{\khat}{\hat{\textbf{k}}}\)
+  \(\newcommand{\rhat}{\hat{\textbf{r}}}\)
+  \(\newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}\)
 </p>
 #+end_export
 
