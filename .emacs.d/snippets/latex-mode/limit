@@ -2,4 +2,4 @@
 # name: limit
 # key: li
 # --
-\lim_{${1:x}\to ${2:\infty}} $0
+\lim_{${1:x} \to ${2:\infty}} $0

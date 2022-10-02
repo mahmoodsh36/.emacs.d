@@ -2,7 +2,6 @@
 # name: latex code block
 # key: ax
 # --
-#+begin_src latex :results file graphics :exports results :file ~/.emacs.d/latex/`(generate-random-string 7)`.png :noweb strip-export
-  <<transparent>>
+#+begin_src latex :file ~/.emacs.d/latex/`(generate-random-string 7)`.svg :cache yes
   $0
 #+end_src
