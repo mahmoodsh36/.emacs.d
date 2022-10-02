@@ -41,3 +41,8 @@
 #+LATEX_HEADER: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 # apparently the physics package has the \rank operator so i dont gotta define it.
 # #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
+#+LATEX_HEADER: \newcommand{\ihat}{\hat{\textbf{\i}}}
+#+LATEX_HEADER: \newcommand{\jhat}{\hat{\textbf{\j}}}
+#+LATEX_HEADER: \newcommand{\khat}{\hat{\textbf{k}}}
+#+LATEX_HEADER: \newcommand{\rhat}{\hat{\textbf{r}}}
+#+LATEX_HEADER: \newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}
