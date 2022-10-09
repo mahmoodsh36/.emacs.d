@@ -6,7 +6,7 @@ fi
 sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
-parcellite &
+#parcellite &
 pulseaudio &
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
