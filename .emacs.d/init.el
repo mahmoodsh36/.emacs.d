@@ -88,8 +88,6 @@
 (global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
-;; make it work with any theme
-(set-face-attribute 'whitespace-space nil :background nil)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -422,6 +420,8 @@
       (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
       (general-define-key :states 'normal :keymaps 'override "K" 'evil-jump-to-tag)
+      (general-define-key :states 'normal :keymaps 'override "SPC o l" 'avy-goto-line)
+      (general-define-key :states 'normal :keymaps 'override "SPC o c" 'avy-goto-char)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -565,7 +565,8 @@ space rather than before."
       (corfu-auto t)
       (corfu-quit-no-match 'separator)
       (corfu-auto-delay 0)
-      (corfu-separator ?_) ;; Set to orderless separator, if not using space
+      ;; (corfu-separator ?_) ;; Set to orderless separator, if not using space
+      (corfu-separator " ") ;; Set to orderless separator, if not using space
       (corfu-count 20)
       (corfu-indexed-mode t)
       ;; (corfu-quit-at-boundary nil) ;; dont stop completing when a space is inserted
@@ -631,9 +632,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :family "Monaco" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Monaco" :height 130)
-(set-face-attribute 'variable-pitch nil :family "Monaco" :height 130)
+(set-face-attribute 'default nil :family "Inconsolata" :height 140)
+(set-face-attribute 'fixed-pitch nil :family "Inconsolata" :height 140)
+(set-face-attribute 'variable-pitch nil :family "Inconsolata" :height 140)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -643,7 +644,6 @@ space rather than before."
 ;; (use-package gruvbox-theme)
 (use-package doom-themes)
 (use-package inkpot-theme)
-(use-package minimal-theme)
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
@@ -861,7 +861,7 @@ space rather than before."
         xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  ;; (add-hook 'org-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
@@ -981,7 +981,8 @@ space rather than before."
 (use-package keyfreq
   :config
   (keyfreq-mode 1)
-  (keyfreq-autosave-mode 1))
+  (keyfreq-autosave-mode 1)
+  (setq keyfreq-file "~/brain/emacs_keyfreq"))
 
 (use-package magit)
 
@@ -1023,6 +1024,9 @@ space rather than before."
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
+
+(use-package icicles
+  :straight (:repo "emacsmirror/icicles" :host github))
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1139,7 +1143,7 @@ space rather than before."
     (with-temp-buffer
       (apply 'call-process "du" nil t nil "-sch" files)
       (message "Size of all marked files: %s"
-               (progn 
+               (progn
                  (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
 (define-key dired-mode-map (kbd "?") 'dired-get-size)
@@ -1414,10 +1418,11 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'minimal-light)
+  (disable-theme 'modus-operandi)
   ;; (load-theme 'darktooth t)
-  (load-theme 'minimal t)
+  (load-theme 'modus-vivendi t)
   (set-face-attribute 'whitespace-space nil :background nil)
+  (set-face-attribute 'whitespace-newline nil :background nil)
   (global-org-modern-mode))
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   ;; (set-themed-pdf 1))
@@ -1425,9 +1430,10 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'minimal)
-  (load-theme 'minimal-light t)
+  (disable-theme 'modus-vivendi)
+  (load-theme 'modus-operandi t)
   (set-face-attribute 'whitespace-space nil :background nil)
+  (set-face-attribute 'whitespace-newline nil :background nil)
   (global-org-modern-mode))
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
