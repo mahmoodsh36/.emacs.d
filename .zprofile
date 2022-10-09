@@ -12,3 +12,4 @@ export XDG_CONFIG_HOME="$HOME/.config"
 
 source /etc/profile
 export GUILE_LOAD_PATH="$HOME/workspace/guix/"
+export PATH="$PATH:/usr/bin"
