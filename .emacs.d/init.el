@@ -11,14 +11,26 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(setq package-enable-at-startup nil
-      straight-use-package-by-default t
+(setq ;; package-enable-at-startup nil
+      ;; straight-use-package-by-default t
       native-comp-async-report-warnings-errors nil)
 
-;; disable customization using the interactive interface
+;; disable customization using the interactive interface and remove startup screen
 (setq custom-file "/dev/null")
 (setq inhibit-startup-screen t)
-(straight-use-package 'use-package)
+
+;; setup use-package, it provides stable packages unlike straight.el so i use it as the default package manager
+(require 'package)
+(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
+(require 'use-package)
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
@@ -1258,7 +1270,7 @@ space rather than before."
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
-(setq eshell-aliases-file (concat (expand-file-name user-emacs-directory) "eshell_aliases"))
+(setq eshell-aliases-file (file-truename "~/brain/eshell_aliases"))
 (defun eshell-cd-and-ls (&rest args)           ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
