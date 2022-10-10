@@ -144,7 +144,7 @@
         '(("n" "note" plain "%?"
            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
            :kill-buffer :unnarrowed t)
-          ("q" "quick note" plain "%?"
+          ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
            :kill-buffer :unnarrowed t)
           ("t" "todo" entry "* TODO %?"
@@ -246,7 +246,7 @@
       ;; for evil mode compatibility
       (use-package treemacs-evil
         :config
-        (general-define-key :states '(normal motion emacs treemacs) :keymaps 'override "SPC t" 'treemacs))
+        (general-define-key :states '(normal motion treemacs) :keymaps 'override "SPC t" 'treemacs))
 
       ;; indentation-based text objects for evil
       (use-package evil-indent-plus
@@ -320,7 +320,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states 'normal :keymaps 'override "SPC f f" 'find-file)
       (general-define-key :states 'normal :keymaps 'override "SPC f s" 'sudo-find-file)
-      (general-define-key :states '(normal emacs treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
@@ -349,16 +349,16 @@
                               (xenops-render))))
       (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC w" 'evil-window-map)
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC i"
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC i"
                           (lambda ()
                             (interactive)
                             (org-insert-time-stamp (current-time) t)))
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda)))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda)))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
-      (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC r f" 'org-roam-node-find)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
       (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
@@ -373,7 +373,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r q"
                           (lambda ()
                             (interactive)
-                            (org-roam-capture-no-title-prompt nil "q")))
+                            (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
       ;; (general-define-key :states 'normal :keymaps 'override "SPC r h"
       ;;                     (lambda ()
       ;;                       (interactive)
@@ -411,7 +411,7 @@
                     (search-open-file-in-emacs "~/data" "")))
 
       ;; keybinding to evaluate math expressions
-      ;; (general-define-key :states '(normal motion emacs) :keymaps 'override "SPC m"
+      ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
       ;;                     (lambda ()
       ;;                       (interactive)
       ;;                       (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
@@ -431,7 +431,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
-      (general-define-key :states 'normal :keymaps 'override "K" 'evil-jump-to-tag)
+      (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states 'normal :keymaps 'override "SPC o l" 'avy-goto-line)
       (general-define-key :states 'normal :keymaps 'override "SPC o c" 'avy-goto-char)
 
@@ -656,6 +656,7 @@ space rather than before."
 ;; (use-package gruvbox-theme)
 (use-package doom-themes)
 (use-package inkpot-theme)
+(use-package minimal-theme)
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
@@ -1131,8 +1132,8 @@ space rather than before."
 ;; who cares about annoying broken links errors..
 ;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is..)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -1406,8 +1407,8 @@ space rather than before."
           (lambda ()
             (org-agenda-list)
             (delete-other-windows)
-            (switch-to-light-theme)
-            ;; (switch-to-dark-theme)
+            ;; (switch-to-light-theme)
+            (switch-to-dark-theme)
             (lob-reload)))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
@@ -1430,9 +1431,9 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'modus-operandi)
+  (disable-theme 'minimal-light)
   ;; (load-theme 'darktooth t)
-  (load-theme 'modus-vivendi t)
+  (load-theme 'minimal t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
   (global-org-modern-mode))
@@ -1442,8 +1443,8 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'modus-vivendi)
-  (load-theme 'modus-operandi t)
+  (disable-theme 'minimal)
+  (load-theme 'minimal-light t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
   (global-org-modern-mode))
@@ -1659,22 +1660,24 @@ tasks."
   (let ((tramp-file-name (expand-file-name file-name)))
     (find-file tramp-file-name)))
 
-;; (defun org-babel-fold-all-latex-src-blocks ()
-;;   "toggle visibility of org-babel latex src blocks"
-;;   (interactive)
-;;   (save-excursion
-;;     (beginning-of-buffer)
-;;     (ignore-errors (org-babel-next-src-block))
-;;     (let ((old-point nil)
-;;           (current-point (point)))
-;;       (while (not (eq old-point current-point))
-;;         (progn
-;;           (if (string= (org-element-property :language (org-element-at-point)) "latex")
-;;               (org-fold-hide-block-toggle))
-;;           (ignore-errors (org-babel-next-src-block))
-;;           (setf old-point current-point)
-;;           (setf current-point (point)))))))
-;; (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
+(defun org-babel-fold-all-latex-src-blocks ()
+  "toggle visibility of org-babel latex src blocks"
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    ;; (re-search-forward org-babel-src-block-regexp)
+    (ignore-errors (org-babel-next-src-block))
+    (let ((old-point nil)
+          (current-point (point)))
+      (while (not (eq old-point current-point))
+        (progn
+          (if (string= (org-element-property :language (org-element-at-point)) "latex")
+              (org-cycle))
+          (ignore-errors (org-babel-next-src-block))
+          (setf old-point current-point)
+          (setf current-point (point))))))
+  (org-content))
+(add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
 
 ;; semantic
 ;; (global-semanticdb-minor-mode 1)
