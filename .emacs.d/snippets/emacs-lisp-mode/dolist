@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: dolist
+# key: do
+# --
+(dolist (${1:var} ${2:list})
+  $0)
