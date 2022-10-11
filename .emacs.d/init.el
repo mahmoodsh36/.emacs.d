@@ -44,7 +44,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-;; (menu-bar-mode -1) enable it so that emacs acts like a normal app on macos
+(menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
@@ -397,6 +397,7 @@
                             (find-file "~/brain/bib.bib")))
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
@@ -459,9 +460,8 @@
         (general-define-key :states 'normal :keymaps 'override "g . p" 'evil-mc-pause-cursors)
         (general-define-key :states 'normal :keymaps 'override "g . r" 'evil-mc-resume-cursors))
 
-      (use-package evil-escape
-        :config
-        (evil-escape-mode))
+      (straight-use-package 'evil-escape)
+      (evil-escape-mode)
 
       ;; interpret function arguments as a text object
       (use-package evil-args)
@@ -644,9 +644,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :family "Inconsolata" :height 140)
-(set-face-attribute 'fixed-pitch nil :family "Inconsolata" :height 140)
-(set-face-attribute 'variable-pitch nil :family "Inconsolata" :height 140)
+(set-face-attribute 'default nil :family "Inconsolata" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Inconsolata" :height 130)
+(set-face-attribute 'variable-pitch nil :family "Inconsolata" :height 130)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -861,7 +861,7 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
   (setq org-hugo-section "post")
   (setq org-more-dir (expand-file-name "~/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
@@ -988,7 +988,7 @@ space rather than before."
 ;; (use-package code-compass)
 
 ;; best terminal emulation
-(use-package vterm)
+;; (use-package vterm)
 
 ;; check which keys i press most
 (use-package keyfreq
@@ -1376,7 +1376,7 @@ space rather than before."
         (:exports . "results")
         ;; (:fit . t)
         ;; (:imagemagick . t)
-        ;; (:async . t)
+        (:async . t)
         (:eval . "no-export")
         (:headers . ("\\usepackage{forest}"
                      "\\usepackage{amsmath}"
@@ -1556,66 +1556,16 @@ space rather than before."
 ;; (define-key evil-motion-state-map (kbd "M-b")
 ;;   #'evil-backward-text-object)
 
-;; org-roam TODOs https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html
-(add-to-list 'org-tags-exclude-from-inheritance "todo")
-(defun vulpea-todo-p ()
-  "Return non-nil if current buffer has any todo/done entries.
-
-TODO entries marked as done are ignored, meaning the this
-function returns nil if current buffer contains only completed
-tasks."
-  (org-element-map
-      (org-element-parse-buffer 'headline)
-      'headline
-    (lambda (h)
-      (eq (org-element-property :todo-type h) 'todo))
-    ;; (or (eq (org-element-property :todo-type h)
-    ;;         'todo)
-    ;;     (eq (org-element-property :todo-type h)
-    ;;         'done)))
-    nil 'first-match))
-;; (add-hook 'find-file-hook #'vulpea-todo-update-tag) this causes problems on exporting from org where emacs begins to ask whether to kill modified buffers as the todo tags for some reason get deleted
-(add-hook 'before-save-hook #'vulpea-todo-update-tag)
-(defun vulpea-todo-update-tag ()
-  "Update TODO tag in the current buffer."
-  (when (and (not (active-minibuffer-window))
-             (vulpea-buffer-p))
-    (save-excursion
-      (goto-char (point-min))
-      (let* ((tags (vulpea-buffer-tags-get))
-             (original-tags tags))
-        (if (vulpea-todo-p)
-            (setq tags (cons "todo" tags))
-          (setq tags (remove "todo" tags)))
-        ;; cleanup duplicates
-        (setq tags (seq-uniq tags))
-        ;; update tags if changed
-        (when (or (seq-difference tags original-tags)
-                  (seq-difference original-tags tags))
-          (apply #'vulpea-buffer-tags-set tags))))))
-(defun vulpea-buffer-p ()
-  "Return non-nil if the currently visited buffer is a note."
-  (and buffer-file-name
-       (string-prefix-p
-        (expand-file-name (file-name-as-directory org-roam-directory))
-        (file-name-directory buffer-file-name))))
-(defun vulpea-todo-files ()
-  "Return a list of note files containing 'todo' tag.";
+(defun all-roam-files ()
+  "return a list of all files in the org-roam database"
   (seq-uniq
    (seq-map
     #'car
     (org-roam-db-query
-     [:select [nodes:file]
-              :from tags
-              :left-join nodes
-              :on (= tags:node-id nodes:id)
-              :where (like tag (quote "%\"todo\"%"))]))))
-(setq org-agenda-files (vulpea-todo-files))
-(defun vulpea-agenda-files-update (&rest _)
-  "Update the value of `org-agenda-files'."
-  (setq org-agenda-files (vulpea-todo-files)))
-(advice-add 'org-agenda :before #'vulpea-agenda-files-update)
-(advice-add 'org-todo-list :before #'vulpea-agenda-files-update)
+     `(:select [nodes:file]
+                     :from tags
+                     :left-join nodes
+                     :on (= tags:node-id nodes:id))))))
 
 (defun roam-files-with-tag (tag-name)
   "Return a list of note files containing a specific tag.";
@@ -1628,9 +1578,58 @@ tasks."
                      :left-join nodes
                      :on (= tags:node-id nodes:id)
                      :where (like tag ,tag-name))))))
-(roam-files-with-tag "math")
 
-(defun go-through-files-with-tag (tag-name &optional callback)
+;; idea adapted from https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html
+(add-to-list 'org-tags-exclude-from-inheritance "todo")
+(add-to-list 'org-tags-exclude-from-inheritance "band")
+(defun buffer-contains-todo ()
+  "check if the buffer contains a TODO entry"
+  (org-element-map
+      (org-element-parse-buffer 'headline)
+      'headline
+    (lambda (h)
+      (eq (org-element-property :todo-type h) 'todo))
+    ;; (or (eq (org-element-property :todo-type h)
+    ;;         'todo)
+    ;;     (eq (org-element-property :todo-type h)
+    ;;         'done)))
+    nil 'first-match))
+;; (add-hook 'find-file-hook #'vulpea-todo-update-tag) this causes problems on exporting from org where emacs begins to ask whether to kill modified buffers as the todo tags for some reason get deleted
+(add-hook 'before-save-hook #'update-todo-tag)
+(defun update-todo-tag ()
+  "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
+  (when (and (not (active-minibuffer-window))
+             (is-buffer-roam-note))
+    (save-excursion
+      (goto-char (point-min))
+      (if (buffer-contains-todo)
+          (org-roam-tag-add '("todo"))
+        (org-roam-tag-remove '("todo"))))))
+      ;; (let* ((tags (vulpea-buffer-tags-get))
+      ;;        (original-tags tags))
+      ;;   (if (buffer-contains-todo)
+      ;;       (setq tags (cons "todo" tags))
+      ;;     (setq tags (remove "todo" tags)))
+      ;;   ;; cleanup duplicates
+      ;;   (setq tags (seq-uniq tags))
+      ;;   ;; update tags if changed
+      ;;   (when (or (seq-difference tags original-tags)
+      ;;             (seq-difference original-tags tags))
+      ;;     (apply #'vulpea-buffer-tags-set tags))))))
+(defun is-buffer-roam-note ()
+  "Return non-nil if the currently visited buffer is a note."
+  (and buffer-file-name
+       (string-prefix-p
+        (expand-file-name (file-name-as-directory org-roam-directory))
+        (file-name-directory buffer-file-name))))
+(setq org-agenda-files (roam-files-with-tag "todo"))
+(defun agenda-files-update (&rest _)
+  "Update the value of `org-agenda-files'."
+  (setq org-agenda-files (roam-files-with-tag "todo")))
+(advice-add 'org-agenda :before #'agenda-files-update)
+(advice-add 'org-todo-list :before #'agenda-files-update)
+
+(defun go-through-roam-files-with-tag (tag-name &optional callback)
   "run a callback function on each file tagged with tag-name"
   (interactive)
   (dolist (file (roam-files-with-tag tag-name))
@@ -1639,20 +1638,50 @@ tasks."
           (funcall callback)))))
 
 (defun xenops-prerender ()
+  "prerender latex blocks in roam files"
   (interactive)
-  (go-through-files-with-tag
+  (go-through-roam-files-with-tag
    "math"
    (lambda ()
      (xenops-mode))))
 
-;; (go-through-files-with-tag "math" (lambda () (message buffer-file-name)))
+;; (go-through-roam-files-with-tag "math" (lambda () (message buffer-file-name)))
 (defun publicize-files ()
   (interactive)
-  (go-through-files-with-tag
+  (go-through-roam-files-with-tag
    "computer-science"
    (lambda ()
      (org-roam-tag-add '("public"))
      (save-buffer))))
+
+(defun buffer-contains-substring (string)
+  "check if the current buffer contains a specific string"
+  (save-excursion
+    (save-match-data
+      (goto-char (point-min))
+      (not (eq nil (search-forward string nil t))))))
+
+(defun buffer-contains-math ()
+  "check if the current buffer contains any math equations (latex blocks)"
+  (buffer-contains-substring "$"))
+
+(defun update-math-file ()
+  "add/remove the math tag to the file"
+  (when (and (not (active-minibuffer-window))
+             (is-buffer-roam-note))
+    (save-excursion
+      (goto-char (point-min))
+      (if (buffer-contains-math)
+          (org-roam-tag-add '("math"))
+        (org-roam-tag-remove '("math"))))))
+(add-hook 'before-save-hook #'update-math-file)
+
+(defun update-math-files ()
+  "go through all roam files and check each for math formulas and update the math tag"
+  (dolist (file (all-roam-files))
+    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+      (update-math-file)
+      (save-buffer))))
 
 (defun sudo-find-file (file-name)
   "like find file, but opens the file as root using tramp"
