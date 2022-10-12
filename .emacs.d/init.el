@@ -310,7 +310,7 @@
       (general-evil-setup)
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
-      (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
+      (general-define-key :states 'normal "s" 'save-buffer)
       (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
@@ -430,6 +430,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC s d" 'switch-to-dark-theme)
       (general-define-key :states 'normal :keymaps 'override "SPC s l" 'switch-to-light-theme)
       (general-define-key :states 'normal :keymaps 'override "SPC s e" 'eshell)
+      (general-define-key :states 'normal :keymaps 'override "SPC s g" 'magit)
       (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
       (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
@@ -1041,6 +1042,32 @@ space rather than before."
 (use-package icicles
   :straight (:repo "emacsmirror/icicles" :host github))
 
+(use-package ialign)
+(straight-use-package 'org-protocol-capture-html)
+(use-package org-download)
+;;(use-package org-ql)
+
+(use-package eros
+  :config
+  (eros-mode 1))
+
+(use-package skewer-mode)
+
+;; emacs application framework
+(use-package eaf
+  :straight (eaf
+             :type git
+             :host github
+             :repo "emacs-eaf/emacs-application-framework"           
+             :files ("*.el" "*.py" "core" "app" "*.json")
+             :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
+             :pre-build (("python" "install-eaf.py" "--install" "pdf-viewer" "browser" "--ignore-sys-deps"))
+             )
+  :init (evil-set-initial-state 'eaf-mode 'emacs) ; Evil mode doesn't work well with eaf keybindings.
+  :config
+  (load-library "eaf-pdf-viewer")
+  (load-library "eaf-browser"))
+
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
 
@@ -1074,13 +1101,11 @@ space rather than before."
 ;;  (setq inferior-lisp-program "sbcl"))
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
-;;(use-package org-ql)
 ;;(use-package copilot)
 ;;(use-package ox-pandoc)
 ;;(use-package org-download)
 ;;(use-package org-html-themes)
 ;;(use-package org-ioslide)
-;;(use-package org-protocol-capture-html)
 ;;(use-package google-this)
 ;;(use-package google-translate)
 ;;(use-package google-maps)
@@ -1707,8 +1732,3 @@ space rather than before."
           (setf current-point (point))))))
   (org-content))
 (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
-
-;; semantic
-;; (global-semanticdb-minor-mode 1)
-;; (global-semantic-idle-scheduler-mode 1)
-;; (semantic-mode 1)
