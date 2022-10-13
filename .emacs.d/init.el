@@ -646,9 +646,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :family "Inconsolata" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Inconsolata" :height 130)
-(set-face-attribute 'variable-pitch nil :family "Inconsolata" :height 130)
+;; (set-face-attribute 'default nil :family "Inconsolata" :height 130)
+;; (set-face-attribute 'fixed-pitch nil :family "Inconsolata" :height 130)
+;; (set-face-attribute 'variable-pitch nil :family "Inconsolata" :height 130)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -1081,7 +1081,7 @@ space rather than before."
          (song-file (format "~/data/lyrics/%s - %s" song artist)))
     (if (not (file-exists-p song-file))
         (progn
-          (message "file doesnt exist")
+          (message "lyrics file doesnt exist")
           (versuri-lyrics artist song (lambda (lyrics))) ;; first request always fails...
           (sleep-for 1) ;; something weird happens and waiting fixes it
           (versuri-lyrics
@@ -1093,6 +1093,41 @@ space rather than before."
              (message "fetched lyrics for: %s - %s" song artist)
              (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
       (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
+
+(use-package tree-sitter
+  :config
+  (global-tree-sitter-mode 1)
+  (add-hook 'prog-mode-hook 'tree-sitter-hl-mode))
+(use-package tree-sitter-langs)
+(use-package evil-textobj-tree-sitter
+  :config
+  ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+  ;; You can also bind multiple items and we will match the first one we can find
+  (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+  ;; Goto start of next function
+  (define-key evil-normal-state-map (kbd "]f")
+    (lambda ()
+      (interactive)
+      (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+  ;; Goto start of previous function
+  (define-key evil-normal-state-map (kbd "[f")
+    (lambda ()
+      (interactive)
+      (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+  ;; Goto end of next function
+  (define-key evil-normal-state-map (kbd "]F")
+    (lambda ()
+      (interactive)
+      (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+  ;; Goto end of previous function
+  (define-key evil-normal-state-map (kbd "[F")
+    (lambda ()
+      (interactive)
+      (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+  )
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1110,7 +1145,6 @@ space rather than before."
 ;; (use-package delve
 ;;   :straight (:repo "publicimageltd/delve" :host github))
 ;; (use-package embark)
-;; (use-package orderless)
 ;; (use-package org-transclusion)
 ;; (use-package svg-tag-mode)
 
@@ -1129,7 +1163,6 @@ space rather than before."
 ;;(use-package system-packages)
 ;;(use-package copilot)
 ;;(use-package ox-pandoc)
-;;(use-package org-download)
 ;;(use-package org-html-themes)
 ;;(use-package org-ioslide)
 ;;(use-package google-this)
@@ -1486,9 +1519,9 @@ space rather than before."
   (load-theme 'minimal t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
-  (global-org-modern-mode))
+  (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  ;; (set-themed-pdf 1))
+  (set-themed-pdf 1))
 
 (defun switch-to-light-theme ()
   "switch to light theme"
@@ -1497,10 +1530,10 @@ space rather than before."
   (load-theme 'minimal-light t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
-  (global-org-modern-mode))
+  (global-org-modern-mode)
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  ;; (set-themed-pdf 1))
+  (set-themed-pdf 1))
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
