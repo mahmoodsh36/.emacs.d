@@ -436,6 +436,7 @@
       (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states 'normal :keymaps 'override "SPC o l" 'avy-goto-line)
       (general-define-key :states 'normal :keymaps 'override "SPC o c" 'avy-goto-char)
+      (general-define-key :states 'normal :keymaps 'override "SPC s s" 'emacs-lyrics)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -657,7 +658,9 @@ space rather than before."
 ;; (use-package gruvbox-theme)
 (use-package doom-themes)
 (use-package inkpot-theme)
-(use-package minimal-theme)
+(use-package minimal-theme
+  :straight (:host github :repo "mahmoodsheikh36/minimal-theme"))
+
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
@@ -1054,19 +1057,42 @@ space rather than before."
 (use-package skewer-mode)
 
 ;; emacs application framework
-(use-package eaf
-  :straight (eaf
-             :type git
-             :host github
-             :repo "emacs-eaf/emacs-application-framework"           
-             :files ("*.el" "*.py" "core" "app" "*.json")
-             :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
-             :pre-build (("python" "install-eaf.py" "--install" "pdf-viewer" "browser" "--ignore-sys-deps"))
-             )
-  :init (evil-set-initial-state 'eaf-mode 'emacs) ; Evil mode doesn't work well with eaf keybindings.
-  :config
-  (load-library "eaf-pdf-viewer")
-  (load-library "eaf-browser"))
+;; (use-package eaf
+;;   :straight (eaf
+;;              :type git
+;;              :host github
+;;              :repo "emacs-eaf/emacs-application-framework"
+;;              :files ("*.el" "*.py" "core" "app" "*.json")
+;;              :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
+;;              :pre-build (("python" "install-eaf.py" "--install" "pdf-viewer" "browser" "--ignore-sys-deps"))
+;;              )
+;;   :init (evil-set-initial-state 'eaf-mode 'emacs) ; Evil mode doesn't work well with eaf keybindings.
+;;   :config
+;;   (load-library "eaf-pdf-viewer")
+;;   (load-library "eaf-browser"))
+
+(use-package versuri)
+
+(defun emacs-lyrics ()
+  (interactive)
+  (shell-command-to-string "current_spotify_song.sh")
+  (let* ((song (string-trim (car (split-string (shell-command-to-string "current_spotify_song.sh") "-"))))
+         (artist (string-trim (car (cdr (split-string (shell-command-to-string "current_spotify_song.sh") "-")))))
+         (song-file (format "~/data/lyrics/%s - %s" song artist)))
+    (if (not (file-exists-p song-file))
+        (progn
+          (message "file doesnt exist")
+          (versuri-lyrics artist song (lambda (lyrics))) ;; first request always fails...
+          (sleep-for 1) ;; something weird happens and waiting fixes it
+          (versuri-lyrics
+           artist
+           song
+           (lambda (lyrics)
+             (interactive)
+             (f-write-text lyrics 'utf-8 song-file)
+             (message "fetched lyrics for: %s - %s" song artist)
+             (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
+      (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1401,7 +1427,6 @@ space rather than before."
         (:exports . "results")
         ;; (:fit . t)
         ;; (:imagemagick . t)
-        (:async . t)
         (:eval . "no-export")
         (:headers . ("\\usepackage{forest}"
                      "\\usepackage{amsmath}"
@@ -1700,6 +1725,16 @@ space rather than before."
           (org-roam-tag-add '("math"))
         (org-roam-tag-remove '("math"))))))
 (add-hook 'before-save-hook #'update-math-file)
+
+(defun find-math-files (basedir)
+  "find all org files in a directory that are math files and tag them with 'math' tag"
+  (interactive)
+  (dolist (file (directory-files-recursively basedir ".*\\.org$"))
+    (ignore-errors (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+      (beginning-of-buffer)
+      (org-id-get-create)
+      (ignore-errors (update-math-file))
+      (save-buffer)))))
 
 (defun update-math-files ()
   "go through all roam files and check each for math formulas and update the math tag"
