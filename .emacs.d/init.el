@@ -100,6 +100,11 @@
 (global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
+;; relative line numbers
+;; (add-hook 'prog-mode-hook
+;;           (lambda ()
+;;             (setq display-line-numbers 'relative)))
+
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -424,7 +429,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
-                            (when window-system (set-frame-size (selected-frame) 165 50))))
+                            (when window-system (set-frame-size (selected-frame) 165 45))))
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC j" 'evil-scroll-page-down)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC k" 'evil-scroll-page-up)
       (general-define-key :states 'normal :keymaps 'override "SPC s d" 'switch-to-dark-theme)
@@ -646,8 +651,8 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 130)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 125)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 125)
 (set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.3)
 (use-package darktooth-theme)
 (use-package modus-themes)
@@ -1023,19 +1028,14 @@ space rather than before."
 
 (use-package embark
   :ensure t
-
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
   :init
-
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-
   :config
-
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
@@ -1050,10 +1050,12 @@ space rather than before."
 (use-package org-download)
 ;;(use-package org-ql)
 
+;; evaulation overlay for elisp
 (use-package eros
   :config
   (eros-mode 1))
 
+;; live web dev
 (use-package skewer-mode)
 
 ;; emacs application framework
@@ -1071,7 +1073,8 @@ space rather than before."
 ;;   (load-library "eaf-pdf-viewer")
 ;;   (load-library "eaf-browser"))
 
-(use-package versuri)
+(straight-use-package 'versuri)
+(require 'versuri)
 
 (defun emacs-lyrics ()
   (interactive)
@@ -1082,7 +1085,12 @@ space rather than before."
     (if (not (file-exists-p song-file))
         (progn
           (message "lyrics file doesnt exist")
-          (versuri-lyrics artist song (lambda (lyrics))) ;; first request always fails...
+          (versuri-lyrics
+           artist
+           song
+           (lambda (lyrics))
+           (list (versuri-find-website "musixmatch")
+                 (versuri-find-website "genius"))) ;; first request always fails...
           (sleep-for 1) ;; something weird happens and waiting fixes it
           (versuri-lyrics
            artist
@@ -1091,7 +1099,9 @@ space rather than before."
              (interactive)
              (f-write-text lyrics 'utf-8 song-file)
              (message "fetched lyrics for: %s - %s" song artist)
-             (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
+             (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))
+           (list (versuri-find-website "musixmatch")
+                 (versuri-find-website "genius"))))
       (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
 
 (use-package tree-sitter
