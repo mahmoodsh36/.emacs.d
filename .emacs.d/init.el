@@ -44,7 +44,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+(menu-bar-mode 1) ;; enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
@@ -67,7 +67,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 100 45))
+(when window-system (set-frame-size (selected-frame) 110 50))
 ;; space around the windows
 (set-fringe-style '(12 . 0))
 ;; display only buffer name in modeline
@@ -651,8 +651,8 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 125)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 125)
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 130)
 (set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.3)
 (use-package darktooth-theme)
 (use-package modus-themes)
@@ -870,7 +870,7 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/blog/"))
   (setq org-hugo-section "post")
   (setq org-more-dir (expand-file-name "~/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
@@ -891,7 +891,7 @@ space rather than before."
   ;; (setq xenops-math-image-scale-factor 0.7)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
-            ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
+            ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\|algorithmic\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\|algorithmic\\)\\*?}")
             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
   ;; for inline previews
   (advice-add 'xenops-math-latex-get-colors :filter-return
