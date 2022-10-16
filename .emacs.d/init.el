@@ -1078,30 +1078,34 @@ space rather than before."
 
 (defun emacs-lyrics ()
   (interactive)
-  (shell-command-to-string "current_spotify_song.sh")
-  (let* ((song (string-trim (car (split-string (shell-command-to-string "current_spotify_song.sh") "-"))))
-         (artist (string-trim (car (cdr (split-string (shell-command-to-string "current_spotify_song.sh") "-")))))
-         (song-file (format "~/data/lyrics/%s - %s" song artist)))
+  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
+         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
+         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
     (if (not (file-exists-p song-file))
         (progn
           (message "lyrics file doesnt exist")
-          (versuri-lyrics
-           artist
-           song
-           (lambda (lyrics))
-           (list (versuri-find-website "musixmatch")
-                 (versuri-find-website "genius"))) ;; first request always fails...
-          (sleep-for 1) ;; something weird happens and waiting fixes it
-          (versuri-lyrics
-           artist
-           song
-           (lambda (lyrics)
-             (interactive)
-             (f-write-text lyrics 'utf-8 song-file)
-             (message "fetched lyrics for: %s - %s" song artist)
-             (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))
-           (list (versuri-find-website "musixmatch")
-                 (versuri-find-website "genius"))))
+          (let ((lyrics (shell-command-to-string (format "~/workspace/scripts/get_genius_lyrics.py '%s' '%s'" song artist))))
+            (f-write-text lyrics 'utf-8 song-file)
+            (message "fetched lyrics for: %s - %s" song artist)
+            (find-file-other-window song-file)))
+            ;; (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file)))))
+      ;; (versuri-lyrics
+      ;;  artist
+      ;;  song
+      ;;  (lambda (lyrics))
+      ;;  (list (versuri-find-website "musixmatch")
+      ;;        (versuri-find-website "genius"))) ;; first request always fails...
+      ;; (sleep-for 1) ;; something weird happens and waiting fixes it
+      ;; (versuri-lyrics
+      ;;  artist
+      ;;  song
+      ;;  (lambda (lyrics)
+      ;;    (interactive)
+      ;;    (f-write-text lyrics 'utf-8 song-file)
+      ;;    (message "fetched lyrics for: %s - %s" song artist)
+      ;;    (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))
+      ;;  (list (versuri-find-website "musixmatch")
+      ;;        (versuri-find-website "genius"))))
       (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
 
 (use-package tree-sitter
