@@ -441,7 +441,7 @@
       (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states 'normal :keymaps 'override "SPC o l" 'avy-goto-line)
       (general-define-key :states 'normal :keymaps 'override "SPC o c" 'avy-goto-char)
-      (general-define-key :states 'normal :keymaps 'override "SPC s s" 'emacs-lyrics)
+      (general-define-key :states 'normal :keymaps 'override "SPC s s" 'spotify-lyrics)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -891,7 +891,7 @@ space rather than before."
   ;; (setq xenops-math-image-scale-factor 0.7)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
-            ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\|algorithmic\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\|algorithmic\\)\\*?}")
+            ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
   ;; for inline previews
   (advice-add 'xenops-math-latex-get-colors :filter-return
@@ -1076,7 +1076,7 @@ space rather than before."
 (straight-use-package 'versuri)
 (require 'versuri)
 
-(defun emacs-lyrics ()
+(defun spotify-lyrics ()
   (interactive)
   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
@@ -1084,10 +1084,13 @@ space rather than before."
     (if (not (file-exists-p song-file))
         (progn
           (message "lyrics file doesnt exist")
-          (let ((lyrics (shell-command-to-string (format "~/workspace/scripts/get_genius_lyrics.py '%s' '%s'" song artist))))
-            (f-write-text lyrics 'utf-8 song-file)
-            (message "fetched lyrics for: %s - %s" song artist)
-            (find-file-other-window song-file)))
+          (let ((lyrics (shell-command-to-string (format "~/workspace/scripts/get_genius_lyrics.py '%s' '%s' 2>/dev/null" song artist))))
+            (if (> (length lyrics) 0)
+                (progn
+                  (f-write-text lyrics 'utf-8 song-file)
+                  (message "fetched lyrics for: %s - %s" song artist)
+                  (find-file-other-window song-file))
+              (message "couldnt fetch lyrics :("))))
             ;; (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file)))))
       ;; (versuri-lyrics
       ;;  artist
@@ -1106,7 +1109,14 @@ space rather than before."
       ;;    (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))
       ;;  (list (versuri-find-website "musixmatch")
       ;;        (versuri-find-website "genius"))))
-      (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))))
+      (find-file-other-window song-file))))
+
+(defun delete-spotify-lyrics-file ()
+  (interactive)
+  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
+         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
+         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+    (delete-file song-file)))
 
 (use-package tree-sitter
   :config
@@ -1434,12 +1444,6 @@ space rather than before."
         (:results . "value")))
 ;; use unique id's to identify headers, better than using names cuz names could change
 (setq org-id-link-to-org-use-id t)
-(defun lob-reload ()
-  "load some files into org babel library"
-  (interactive)
-  (org-babel-lob-ingest "~/brain/data_structures/data_structures.org")
-  (org-babel-lob-ingest "~/brain/code/sage.org")
-  (org-babel-lob-ingest "~/brain/code/tikz.org"))
 ;; creation dates for TODOs
 ;; (defun my/log-todo-creation-date (&rest ignore)
 ;;   "Log TODO creation time in the property drawer under the key 'CREATED'."
@@ -1505,8 +1509,7 @@ space rather than before."
             (org-agenda-list)
             (delete-other-windows)
             ;; (switch-to-light-theme)
-            (switch-to-dark-theme)
-            (lob-reload)))
+            (switch-to-dark-theme)))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
 
@@ -1734,6 +1737,15 @@ space rather than before."
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
           (funcall callback)))))
 
+(defun lob-reload ()
+  "load files tagged with 'code' into the org babel library"
+  (interactive)
+  (go-through-roam-files-with-tag
+   "code"
+   (lambda ()
+     (org-babel-lob-ingest (buffer-file-name)))))
+(lob-reload)
+
 (defun xenops-prerender ()
   "prerender latex blocks in roam files"
   (interactive)
@@ -1789,6 +1801,39 @@ space rather than before."
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
       (update-math-file)
       (save-buffer))))
+
+;; (defun buffer-contains-code ()
+;;   "check if the buffer contains an org-babel source block"
+;;   (interactive)
+;;   (org-element-map
+;;       (org-element-parse-buffer 'element)
+;;       'src-block
+;;     (lambda (h) t)
+;;     ;; (or (eq (org-element-property :todo-type h)
+;;     ;;         'todo)
+;;     ;;     (eq (org-element-property :todo-type h)
+;;     ;;         'done)))
+;;     nil 'first-match))
+
+;; (defun update-code-file ()
+;;   "add/remove the code tag to the file"
+;;   (when (and (not (active-minibuffer-window))
+;;              (is-buffer-roam-note))
+;;     (save-excursion
+;;       (goto-char (point-min))
+;;       (if (buffer-contains-code)
+;;           (org-roam-tag-add '("math"))
+;;         (org-roam-tag-remove '("math"))))))
+;; (add-hook 'before-save-hook #'update-math-file)
+
+;; (defun find-code-files (basedir)
+;;   "find all org files in a directory that contain source blocks and tag them with 'code' tag"
+;;   (interactive)
+;;   (dolist (file (directory-files-recursively basedir ".*\\.org$"))
+;;     (ignore-errors (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+;;       (beginning-of-buffer)
+;;       (ignore-errors (update-code-file))
+;;       (save-buffer)))))
 
 (defun sudo-find-file (file-name)
   "like find file, but opens the file as root using tramp"
