@@ -1091,24 +1091,6 @@ space rather than before."
                   (message "fetched lyrics for: %s - %s" song artist)
                   (find-file-other-window song-file))
               (message "couldnt fetch lyrics :("))))
-            ;; (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file)))))
-      ;; (versuri-lyrics
-      ;;  artist
-      ;;  song
-      ;;  (lambda (lyrics))
-      ;;  (list (versuri-find-website "musixmatch")
-      ;;        (versuri-find-website "genius"))) ;; first request always fails...
-      ;; (sleep-for 1) ;; something weird happens and waiting fixes it
-      ;; (versuri-lyrics
-      ;;  artist
-      ;;  song
-      ;;  (lambda (lyrics)
-      ;;    (interactive)
-      ;;    (f-write-text lyrics 'utf-8 song-file)
-      ;;    (message "fetched lyrics for: %s - %s" song artist)
-      ;;    (with-temp-buffer-window "lyrics" nil nil (prin1 (f-read song-file))))
-      ;;  (list (versuri-find-website "musixmatch")
-      ;;        (versuri-find-website "genius"))))
       (find-file-other-window song-file))))
 
 (defun delete-spotify-lyrics-file ()
@@ -1117,6 +1099,13 @@ space rather than before."
          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
          (song-file (format "~/brain/lyrics/%s - %s" song artist)))
     (delete-file song-file)))
+
+(defun open-spotify-lyrics-file ()
+  (interactive)
+  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
+         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
+         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+    (find-file song-file)))
 
 (use-package tree-sitter
   :config
@@ -1228,6 +1217,7 @@ space rather than before."
    (latex . t)
    (C . t)
    (shell . t)
+   (sql . t)
    (lua . t)))
 ;; make g++ compile with std=c++17 flag
 (setq org-babel-C++-compiler "g++ -std=c++17")
@@ -1859,3 +1849,11 @@ space rather than before."
           (setf current-point (point))))))
   (org-content))
 (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
+
+(defun org-current-headline-name ()
+  "get the name of the current headline"
+  (interactive)
+  (save-excursion
+    (org-previous-visible-heading 1)
+    (message "shit1")
+    (org-element-property :raw-value (org-element-at-point))))
