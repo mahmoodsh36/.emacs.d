@@ -50,7 +50,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a 'Google Chrome'"
+                    "shell_command": "~/workspace/scripts/macos_focus_app.sh 'Google Chrome'"
                   }
                 ],
                 "type": "basic"
@@ -71,7 +71,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a emacs"
+                    "shell_command": "~/workspace/scripts/macos_focus_app.sh 'Emacs'"
                   }
                 ],
                 "type": "basic"
@@ -92,7 +92,7 @@
                 },
                 "to": [
                   {
-                    "shell_command": "open -a spotify"
+                    "shell_command": "~/workspace/scripts/macos_focus_app.sh 'Spotify'"
                   }
                 ],
                 "type": "basic"
