@@ -104,7 +104,8 @@
 ;; (add-hook 'prog-mode-hook
 ;;           (lambda ()
 ;;             (setq display-line-numbers 'relative)))
-
+;; disable annoying local variable prompt
+(setq enable-local-variables :all)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -152,8 +153,11 @@
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
            :kill-buffer :unnarrowed t)
+          ("d" "daily" plain "%?"
+           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+filetags: :daily:")
+           :immediate-finish) ;; file is captured and opened with find-file
           ("t" "todo" entry "* TODO %?"
-           :if-new (file "agenda.org")
+           :target (file+head "agenda.org" "")
            :kill-buffer :unnarrowed t))))
 
 ;; side tree
@@ -362,7 +366,7 @@
                             (org-insert-time-stamp (current-time) t)))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda)))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-      (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
+      ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
       (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
@@ -370,10 +374,12 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
       (general-define-key :states 'normal :keymaps 'override "SPC r A" 'org-attach-open)
       (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
-      (general-define-key :states 'normal :keymaps 'override "SPC r n"
-                          (lambda ()
-                            (interactive)
-                            (org-roam-capture nil "n")))
+      (general-define-key :states 'normal :keymaps 'override "SPC r t"
+                          (lambda () (interactive)
+                            (org-roam-capture-no-title-prompt nil "d")
+                            (find-file (format-time-string "~/brain/daily/%Y-%m-%d.org"))))
+      (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
+      (general-define-key :states 'normal :keymaps 'override "SPC r y" (lambda () (interactive) (org-roam-capture nil "t")))
       (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r q"
                           (lambda ()
@@ -739,8 +745,7 @@ space rather than before."
 (use-package yasnippet
   :config
   ;; disable builtin snippets
-  (setq yas-snippet-dirs
-       `(,(concat user-emacs-directory "snippets")))
+  (setq yas-snippet-dirs `(,(concat user-emacs-directory "snippets")))
   ;; enalbe nested snippet expansion
   (setq yas-triggers-in-field t)
   (yas-global-mode 1)
@@ -982,7 +987,7 @@ space rather than before."
               ("F" . elfeed-tube-fetch)
               ([remap save-buffer] . elfeed-tube-save)))
 
-(use-package dumb-jump)
+;; (use-package dumb-jump)
 (use-package ob-async)
 (use-package csharp-mode)
 (use-package format-all)
@@ -1073,40 +1078,6 @@ space rather than before."
 ;;   (load-library "eaf-pdf-viewer")
 ;;   (load-library "eaf-browser"))
 
-(straight-use-package 'versuri)
-(require 'versuri)
-
-(defun spotify-lyrics ()
-  (interactive)
-  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
-         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
-    (if (not (file-exists-p song-file))
-        (progn
-          (message "lyrics file doesnt exist")
-          (let ((lyrics (shell-command-to-string (format "~/workspace/scripts/get_genius_lyrics.py '%s' '%s' 2>/dev/null" song artist))))
-            (if (> (length lyrics) 0)
-                (progn
-                  (f-write-text lyrics 'utf-8 song-file)
-                  (message "fetched lyrics for: %s - %s" song artist)
-                  (find-file-other-window song-file))
-              (message "couldnt fetch lyrics :("))))
-      (find-file-other-window song-file))))
-
-(defun delete-spotify-lyrics-file ()
-  (interactive)
-  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
-         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
-    (delete-file song-file)))
-
-(defun open-spotify-lyrics-file ()
-  (interactive)
-  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
-         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
-    (find-file song-file)))
-
 (use-package tree-sitter
   :config
   (global-tree-sitter-mode 1)
@@ -1141,6 +1112,8 @@ space rather than before."
       (interactive)
       (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
   )
+
+(use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1181,6 +1154,37 @@ space rather than before."
 ;;(use-package google-this)
 ;;(use-package google-translate)
 ;;(use-package google-maps)
+
+(defun spotify-lyrics ()
+  (interactive)
+  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
+         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
+         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+    (if (not (file-exists-p song-file))
+        (progn
+          (message "lyrics file doesnt exist")
+          (let ((lyrics (shell-command-to-string (format "~/workspace/scripts/get_genius_lyrics.py '%s' '%s' 2>/dev/null" song artist))))
+            (if (> (length lyrics) 0)
+                (progn
+                  (f-write-text lyrics 'utf-8 song-file)
+                  (message "fetched lyrics for: %s - %s" song artist)
+                  (find-file-other-window song-file))
+              (message "couldnt fetch lyrics :("))))
+      (find-file-other-window song-file))))
+
+(defun delete-spotify-lyrics-file ()
+  (interactive)
+  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
+         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
+         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+    (delete-file song-file)))
+
+(defun open-spotify-lyrics-file ()
+  (interactive)
+  (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
+         (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
+         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+    (find-file song-file)))
 
 ;; start server
 (server-start)
@@ -1684,7 +1688,6 @@ space rather than before."
     ;;     (eq (org-element-property :todo-type h)
     ;;         'done)))
     nil 'first-match))
-;; (add-hook 'find-file-hook #'vulpea-todo-update-tag) this causes problems on exporting from org where emacs begins to ask whether to kill modified buffers as the todo tags for some reason get deleted
 (add-hook 'before-save-hook #'update-todo-tag)
 (defun update-todo-tag ()
   "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
@@ -1695,17 +1698,6 @@ space rather than before."
       (if (buffer-contains-todo)
           (org-roam-tag-add '("todo"))
         (org-roam-tag-remove '("todo"))))))
-      ;; (let* ((tags (vulpea-buffer-tags-get))
-      ;;        (original-tags tags))
-      ;;   (if (buffer-contains-todo)
-      ;;       (setq tags (cons "todo" tags))
-      ;;     (setq tags (remove "todo" tags)))
-      ;;   ;; cleanup duplicates
-      ;;   (setq tags (seq-uniq tags))
-      ;;   ;; update tags if changed
-      ;;   (when (or (seq-difference tags original-tags)
-      ;;             (seq-difference original-tags tags))
-      ;;     (apply #'vulpea-buffer-tags-set tags))))))
 (defun is-buffer-roam-note ()
   "Return non-nil if the currently visited buffer is a note."
   (and buffer-file-name
@@ -1855,5 +1847,4 @@ space rather than before."
   (interactive)
   (save-excursion
     (org-previous-visible-heading 1)
-    (message "shit1")
     (org-element-property :raw-value (org-element-at-point))))
