@@ -84,7 +84,7 @@ alias vol="pactl list sinks | awk '/^\s*Volume/{print \$5}'"
 # nanoseconds since epoch
 alias nse="date +%s.%N"
 alias dl="curl -O"
-alias pg="ping mahmoodsheikh.com"
+alias pg="ping google.com"
 alias xi="sudo xbps-install -y"
 alias xq="xbps-query -Rs"
 alias fm="ffmpeg -i"
