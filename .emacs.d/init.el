@@ -44,7 +44,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode 1) ;; enable it so that emacs acts like a normal app on macos
+(menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
@@ -67,7 +67,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 110 50))
+(when window-system (set-frame-size (selected-frame) 110 46))
 ;; space around the windows
 (set-fringe-style '(12 . 0))
 ;; display only buffer name in modeline
@@ -217,10 +217,10 @@
         :config
         (evil-collection-init))
 
-      ;; display visual hints for evil actions
-      (use-package evil-goggles
-        :config
-        (evil-goggles-mode))
+      ;; ;; display visual hints for evil actions
+      ;; (use-package evil-goggles
+      ;;   :config
+      ;;   (evil-goggles-mode))
 
       ;; make line a text object - yil dil cil, etc..
       (use-package evil-textobj-line)
@@ -320,7 +320,7 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
+      (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
       (general-define-key :states 'normal :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/brain/")))
@@ -519,6 +519,7 @@ space rather than before."
 
 ;; projectile
 (use-package projectile
+  :straight (:host github :repo "bbatsov/projectile")
   :config
   (setq projectile-completion-system 'ivy)
   (projectile-mode +1))
@@ -890,6 +891,7 @@ space rather than before."
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
+  ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
@@ -1233,7 +1235,7 @@ space rather than before."
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
 ;; (setq org-export-with-broken-links t)
-;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is..)
+;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; (setq org-element-cache-persistent nil)
 ;; (setq org-element-use-cache nil)
 
@@ -1717,7 +1719,8 @@ space rather than before."
   (dolist (file (roam-files-with-tag tag-name))
     (if (not (eq callback nil))
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          (funcall callback)))))
+          (if (is-buffer-roam-note)
+              (funcall callback))))))
 
 (defun lob-reload ()
   "load files tagged with 'code' into the org babel library"
@@ -1734,7 +1737,8 @@ space rather than before."
   (go-through-roam-files-with-tag
    "math"
    (lambda ()
-     (xenops-mode))))
+     (xenops-mode)
+     (xenops-render))))
 
 ;; (go-through-roam-files-with-tag "math" (lambda () (message buffer-file-name)))
 (defun publicize-files ()
