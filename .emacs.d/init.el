@@ -369,7 +369,11 @@
       ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
       (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
-      (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
+      (general-define-key :states 'normal :keymaps 'override "SPC r c"
+                          (lambda ()
+                            (interactive)
+                            (org-id-get-create)
+                            (org-roam-timestamps--on-save)))
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
       (general-define-key :states 'normal :keymaps 'override "SPC r A" 'org-attach-open)
@@ -780,8 +784,8 @@ space rather than before."
 ;; language server protocol support
 (use-package lsp-mode
   :config
-  (add-hook 'prog-mode-hook 'lsp-mode)
-  (add-hook 'prog-mode-hook #'lsp-deferred)
+  (add-hook 'c++-mode-hook 'lsp-mode)
+  (add-hook 'lsp-mode-hook #'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
   (setq lsp-auto-guess-root t)
   ;; another annoying warning
@@ -1026,7 +1030,7 @@ space rather than before."
 
 (use-package git-auto-commit-mode)
 (use-package avy)
-(use-package auto-yasnippet)
+;; (use-package auto-yasnippet)
 
 (use-package marginalia
   :ensure t
@@ -1382,6 +1386,8 @@ space rather than before."
   (let ((path (car args)))
     (cd path)
     (eshell/ls)))
+;; eshell history file location
+(setq eshell-history-file-name (expand-file-name "~/brain/eshell_history")) ;; save history to filesystem
 
 ;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
 (defun org-to-pdf ()
