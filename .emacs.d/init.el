@@ -785,6 +785,7 @@ space rather than before."
 (use-package lsp-mode
   :config
   (add-hook 'c++-mode-hook 'lsp-mode)
+  (add-hook 'python-mode-hook 'lsp-mode)
   (add-hook 'lsp-mode-hook #'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
   (setq lsp-auto-guess-root t)
@@ -893,7 +894,7 @@ space rather than before."
         xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
   (add-hook 'org-babel-after-execute-hook (lambda ()
@@ -1121,6 +1122,15 @@ space rather than before."
 
 (use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
 
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :config
+  (global-copilot-mode))
+
+;; requires external installation, but seems interesting
+;; (use-package penel
+;;   :straight (:host github :repo "semiosis/pen.el"))
+
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
 
@@ -1153,7 +1163,6 @@ space rather than before."
 ;;  (setq inferior-lisp-program "sbcl"))
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
-;;(use-package copilot)
 ;;(use-package ox-pandoc)
 ;;(use-package org-html-themes)
 ;;(use-package org-ioslide)
@@ -1743,6 +1752,7 @@ space rather than before."
   (go-through-roam-files-with-tag
    "math"
    (lambda ()
+     ;; (message "processing math file %s" (buffer-file-name))
      (xenops-mode)
      (xenops-render))))
 
@@ -1857,4 +1867,11 @@ space rather than before."
   (interactive)
   (save-excursion
     (org-previous-visible-heading 1)
+    (org-element-property :raw-value (org-element-at-point))))
+
+(defun org-parent-headline-name ()
+  "get the name of the parent headline"
+  (interactive)
+  (save-excursion
+    (org-up-heading-safe)
     (org-element-property :raw-value (org-element-at-point))))
