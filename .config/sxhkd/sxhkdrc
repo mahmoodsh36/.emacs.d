@@ -31,7 +31,7 @@ super + ctrl + p ; {i, u}
      ~/workspace/scripts/terminal_with_cmd.sh "sudo pacman -Syu"; notify-send -t 30000 'updated system'}
 
 super + r
-    sh -c "$(echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | rofi -dmenu -i -p command)"
+    sh -c "$(echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | sort -u | rofi -dmenu -i -p command)"
 
 super + R
     terminal_with_cmd.sh "$(cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2- | rofi -dmenu -i -p command)"
