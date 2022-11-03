@@ -452,6 +452,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
