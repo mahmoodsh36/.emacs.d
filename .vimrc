@@ -26,6 +26,7 @@ set incsearch
 set mouse=a
 set autoread
 au FocusGained,BufEnter * :checktime
+:set nofixendofline " stop inserting newline at end of file
 
 " fix delay on esc+shift+o
 set timeout timeoutlen=5000 ttimeoutlen=100
