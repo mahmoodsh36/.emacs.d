@@ -44,7 +44,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+(menu-bar-mode 1) ;; enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
@@ -320,7 +320,7 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
+      (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
       (general-define-key :states 'normal :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/brain/")))
@@ -442,16 +442,16 @@
                             (when window-system (set-frame-size (selected-frame) 165 45))))
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC j" 'evil-scroll-page-down)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC k" 'evil-scroll-page-up)
-      (general-define-key :states 'normal :keymaps 'override "SPC s d" 'switch-to-dark-theme)
-      (general-define-key :states 'normal :keymaps 'override "SPC s l" 'switch-to-light-theme)
-      (general-define-key :states 'normal :keymaps 'override "SPC s e" 'eshell)
-      (general-define-key :states 'normal :keymaps 'override "SPC s g" 'magit)
-      (general-define-key :states 'normal :keymaps 'override "SPC u" (general-simulate-key "C-u"))
-      (general-define-key :states 'normal :keymaps 'override "SPC ;" 'shell-command)
-      (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
-      (general-define-key :states 'normal :keymaps 'override "SPC o l" 'avy-goto-line)
-      (general-define-key :states 'normal :keymaps 'override "SPC o c" 'avy-goto-char)
-      (general-define-key :states 'normal :keymaps 'override "SPC s s" 'spotify-lyrics)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'shell-command)
+      (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -786,6 +786,7 @@ space rather than before."
   :config
   (add-hook 'c++-mode-hook 'lsp-mode)
   (add-hook 'python-mode-hook 'lsp-mode)
+  (add-hook 'c-mode-hook 'lsp-mode)
   (add-hook 'lsp-mode-hook #'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
   (setq lsp-auto-guess-root t)
@@ -1122,10 +1123,10 @@ space rather than before."
 
 (use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
 
-(use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-  :config
-  (global-copilot-mode))
+;; (use-package copilot
+;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;;   :config
+;;   (global-copilot-mode))
 
 ;; requires external installation, but seems interesting
 ;; (use-package penel
