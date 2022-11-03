@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: statement
+# key: tt
+# --
+\State $0

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for
+# key: fo
+# --
+\For{$$1 \gets $2$ \KwTo $$3$} {
+  $0
+}

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: forall
+# key: fa
+# --
+\For{$$1 \in $2$}{
+  $0
+}
