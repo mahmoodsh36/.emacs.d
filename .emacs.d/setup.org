@@ -23,6 +23,7 @@
 #+LATEX_HEADER: \usepackage{centernot}
 #+LATEX_HEADER: \usepackage{lmodern}
 #+LATEX_HEADER: \usepackage{physics}
+#+LATEX_HEADER: \usepackage[boxed,linesnumbered,vlined]{algorithm2e}
 #+LATEX_HEADER: \usepackage{algpseudocode}
 #+LATEX_HEADER: \usepackage{svg}
 #+LATEX_HEADER: \tikzstyle{every picture}+=[remember picture]
