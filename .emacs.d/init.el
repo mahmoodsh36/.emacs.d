@@ -1249,7 +1249,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
-;; (setq org-export-with-broken-links t)
+(setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; (setq org-element-cache-persistent nil)
 ;; (setq org-element-use-cache nil)
@@ -1498,6 +1498,7 @@ space rather than before."
                      "\\usepackage{tikz}"
                      "\\usepackage{tikz-3dplot}"
                      "\\usepackage{pgfplots}"
+                     "\\usepackage[boxed,linesnumbered,vlined]{algorithm2e}"
                      "\\usepackage{algpseudocode}"
                      "\\usepackage{karnaugh-map}"
                      "\\usepackage{circuitikz}"

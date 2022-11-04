@@ -25,6 +25,7 @@
 #+LATEX_HEADER: \usepackage{physics}
 #+LATEX_HEADER: \usepackage[boxed,linesnumbered,vlined]{algorithm2e}
 #+LATEX_HEADER: \usepackage{algpseudocode}
+#+LATEX_HEADER: \usepackage{algorithmicx}
 #+LATEX_HEADER: \usepackage{svg}
 #+LATEX_HEADER: \tikzstyle{every picture}+=[remember picture]
 # #+LATEX_HEADER: \setlength{\parindent}{0pt}
