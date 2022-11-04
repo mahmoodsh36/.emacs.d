@@ -5,7 +5,8 @@
 \begin{algorithm}[H]
   \DontPrintSemicolon
   \TitleOfAlgo{${1:title}}
-  \KwData{${2:data}}
-  \KwResult{${3:result}}
+  \KwIn{${2:input}}
+  \KwOut{${3:output}}
+  \BlankLine
   $0
 \end{algorithm}
