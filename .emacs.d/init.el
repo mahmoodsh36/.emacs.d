@@ -327,7 +327,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
-      (general-define-key :states 'normal :keymaps 'override "SPC f f" 'find-file)
+      (general-define-key :states 'normal :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states 'normal :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
@@ -559,8 +559,8 @@ space rather than before."
         (company-quickhelp-mode))
 
       ;; company completion with icons
-      (use-package company-box
-        :hook (company-mode . company-box-mode))
+      ;; (use-package company-box
+      ;;   :hook (company-mode . company-box-mode))
 
       ;; anaconda for python
       (use-package company-anaconda
@@ -896,13 +896,14 @@ space rather than before."
         xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  ;; (add-hook 'org-mode-hook #'xenops-mode)
+  (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
   ;; (setq xenops-math-image-scale-factor 0.7)
+  (setq xenops-math-image-current-scale-factor 0.7)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1123,6 +1124,9 @@ space rather than before."
   )
 
 (use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
+
+(use-package all-the-icons-ivy-rich
+  :config (all-the-icons-ivy-rich-mode 1))
 
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
