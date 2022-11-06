@@ -27,6 +27,8 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(unless package-archive-contents
+  (package-refresh-contents))
 (eval-and-compile
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
@@ -130,7 +132,7 @@
 
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
-(setq enable-evil t)
+(setq enable-evil nil)
 
 ;; the all-powerful org mode
 (use-package org)
@@ -501,7 +503,19 @@ space rather than before."
             (evil-append 0)
             ad-do-it
             (evil-normal-state))))
-      ))
+      )
+  (progn ;; if not using evil
+    (use-package god-mode
+      :config
+      (god-mode)
+      (global-set-key (kbd "<escape>") #'god-mode-all)
+      (setq god-exempt-major-modes nil)
+      (setq god-exempt-predicates nil))
+    (defun my-god-mode-update-cursor-type ()
+      (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+    (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+    )
+  )
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -511,16 +525,6 @@ space rather than before."
                      :templates templates
                      :node (org-roam-node-create :title "")
                      :props '(:immediate-finish nil)))
-
-;; (use-package god-mode
-;; :config
-;; (god-mode)
-;; (global-set-key (kbd "<escape>") #'god-mode-all)
-;; (setq god-exempt-major-modes nil)
-;; (setq god-exempt-predicates nil))
-;; (defun my-god-mode-update-cursor-type ()
-;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
 ;; projectile
 (use-package projectile
