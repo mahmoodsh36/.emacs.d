@@ -10,7 +10,7 @@
   \BlankLine
   \SetKwFunction{FMain}{\textsc{${4:FunctionName}}}
   \SetKwProg{Fn}{Function}{:}{}
-  \Fn{\FMain{${5:arguments}}}{
+  \Fn{\FMain{${5:arguments}}} {
     $0
   }
 \end{algorithm}

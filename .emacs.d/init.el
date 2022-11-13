@@ -108,6 +108,9 @@
 ;;             (setq display-line-numbers 'relative)))
 ;; disable annoying local variable prompt
 (setq enable-local-variables :all)
+;; stop always inserting a newline at the end of a file
+(setq require-final-newline nil) ;; not sure if this is needed
+(setq mode-require-final-newline nil)
 
 ;; smooth scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -132,7 +135,7 @@
 
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
-(setq enable-evil nil)
+(setq enable-evil t)
 
 ;; the all-powerful org mode
 (use-package org)
@@ -322,15 +325,15 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states 'normal :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-      (general-define-key :states 'normal :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/brain/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
-      (general-define-key :states 'normal :keymaps 'override "SPC d d" 'dired)
-      (general-define-key :states 'normal :keymaps 'override "SPC f f" 'counsel-find-file)
-      (general-define-key :states 'normal :keymaps 'override "SPC f s" 'sudo-find-file)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/brain/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
@@ -455,6 +458,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'open-in-vscode)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -505,15 +509,16 @@ space rather than before."
             (evil-normal-state))))
       )
   (progn ;; if not using evil
-    (use-package god-mode
-      :config
-      (god-mode)
-      (global-set-key (kbd "<escape>") #'god-mode-all)
-      (setq god-exempt-major-modes nil)
-      (setq god-exempt-predicates nil))
-    (defun my-god-mode-update-cursor-type ()
-      (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-    (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+    ;; (use-package god-mode
+    ;;   :config
+    ;;   (god-mode)
+    ;;   (global-set-key (kbd "<escape>") #'god-mode-all)
+    ;;   (setq god-exempt-major-modes nil)
+    ;;   (setq god-exempt-predicates nil))
+    ;; (defun my-god-mode-update-cursor-type ()
+    ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+    ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+    (use-package ryo-modal)
     )
   )
 
@@ -1795,7 +1800,7 @@ space rather than before."
       (goto-char (point-min))
       (if (buffer-contains-math)
           (org-roam-tag-add '("math"))
-        (org-roam-tag-remove '("math"))))))
+        (ignore-errors (org-roam-tag-remove '("math")))))))
 (add-hook 'before-save-hook #'update-math-file)
 
 (defun find-math-files (basedir)
@@ -1886,3 +1891,7 @@ space rather than before."
   (save-excursion
     (org-up-heading-safe)
     (org-element-property :raw-value (org-element-at-point))))
+
+(defun open-in-vscode ()
+  (interactive)
+  (shell-command (format "code %s" (buffer-file-name))))
