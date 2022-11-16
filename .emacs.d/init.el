@@ -794,10 +794,7 @@ space rather than before."
 ;; language server protocol support
 (use-package lsp-mode
   :config
-  (add-hook 'c++-mode-hook 'lsp-mode)
-  (add-hook 'python-mode-hook 'lsp-mode)
-  (add-hook 'c-mode-hook 'lsp-mode)
-  (add-hook 'lsp-mode-hook #'lsp-deferred)
+  (add-hook 'prog-mode-hook 'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
   (setq lsp-auto-guess-root t)
   ;; another annoying warning
@@ -1099,8 +1096,7 @@ space rather than before."
 
 (use-package tree-sitter
   :config
-  (global-tree-sitter-mode 1)
-  (add-hook 'prog-mode-hook 'tree-sitter-hl-mode))
+  (global-tree-sitter-mode 1))
 (use-package tree-sitter-langs)
 (use-package evil-textobj-tree-sitter
   :config
@@ -1536,7 +1532,9 @@ space rather than before."
             (org-agenda-list)
             (delete-other-windows)
             ;; (switch-to-light-theme)
-            (switch-to-dark-theme)))
+            ;; (switch-to-dark-theme)
+            (load-theme 'darktooth t)
+            ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
 
