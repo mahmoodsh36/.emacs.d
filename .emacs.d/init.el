@@ -418,6 +418,7 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
+      (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
