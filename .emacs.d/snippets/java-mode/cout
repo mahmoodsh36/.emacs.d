@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cout
+# key: ou
+# --
+System.out.println($0);

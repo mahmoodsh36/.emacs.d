@@ -9,7 +9,7 @@
   \KwOut{${3:output}}
   \BlankLine
   \SetKwFunction{FMain}{\textsc{${4:FunctionName}}}
-  \SetKwProg{Fn}{Function}{:}{}
+  \SetKwProg{Fn}{}{:}{}
   \Fn{\FMain{${5:arguments}}} {
     $0
   }
