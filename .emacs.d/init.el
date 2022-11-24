@@ -409,6 +409,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r b" 'org-clock-cancel)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
       (general-define-key :states 'normal :keymaps 'override "SPC r g"
@@ -797,7 +798,7 @@ space rather than before."
   :config
   (add-hook 'prog-mode-hook 'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
-  (setq lsp-auto-guess-root t)
+  (setq lsp-auto-guess-root nil)
   ;; another annoying warning
   (setq lsp-warn-no-matched-clients nil)
   )
@@ -1134,6 +1135,8 @@ space rather than before."
 (use-package all-the-icons-ivy-rich
   :config (all-the-icons-ivy-rich-mode 1))
 
+(use-package lsp-java)
+
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :config
@@ -1447,7 +1450,7 @@ space rather than before."
          "CANCELED(c@)"
          )))
 ;; filter out entries with tag "repeat"
-(setq org-agenda-tag-filter-preset '("-repeat"))
+(setq org-agenda-tag-filter-preset '("-repeat" "-ignore"))
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>") ;; timestamp with seconds
