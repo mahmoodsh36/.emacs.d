@@ -319,7 +319,7 @@
       ;; create "il"/"al" (inside/around) line text objects:
       ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
       ;; create "ia"/"aa" (inside/around) entire buffer text objects:
-      (define-and-bind-quoted-text-object "buffer" "a" "\\`\\s-*" "\\s-*\\'")
+      (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
 
       (general-evil-setup)
 
@@ -911,7 +911,7 @@ space rather than before."
                                             (interactive)
                                             (ignore-errors (xenops-render))))
   ;; (setq xenops-math-image-scale-factor 0.7)
-  (setq xenops-math-image-current-scale-factor 0.7)
+  ;; (setq xenops-math-image-current-scale-factor 0.7)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1108,6 +1108,7 @@ space rather than before."
   (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
   ;; You can also bind multiple items and we will match the first one we can find
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+  (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
   ;; Goto start of next function
   (define-key evil-normal-state-map (kbd "]f")
     (lambda ()
