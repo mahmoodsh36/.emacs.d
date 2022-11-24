@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: foreach
+# key: fe
+# --
+for ($1 : $2) {
+  $0
+}
