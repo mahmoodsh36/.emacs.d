@@ -11,9 +11,10 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(setq ;; package-enable-at-startup nil
-      ;; straight-use-package-by-default t
-      native-comp-async-report-warnings-errors nil)
+(setq
+ ;; package-enable-at-startup nil
+ ;; straight-use-package-by-default t
+ native-comp-async-report-warnings-errors nil)
 
 ;; disable customization using the interactive interface and remove startup screen
 (setq custom-file "/dev/null")
@@ -81,7 +82,8 @@
             (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
-;; make tab actually insert tab..
+;; make tab complete current word
+(setq dabbrev-case-replace nil)
 (global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
@@ -99,7 +101,7 @@
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
 (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-(global-whitespace-mode)
+;; (global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; relative line numbers
@@ -178,6 +180,7 @@
 ;; needed for evil mode
 (use-package undo-fu)
 
+;; vertical completion interface
 (use-package counsel
   :config
   (ivy-mode)
@@ -419,7 +422,7 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
-      (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
+      ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
@@ -850,8 +853,8 @@ space rather than before."
 ;; flutter setup
 (use-package highlight-indent-guides
   :config
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-responsive 'stack)
+  (setq highlight-indent-guides-method 'character)
+        ;; highlight-indent-guides-responsive 'stack)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package flutter)
 (use-package lsp-dart)
@@ -910,8 +913,8 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  ;; (setq xenops-math-image-scale-factor 0.7)
-  ;; (setq xenops-math-image-current-scale-factor 0.7)
+  ;; (setq xenops-math-image-scale-factor 1.1)
+  ;; (setq xenops-math-image-current-scale-factor 1.1)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1069,8 +1072,8 @@ space rather than before."
   :straight (:repo "emacsmirror/icicles" :host github))
 
 (use-package ialign)
-(straight-use-package 'org-protocol-capture-html)
-(use-package org-download)
+;; (straight-use-package 'org-protocol-capture-html)
+;; (use-package org-download)
 ;;(use-package org-ql)
 
 ;; evaulation overlay for elisp
@@ -1131,7 +1134,7 @@ space rather than before."
       (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
   )
 
-(use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
+;(use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
 
 (use-package all-the-icons-ivy-rich
   :config (all-the-icons-ivy-rich-mode 1))
@@ -1263,7 +1266,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken links errors..
-(setq org-export-with-broken-links t)
+;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; (setq org-element-cache-persistent nil)
 ;; (setq org-element-use-cache nil)
@@ -1896,5 +1899,44 @@ space rather than before."
     (org-element-property :raw-value (org-element-at-point))))
 
 (defun open-in-vscode ()
+  "open current file in vscode"
   (interactive)
   (shell-command (format "code %s" (buffer-file-name))))
+
+(defun kill-this-buffer-volatile ()
+    "Kill current buffer, even if it has been modified."
+    (interactive)
+    (set-buffer-modified-p nil)
+    (kill-this-buffer))
+
+;; from xah's website
+(defun copy-file-path (&optional DirPathOnlyQ)
+  "Copy current buffer file path or dired path.
+Result is full path.
+If `universal-argument' is called first, copy only the dir path.
+
+If in dired, copy the current or marked files.
+
+If a buffer is not file and not dired, copy value of `default-directory'.
+
+URL `http://xahlee.info/emacs/emacs/emacs_copy_file_path.html'
+Version 2018-06-18 2021-09-30"
+  (interactive "P")
+  (let (($fpath
+         (if (string-equal major-mode 'dired-mode)
+             (progn
+               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
+                 (if (equal (length $result) 0)
+                     (progn default-directory )
+                   (progn $result))))
+           (if (buffer-file-name)
+               (buffer-file-name)
+             (expand-file-name default-directory)))))
+    (kill-new
+     (if DirPathOnlyQ
+         (progn
+           (message "Directory copied: %s" (file-name-directory $fpath))
+           (file-name-directory $fpath))
+       (progn
+         (message "File path copied: %s" $fpath)
+         $fpath )))))
