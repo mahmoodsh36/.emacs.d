@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cup
+# key: cu
+# --
+\cup $0
