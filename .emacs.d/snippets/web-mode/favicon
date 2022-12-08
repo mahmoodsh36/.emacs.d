@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: favicon
+# key: fv
+# --
+<link rel="icon" type="image/x-icon" href="$0">
