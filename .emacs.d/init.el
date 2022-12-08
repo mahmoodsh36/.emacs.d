@@ -450,8 +450,8 @@
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
                             (when window-system (set-frame-size (selected-frame) 165 45))))
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC j" 'evil-scroll-page-down)
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC k" 'evil-scroll-page-up)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override "}" 'evil-scroll-page-down)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override "{" 'evil-scroll-page-up)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
@@ -464,6 +464,8 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'open-in-vscode)
+      (general-define-key :states '(normal motion) :keymaps 'override ";" 'evil-scroll-line-up)
+      (general-define-key :states '(normal motion) :keymaps 'override "'" 'evil-scroll-line-down)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -913,8 +915,8 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  ;; (setq xenops-math-image-scale-factor 1.1)
-  ;; (setq xenops-math-image-current-scale-factor 1.1)
+  (setq xenops-math-image-scale-factor 1.2)
+  (setq xenops-math-image-current-scale-factor 1.2)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1141,6 +1143,10 @@ space rather than before."
 
 (use-package lsp-java)
 
+(use-package emmet-mode
+  :config
+  (add-hook 'web-mode-hook 'emmet-mode))
+
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :config
@@ -1343,7 +1349,7 @@ space rather than before."
   dir-path)
 
 (defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "pdflatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
+  (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
