@@ -335,6 +335,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -377,11 +378,7 @@
       ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
       (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
-      (general-define-key :states 'normal :keymaps 'override "SPC r c"
-                          (lambda ()
-                            (interactive)
-                            (org-id-get-create)
-                            (org-roam-timestamps--on-save)))
+      (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
       (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
       (general-define-key :states 'normal :keymaps 'override "SPC r A" 'org-attach-open)
@@ -450,8 +447,8 @@
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
                             (when window-system (set-frame-size (selected-frame) 165 45))))
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override "}" 'evil-scroll-page-down)
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override "{" 'evil-scroll-page-up)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override ")" 'evil-scroll-page-down)
+      (general-define-key :states '(normal treemacs motion) :keymaps 'override "(" 'evil-scroll-page-up)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
@@ -464,8 +461,8 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'open-in-vscode)
-      (general-define-key :states '(normal motion) :keymaps 'override ";" 'evil-scroll-line-up)
-      (general-define-key :states '(normal motion) :keymaps 'override "'" 'evil-scroll-line-down)
+      (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
+      (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -948,11 +945,11 @@ space rather than before."
   :hook
   (text-mode . mixed-pitch-mode))
 
-;; add edition/creation timestamps to headers and files
-(use-package org-roam-timestamps
-  :config
-  (org-roam-timestamps-mode)
-  (setq org-roam-timestamps-remember-timestamps t))
+;; add edition/creation timestamps to headers and files, this is absurd, git would be a bbetter option
+;; (use-package org-roam-timestamps
+;;   :config
+;;   (org-roam-timestamps-mode)
+;;   (setq org-roam-timestamps-remember-timestamps t))
 
 ;; give org mode a better look
 (use-package org-modern
@@ -1245,7 +1242,10 @@ space rather than before."
 ;; Show images when opening a file.
 (setq org-startup-with-inline-images t)
 ;; Show images after evaluating code blocks.
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+(add-hook 'org-babel-after-execute-hook (lambda ()
+                                          (interactive)
+                                          (clear-image-cache)
+                                          (org-display-inline-images)))
 ;; render latex preview after evaluating code blocks
 ;; (add-hook 'org-babel-after-execute-hook 'org-latex-preview)
 ;; disable prompt when executing code block in org mode
@@ -1701,10 +1701,7 @@ space rather than before."
    (seq-map
     #'car
     (org-roam-db-query
-     `(:select [nodes:file]
-                     :from tags
-                     :left-join nodes
-                     :on (= tags:node-id nodes:id))))))
+     `(:select file :from nodes)))))
 
 (defun roam-files-with-tag (tag-name)
   "Return a list of note files containing a specific tag.";
