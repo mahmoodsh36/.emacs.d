@@ -461,6 +461,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'open-in-vscode)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
       (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
 
@@ -1009,10 +1010,9 @@ space rather than before."
 
 ;; (use-package dumb-jump)
 (use-package ob-async)
-(use-package csharp-mode)
 (use-package format-all)
 (use-package org-roam-ui)
-(use-package jupyter)
+;; (use-package jupyter)
 (use-package plantuml-mode)
 (use-package org-ref
   :config
