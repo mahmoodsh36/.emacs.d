@@ -942,9 +942,9 @@ space rather than before."
   (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
   )
 
-(use-package mixed-pitch
-  :hook
-  (text-mode . mixed-pitch-mode))
+;; (use-package mixed-pitch
+;;   :hook
+;;   (text-mode . mixed-pitch-mode))
 
 ;; add edition/creation timestamps to headers and files, this is absurd, git would be a bbetter option
 ;; (use-package org-roam-timestamps
@@ -990,8 +990,8 @@ space rather than before."
   (ivy-rich-mode 1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
-(use-package vulpea)
-(use-package dap-mode)
+;; (use-package vulpea)
+;; (use-package dap-mode)
 
 (use-package elfeed-tube
   :straight (:host github :repo "karthink/elfeed-tube")
@@ -1066,9 +1066,6 @@ space rather than before."
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
-
-(use-package icicles
-  :straight (:repo "emacsmirror/icicles" :host github))
 
 (use-package ialign)
 ;; (straight-use-package 'org-protocol-capture-html)
@@ -1753,6 +1750,15 @@ space rather than before."
 (advice-add 'org-agenda :before #'agenda-files-update)
 (advice-add 'org-todo-list :before #'agenda-files-update)
 
+(defun go-through-all-roam-files (&optional callback)
+  "run a callback function on each file in the org-roam database"
+  (interactive)
+  (dolist (file (all-roam-files))
+    (if (not (eq callback nil))
+        (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+          (if (is-buffer-roam-note)
+              (funcall callback))))))
+
 (defun go-through-roam-files-with-tag (tag-name &optional callback)
   "run a callback function on each file tagged with tag-name"
   (interactive)
@@ -1780,6 +1786,14 @@ space rather than before."
      ;; (message "processing math file %s" (buffer-file-name))
      (xenops-mode)
      (xenops-render))))
+
+(defun run-all-code-blocks ()
+  "run code blocks in all org-roam files"
+  (interactive)
+  (go-through-all-roam-files
+   (lambda ()
+     (message "processing file %s" (buffer-file-name))
+     (org-babel-execute-buffer))))
 
 ;; (go-through-roam-files-with-tag "math" (lambda () (message buffer-file-name)))
 (defun publicize-files ()
