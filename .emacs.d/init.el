@@ -35,6 +35,9 @@
         use-package-expand-minimally t))
 (require 'use-package)
 
+;; path where all my notes etc go
+(setq brain-path (file-truename "~/brain/"))
+
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
               js-indent-level 2
@@ -88,7 +91,7 @@
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
 ;; save minibuffer history
-(setq savehist-file (expand-file-name "~/brain/emacs_savehist"))
+(setq savehist-file (expand-file-name (concat brain-path "/emacs_savehist")))
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'search-ring)
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
@@ -146,7 +149,7 @@
 ;; the key to building a second brain in org mode
 (use-package org-roam
   :custom
-  (org-roam-directory (file-truename "~/brain/"))
+  (org-roam-directory brain-path)
   (org-roam-completion-everywhere t)
   :config
   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
@@ -331,7 +334,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired "~/brain/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
@@ -386,7 +389,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r t"
                           (lambda () (interactive)
                             (org-roam-capture-no-title-prompt nil "d")
-                            (find-file (format-time-string "~/brain/daily/%Y-%m-%d.org"))))
+                            (find-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org")))))
       (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
       (general-define-key :states 'normal :keymaps 'override "SPC r y" (lambda () (interactive) (org-roam-capture nil "t")))
       (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
@@ -415,7 +418,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r g"
                           (lambda ()
                             (interactive)
-                            (find-file "~/brain/bib.bib")))
+                            (find-file (concat brain-path "/bib.bib"))))
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
@@ -423,9 +426,9 @@
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
-                          (lambda () (interactive) (search-open-file "~/brain/" ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+                          (lambda () (interactive) (search-open-file brain-path".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
       (general-define-key :states 'normal :keymaps 'override "SPC F b"
-                  (lambda () (interactive) (search-open-file-in-emacs "~/brain/" ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+                  (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 
       (define-key evil-normal-state-map (kbd "SPC f d")
                   (lambda () (interactive) (search-open-file "~/data" "")))
@@ -749,7 +752,7 @@ space rather than before."
   ;; Ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
                                              (:results . "drawer")))
-  (setq sage-shell:input-history-cache-file "~/brain/sage_history")
+  (setq sage-shell:input-history-cache-file (concat brain-path "/sage_history"))
   (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
@@ -870,7 +873,7 @@ space rather than before."
   :config
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
-  (setq prescient-save-file (expand-file-name "~/brain/emacs_prescient"))) ;; save history to filesystem
+  (setq prescient-save-file (concat brain-path "emacs_prescient"))) ;; save history to filesystem
 
 ;; ;; auto indentation
 ;; (use-package aggressive-indent
@@ -1029,7 +1032,7 @@ space rather than before."
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-file "~/brain/emacs_keyfreq"))
+  (setq keyfreq-file (concat brain-path "/emacs_keyfreq")))
 
 (use-package magit)
 
@@ -1193,7 +1196,7 @@ space rather than before."
   (interactive)
   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+         (song-file (format "%s/lyrics/%s - %s" brain-path song artist)))
     (if (not (file-exists-p song-file))
         (progn
           (message "lyrics file doesnt exist")
@@ -1210,14 +1213,14 @@ space rather than before."
   (interactive)
   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+         (song-file (format "%s/lyrics/%s - %s" brain-path song artist)))
     (delete-file song-file)))
 
 (defun open-spotify-lyrics-file ()
   (interactive)
   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-         (song-file (format "~/brain/lyrics/%s - %s" song artist)))
+         (song-file (format "%s/lyrics/%s - %s" brain-path song artist)))
     (find-file song-file)))
 
 ;; start server
@@ -1341,9 +1344,7 @@ space rather than before."
 (defun get-latex-cache-dir-path ()
   "return the path for the directory that contains the compiled pdf latex documents"
   (interactive)
-  (setq dir-path (concat (expand-file-name user-emacs-directory) "latex/"))
-  (ignore-errors (make-directory dir-path))
-  dir-path)
+  (concat brain-path "/out/"))
 
 (defun compile-latex-file (path)
   (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
@@ -1410,7 +1411,7 @@ space rather than before."
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
-(setq eshell-aliases-file (file-truename "~/brain/eshell_aliases"))
+(setq eshell-aliases-file (concat brain-path "/eshell_aliases"))
 (defun eshell-cd-and-ls (&rest args)           ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
@@ -1418,7 +1419,7 @@ space rather than before."
     (cd path)
     (eshell/ls)))
 ;; eshell history file location
-(setq eshell-history-file-name (expand-file-name "~/brain/eshell_history")) ;; save history to filesystem
+(setq eshell-history-file-name (concat brain-path "/eshell_history")) ;; save history to filesystem
 
 ;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
 (defun org-to-pdf ()
@@ -1559,9 +1560,7 @@ space rather than before."
       (setq random-str (concat random-str (char-to-string (elt $charset (random $baseCount)))))))
   random-str)
 (defun temp-file (EXT)
-  (setq dir-path (concat (expand-file-name user-emacs-directory) "tmp/"))
-  (ignore-errors (make-directory dir-path))
-  (format "%s%s.%s" dir-path (generate-random-string 7) EXT))
+  (format "%stmp_%s.%s" (concat brain-path "/out/") (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c r") (lambda () (interactive) (insert (generate-random-string 7))))
 
 (defun switch-to-dark-theme ()
@@ -1956,4 +1955,4 @@ Version 2018-06-18 2021-09-30"
            (file-name-directory $fpath))
        (progn
          (message "File path copied: %s" $fpath)
-         $fpath )))))
+         $fpath)))))
