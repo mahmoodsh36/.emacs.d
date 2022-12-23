@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bigtheta
+# key: th
+# --
+\Theta($1)$0

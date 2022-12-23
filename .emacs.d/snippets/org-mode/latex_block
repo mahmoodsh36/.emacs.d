@@ -2,6 +2,6 @@
 # name: latex code block
 # key: ax
 # --
-#+begin_src latex :file ~/.emacs.d/latex/`(generate-random-string 7)`.svg :cache yes
+#+begin_src latex :file (cached-file "`(generate-random-string 7)`.svg") :cache yes
   $0
 #+end_src

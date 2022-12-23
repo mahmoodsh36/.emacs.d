@@ -4,7 +4,7 @@
 # --
 #+setupfile: ~/.emacs.d/setup.org
 #+include: ~/.emacs.d/common.org
-#+description: $2$1
+#+description: ${2:$1}
 #+title: ${1:title}
 
 $0
