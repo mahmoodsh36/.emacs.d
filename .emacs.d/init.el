@@ -339,6 +339,8 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/blog/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -775,6 +777,8 @@ space rather than before."
   ;; prevent warnings about snippets using elisp
   (require 'warnings)
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+  ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise).
+  ;; (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -880,7 +884,7 @@ space rather than before."
 ;;   :config
 ;;   (aggressive-indent-global-mode))
 
-;; auto pairs insertion
+;; ;; auto pairs insertion
 ;; (use-package smartparens
 ;;   :config
 ;;   ;; dont insert pair when cursor is before text
@@ -1012,7 +1016,7 @@ space rather than before."
               ([remap save-buffer] . elfeed-tube-save)))
 
 ;; (use-package dumb-jump)
-(use-package ob-async)
+;; (use-package ob-async)
 (use-package format-all)
 (use-package org-roam-ui)
 ;; (use-package jupyter)
@@ -1200,14 +1204,14 @@ space rather than before."
     (if (not (file-exists-p song-file))
         (progn
           (message "lyrics file doesnt exist")
-          (let ((lyrics (shell-command-to-string (format "~/workspace/scripts/get_genius_lyrics.py '%s' '%s' 2>/dev/null" song artist))))
+          (let ((lyrics (shell-command-to-string (format "~/scripts/get_genius_lyrics.py '%s' '%s' 2>/dev/null" song artist))))
             (if (> (length lyrics) 0)
                 (progn
                   (f-write-text lyrics 'utf-8 song-file)
                   (message "fetched lyrics for: %s - %s" song artist)
-                  (find-file-other-window song-file))
+                  (find-file song-file))
               (message "couldnt fetch lyrics :("))))
-      (find-file-other-window song-file))))
+      (find-file song-file))))
 
 (defun delete-spotify-lyrics-file ()
   (interactive)
@@ -1523,7 +1527,7 @@ space rather than before."
                      "\\usepackage{algpseudocode}"
                      "\\usepackage{karnaugh-map}"
                      "\\usepackage{circuitikz}"
-                     "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes}"
+                     "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees}"
                      ))))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
@@ -1543,9 +1547,9 @@ space rather than before."
           (lambda ()
             (org-agenda-list)
             (delete-other-windows)
-            ;; (switch-to-light-theme)
+            (switch-to-light-theme)
             ;; (switch-to-dark-theme)
-            (load-theme 'darktooth t)
+            ;; (load-theme 'darktooth t)
             ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
@@ -1569,8 +1573,8 @@ space rather than before."
   (disable-theme 'minimal-light)
   ;; (load-theme 'darktooth t)
   (load-theme 'minimal t)
-  (set-face-attribute 'whitespace-space nil :background nil)
-  (set-face-attribute 'whitespace-newline nil :background nil)
+  ;; (set-face-attribute 'whitespace-space nil :background nil)
+  ;; (set-face-attribute 'whitespace-newline nil :background nil)
   (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
@@ -1580,8 +1584,8 @@ space rather than before."
   (interactive)
   (disable-theme 'minimal)
   (load-theme 'minimal-light t)
-  (set-face-attribute 'whitespace-space nil :background nil)
-  (set-face-attribute 'whitespace-newline nil :background nil)
+  ;; (set-face-attribute 'whitespace-space nil :background nil)
+  ;; (set-face-attribute 'whitespace-newline nil :background nil)
   (global-org-modern-mode)
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
@@ -1956,3 +1960,10 @@ Version 2018-06-18 2021-09-30"
        (progn
          (message "File path copied: %s" $fpath)
          $fpath)))))
+
+(defun cached-file (filename)
+  "return 'filename' prefixed with cache dir path"
+  (concat brain-path "out/" filename))
+
+;; disable stupid beep sounds on macos
+(setq ring-bell-function #'ignore)
