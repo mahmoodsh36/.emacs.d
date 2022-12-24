@@ -165,7 +165,9 @@
            :kill-buffer :unnarrowed t)
           ("d" "daily" plain "%?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+filetags: :daily:")
-           :immediate-finish)))) ;; file is captured and opened with find-file
+           :immediate-finish) ;; file is captured and opened with find-file
+          ("t" "todo" plain "* TODO ${title}"
+           :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
 
 ;; side tree
 (use-package treemacs
@@ -390,7 +392,7 @@
                             (org-roam-capture-no-title-prompt nil "d")
                             (find-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org")))))
       (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
-      ;; (general-define-key :states 'normal :keymaps 'override "SPC r y" (lambda () (interactive) (org-roam-capture nil "t")))
+      (general-define-key :states 'normal :keymaps 'override "SPC r y" (lambda () (interactive) (org-roam-capture nil "t")))
       (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r q"
                           (lambda ()
