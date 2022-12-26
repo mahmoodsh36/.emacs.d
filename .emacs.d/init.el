@@ -16,6 +16,13 @@
  ;; straight-use-package-by-default t
  native-comp-async-report-warnings-errors nil)
 
+;; setup quelpa
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
+
 ;; disable customization using the interactive interface and remove startup screen
 (setq custom-file "/dev/null")
 (setq inhibit-startup-screen t)
@@ -425,6 +432,8 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
       ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
+      (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
@@ -502,7 +511,37 @@
       (use-package evil-lion)
 
       (use-package evil-extra-operator)
-      ;;(use-package evil-textobj-tree-sitter)
+
+      (use-package evil-textobj-tree-sitter
+        :config
+        ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+        (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+        ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+        (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+        ;; You can also bind multiple items and we will match the first one we can find
+        (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+        (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
+        ;; Goto start of next function
+        (define-key evil-normal-state-map (kbd "]f")
+                    (lambda ()
+                      (interactive)
+                      (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+        ;; Goto start of previous function
+        (define-key evil-normal-state-map (kbd "[f")
+                    (lambda ()
+                      (interactive)
+                      (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+        ;; Goto end of next function
+        (define-key evil-normal-state-map (kbd "]F")
+                    (lambda ()
+                      (interactive)
+                      (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+        ;; Goto end of previous function
+        (define-key evil-normal-state-map (kbd "[F")
+                    (lambda ()
+                      (interactive)
+                      (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+        )
 
       ;; make org roam insert link after cursor in evil mode
       (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
@@ -1106,36 +1145,6 @@ space rather than before."
   :config
   (global-tree-sitter-mode 1))
 (use-package tree-sitter-langs)
-(use-package evil-textobj-tree-sitter
-  :config
-  ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-  ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
-  ;; You can also bind multiple items and we will match the first one we can find
-  (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
-  (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
-  ;; Goto start of next function
-  (define-key evil-normal-state-map (kbd "]f")
-    (lambda ()
-      (interactive)
-      (evil-textobj-tree-sitter-goto-textobj "function.outer")))
-  ;; Goto start of previous function
-  (define-key evil-normal-state-map (kbd "[f")
-    (lambda ()
-      (interactive)
-      (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
-  ;; Goto end of next function
-  (define-key evil-normal-state-map (kbd "]F")
-    (lambda ()
-      (interactive)
-      (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
-  ;; Goto end of previous function
-  (define-key evil-normal-state-map (kbd "[F")
-    (lambda ()
-      (interactive)
-      (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
-  )
 
 ;(use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
 
@@ -1147,6 +1156,9 @@ space rather than before."
 (use-package emmet-mode
   :config
   (add-hook 'web-mode-hook 'emmet-mode))
+
+;; krita-supported manual drawing with org mode
+(quelpa '(org-krita :repo "lepisma/org-krita" :fetcher github))
 
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
@@ -1441,6 +1453,8 @@ space rather than before."
 (setq org-export-allow-bind-keywords t)
 ;; decrease image size in latex exports
 ;; (setq org-latex-image-default-scale "0.6")
+;; disable images from being scaled/their dimensions being changed
+(setq org-latex-image-default-width "")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -1967,3 +1981,19 @@ Version 2018-06-18 2021-09-30"
 
 ;; disable stupid beep sounds on macos
 (setq ring-bell-function #'ignore)
+
+(defun find-first-non-ascii-char ()
+  "Find the first non-ascii character from point onwards."
+  (interactive)
+  (let (point)
+    (save-excursion
+      (setq point
+            (catch 'non-ascii
+              (while (not (eobp))
+                (or (eq (char-charset (following-char))
+                        'ascii)
+                    (throw 'non-ascii (point)))
+                (forward-char 1)))))
+    (if point
+        (goto-char point)
+        (message "No non-ascii characters."))))
