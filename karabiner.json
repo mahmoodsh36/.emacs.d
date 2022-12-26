@@ -308,6 +308,27 @@
                 "type": "basic"
               }
             ]
+          },
+          {
+            "description": "keybinding to focus virtualboxvm",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "v",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a VirtualBoxVM"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
           }
         ]
       },
