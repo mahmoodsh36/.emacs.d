@@ -57,7 +57,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode 1) ;; enable it so that emacs acts like a normal app on macos
+(menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
