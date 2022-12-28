@@ -1136,7 +1136,7 @@ space rather than before."
 (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
-(use-package avy)
+;; (use-package avy)
 ;; (use-package auto-yasnippet)
 
 (use-package marginalia
@@ -1160,7 +1160,7 @@ space rather than before."
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(use-package ialign)
+;; (use-package ialign)
 ;; (straight-use-package 'org-protocol-capture-html)
 ;; (use-package org-download)
 ;;(use-package org-ql)
