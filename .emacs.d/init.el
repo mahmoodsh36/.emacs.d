@@ -1106,7 +1106,7 @@ space rather than before."
 (use-package format-all)
 (use-package org-roam-ui)
 ;; (use-package jupyter)
-(use-package plantuml-mode)
+;; (use-package plantuml-mode)
 (use-package org-ref
   :config
   (setq bibtex-completion-bibliography '("~/brain/bib.bib"))
