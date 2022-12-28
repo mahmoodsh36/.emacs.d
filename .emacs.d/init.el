@@ -80,7 +80,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 70 40))
+(when window-system (set-frame-size (selected-frame) 70 30))
 ;; space around the windows
 (set-fringe-style '(12 . 0))
 ;; display only buffer name in modeline
