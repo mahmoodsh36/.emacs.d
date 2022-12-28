@@ -1623,7 +1623,7 @@ space rather than before."
           (lambda ()
             (org-agenda-list)
             (delete-other-windows)
-            (switch-to-light-theme)
+            (switch-to-dark-theme)
             ;; (switch-to-dark-theme)
             ;; (load-theme 'darktooth t)
             ))
