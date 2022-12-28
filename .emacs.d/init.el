@@ -153,7 +153,7 @@
 (use-package org)
 (use-package org-contrib)
 
-;; the key to building a second brain in org mode
+;; the key to building a second brain in org mode, requires pre-isntallation of gcc/clang
 (use-package org-roam
   :custom
   (org-roam-directory brain-path)
@@ -567,7 +567,54 @@ space rather than before."
     ;; (defun my-god-mode-update-cursor-type ()
     ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
     ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-    (use-package ryo-modal)
+    (use-package ryo-modal
+      :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
+      :commands ryo-modal-mode
+      :bind ("C-c SPC" . ryo-modal-mode)
+      :config
+      (ryo-modal-keys
+       ("," ryo-modal-repeat)
+       ("q" ryo-modal-mode)
+       ("h" backward-char)
+       ("j" next-line)
+       ("k" previous-line)
+       ("l" forward-char))
+
+      (ryo-modal-keys
+       ;; First argument to ryo-modal-keys may be a list of keywords.
+       ;; These keywords will be applied to all keybindings.
+       (:norepeat t)
+       ("0" "M-0")
+       ("1" "M-1")
+       ("2" "M-2")
+       ("3" "M-3")
+       ("4" "M-4")
+       ("5" "M-5")
+       ("6" "M-6")
+       ("7" "M-7")
+       ("8" "M-8")
+       ("9" "M-9"))
+
+      (defun mark-line ()
+        (interactive)
+        (beginning-of-line)
+        (set-mark-command nil)
+        (end-of-line))
+      
+      (ryo-modal-key
+       "g" '(("s" save-buffer)
+             ("g" magit-status)
+             ("b" ibuffer-list-buffers)))
+
+      (let ((text-objects
+             '(("w" mark-word :name "Word")
+               ("l" mark-line :name "line")
+             )))
+  (eval `(ryo-modal-keys
+          ("v" ,text-objects)
+          ;;("k" ,text-objects :then '(kill-region))
+          ("c" ,text-objects :then '(kill-region)))))
+      )
     )
   )
 
@@ -959,8 +1006,8 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  (setq xenops-math-image-scale-factor 1.2)
-  (setq xenops-math-image-current-scale-factor 1.2)
+  (setq xenops-math-image-scale-factor 1.1)
+  (setq xenops-math-image-current-scale-factor 1.1)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1160,6 +1207,22 @@ space rather than before."
 ;; krita-supported manual drawing with org mode
 (quelpa '(org-krita :repo "lepisma/org-krita" :fetcher github))
 
+(use-package org-transclusion)
+
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
+
+;; this just doesnt work...
+;; (use-package roam-block
+;;   :quelpa (roam-block :fetcher github :repo "Kinneyzhang/roam-block")
+;;   :config
+;;   (setq roam-block-home (list brain-path)
+;;         roam-block-ref-highlight t
+;;         roam-block-embed-highlight t))
+
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :config
@@ -1185,7 +1248,6 @@ space rather than before."
 ;; (use-package delve
 ;;   :straight (:repo "publicimageltd/delve" :host github))
 ;; (use-package embark)
-;; (use-package org-transclusion)
 ;; (use-package svg-tag-mode)
 
 ;; (use-package alert)
@@ -1938,7 +2000,7 @@ space rather than before."
   (shell-command (format "code %s" (buffer-file-name))))
 
 (defun kill-this-buffer-volatile ()
-    "Kill current buffer, even if it has been modified."
+    "kill current buffer, even if it has been modified."
     (interactive)
     (set-buffer-modified-p nil)
     (kill-this-buffer))
