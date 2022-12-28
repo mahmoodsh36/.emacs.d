@@ -1103,7 +1103,7 @@ space rather than before."
 
 ;; (use-package dumb-jump)
 ;; (use-package ob-async)
-(use-package format-all)
+;; (use-package format-all)
 (use-package org-roam-ui)
 ;; (use-package jupyter)
 ;; (use-package plantuml-mode)
