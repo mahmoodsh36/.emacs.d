@@ -703,7 +703,7 @@ space rather than before."
       (corfu-auto-delay 0)
       ;; (corfu-separator ?_) ;; Set to orderless separator, if not using space
       (corfu-separator " ") ;; Set to orderless separator, if not using space
-      (corfu-count 20)
+      (corfu-count 10)
       (corfu-indexed-mode t)
       ;; (corfu-quit-at-boundary nil) ;; dont stop completing when a space is inserted
       (corfu-on-exact-match nil) ;; dont auto insert when there is an exact match
