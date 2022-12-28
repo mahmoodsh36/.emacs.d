@@ -337,7 +337,7 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
