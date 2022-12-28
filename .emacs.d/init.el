@@ -1198,7 +1198,7 @@ space rather than before."
 (use-package all-the-icons-ivy-rich
   :config (all-the-icons-ivy-rich-mode 1))
 
-;; (use-package lsp-java)
+(use-package lsp-java)
 
 (use-package emmet-mode
   :config
