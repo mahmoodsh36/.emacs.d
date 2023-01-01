@@ -16,13 +16,6 @@
  ;; straight-use-package-by-default t
  native-comp-async-report-warnings-errors nil)
 
-;; setup quelpa
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
-
 ;; disable customization using the interactive interface and remove startup screen
 (setq custom-file "/dev/null")
 (setq inhibit-startup-screen t)
@@ -41,6 +34,13 @@
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
 (require 'use-package)
+
+;; setup quelpa
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
 
 ;; path where all my notes etc go
 (setq brain-path (file-truename "~/brain/"))
@@ -768,9 +768,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 120)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 120)
-(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.2)
+;(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 120)
+;(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 120)
+;(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.2)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -987,9 +987,9 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
   (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/blog/static/more/"))
+  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
@@ -1045,27 +1045,27 @@ space rather than before."
 ;;   (org-roam-timestamps-mode)
 ;;   (setq org-roam-timestamps-remember-timestamps t))
 
-;; give org mode a better look
-(use-package org-modern
-  :config
-  (setq
-   org-modern-hide-stars nil
-   org-auto-align-tags nil
-   org-tags-column 0
-   org-catch-invisible-edits 'show-and-error
-   org-special-ctrl-a/e t
-   org-insert-heading-respect-content t
-   ;; Agenda styling
-   ;; org-agenda-tags-column 0
-   ;; org-agenda-block-separator ?─
-   ;; org-agenda-time-grid
-   ;; '((daily today require-timed)
-   ;;   (800 1000 1200 1400 1600 1800 2000)
-   ;;   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-   ;; org-agenda-current-time-string
-   ;; "⭠ now ─────────────────────────────────────────────────"
-   )
-  (global-org-modern-mode))
+;; ;; give org mode a better look
+;; (use-package org-modern
+;;   :config
+;;   (setq
+;;    org-modern-hide-stars nil
+;;    org-auto-align-tags nil
+;;    org-tags-column 0
+;;    org-catch-invisible-edits 'show-and-error
+;;    org-special-ctrl-a/e t
+;;    org-insert-heading-respect-content t
+;;    ;; Agenda styling
+;;    ;; org-agenda-tags-column 0
+;;    ;; org-agenda-block-separator ?─
+;;    ;; org-agenda-time-grid
+;;    ;; '((daily today require-timed)
+;;    ;;   (800 1000 1200 1400 1600 1800 2000)
+;;    ;;   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+;;    ;; org-agenda-current-time-string
+;;    ;; "⭠ now ─────────────────────────────────────────────────"
+;;    )
+;;   (global-org-modern-mode))
 
 ;; show hidden elements when cursor is over them like links/markers etc
 (use-package org-appear
