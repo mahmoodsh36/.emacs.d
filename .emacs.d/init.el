@@ -145,6 +145,7 @@
            (kill-buffer buffer)))
     (setq list (cdr list))))
 
+(setq evil-want-keybinding nil)
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
@@ -200,7 +201,6 @@
 ;; evil-mode
 (if enable-evil
     (progn
-      (setq evil-want-keybinding nil)
       (use-package evil
         :config
         (evil-mode 1)
@@ -768,9 +768,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-;(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 120)
-;(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 120)
-;(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.2)
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 110)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 110)
+(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.1)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -952,11 +952,11 @@ space rather than before."
 (use-package flutter)
 (use-package lsp-dart)
 
-;; best pdf viewer
-(use-package pdf-tools
-  :config
-  (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+;; ;; best pdf viewer
+;; (use-package pdf-tools
+;;   :config
+;;   (pdf-tools-install t)
+;;   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; history for ivy completion, it sometimes makes ivy really slow, so maybe remove the cache file every once in a while
 (use-package ivy-prescient
@@ -997,7 +997,7 @@ space rather than before."
 (use-package xenops
   :config
   (setq xenops-reveal-on-entry t
-        xenops-math-latex-max-tasks-in-flight 3
+        xenops-math-latex-max-tasks-in-flight 24
         xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
@@ -1006,8 +1006,8 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  (setq xenops-math-image-scale-factor 1.1)
-  (setq xenops-math-image-current-scale-factor 1.1)
+  ;; (setq xenops-math-image-scale-factor 1.1)
+  ;; (setq xenops-math-image-current-scale-factor 1.1)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1472,10 +1472,6 @@ space rather than before."
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
-;; keybindings
-(global-set-key (kbd "C-M-S-x") 'eval-region)
-(global-set-key (kbd "C-x D") 'image-dired)
-
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
 (defun run-script ()
   "run the current bash script being edited"
@@ -1604,6 +1600,16 @@ space rather than before."
                      "\\usepackage{karnaugh-map}"
                      "\\usepackage{circuitikz}"
                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees}"
+                     "
+\\newcommand*{\\addbrace}[4]{%
+    \\begin{tikzpicture}[overlay, remember picture]
+        \\draw[decoration={brace,amplitude=0.5em}, decorate, thick]
+            ($(#3)!(#1.north)!($(#3)-(0,1)$)$) --
+            ($(#3)!(#2.south)!($(#3)-(0,1)$)$)
+                node[right=0.2cm, text width=5cm, pos=0.5, anchor=west] {#4};
+    \\end{tikzpicture}
+}%
+"
                      ))))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
@@ -1651,7 +1657,7 @@ space rather than before."
   (load-theme 'minimal t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
-  (global-org-modern-mode)
+  ;; (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
@@ -1662,7 +1668,7 @@ space rather than before."
   (load-theme 'minimal-light t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
-  (global-org-modern-mode)
+  ;; (global-org-modern-mode)
   ;; (set-face-background hl-line-face "PeachPuff3"))
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
