@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: latex curly brackets
+# key: lc
+# --
+\left\\{$0\right\\}
