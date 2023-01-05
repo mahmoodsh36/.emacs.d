@@ -81,8 +81,9 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 (when window-system (set-frame-size (selected-frame) 130 30))
-;; space around the windows
-(set-fringe-style '(12 . 0))
+;; margin around the windows
+;; (set-fringe-style '(12 . 0))
+(set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
 (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
 ;; restore default status line for pdf mode
