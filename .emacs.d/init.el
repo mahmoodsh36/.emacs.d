@@ -1628,6 +1628,7 @@ space rather than before."
 ;; open agenda on startup
 (add-hook 'after-init-hook
           (lambda ()
+            (org-roam-db-sync)
             (org-agenda-list)
             (delete-other-windows)
             (switch-to-dark-theme)
