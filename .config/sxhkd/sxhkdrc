@@ -3,7 +3,7 @@ super + Return
 
 super + x ; {e,w,s,j,k,f,p}
     {notify-send "launched emacs" && emacs, \
-     google-chrome & notify-send "launched chrome", \
+     google-chrome-stable & notify-send "launched chrome", \
      notify-send "launched Spotify 🎶🎵" && spotify || flatpak run com.spotify.Client, \
      rofi_select_emoji.sh, \
      ~/workspace/scripts/kill_process.sh, \
