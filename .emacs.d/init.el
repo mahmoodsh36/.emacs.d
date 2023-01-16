@@ -1847,6 +1847,9 @@ space rather than before."
 (advice-add 'org-todo-list :before #'agenda-files-update)
 ;; stop showing deadlines in today
 (setq org-deadline-warning-days 0)
+;; remove done items
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-skip-deadline-if-done t)
 
 (defun go-through-all-roam-files (&optional callback)
   "run a callback function on each file in the org-roam database"
