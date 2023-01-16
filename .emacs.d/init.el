@@ -43,7 +43,7 @@
     (quelpa-self-upgrade)))
 
 ;; path where all my notes etc go
-(setq brain-path (file-truename "~/brain/"))
+(setq brain-path "~/brain/")
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
@@ -158,7 +158,7 @@
 ;; the key to building a second brain in org mode, requires pre-isntallation of gcc/clang
 (use-package org-roam
   :custom
-  (org-roam-directory brain-path)
+  (org-roam-directory (file-truename brain-path))
   (org-roam-completion-everywhere t)
   :config
   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
@@ -770,9 +770,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 110)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 110)
-(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.1)
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.3)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -965,7 +965,7 @@ space rather than before."
   :config
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
-  (setq prescient-save-file (concat brain-path "emacs_prescient"))) ;; save history to filesystem
+  (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
 
 ;; ;; auto indentation
 ;; (use-package aggressive-indent
@@ -1124,7 +1124,7 @@ space rather than before."
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-file (concat brain-path "/emacs_keyfreq")))
+  (setq keyfreq-file (concat (file-truename brain-path) "emacs_keyfreq")))
 
 (use-package magit)
 
@@ -1495,7 +1495,7 @@ space rather than before."
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
-(setq eshell-aliases-file (concat brain-path "/eshell_aliases"))
+(setq eshell-aliases-file (concat (file-truename brain-path) "/eshell_aliases"))
 (defun eshell-cd-and-ls (&rest args)           ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
@@ -1503,7 +1503,7 @@ space rather than before."
     (cd path)
     (eshell/ls)))
 ;; eshell history file location
-(setq eshell-history-file-name (concat brain-path "/eshell_history")) ;; save history to filesystem
+(setq eshell-history-file-name (concat (file-truename brain-path) "/eshell_history")) ;; save history to filesystem
 
 ;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
 (defun org-to-pdf ()
