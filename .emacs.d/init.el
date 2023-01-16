@@ -36,6 +36,7 @@
 (require 'use-package)
 
 ;; setup quelpa
+(setq quelpa-update-melpa-p nil)
 (unless (package-installed-p 'quelpa)
   (with-temp-buffer
     (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
@@ -637,7 +638,7 @@ space rather than before."
 
 ;; auto completion
 ;; im sticking with company for now as corfu keeps crashing with org mode
-(setq enable-company t)
+(setq enable-company nil)
 (setq completion-ignore-case t) ;; case-insensitivity
 (if enable-company
     (progn
@@ -725,22 +726,22 @@ space rather than before."
 
     (use-package cape)
 
-    (use-package orderless
-      :init
-      ;; Configure a custom style dispatcher (see the Consult wiki)
-      ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-      ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-      (setq completion-styles '(orderless partial-completion basic);; '(orderless basic)
-            completion-category-defaults nil
-            completion-category-overrides nil))
+    ;; (use-package orderless
+    ;;   :init
+    ;;   ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;;   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+    ;;   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    ;;   (setq completion-styles '(orderless partial-completion basic);; '(orderless basic)
+    ;;         completion-category-defaults nil
+    ;;         completion-category-overrides nil))
 
-    (defun orderless-fast-dispatch (word index total)
-      (and (= index 0) (= total 1) (length< word 4)
-           `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
+    ;; (defun orderless-fast-dispatch (word index total)
+    ;;   (and (= index 0) (= total 1) (length< word 4)
+    ;;        `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
 
-    (orderless-define-completion-style orderless-fast
-                                       (orderless-style-dispatchers '(orderless-fast-dispatch))
-                                       (orderless-matching-styles '(orderless-literal orderless-regexp)))
+    ;; (orderless-define-completion-style orderless-fast
+    ;;                                    (orderless-style-dispatchers '(orderless-fast-dispatch))
+    ;;                                    (orderless-matching-styles '(orderless-literal orderless-regexp)))
 
     ;; corfu completion in the minibuffer
     (defun corfu-enable-in-minibuffer ()
@@ -989,9 +990,9 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/blog/"))
   (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
+  (setq org-more-dir (expand-file-name "~/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
@@ -999,7 +1000,7 @@ space rather than before."
 (use-package xenops
   :config
   (setq xenops-reveal-on-entry t
-        xenops-math-latex-max-tasks-in-flight 24
+        xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
   (add-hook 'org-mode-hook #'xenops-mode)
@@ -1008,8 +1009,8 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  ;; (setq xenops-math-image-scale-factor 1.1)
-  ;; (setq xenops-math-image-current-scale-factor 1.1)
+  (setq xenops-math-image-scale-factor 1.1)
+  (setq xenops-math-image-current-scale-factor 1.1)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1435,7 +1436,7 @@ space rather than before."
   (concat brain-path "/out/"))
 
 (defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (get-latex-cache-dir-path) path)))
+  (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (file-truename (get-latex-cache-dir-path)) path)))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -1508,8 +1509,8 @@ space rather than before."
 ;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
 (defun org-to-pdf ()
   (interactive)
-  (let ((outfile (concat (get-latex-cache-dir-path) (current-filename) ".tex")))
-    (call-process-shell-command (format "rm %s*%s*" (get-latex-cache-dir-path) (current-filename)))
+  (let ((outfile (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex")))
+    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
     (compile-latex-file outfile)))
@@ -1608,6 +1609,7 @@ space rather than before."
                      "\\usepackage[boxed,linesnumbered,vlined]{algorithm2e}"
                      "\\usepackage{algpseudocode}"
                      "\\usepackage{karnaugh-map}"
+                     "\\usepackage{karnaughmap}"
                      "\\usepackage{circuitikz}"
                      "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees}"
                      "
@@ -1640,8 +1642,8 @@ space rather than before."
             (org-roam-db-sync)
             (org-agenda-list)
             (delete-other-windows)
-            (switch-to-dark-theme)
             ;; (switch-to-dark-theme)
+            (switch-to-dark-theme)
             ;; (load-theme 'darktooth t)
             ))
 ;; disable multiplication precedence over division
