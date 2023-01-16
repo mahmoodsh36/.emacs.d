@@ -636,7 +636,8 @@ space rather than before."
   (projectile-mode +1))
 
 ;; auto completion
-(setq enable-company nil)
+;; im sticking with company for now as corfu keeps crashing with org mode
+(setq enable-company t)
 (setq completion-ignore-case t) ;; case-insensitivity
 (if enable-company
     (progn
@@ -953,11 +954,11 @@ space rather than before."
 (use-package flutter)
 (use-package lsp-dart)
 
-;; ;; best pdf viewer
-;; (use-package pdf-tools
-;;   :config
-;;   (pdf-tools-install t)
-;;   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+;; best pdf viewer
+(use-package pdf-tools
+  :config
+  (pdf-tools-install t)
+  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; history for ivy completion, it sometimes makes ivy really slow, so maybe remove the cache file every once in a while
 (use-package ivy-prescient
@@ -1036,9 +1037,9 @@ space rather than before."
   (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
   )
 
-;; (use-package mixed-pitch
-;;   :hook
-;;   (text-mode . mixed-pitch-mode))
+(use-package mixed-pitch
+  :hook
+  (text-mode . mixed-pitch-mode))
 
 ;; add edition/creation timestamps to headers and files, this is absurd, git would be a bbetter option
 ;; (use-package org-roam-timestamps
@@ -1069,14 +1070,14 @@ space rather than before."
 ;;   (global-org-modern-mode))
 
 ;; show hidden elements when cursor is over them like links/markers etc
-(use-package org-appear
-  :config
-  (setq org-appear-autoemphasis t
-        org-appear-autoentities t
-        org-appear-autokeywords t
-        org-appear-autolinks t
-        org-appear-autosubmarkers t)
-  (add-hook 'org-mode-hook 'org-appear-mode))
+;; (use-package org-appear
+;;   :config
+;;   (setq org-appear-autoemphasis t
+;;         org-appear-autoentities t
+;;         org-appear-autokeywords t
+;;         org-appear-autolinks t
+;;         org-appear-autosubmarkers t)
+;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
 ;; more featureful ivy menus
 (use-package ivy-rich
@@ -1215,6 +1216,14 @@ space rather than before."
    :fetcher git
    :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
+
+(quelpa '(eat :fetcher git
+              :url "https://codeberg.org/akib/emacs-eat"
+              :files ("*.el" ("term" "term/*.el") "*.texi"
+                      "*.ti" ("terminfo/e" "terminfo/e/*")
+                      ("terminfo/65" "terminfo/65/*")
+                      ("integration" "integration/*")
+                      (:exclude ".dir-locals.el" "*-tests.el"))))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1836,6 +1845,8 @@ space rather than before."
   (setq org-agenda-files (roam-files-with-tag "todo")))
 (advice-add 'org-agenda :before #'agenda-files-update)
 (advice-add 'org-todo-list :before #'agenda-files-update)
+;; stop showing deadlines in today
+(setq org-deadline-warning-days 0)
 
 (defun go-through-all-roam-files (&optional callback)
   "run a callback function on each file in the org-roam database"
