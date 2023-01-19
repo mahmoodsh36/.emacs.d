@@ -81,7 +81,7 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 130 30))
+(when window-system (set-frame-size (selected-frame) 110 48))
 ;; margin around the windows
 ;; (set-fringe-style '(12 . 0))
 (set-fringe-style '(0 . 0))
@@ -398,8 +398,10 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r t"
                           (lambda () (interactive)
-                            (org-roam-capture-no-title-prompt nil "d")
-                            (find-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org")))))
+                            (let ((todays-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org"))))
+                              (if (not (file-exists-p todays-file))
+                                  (org-roam-capture-no-title-prompt nil "d"))
+                              (find-file todays-file))))
       (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
       (general-define-key :states 'normal :keymaps 'override "SPC r y" (lambda () (interactive) (org-roam-capture nil "t")))
       (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
@@ -1327,7 +1329,10 @@ space rather than before."
 ;; save the clock history across sessions
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
+;; log state/schedule/deadline changes
 (setq org-log-done 'time)
+(setq org-log-reschedule 'time)
+(setq org-log-redeadline 'time)
 ;; Show images when opening a file.
 (setq org-startup-with-inline-images t)
 ;; Show images after evaluating code blocks.
@@ -1360,7 +1365,7 @@ space rather than before."
 (setq org-table-convert-region-max-lines 10000)
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
-;; who cares about annoying broken links errors..
+;; who cares about annoying broken link errors..
 ;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; (setq org-element-cache-persistent nil)
@@ -1542,7 +1547,8 @@ space rather than before."
          "REVIEW(r!)"
          "|" ; remaining close task
          "DONE(d@)"
-         "CANCELED(c@)"
+         "CANCELLED(c@)"
+         "CANCELED(C@)"
          )))
 ;; filter out entries with tag "repeat"
 (setq org-agenda-tag-filter-preset '("-repeat" "-ignore"))
