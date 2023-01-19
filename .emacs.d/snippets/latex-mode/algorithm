@@ -8,9 +8,9 @@
   \KwIn{${2:input}}
   \KwOut{${3:output}}
   \BlankLine
-  \SetKwFunction{FMain}{\textsc{${4:FunctionName}}}
-  \SetKwProg{Fn}{}{:}{}
-  \Fn{\FMain{${5:arguments}}} {
+  \SetKwFunction{func}{\textsc{${4:FunctionName}}}
+  \SetKwProg{prog}{}{:}{}
+  \prog{\func{${5:arguments}}} {
     $0
   }
 \end{algorithm}
