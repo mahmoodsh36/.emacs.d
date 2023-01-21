@@ -339,7 +339,7 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
@@ -386,7 +386,6 @@
                           (lambda ()
                             (interactive)
                             (org-insert-time-stamp (current-time) t)))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a" (lambda () (interactive) (org-agenda)))
       ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
       ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -418,15 +417,10 @@
                             (interactive)
                             (org-to-pdf)
                             (org-hugo-export-to-md)))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r j" 'org-clock-in)
-      (general-define-key :states 'normal :keymaps 'override "SPC r J" 'org-clock-in-last)
-      (general-define-key :states 'normal :keymaps 'override "SPC r k" 'org-clock-out)
-      (general-define-key :states 'normal :keymaps 'override "SPC r b" 'org-clock-cancel)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-clock-display)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
+      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
+      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
       (general-define-key :states 'normal :keymaps 'override "SPC r g"
                           (lambda ()
                             (interactive)
@@ -482,6 +476,16 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
       (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
+
+      ;; agenda keys
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" 'org-agenda-list)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
+      (general-define-key :states 'normal :keymaps 'override "SPC a J" 'org-clock-in-last)
+      (general-define-key :states 'normal :keymaps 'override "SPC a k" 'org-clock-out)
+      (general-define-key :states 'normal :keymaps 'override "SPC a b" 'org-clock-cancel)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC a p" 'org-clock-display)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -1609,6 +1613,7 @@ space rather than before."
         (:headers . ("\\usepackage{forest}"
                      "\\usepackage{amsmath}"
                      "\\usepackage{amssymb}"
+                     "\\usepackage{mathtools}"
                      "\\usepackage{tikz}"
                      "\\usepackage{tikz-3dplot}"
                      "\\usepackage{pgfplots}"
