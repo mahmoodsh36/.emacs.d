@@ -7,6 +7,7 @@
 #+LATEX_HEADER: \usepackage{indentfirst}
 #+LATEX_HEADER: \usepackage{pgffor}
 #+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{pifont}
 #+LATEX_HEADER: \usepackage{cancel}
 #+LATEX_HEADER: \usepackage{amsthm}
 #+LATEX_HEADER: \usepackage{polynom}
@@ -38,6 +39,8 @@
 #+LATEX_HEADER: \DeclareMathOperator{\rng}{range}
 #+LATEX_HEADER: \DeclareMathOperator{\img}{Im}
 #+LATEX_HEADER: \DeclareMathOperator{\adj}{adj}
+#+LATEX_HEADER: \DeclareMathOperator{\Var}{Var}
+#+LATEX_HEADER: \DeclareMathOperator{\cov}{cov}
 #+LATEX_HEADER: \newcommand\dif[1]{\:\textrm{d}#1}
 #+LATEX_HEADER: \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 #+LATEX_HEADER: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -48,3 +51,6 @@
 #+LATEX_HEADER: \newcommand{\khat}{\hat{\textbf{k}}}
 #+LATEX_HEADER: \newcommand{\rhat}{\hat{\textbf{r}}}
 #+LATEX_HEADER: \newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}
+#+LATEX_HEADER: \newcommand{\?}{\stackrel{?}{=}}
+#+LATEX_HEADER: \newcommand{\cmark}{\text{\ding{51}}}
+#+LATEX_HEADER: \newcommand{\xmark}{\text{\ding{55}}}
