@@ -329,6 +329,27 @@
                 "type": "basic"
               }
             ]
+          },
+          {
+            "description": "keybinding to focus Preview",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "i",
+                  "modifiers": {
+                    "mandatory": [
+                      "right_command"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "open -a Preview"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
           }
         ]
       },
