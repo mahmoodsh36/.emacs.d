@@ -168,7 +168,7 @@
   (require 'org-roam-protocol)
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
-           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
            :kill-buffer :unnarrowed t)
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
@@ -395,14 +395,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
       (general-define-key :states 'normal :keymaps 'override "SPC r A" 'org-attach-open)
       (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
-      (general-define-key :states 'normal :keymaps 'override "SPC r t"
-                          (lambda () (interactive)
-                            (let ((todays-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org"))))
-                              (if (not (file-exists-p todays-file))
-                                  (org-roam-capture-no-title-prompt nil "d"))
-                              (find-file todays-file))))
       (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
-      (general-define-key :states 'normal :keymaps 'override "SPC r y" (lambda () (interactive) (org-roam-capture nil "t")))
       (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r q"
                           (lambda ()
@@ -458,7 +451,7 @@
       (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
-                            (when window-system (set-frame-size (selected-frame) 165 45))))
+                            (when window-system (set-frame-size (selected-frame) 180 50))))
       (general-define-key :states '(normal treemacs motion) :keymaps 'override ")" 'evil-scroll-page-down)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "(" 'evil-scroll-page-up)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
@@ -481,11 +474,14 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" 'org-agenda-list)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
-      (general-define-key :states 'normal :keymaps 'override "SPC a J" 'org-clock-in-last)
-      (general-define-key :states 'normal :keymaps 'override "SPC a k" 'org-clock-out)
-      (general-define-key :states 'normal :keymaps 'override "SPC a b" 'org-clock-cancel)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC a p" 'org-clock-display)
+      (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a J" 'org-clock-in-last)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a k" 'org-clock-out)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a b" 'org-clock-cancel)
+      (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a p" 'org-clock-display)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a t" (lambda () (interactive) (org-roam-capture nil "t")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a n" 'today-entry)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a o" 'open-todays-file)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -1232,6 +1228,13 @@ space rather than before."
                       ("integration" "integration/*")
                       (:exclude ".dir-locals.el" "*-tests.el"))))
 
+;; perfectly aligned org mode tables
+;; (use-package valign
+;;   :hook
+;;   (org-mode . valign-mode))
+
+;; (use-package hydra)
+
 ;; this just doesnt work...
 ;; (use-package roam-block
 ;;   :quelpa (roam-block :fetcher github :repo "Kinneyzhang/roam-block")
@@ -1436,6 +1439,7 @@ space rather than before."
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
 
 (defun current-filename ()
+  "current filename without extension"
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
 
@@ -1552,7 +1556,7 @@ space rather than before."
          "|" ; remaining close task
          "DONE(d@)"
          "CANCELLED(c@)"
-         "CANCELED(C@)"
+         "CANCELED(C@)" ;; for background compatibility
          )))
 ;; filter out entries with tag "repeat"
 (setq org-agenda-tag-filter-preset '("-repeat" "-ignore"))
@@ -2094,3 +2098,26 @@ Version 2018-06-18 2021-09-30"
     (if point
         (goto-char point)
         (message "No non-ascii characters."))))
+
+(defun open-todays-file ()
+  "open todays org file"
+  (interactive)
+  (let ((todays-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org"))))
+    (if (not (file-exists-p todays-file))
+        (org-roam-capture-no-title-prompt nil "d"))
+    (find-file todays-file)))
+
+(defun today-entry ()
+  "insert an entry for today, an action/todo/whatever and clock in"
+  (interactive)
+  (open-todays-file)
+  (org-insert-heading-respect-content)
+  (org-clock-in)
+  (ignore-errors (evil-insert 0)))
+
+(defun check-svg-duplicates ()
+  (interactive)
+  (go-through-all-roam-files
+   (lambda ()
+     (interactive)
+     (message (current-filename)))))
