@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: document
-# key: do
+# key: dc
 # --
 \documentclass[a4paper,12pt]{article}
 \usepackage{amsmath}

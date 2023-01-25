@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sim
+# key: si
+# --
+\sim $0
