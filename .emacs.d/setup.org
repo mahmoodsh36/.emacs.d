@@ -32,6 +32,9 @@
 # #+LATEX_HEADER: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 
+# to handle unicode input, hebrew letters for example
+#+LATEX_HEADER: \usepackage{fontsetup}
+
 # some needed operators to not lose my sanity
 #+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
 #+LATEX_HEADER: \DeclareMathOperator{\dom}{domain}
