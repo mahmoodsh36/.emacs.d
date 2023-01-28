@@ -86,7 +86,9 @@
 ;; (set-fringe-style '(12 . 0))
 (set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
-(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
+;; the following line enables L<line number> at the end
+;; (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
 (add-hook 'pdf-view-mode-hook
           (lambda ()
@@ -467,6 +469,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'open-in-vscode)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
       (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
       (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
 
@@ -1209,9 +1212,6 @@ space rather than before."
   :config
   (add-hook 'web-mode-hook 'emmet-mode))
 
-;; krita-supported manual drawing with org mode
-(quelpa '(org-krita :repo "lepisma/org-krita" :fetcher github))
-
 (use-package org-transclusion)
 
 (quelpa
@@ -1227,6 +1227,27 @@ space rather than before."
                       ("terminfo/65" "terminfo/65/*")
                       ("integration" "integration/*")
                       (:exclude ".dir-locals.el" "*-tests.el"))))
+
+;; (use-package org-bullets
+;;   :config
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+;; better than org-bullets
+(use-package org-superstar
+  :config
+  (add-hook 'org-mode-hook 'org-superstar-mode))
+
+(use-package linum-relative
+  :config
+  (linum-relative-mode)
+  ;; show the real line number at current line
+  (setq linum-relative-current-symbol ""))
+
+;; krita-supported manual drawing with org mode
+;; (use-package org-krita
+;;   :ensure t
+;;   :quelpa (org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources"))
+;;   :config
+;;   (add-hook 'org-mode-hook 'org-krita-mode))
 
 ;; perfectly aligned org mode tables
 ;; (use-package valign
@@ -1519,7 +1540,7 @@ space rather than before."
 ;; eshell history file location
 (setq eshell-history-file-name (concat (file-truename brain-path) "/eshell_history")) ;; save history to filesystem
 
-;; compile org docs to pdfs and put them in ~/.emacs.d/latex/
+;; compile org docs to pdfs and put them in cache dir
 (defun org-to-pdf ()
   (interactive)
   (let ((outfile (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex")))
@@ -1901,9 +1922,7 @@ space rather than before."
   (go-through-roam-files-with-tag
    "math"
    (lambda ()
-     ;; (message "processing math file %s" (buffer-file-name))
-     (xenops-mode)
-     (xenops-render))))
+     (message "processing math file %s" (buffer-file-name)))))
 
 (defun run-all-code-blocks ()
   "run code blocks in all org-roam files"
@@ -2116,8 +2135,17 @@ Version 2018-06-18 2021-09-30"
   (ignore-errors (evil-insert 0)))
 
 (defun check-svg-duplicates ()
+  "check for code blocks with same svg files"
   (interactive)
   (go-through-all-roam-files
    (lambda ()
      (interactive)
      (message (current-filename)))))
+
+(defun open-kitty-here ()
+  (interactive)
+  (async-shell-command "open -a kitty ."))
+
+(defun push-blog-github ()
+  (interactive)
+  (execute-kbd-macro (read-kbd-macro "SPC d g SPC s e M-r reexport RET RET")))
