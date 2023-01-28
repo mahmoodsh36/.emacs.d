@@ -1238,7 +1238,7 @@ space rather than before."
 
 (use-package linum-relative
   :config
-  (linum-relative-mode)
+  (add-hook 'prog-mode-hook 'linum-relative-mode)
   ;; show the real line number at current line
   (setq linum-relative-current-symbol ""))
 
