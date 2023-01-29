@@ -168,6 +168,7 @@
   (org-roam-db-autosync-mode)
   (require 'org-roam-export)
   (require 'org-roam-protocol)
+  (global-set-key (kbd "C-c r f") 'org-roam-node-find)
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
@@ -192,7 +193,11 @@
 (use-package general)
 
 ;; needed for evil mode
-(use-package undo-fu)
+(use-package undo-fu
+  :config
+  (global-unset-key (kbd "C-z"))
+  (global-set-key (kbd "C-z") 'undo-fu-only-undo)
+  (global-set-key (kbd "C-S-z") 'undo-fu-only-redo))
 
 ;; vertical completion interface
 (use-package counsel
@@ -565,63 +570,64 @@ space rather than before."
             (evil-normal-state))))
       )
   (progn ;; if not using evil
-    ;; (use-package god-mode
-    ;;   :config
-    ;;   (god-mode)
-    ;;   (global-set-key (kbd "<escape>") #'god-mode-all)
-    ;;   (setq god-exempt-major-modes nil)
-    ;;   (setq god-exempt-predicates nil))
-    ;; (defun my-god-mode-update-cursor-type ()
-    ;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-    ;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-    (use-package ryo-modal
-      :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
-      :commands ryo-modal-mode
-      :bind ("C-c SPC" . ryo-modal-mode)
+    (use-package god-mode
       :config
-      (ryo-modal-keys
-       ("," ryo-modal-repeat)
-       ("q" ryo-modal-mode)
-       ("h" backward-char)
-       ("j" next-line)
-       ("k" previous-line)
-       ("l" forward-char))
+      (god-mode)
+      (global-set-key (kbd "<escape>") #'god-mode-all)
+      (setq god-exempt-major-modes nil)
+      (setq god-exempt-predicates nil))
+    (defun my-god-mode-update-cursor-type ()
+      (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+    (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
-      (ryo-modal-keys
-       ;; First argument to ryo-modal-keys may be a list of keywords.
-       ;; These keywords will be applied to all keybindings.
-       (:norepeat t)
-       ("0" "M-0")
-       ("1" "M-1")
-       ("2" "M-2")
-       ("3" "M-3")
-       ("4" "M-4")
-       ("5" "M-5")
-       ("6" "M-6")
-       ("7" "M-7")
-       ("8" "M-8")
-       ("9" "M-9"))
+    ;; (use-package ryo-modal
+    ;;   :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
+    ;;   :commands ryo-modal-mode
+    ;;   :bind ("C-c SPC" . ryo-modal-mode)
+    ;;   :config
+    ;;   (ryo-modal-keys
+    ;;    ("," ryo-modal-repeat)
+    ;;    ("q" ryo-modal-mode)
+    ;;    ("h" backward-char)
+    ;;    ("j" next-line)
+    ;;    ("k" previous-line)
+    ;;    ("l" forward-char))
 
-      (defun mark-line ()
-        (interactive)
-        (beginning-of-line)
-        (set-mark-command nil)
-        (end-of-line))
+    ;;   (ryo-modal-keys
+    ;;    ;; First argument to ryo-modal-keys may be a list of keywords.
+    ;;    ;; These keywords will be applied to all keybindings.
+    ;;    (:norepeat t)
+    ;;    ("0" "M-0")
+    ;;    ("1" "M-1")
+    ;;    ("2" "M-2")
+    ;;    ("3" "M-3")
+    ;;    ("4" "M-4")
+    ;;    ("5" "M-5")
+    ;;    ("6" "M-6")
+    ;;    ("7" "M-7")
+    ;;    ("8" "M-8")
+    ;;    ("9" "M-9"))
+
+    ;;   (defun mark-line ()
+    ;;     (interactive)
+    ;;     (beginning-of-line)
+    ;;     (set-mark-command nil)
+    ;;     (end-of-line))
       
-      (ryo-modal-key
-       "g" '(("s" save-buffer)
-             ("g" magit-status)
-             ("b" ibuffer-list-buffers)))
+    ;;   (ryo-modal-key
+    ;;    "g" '(("s" save-buffer)
+    ;;          ("g" magit-status)
+    ;;          ("b" ibuffer-list-buffers)))
 
-      (let ((text-objects
-             '(("w" mark-word :name "Word")
-               ("l" mark-line :name "line")
-             )))
-  (eval `(ryo-modal-keys
-          ("v" ,text-objects)
-          ;;("k" ,text-objects :then '(kill-region))
-          ("c" ,text-objects :then '(kill-region)))))
-      )
+    ;;   (let ((text-objects
+    ;;          '(("w" mark-word :name "Word")
+    ;;            ("l" mark-line :name "line")
+    ;;            )))
+    ;;     (eval `(ryo-modal-keys
+    ;;             ("v" ,text-objects)
+    ;;             ;;("k" ,text-objects :then '(kill-region))
+    ;;             ("c" ,text-objects :then '(kill-region)))))
+    ;;   )
     )
   )
 
@@ -865,7 +871,7 @@ space rather than before."
   :config
   ;; disable builtin snippets
   (setq yas-snippet-dirs `(,(concat user-emacs-directory "snippets")))
-  ;; enalbe nested snippet expansion
+  ;; enable nested snippet expansion
   (setq yas-triggers-in-field t)
   (yas-global-mode 1)
   ;; prevent warnings about snippets using elisp
@@ -1242,6 +1248,8 @@ space rather than before."
   ;; show the real line number at current line
   (setq linum-relative-current-symbol ""))
 
+(use-package org-super-agenda)
+
 ;; krita-supported manual drawing with org mode
 ;; (use-package org-krita
 ;;   :ensure t
@@ -1254,7 +1262,20 @@ space rather than before."
 ;;   :hook
 ;;   (org-mode . valign-mode))
 
-;; (use-package hydra)
+(use-package hydra
+  :config
+  (defhydra hydra-agenda (global-map "C-c a")
+    "hydra-agenda"
+    ("a" org-agenda-list "list")
+    ("n" today-entry "entry for today")
+    ("o" open-todays-file "open today's file")
+    ("d" org-deadline "deadline")
+    ("s" org-schedule "schedule"))
+  (defhydra hydra-roam (global-map "C-c r")
+    "hydra-roam"
+    ("f" org-roam-node-find "find roam node")
+    ("n" org-roam-node-find (lambda () (interactive) (org-roam-capture nil "n")) "create roam node")
+    ))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1282,7 +1303,6 @@ space rather than before."
 ;;   (setq browse-url-browser-function 'browse-url-chrome))
 
 ;; (use-package org-ml)
-;; (use-package org-super-agenda)
 ;; (use-package lispy)
 ;; (use-package ein)
 
@@ -1580,7 +1600,7 @@ space rather than before."
          "CANCELED(C@)" ;; for background compatibility
          )))
 ;; filter out entries with tag "repeat"
-(setq org-agenda-tag-filter-preset '("-repeat" "-ignore"))
+(setq org-agenda-tag-filter-preset '("-ignore"))
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>") ;; timestamp with seconds
@@ -1668,6 +1688,9 @@ space rather than before."
       ;; org-hide-block-startup t)
 ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
 (setq org-image-actual-width nil)
+;; dont center images/tables in latex
+(setq org-latex-images-centered nil)
+(setq org-latex-tables-centered nil)
 ;; get rid of background colors of block lines bleeding all over folded headlines
 (setq org-fontify-whole-block-delimiter-line nil)
 (setq org-fold-catch-invisible-edits 'smart
@@ -1679,7 +1702,8 @@ space rather than before."
             (org-agenda-list)
             (delete-other-windows)
             ;; (switch-to-dark-theme)
-            (switch-to-dark-theme)
+            ;; (switch-to-dark-theme)
+            (load-theme 'doom-gruvbox-light t)
             ;; (load-theme 'darktooth t)
             ))
 ;; disable multiplication precedence over division
@@ -1696,7 +1720,7 @@ space rather than before."
   random-str)
 (defun temp-file (EXT)
   (format "%stmp_%s.%s" (concat brain-path "/out/") (generate-random-string 7) EXT))
-(global-set-key (kbd "C-c r") (lambda () (interactive) (insert (generate-random-string 7))))
+(global-set-key (kbd "C-c R") (lambda () (interactive) (insert (generate-random-string 7))))
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
@@ -1888,6 +1912,8 @@ space rather than before."
 ;; remove done items
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-skip-deadline-if-done t)
+;; show only the first occurrence of a recurring task
+(setq org-agenda-show-future-repeats 'next)
 
 (defun go-through-all-roam-files (&optional callback)
   "run a callback function on each file in the org-roam database"
