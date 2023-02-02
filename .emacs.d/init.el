@@ -428,6 +428,7 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r z" 'org-add-note)
       ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
       (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
@@ -446,15 +447,15 @@
                     (search-open-file-in-emacs "~/data" "")))
 
       ;; keybinding to evaluate math expressions
-      ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
-      ;;                     (lambda ()
-      ;;                       (interactive)
-      ;;                       (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
-      ;;                       (end-of-line)
-      ;;                       (insert " ")
-      ;;                       (insert result)))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+                          (lambda ()
+                            (interactive)
+                            (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
+                            (end-of-line)
+                            (insert " ")
+                            (insert result)))
       ;; general keys
-      (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
+      ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
       (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
       (general-define-key :states 'normal :keymaps 'override "SPC w m"
                           (lambda () (interactive)
@@ -1703,7 +1704,8 @@ space rather than before."
             (delete-other-windows)
             ;; (switch-to-dark-theme)
             ;; (switch-to-dark-theme)
-            (load-theme 'doom-gruvbox-light t)
+            ;; (load-theme 'doom-gruvbox-light t)
+            (load-theme 'darktooth t)
             ;; (load-theme 'darktooth t)
             ))
 ;; disable multiplication precedence over division
@@ -2161,7 +2163,7 @@ Version 2018-06-18 2021-09-30"
   (ignore-errors (evil-insert 0)))
 
 (defun check-svg-duplicates ()
-  "check for code blocks with same svg files"
+  "check for code blocks with same svg files, TODO needs to be implemented"
   (interactive)
   (go-through-all-roam-files
    (lambda ()
@@ -2175,3 +2177,26 @@ Version 2018-06-18 2021-09-30"
 (defun push-blog-github ()
   (interactive)
   (execute-kbd-macro (read-kbd-macro "SPC d g SPC s e M-r reexport RET RET")))
+
+;; make links like [[id::blockname]] work, need to rebuild database after defining the advice org-roam-db-clear-all and then org-roam-db-sync
+(defun +org--follow-search-string-a (fn link &optional arg)
+  "Support ::SEARCH syntax for id: links."
+  (save-match-data
+    (cl-destructuring-bind (id &optional search)
+        (split-string link "::")
+      (prog1 (funcall fn id arg)
+        (cond ((null search))
+              ((string-match-p "\\`[0-9]+\\'" search)
+               ;; Move N lines after the ID (in case it's a heading), instead
+               ;; of the start of the buffer.
+               (forward-line (string-to-number option)))
+              ((string-match "^/\\([^/]+\\)/$" search)
+               (let ((match (match-string 1 search)))
+                 (save-excursion (org-link-search search))
+                 ;; `org-link-search' only reveals matches. Moving the point
+                 ;; to the first match after point is a sensible change.
+                 (when (re-search-forward match)
+                   (goto-char (match-beginning 0)))))
+              ((org-link-search search)))))))
+(advice-add 'org-id-open :around #'+org--follow-search-string-a)
+(advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
