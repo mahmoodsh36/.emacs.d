@@ -797,6 +797,11 @@ space rather than before."
 (use-package inkpot-theme)
 (use-package minimal-theme
   :straight (:host github :repo "mahmoodsheikh36/minimal-theme"))
+;; (switch-to-dark-theme)
+;; (switch-to-dark-theme)
+;; (load-theme 'doom-gruvbox-light t)
+;; (load-theme 'darktooth t)
+(load-theme 'darktooth t)
 
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
@@ -836,7 +841,7 @@ space rather than before."
 ;; highlights color names with the corresponding color
 (use-package rainbow-mode
   :config
-  (add-hook 'prog-mode-hook 'rainbow-mode))
+  (add-hook 'text-mode-hook 'rainbow-mode))
 
 ;; helps figure out which key runs which function
 (use-package command-log-mode
@@ -1702,11 +1707,6 @@ space rather than before."
             (org-roam-db-sync)
             (org-agenda-list)
             (delete-other-windows)
-            ;; (switch-to-dark-theme)
-            ;; (switch-to-dark-theme)
-            ;; (load-theme 'doom-gruvbox-light t)
-            (load-theme 'darktooth t)
-            ;; (load-theme 'darktooth t)
             ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
@@ -2180,7 +2180,7 @@ Version 2018-06-18 2021-09-30"
 
 ;; make links like [[id::blockname]] work, need to rebuild database after defining the advice org-roam-db-clear-all and then org-roam-db-sync
 (defun +org--follow-search-string-a (fn link &optional arg)
-  "Support ::SEARCH syntax for id: links."
+  "Support ::SEARCH syntax for id::name links."
   (save-match-data
     (cl-destructuring-bind (id &optional search)
         (split-string link "::")
