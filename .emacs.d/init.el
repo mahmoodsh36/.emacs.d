@@ -75,20 +75,21 @@
   (modify-syntax-entry ?_ "w"))
 ;;(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
 ;; highlight current line
-(global-hl-line-mode)
+;; (global-hl-line-mode)
 ;; reload file automatically
 (global-auto-revert-mode t)
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 110 48))
+;; (when window-system (set-frame-size (selected-frame) 110 48))
+(when window-system (set-frame-size (selected-frame) 100 33))
 ;; margin around the windows
 ;; (set-fringe-style '(12 . 0))
 (set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
-;; (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
-(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
+;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
 (add-hook 'pdf-view-mode-hook
           (lambda ()
@@ -355,7 +356,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/blog/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -783,9 +784,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 130)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 130)
-(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.3)
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 120)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 120)
+(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.2)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -1007,9 +1008,9 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
   (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/blog/static/more/"))
+  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
@@ -1387,9 +1388,9 @@ space rather than before."
 (setq org-log-done 'time)
 (setq org-log-reschedule 'time)
 (setq org-log-redeadline 'time)
-;; Show images when opening a file.
+;; show images when opening a file.
 (setq org-startup-with-inline-images t)
-;; Show images after evaluating code blocks.
+;; show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook (lambda ()
                                           (interactive)
                                           (clear-image-cache)
@@ -1420,7 +1421,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken link errors..
-;; (setq org-export-with-broken-links t)
+(setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; (setq org-element-cache-persistent nil)
 ;; (setq org-element-use-cache nil)
@@ -2172,7 +2173,7 @@ Version 2018-06-18 2021-09-30"
 
 (defun open-kitty-here ()
   (interactive)
-  (async-shell-command "open -a kitty ."))
+  (async-shell-command "kitty ."))
 
 (defun push-blog-github ()
   (interactive)
@@ -2180,7 +2181,8 @@ Version 2018-06-18 2021-09-30"
 
 ;; make links like [[id::blockname]] work, need to rebuild database after defining the advice org-roam-db-clear-all and then org-roam-db-sync
 (defun +org--follow-search-string-a (fn link &optional arg)
-  "Support ::SEARCH syntax for id::name links."
+  "Support ::SEARCH syntax for id::name links.
+note that this doesnt work for exports"
   (save-match-data
     (cl-destructuring-bind (id &optional search)
         (split-string link "::")
