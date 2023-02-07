@@ -1,56 +1,6 @@
 #+OPTIONS: toc:nil creator:nil timestamp:nil num:t validate:nil
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
-#+LATEX_HEADER: \usepackage[margin=0.2in]{geometry}
-#+LATEX_HEADER: \usepackage{amsmath}
-#+LATEX_HEADER: \usepackage{amsfonts}
-#+LATEX_HEADER: \usepackage{indentfirst}
-#+LATEX_HEADER: \usepackage{pgffor}
-#+LATEX_HEADER: \usepackage{amssymb}
-#+LATEX_HEADER: \usepackage{pifont}
-#+LATEX_HEADER: \usepackage{cancel}
-#+LATEX_HEADER: \usepackage{amsthm}
-#+LATEX_HEADER: \usepackage{polynom}
-#+LATEX_HEADER: \usepackage{tikz}
-#+LATEX_HEADER: \usepackage[tikz]{bclogo}
-#+LATEX_HEADER: \usepackage{listings}
-#+LATEX_HEADER: \usepackage[most]{tcolorbox}
-#+LATEX_HEADER: \usepackage{forest}
-#+LATEX_HEADER: \usepackage{adjustbox}
-#+LATEX_HEADER: \usepackage{tikz-3dplot}
-#+LATEX_HEADER: \usepackage{mathtools}
-#+LATEX_HEADER: \usepackage{pgfplots}
-#+LATEX_HEADER: \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning}
-#+LATEX_HEADER: \usepackage{centernot}
-#+LATEX_HEADER: \usepackage{lmodern}
-#+LATEX_HEADER: \usepackage{physics}
-#+LATEX_HEADER: \usepackage[boxed,linesnumbered,vlined]{algorithm2e}
-#+LATEX_HEADER: \usepackage{algpseudocode}
-#+LATEX_HEADER: \usepackage{algorithmicx}
-#+LATEX_HEADER: \usepackage{svg}
-#+LATEX_HEADER: \tikzstyle{every picture}+=[remember picture]
+#+LATEX_HEADER: \usepackage{\string~/.emacs.d/common}
 # #+LATEX_HEADER: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
-
-# some needed operators to not lose my sanity
-#+LATEX_HEADER: \DeclareMathOperator{\spn}{span}
-#+LATEX_HEADER: \DeclareMathOperator{\dom}{domain}
-#+LATEX_HEADER: \DeclareMathOperator{\ran}{range}
-#+LATEX_HEADER: \DeclareMathOperator{\rng}{range}
-#+LATEX_HEADER: \DeclareMathOperator{\img}{Im}
-#+LATEX_HEADER: \DeclareMathOperator{\adj}{adj}
-#+LATEX_HEADER: \DeclareMathOperator{\Var}{Var}
-#+LATEX_HEADER: \DeclareMathOperator{\cov}{cov}
-#+LATEX_HEADER: \newcommand\dif[1]{\:\textrm{d}#1}
-#+LATEX_HEADER: \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
-#+LATEX_HEADER: \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-# apparently the physics package has the \rank operator so i dont gotta define it.
-# #+LATEX_HEADER: \DeclareMathOperator{\rank}{rank}
-#+LATEX_HEADER: \newcommand{\ihat}{\hat{\textbf{\i}}}
-#+LATEX_HEADER: \newcommand{\jhat}{\hat{\textbf{\j}}}
-#+LATEX_HEADER: \newcommand{\khat}{\hat{\textbf{k}}}
-#+LATEX_HEADER: \newcommand{\rhat}{\hat{\textbf{r}}}
-#+LATEX_HEADER: \newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}
-#+LATEX_HEADER: \newcommand{\?}{\stackrel{?}{=}}
-#+LATEX_HEADER: \newcommand{\cmark}{\text{\ding{51}}}
-#+LATEX_HEADER: \newcommand{\xmark}{\text{\ding{55}}}

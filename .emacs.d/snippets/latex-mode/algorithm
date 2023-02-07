@@ -2,15 +2,9 @@
 # name: algorithm
 # key: ag
 # --
-\begin{algorithm}[H]
-  \DontPrintSemicolon
-  \TitleOfAlgo{${1:title}}
-  \KwIn{${2:input}}
-  \KwOut{${3:output}}
-  \BlankLine
-  \SetKwFunction{func}{\textsc{${4:FunctionName}}}
-  \SetKwProg{prog}{}{:}{}
-  \prog{\func{${5:arguments}}} {
+\begin{alg}
+  \SetKwFunction{func}{\textsc{${1:Function-Name}}}
+  \fn{\func{${2:arguments}}} {
     $0
   }
-\end{algorithm}
+\end{alg}

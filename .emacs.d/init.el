@@ -468,7 +468,6 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'shell-command)
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
@@ -570,6 +569,12 @@ space rather than before."
             (evil-append 0)
             ad-do-it
             (evil-normal-state))))
+
+      (use-package evil-snipe
+        :config
+        (evil-snipe-override-mode 1)
+        (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
+
       )
   (progn ;; if not using evil
     (use-package god-mode
@@ -800,9 +805,8 @@ space rather than before."
   :straight (:host github :repo "mahmoodsheikh36/minimal-theme"))
 ;; (switch-to-dark-theme)
 ;; (switch-to-dark-theme)
-;; (load-theme 'doom-gruvbox-light t)
+(load-theme 'doom-gruvbox-light t)
 ;; (load-theme 'darktooth t)
-(load-theme 'darktooth t)
 
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
@@ -1533,7 +1537,6 @@ space rather than before."
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
-  "search for a file recursively in a directory and open it"
   "search for file and open it similar to dmenu"
   (interactive)
   (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
@@ -1662,30 +1665,7 @@ space rather than before."
         ;; (:fit . t)
         ;; (:imagemagick . t)
         (:eval . "no-export")
-        (:headers . ("\\usepackage{forest}"
-                     "\\usepackage{amsmath}"
-                     "\\usepackage{amssymb}"
-                     "\\usepackage{mathtools}"
-                     "\\usepackage{tikz}"
-                     "\\usepackage{tikz-3dplot}"
-                     "\\usepackage{pgfplots}"
-                     "\\usepackage[boxed,linesnumbered,vlined]{algorithm2e}"
-                     "\\usepackage{algpseudocode}"
-                     "\\usepackage{karnaugh-map}"
-                     "\\usepackage{karnaughmap}"
-                     "\\usepackage{circuitikz}"
-                     "\\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees}"
-                     "
-\\newcommand*{\\addbrace}[4]{%
-    \\begin{tikzpicture}[overlay, remember picture]
-        \\draw[decoration={brace,amplitude=0.5em}, decorate, thick]
-            ($(#3)!(#1.north)!($(#3)-(0,1)$)$) --
-            ($(#3)!(#2.south)!($(#3)-(0,1)$)$)
-                node[right=0.2cm, text width=5cm, pos=0.5, anchor=west] {#4};
-    \\end{tikzpicture}
-}%
-"
-                     ))))
+        (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -2087,10 +2067,10 @@ space rather than before."
   (shell-command (format "code %s" (buffer-file-name))))
 
 (defun kill-this-buffer-volatile ()
-    "kill current buffer, even if it has been modified."
-    (interactive)
-    (set-buffer-modified-p nil)
-    (kill-this-buffer))
+  "kill current buffer, even if it has been modified."
+  (interactive)
+  (set-buffer-modified-p nil)
+  (kill-this-buffer))
 
 ;; from xah's website
 (defun copy-file-path (&optional DirPathOnlyQ)
@@ -2179,7 +2159,7 @@ Version 2018-06-18 2021-09-30"
   (interactive)
   (execute-kbd-macro (read-kbd-macro "SPC d g SPC s e M-r reexport RET RET")))
 
-;; make links like [[id::blockname]] work, need to rebuild database after defining the advice org-roam-db-clear-all and then org-roam-db-sync
+;; make links like [[id::blockname]] work, need to rebuild database after defining the advice using org-roam-db-clear-all and then org-roam-db-sync
 (defun +org--follow-search-string-a (fn link &optional arg)
   "Support ::SEARCH syntax for id::name links.
 note that this doesnt work for exports"
