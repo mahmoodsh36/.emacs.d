@@ -377,9 +377,7 @@
       (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
       ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
       ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l s" 'org-store-link)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l i" 'org-insert-link)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC l l" 'org-insert-last-stored-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r k" 'org-insert-link)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
                           (lambda ()
                             (interactive)
