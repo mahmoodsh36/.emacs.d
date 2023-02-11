@@ -1086,11 +1086,11 @@ space rather than before."
 ;;         org-appear-autosubmarkers t)
 ;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
-;; more featureful ivy menus
-(use-package ivy-rich
-  :config
-  (ivy-rich-mode 1)
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+;; ;; more featureful ivy menus, it causes some error when switching buffers
+;; (use-package ivy-rich
+;;   :config
+;;   (ivy-rich-mode 1)
+;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 ;; (use-package vulpea)
 ;; (use-package dap-mode)
@@ -1148,6 +1148,7 @@ space rather than before."
 ;; (use-package avy)
 ;; (use-package auto-yasnippet)
 
+;; i think this is similar to ivy-rich
 (use-package marginalia
   :ensure t
   :config
@@ -1883,6 +1884,8 @@ space rather than before."
 (setq org-agenda-skip-deadline-if-done t)
 ;; show only the first occurrence of a recurring task
 (setq org-agenda-show-future-repeats 'next)
+;; make org-open-at-point open link in the same buffer
+(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
 (defun go-through-all-roam-files (&optional callback)
   "run a callback function on each file in the org-roam database"
