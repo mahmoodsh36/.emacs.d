@@ -1,23 +1,8 @@
-;; setup straight.el package manager
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(setq
- ;; package-enable-at-startup nil
- ;; straight-use-package-by-default t
- native-comp-async-report-warnings-errors nil)
-
+;; disable annoying warnings
+ (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
 (setq custom-file "/dev/null")
+;; disable stupid startup screen
 (setq inhibit-startup-screen t)
 
 ;; setup use-package, it provides stable packages unlike straight.el so i use it as the default package manager
@@ -81,8 +66,8 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-;; (when window-system (set-frame-size (selected-frame) 110 48))
-(when window-system (set-frame-size (selected-frame) 100 33))
+(when window-system (set-frame-size (selected-frame) 120 48))
+;; (when window-system (set-frame-size (selected-frame) 100 33))
 ;; margin around the windows
 ;; (set-fringe-style '(12 . 0))
 (set-fringe-style '(0 . 0))
@@ -356,7 +341,8 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/blog/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired "~/brain/music/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -514,7 +500,7 @@
         (general-define-key :states 'normal :keymaps 'override "g . p" 'evil-mc-pause-cursors)
         (general-define-key :states 'normal :keymaps 'override "g . r" 'evil-mc-resume-cursors))
 
-      (straight-use-package 'evil-escape)
+      (use-package evil-escape :quelpa)
       (evil-escape-mode)
 
       ;; interpret function arguments as a text object
@@ -647,7 +633,7 @@ space rather than before."
 
 ;; projectile
 (use-package projectile
-  :straight (:host github :repo "bbatsov/projectile")
+  :quelpa (:host github :repo "bbatsov/projectile")
   :config
   (setq projectile-completion-system 'ivy)
   (projectile-mode +1))
@@ -712,7 +698,7 @@ space rather than before."
       )
   (progn ;; corfu autocompletion
     (use-package corfu
-      :straight (:files (:defaults "extensions/*"))
+      :quelpa (:files (:defaults "extensions/*"))
       :init
       (global-corfu-mode)
       :custom
@@ -787,9 +773,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 120)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 120)
-(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.2)
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 130)
+(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.3)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -800,7 +786,7 @@ space rather than before."
 (use-package doom-themes)
 (use-package inkpot-theme)
 (use-package minimal-theme
-  :straight (:host github :repo "mahmoodsheikh36/minimal-theme"))
+  :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 ;; (switch-to-dark-theme)
 ;; (switch-to-dark-theme)
 (load-theme 'doom-gruvbox-light t)
@@ -1010,9 +996,9 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/blog/"))
   (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
+  (setq org-more-dir (expand-file-name "~/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
@@ -1110,7 +1096,7 @@ space rather than before."
 ;; (use-package dap-mode)
 
 (use-package elfeed-tube
-  :straight (:host github :repo "karthink/elfeed-tube")
+  :quelpa (:host github :repo "karthink/elfeed-tube")
   :after elfeed
   :demand t
   :config
@@ -1184,7 +1170,7 @@ space rather than before."
                  (window-parameters (mode-line-format . none)))))
 
 ;; (use-package ialign)
-;; (straight-use-package 'org-protocol-capture-html)
+;; (use-package 'org-protocol-capture-html)
 ;; (use-package org-download)
 ;;(use-package org-ql)
 
@@ -1198,12 +1184,12 @@ space rather than before."
 
 ;; emacs application framework
 ;; (use-package eaf
-;;   :straight (eaf
+;;   :quelpa (eaf
 ;;              :type git
 ;;              :host github
 ;;              :repo "emacs-eaf/emacs-application-framework"
 ;;              :files ("*.el" "*.py" "core" "app" "*.json")
-;;              :includes (eaf-pdf-viewer eaf-browser) ; Straight won't try to search for these packages when we make further use-package invocations for them
+;;              :includes (eaf-pdf-viewer eaf-browser) ; quelpa won't try to search for these packages when we make further use-package invocations for them
 ;;              :pre-build (("python" "install-eaf.py" "--install" "pdf-viewer" "browser" "--ignore-sys-deps"))
 ;;              )
 ;;   :init (evil-set-initial-state 'eaf-mode 'emacs) ; Evil mode doesn't work well with eaf keybindings.
@@ -1216,7 +1202,7 @@ space rather than before."
   (global-tree-sitter-mode 1))
 (use-package tree-sitter-langs)
 
-;(use-package json-to-org-table :straight (:host github :repo "noonker/json-to-org-table"))
+;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
 (use-package all-the-icons-ivy-rich
   :config (all-the-icons-ivy-rich-mode 1))
@@ -1286,6 +1272,8 @@ space rather than before."
     ("n" org-roam-node-find (lambda () (interactive) (org-roam-capture nil "n")) "create roam node")
     ))
 
+(use-package vimrc-mode)
+
 ;; this just doesnt work...
 ;; (use-package roam-block
 ;;   :quelpa (roam-block :fetcher github :repo "Kinneyzhang/roam-block")
@@ -1295,13 +1283,13 @@ space rather than before."
 ;;         roam-block-embed-highlight t))
 
 ;; (use-package copilot
-;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;;   :quelpa (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :config
 ;;   (global-copilot-mode))
 
 ;; requires external installation, but seems interesting
 ;; (use-package penel
-;;   :straight (:host github :repo "semiosis/pen.el"))
+;;   :quelpa (:host github :repo "semiosis/pen.el"))
 
 ;; (use-package math-symbol-lists)
 ;; (use-package latex-math-preview)
@@ -1316,7 +1304,7 @@ space rather than before."
 ;; (use-package ein)
 
 ;; (use-package delve
-;;   :straight (:repo "publicimageltd/delve" :host github))
+;;   :quelpa (:repo "publicimageltd/delve" :host github))
 ;; (use-package embark)
 ;; (use-package svg-tag-mode)
 
