@@ -698,7 +698,7 @@ space rather than before."
       )
   (progn ;; corfu autocompletion
     (use-package corfu
-      :quelpa (:files (:defaults "extensions/*"))
+      ;; :quelpa (:files (:defaults "extensions/*"))
       :init
       (global-corfu-mode)
       :custom
