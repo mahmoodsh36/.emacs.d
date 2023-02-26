@@ -493,6 +493,9 @@
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
       (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-eval-defun)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
+
       ;; evil mode multiple cursors
       (use-package evil-mc
         :config
@@ -500,8 +503,8 @@
         (general-define-key :states 'normal :keymaps 'override "g . p" 'evil-mc-pause-cursors)
         (general-define-key :states 'normal :keymaps 'override "g . r" 'evil-mc-resume-cursors))
 
-      (use-package evil-escape :quelpa)
-      (evil-escape-mode)
+      ;; (use-package evil-escape)
+      ;; (evil-escape-mode)
 
       ;; interpret function arguments as a text object
       (use-package evil-args)
@@ -773,9 +776,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 130)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 130)
-(set-face-attribute 'variable-pitch nil :font "Iosevka":weight 'light :height 1.3)
+(set-face-attribute 'default nil :font "victor mono" :weight 'light :height 130)
+(set-face-attribute 'fixed-pitch nil :font "victor mono" :weight 'light :height 130)
+(set-face-attribute 'variable-pitch nil :font "victor mono":weight 'light :height 1.3)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -788,37 +791,36 @@ space rather than before."
 (use-package minimal-theme
   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 ;; (switch-to-dark-theme)
-;; (switch-to-dark-theme)
+;; (switch-to-light-theme)
 (load-theme 'doom-gruvbox-light t)
-;; (load-theme 'darktooth t)
-
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
 
-(use-package web-mode
-  :config
-  (setq web-mode-enable-auto-quoting nil)
-  (setq web-mode-enable-auto-closing nil)
-  (setq web-mode-enable-auto-expanding nil)
-  (setq web-mode-enable-auto-pairing nil)
-  (setq web-mode-enable-auto-indentation nil)
-  (setq web-mode-enable-auto-opening nil)
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
-  (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2))
+;; web-mode doesnt work with tree-sitter
+;; (use-package web-mode
+;;   :config
+;;   (setq web-mode-enable-auto-quoting nil)
+;;   (setq web-mode-enable-auto-closing nil)
+;;   (setq web-mode-enable-auto-expanding nil)
+;;   (setq web-mode-enable-auto-pairing nil)
+;;   (setq web-mode-enable-auto-indentation nil)
+;;   (setq web-mode-enable-auto-opening nil)
+;;   (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
+;;   (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
+;;   (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+;;   (setq web-mode-markup-indent-offset 2)
+;;   (setq web-mode-markup-indent-offset 2)
+;;   (setq web-mode-css-indent-offset 2)
+;;   (setq web-mode-code-indent-offset 2))
 
 (use-package lua-mode
   :config
@@ -1149,10 +1151,10 @@ space rather than before."
 ;; (use-package auto-yasnippet)
 
 ;; i think this is similar to ivy-rich
-(use-package marginalia
-  :ensure t
-  :config
-  (marginalia-mode))
+;; (use-package marginalia
+;;   :ensure t
+;;   :config
+;;   (marginalia-mode))
 
 (use-package embark
   :ensure t
@@ -1270,10 +1272,16 @@ space rather than before."
   (defhydra hydra-roam (global-map "C-c r")
     "hydra-roam"
     ("f" org-roam-node-find "find roam node")
-    ("n" org-roam-node-find (lambda () (interactive) (org-roam-capture nil "n")) "create roam node")
+    ("n" (lambda () (interactive) (org-roam-capture nil "n")) "create roam node")
     ))
 
 (use-package vimrc-mode)
+
+(use-package sly
+  :config
+  (setq inferior-lisp-program "sbcl")
+  ;; make org babel use sly instead of slime
+  (setq org-babel-lisp-eval-fn #'sly-eval))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1317,9 +1325,6 @@ space rather than before."
 ;;(use-package orgajs) installed externally i think
 ;;(use-package roam-block)
 ;;(use-package aio)
-;;(use-package slime
-;;  :config
-;;  (setq inferior-lisp-program "sbcl"))
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
 ;;(use-package ox-pandoc)
@@ -1656,7 +1661,7 @@ space rather than before."
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
-(add-hook 'org-mode-hook (lambda ()  (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
+(add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
 ;; startup with headlines and blocks folded
 (setq org-startup-folded 'content)
       ;; org-hide-block-startup t)
@@ -1864,7 +1869,8 @@ space rather than before."
       (goto-char (point-min))
       (if (buffer-contains-todo)
           (org-roam-tag-add '("todo"))
-        (org-roam-tag-remove '("todo"))))))
+        (org-roam-tag-remove '("todo")))))
+  (agenda-files-update))
 (defun is-buffer-roam-note ()
   "Return non-nil if the currently visited buffer is a note."
   (and buffer-file-name
@@ -2171,3 +2177,7 @@ note that this doesnt work for exports"
               ((org-link-search search)))))))
 (advice-add 'org-id-open :around #'+org--follow-search-string-a)
 (advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
+
+(defun treemacs-remove-project-at-point-force ()
+  "force removal of project at point, even if its the last one"
+  (treemacs-do-remove-project-from-workspace (treemacs-project-at-point) t))
