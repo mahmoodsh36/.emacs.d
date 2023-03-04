@@ -29,7 +29,7 @@
     (quelpa-self-upgrade)))
 
 ;; path where all my notes etc go
-(setq brain-path "~/brain/")
+(setq brain-path (file-truename "~/brain/"))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
@@ -66,8 +66,8 @@
 ;; enable all disabled commands
 (setq disabled-command-function nil)
 ;; initial frame size
-(when window-system (set-frame-size (selected-frame) 120 48))
-;; (when window-system (set-frame-size (selected-frame) 100 33))
+;; (when window-system (set-frame-size (selected-frame) 120 48))
+(when window-system (set-frame-size (selected-frame) 100 37))
 ;; margin around the windows
 ;; (set-fringe-style '(12 . 0))
 (set-fringe-style '(0 . 0))
@@ -147,7 +147,7 @@
 ;; the key to building a second brain in org mode, requires pre-isntallation of gcc/clang
 (use-package org-roam
   :custom
-  (org-roam-directory (file-truename brain-path))
+  (org-roam-directory brain-path)
   (org-roam-completion-everywhere t)
   :config
   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
@@ -332,7 +332,7 @@
 
       (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/Downloads/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
@@ -341,7 +341,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/blog/")))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired "~/brain/music/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
@@ -370,8 +370,8 @@
                             (if (not xenops-mode)
                                 (xenops-mode)
                               (xenops-render))))
-      (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
+      ;; (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
+      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC i"
@@ -451,6 +451,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s i" 'sly)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
@@ -776,9 +777,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "victor mono" :weight 'light :height 130)
-(set-face-attribute 'fixed-pitch nil :font "victor mono" :weight 'light :height 130)
-(set-face-attribute 'variable-pitch nil :font "victor mono":weight 'light :height 1.3)
+(set-face-attribute 'default nil :font "victor mono" :weight 'light :height 110)
+(set-face-attribute 'fixed-pitch nil :font "victor mono" :weight 'light :height 110)
+(set-face-attribute 'variable-pitch nil :font "victor mono":weight 'light :height 1.1)
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
@@ -998,9 +999,9 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
   (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/blog/static/more/"))
+  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
@@ -1017,8 +1018,8 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (ignore-errors (xenops-render))))
-  (setq xenops-math-image-scale-factor 1.1)
-  (setq xenops-math-image-current-scale-factor 1.1)
+  ;; (setq xenops-math-image-scale-factor 1.1)
+  ;; (setq xenops-math-image-current-scale-factor 1.1)
   (setcar (cdr (car xenops-elements))
           '(:delimiters
             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
@@ -1133,7 +1134,7 @@ space rather than before."
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-file (concat (file-truename brain-path) "emacs_keyfreq")))
+  (setq keyfreq-file (concat brain-path "emacs_keyfreq")))
 
 (use-package magit)
 
@@ -1552,7 +1553,7 @@ space rather than before."
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
-(setq eshell-aliases-file (concat (file-truename brain-path) "/eshell_aliases"))
+(setq eshell-aliases-file (concat brain-path "/eshell_aliases"))
 (defun eshell-cd-and-ls (&rest args)           ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
@@ -1560,7 +1561,7 @@ space rather than before."
     (cd path)
     (eshell/ls)))
 ;; eshell history file location
-(setq eshell-history-file-name (concat (file-truename brain-path) "/eshell_history")) ;; save history to filesystem
+(setq eshell-history-file-name (concat brain-path "/eshell_history")) ;; save history to filesystem
 
 ;; compile org docs to pdfs and put them in cache dir
 (defun org-to-pdf ()
@@ -1694,15 +1695,15 @@ space rather than before."
       (setq random-str (concat random-str (char-to-string (elt $charset (random $baseCount)))))))
   random-str)
 (defun temp-file (EXT)
-  (format "%stmp_%s.%s" (concat brain-path "/out/") (generate-random-string 7) EXT))
+  (format "%stmp_%s.%s" (concat brain-path "out/") (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c R") (lambda () (interactive) (insert (generate-random-string 7))))
 
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
   (disable-theme 'minimal-light)
-  ;; (load-theme 'darktooth t)
-  (load-theme 'minimal t)
+  (load-theme 'darktooth t)
+  ;; (load-theme 'minimal t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
@@ -2041,6 +2042,22 @@ space rather than before."
           (setf current-point (point))))))
   (org-content))
 (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
+
+(defun org-fold-all-answer-blocks ()
+  "toggle visibility of answer special blocks, i.e. #+begin_answer"
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (let ((old-point nil)
+          (current-point (point)))
+      (while (not (eq old-point current-point))
+        (progn
+          (if (string= (org-element-property :type (org-element-at-point)) "answer")
+              (org-cycle))
+          (org-next-block 1)
+          (setf old-point current-point)
+          (setf current-point (point)))))))
+;; (add-hook 'org-mode-hook 'org-fold-all-answer-blocks)
 
 (defun org-current-headline-name ()
   "get the name of the current headline"
