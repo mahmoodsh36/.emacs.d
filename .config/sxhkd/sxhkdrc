@@ -26,6 +26,10 @@ super + x ; {h,m,R,c,T,o}
       pgrep transmission-da || transmission-daemon; terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\"",\
       terminal_with_cmd.sh top}
 
+super + x ; {n}
+     {pr="$(xclip -selection clipboard -o)"; notify-send "opening $pr"; xdg-open "$pr"}
+
+
 super + ctrl + p ; {i, u}
     {install_program.sh,\
      ~/workspace/scripts/terminal_with_cmd.sh "sudo pacman -Syu"; notify-send -t 30000 'updated system'}
