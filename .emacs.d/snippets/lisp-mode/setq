@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: setq
+# key: sq
+# --
+(setq $1 $2)$0
