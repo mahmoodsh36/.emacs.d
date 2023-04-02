@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: for
+# key: fr
+# --
+(loop for $1 in ${2:$1s}
+      do $0)
