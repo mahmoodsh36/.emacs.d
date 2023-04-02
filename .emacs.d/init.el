@@ -101,7 +101,7 @@
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
 (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-;; (global-whitespace-mode)
+(global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; relative line numbers
@@ -162,11 +162,12 @@
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
            :kill-buffer :unnarrowed t)
-          ("d" "daily" plain "%?"
-           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+filetags: :daily:")
-           :immediate-finish) ;; file is captured and opened with find-file
+          ("d" "daily" plain "* %<%Y-%m-%d %H:%M:%S> %?"
+           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+filetags: :daily:"))
           ("t" "todo" plain "* TODO ${title}"
            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
+;; go to insert mode after for org-capture cursor
+(add-hook 'org-capture-mode-hook 'evil-insert-state)
 
 ;; side tree
 (use-package treemacs
@@ -418,6 +419,10 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
       (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+      (general-define-key :states 'normal :keymaps 'override "SPC r d"
+                          (lambda ()
+                            (interactive)
+                            (org-roam-capture-no-title-prompt nil "d")))
 
       ;; keys to search for files
       (general-define-key :states 'normal :keymaps 'override "SPC f b"
@@ -463,6 +468,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
       (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
       (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC l" 'calc)
 
       ;; agenda keys
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" 'org-agenda-list)
@@ -793,6 +799,7 @@ space rather than before."
   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
+;; (load-theme 'minimal-light t)
 (load-theme 'doom-gruvbox-light t)
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
@@ -1681,6 +1688,7 @@ space rather than before."
             (org-roam-db-sync)
             (org-agenda-list)
             (delete-other-windows)
+            ;; (switch-to-light-theme)
             ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
@@ -1870,7 +1878,7 @@ space rather than before."
       (goto-char (point-min))
       (if (buffer-contains-todo)
           (org-roam-tag-add '("todo"))
-        (org-roam-tag-remove '("todo")))))
+        (ignore-errors (org-roam-tag-remove '("todo"))))))
   (agenda-files-update))
 (defun is-buffer-roam-note ()
   "Return non-nil if the currently visited buffer is a note."
