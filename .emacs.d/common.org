@@ -14,6 +14,9 @@
   \(\newcommand{\khat}{\hat{\textbf{k}}}\)
   \(\newcommand{\rhat}{\hat{\textbf{r}}}\)
   \(\newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}\)
+  \(\newcommand\brm[1]{\textbf{#1}}\)
+  \(\DeclareMathOperator*{\argmax}{arg\,max}\
+  \(\DeclareMathOperator*{\argmin}{arg\,min}\)
 </p>
 #+end_export
 
