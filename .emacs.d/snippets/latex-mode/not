@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: not
+# key: no
+# --
+\not $0

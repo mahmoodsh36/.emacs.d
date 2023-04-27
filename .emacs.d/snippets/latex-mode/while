@@ -2,6 +2,6 @@
 # name: while
 # key: wh
 # --
-\While{$$1$} {
+\While {$$1$} {
   $2
 }$0

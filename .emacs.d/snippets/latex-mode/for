@@ -2,6 +2,6 @@
 # name: for
 # key: fo
 # --
-\For{$$1 \gets $2$ \KwTo $$3$} {
+\For {$$1 \gets $2$ \KwTo $$3$} {
   $4
 }$0

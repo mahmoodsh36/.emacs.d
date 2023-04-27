@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bold-mathrm
+# key: br
+# --
+\bm{\mathrm{$1}}$0
