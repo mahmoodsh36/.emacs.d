@@ -982,6 +982,7 @@ space rather than before."
   :config
   (ivy-prescient-mode)
   (prescient-persist-mode 1)
+  (setq prescient-history-length 10000)
   (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
 
 ;; ;; auto indentation
