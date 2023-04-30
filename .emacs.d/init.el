@@ -800,8 +800,8 @@ space rather than before."
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
-(load-theme 'doom-gruvbox-light t)
-;; (load-theme 'darktooth t)
+;; (load-theme 'doom-gruvbox-light t)
+(load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
 
@@ -1257,11 +1257,12 @@ space rather than before."
 (use-package org-super-agenda)
 
 ;; krita-supported manual drawing with org mode
-;; (use-package org-krita
-;;   :ensure t
-;;   :quelpa (org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources"))
-;;   :config
-;;   (add-hook 'org-mode-hook 'org-krita-mode))
+(quelpa '(org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources")))
+(add-hook 'org-mode-hook 'org-krita-mode)
+
+;; like org-krita, crashes, unusable...
+;; (quelpa '(org-xournalpp :fetcher gitlab :repo "vherrmann/org-xournalpp" :files ("*.el" "resources")))
+;; (add-hook 'org-mode-hook 'org-xournalpp-mode)
 
 ;; perfectly aligned org mode tables
 ;; (use-package valign
