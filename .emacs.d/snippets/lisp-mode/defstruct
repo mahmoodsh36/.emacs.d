@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: defstruct
+# key: ds
+# --
+(defstruct $1
+  $0)

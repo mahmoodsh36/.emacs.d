@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: lor
+# key: lo
+# --
+\lor $0

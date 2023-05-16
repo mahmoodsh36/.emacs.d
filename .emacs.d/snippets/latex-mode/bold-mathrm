@@ -2,4 +2,4 @@
 # name: bold-mathrm
 # key: br
 # --
-\bm{\mathrm{$1}}$0
+\brm{$1}$0

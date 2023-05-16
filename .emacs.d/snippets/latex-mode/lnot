@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: lnot
+# key: ln
+# --
+\lnot $0

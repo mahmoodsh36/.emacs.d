@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: defmethod
+# key: dm
+# --
+(defmethod $1 ((${3:var} ${2:type}))
+  $0)

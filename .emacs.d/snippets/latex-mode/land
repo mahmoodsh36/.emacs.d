@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: land
+# key: la
+# --
+\land $0

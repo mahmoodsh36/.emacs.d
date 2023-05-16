@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: defclass
+# key: dc
+# --
+(defclass $1 ()
+  $0)
