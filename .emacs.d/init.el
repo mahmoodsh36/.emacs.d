@@ -787,7 +787,7 @@ space rather than before."
 (set-face-attribute 'fixed-pitch nil :font "victor mono" :weight 'light :height 110)
 (set-face-attribute 'variable-pitch nil :font "victor mono":weight 'light :height 1.1)
 (use-package darktooth-theme)
-(use-package modus-themes)
+;; (use-package modus-themes)
 (use-package ample-theme)
 (use-package anti-zenburn-theme)
 (use-package zenburn-theme)
@@ -1292,6 +1292,10 @@ space rather than before."
   (setq inferior-lisp-program "sbcl")
   ;; make org babel use sly instead of slime
   (setq org-babel-lisp-eval-fn #'sly-eval))
+(defun start-maxima-sbcl ()
+  "start maxima's lisp repl"
+  (interactive)
+  (sly "rmaxima -r to_lisp();"))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1427,7 +1431,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken link errors..
-(setq org-export-with-broken-links t)
+;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; (setq org-element-cache-persistent nil)
 ;; (setq org-element-use-cache nil)
