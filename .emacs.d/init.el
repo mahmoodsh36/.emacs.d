@@ -1,5 +1,5 @@
 ;; disable annoying warnings
- (setq native-comp-async-report-warnings-errors nil)
+(setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
 (setq custom-file "/dev/null")
 ;; disable stupid startup screen
@@ -67,7 +67,7 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 ;; (when window-system (set-frame-size (selected-frame) 120 48))
-(when window-system (set-frame-size (selected-frame) 100 37))
+(when window-system (set-frame-size (selected-frame) 100 50))
 ;; margin around the windows
 ;; (set-fringe-style '(12 . 0))
 (set-fringe-style '(0 . 0))
@@ -456,7 +456,10 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s i" 'sly)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
+                          (lambda ()
+                            (interactive)
+                            (let ((current-prefix-arg '-)) (call-interactively 'slime))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
@@ -500,8 +503,8 @@
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
       (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-eval-defun)
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'slime-eval-defun)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'slime-eval-buffer)
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -783,9 +786,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "victor mono" :weight 'light :height 110)
-(set-face-attribute 'fixed-pitch nil :font "victor mono" :weight 'light :height 110)
-(set-face-attribute 'variable-pitch nil :font "victor mono":weight 'light :height 1.1)
+(set-face-attribute 'default nil :font "Cascadia Code" :weight 'light :height 110)
+(set-face-attribute 'fixed-pitch nil :font "Cascadia Code" :weight 'light :height 110)
+(set-face-attribute 'variable-pitch nil :font "Cascadia Code":weight 'light :height 1.1)
 (use-package darktooth-theme)
 ;; (use-package modus-themes)
 (use-package ample-theme)
@@ -1287,15 +1290,24 @@ space rather than before."
 
 (use-package vimrc-mode)
 
-(use-package sly
+;; (use-package sly
+;;   :config
+;;   (setq inferior-lisp-program "sbcl")
+;;   (setq sly-lisp-implementations
+;;         '((sbcl ("sbcl " "--dynamic-space-size" "1GB"))
+;;           (clisp ("clisp"))
+;;           (ecl ("ecl"))
+;;           (maxima ("rmaxima -r to_lisp();"))))
+;;   ;; make org babel use sly instead of slime
+;;   (setq org-babel-lisp-eval-fn #'sly-eval))
+(use-package slime
   :config
-  (setq inferior-lisp-program "sbcl")
-  ;; make org babel use sly instead of slime
-  (setq org-babel-lisp-eval-fn #'sly-eval))
-(defun start-maxima-sbcl ()
-  "start maxima's lisp repl"
-  (interactive)
-  (sly "rmaxima -r to_lisp();"))
+  (setq inferior-lisp-program "")
+  (setq slime-lisp-implementations
+        '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
+          (clisp ("clisp"))
+          (ecl ("ecl"))
+          (maxima ("rmaxima -r to_lisp();")))))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -2098,7 +2110,6 @@ space rather than before."
   (set-buffer-modified-p nil)
   (kill-this-buffer))
 
-;; from xah's website
 (defun copy-file-path (&optional DirPathOnlyQ)
   "Copy current buffer file path or dired path.
 Result is full path.
