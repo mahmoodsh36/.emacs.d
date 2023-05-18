@@ -5,12 +5,15 @@ Sxiv.foreground: #bbbbbb
 Sxiv.background: #000000
 Sxiv.font: Fantasque sans mono:size=13
 
-Xft.dpi: 168
+! Xft.dpi: 168
+! rofi.dpi: 168
+*.dpi: 168
+Xcursor.size: 32
 
 ! These might also be useful depending on your monitor and personal preference:
 Xft.autohint: 0
-Xft.lcdfilter:  lcddefault
-Xft.hintstyle:  hintfull
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
 Xft.hinting: 1
 Xft.antialias: 1
 Xft.rgba: rgb
