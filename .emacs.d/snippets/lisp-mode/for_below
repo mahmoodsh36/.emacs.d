@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: for-below
+# key: fb
+# --
+(loop for ${1:i} from ${2:0} below $3
+  do $4)
