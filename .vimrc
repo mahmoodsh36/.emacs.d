@@ -50,8 +50,8 @@ nnoremap <leader>f :FZF<CR>
 nnoremap <C-w><C-c> <C-w>c
 nnoremap diP vipjd
 nnoremap ci$ T$ct$
-nnoremap cw ciw
-nnoremap dw diw
+"nnoremap cw ciw
+"nnoremap dw diw
 
 " set t_Co=256
 
