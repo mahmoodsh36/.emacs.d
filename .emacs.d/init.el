@@ -503,7 +503,7 @@
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
       (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'slime-eval-defun)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'slime-compile-defun)
       (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'slime-eval-buffer)
 
       ;; evil mode multiple cursors
@@ -803,10 +803,14 @@ space rather than before."
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
-;; (load-theme 'doom-gruvbox-light t)
-(load-theme 'darktooth t)
+(load-theme 'doom-gruvbox-light t)
+;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
+;; stop org src blocks from bleeding in doom themes (remove background)
+(set-face-attribute 'org-block nil :background nil)
+;; (set-face-attribute 'org-block-end-line nil :background nil)
+;; (set-face-attribute 'org-block-begin-line nil :background nil)
 
 ;; web-mode doesnt work with tree-sitter
 ;; (use-package web-mode
@@ -1672,6 +1676,8 @@ space rather than before."
   (interactive)
   (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
     (org-ctrl-c-ctrl-c)))
+;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster
+(setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
 ;; disable org-mode's mathjax because my blog's code uses another version
@@ -1939,13 +1945,16 @@ space rather than before."
               (funcall callback))))))
 
 (defun lob-reload ()
-  "load files tagged with 'code' into the org babel library"
+  "load files tagged with 'code' into the org babel library, also execute them"
   (interactive)
   (go-through-roam-files-with-tag
    "code"
    (lambda ()
+     (org-babel-execute-buffer)
      (org-babel-lob-ingest (buffer-file-name)))))
-(lob-reload)
+;; most/all of my code files are lisp, load them with slime
+(add-hook 'slime-connected-hook 'lob-reload)
+;; (lob-reload)
 
 (defun xenops-prerender ()
   "prerender latex blocks in roam files"
@@ -2162,7 +2171,7 @@ Version 2018-06-18 2021-09-30"
                 (forward-char 1)))))
     (if point
         (goto-char point)
-        (message "No non-ascii characters."))))
+      (message "No non-ascii characters."))))
 
 (defun open-todays-file ()
   "open todays org file"
