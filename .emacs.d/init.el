@@ -27,6 +27,11 @@
     (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
     (eval-buffer)
     (quelpa-self-upgrade)))
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
+(require 'quelpa-use-package)
 
 ;; path where all my notes etc go
 (setq brain-path (file-truename "~/brain/"))
@@ -419,6 +424,8 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
       (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
       (general-define-key :states 'normal :keymaps 'override "SPC r d"
                           (lambda ()
                             (interactive)
@@ -459,14 +466,13 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
                           (lambda ()
                             (interactive)
-                            (let ((current-prefix-arg '-)) (call-interactively 'slime))))
+                            (let ((current-prefix-arg '-)) (call-interactively 'sly))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'open-in-vscode)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
       (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
@@ -485,6 +491,9 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a t" (lambda () (interactive) (org-roam-capture nil "t")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a n" 'today-entry)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a o" 'open-todays-file)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s n" 'yas-new-snippet)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -503,8 +512,8 @@
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
       (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'slime-compile-defun)
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'slime-eval-buffer)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -652,12 +661,13 @@ space rather than before."
   (projectile-mode +1))
 
 ;; auto completion
-;; im sticking with company for now as corfu keeps crashing with org mode
+;; im sticking with company for now as corfu keeps crashing with org mode, plus slime doesnt work with corfu (for now)
 (setq enable-company nil)
 (setq completion-ignore-case t) ;; case-insensitivity
 (if enable-company
     (progn
       (use-package company
+        :quelpa (:host github :repo "company-mode/company-mode")
         :config
         (add-hook 'after-init-hook 'global-company-mode)
         (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
@@ -668,7 +678,8 @@ space rather than before."
               company-tooltip-limit 20
               company-tooltip-align-annotations t
               company-dabbrev-downcase nil
-              company-show-quick-access t)
+              company-show-quick-access t
+              company-format-margin-function #'company-text-icons-margin)
         (eval-after-load 'company
           '(progn
              (define-key company-active-map (kbd "TAB") 'company-complete-selection)
@@ -681,16 +692,12 @@ space rather than before."
         :config
         (company-quickhelp-mode))
 
-      ;; company completion with icons
-      ;; (use-package company-box
-      ;;   :hook (company-mode . company-box-mode))
-
       ;; anaconda for python
-      (use-package company-anaconda
-        :config
-        (eval-after-load "company"
-          '(add-to-list 'company-backends 'company-anaconda))
-        (add-hook 'python-mode-hook 'anaconda-mode))
+      ;; (use-package company-anaconda
+      ;;   :config
+      ;;   (eval-after-load "company"
+      ;;     '(add-to-list 'company-backends 'company-anaconda))
+      ;;   (add-hook 'python-mode-hook 'anaconda-mode))
 
       ;; company for web mode
       (use-package company-web)
@@ -708,6 +715,21 @@ space rather than before."
       (use-package company-prescient
         :config
         (company-prescient-mode))
+
+      ;; (use-package slime-company
+      ;;   :after (slime company)
+      ;;   :config
+      ;;   (slime-setup '(slime-fuzzy slime-scratch slime-asdf 
+      ;;                              slime-fancy
+      ;;                              slime-company))
+      ;;   (add-hook 'slime-mode-hook 		
+      ;;             (lambda ()
+      ;;               (company-mode 1)
+      ;;               (set (make-local-variable 'company-backends)
+      ;;                    '(company-slime))))
+      ;;   (setq slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+      ;;   (setq slime-company-completion 'fuzzy
+      ;;         slime-company-after-completion 'slime-company-just-one-space))
       )
   (progn ;; corfu autocompletion
     (use-package corfu
@@ -717,14 +739,17 @@ space rather than before."
       :custom
       (corfu-cycle t)
       (corfu-auto t)
-      (corfu-quit-no-match 'separator)
+      (corfu-quit-no-match t)
       (corfu-auto-delay 0)
       ;; (corfu-separator ?_) ;; Set to orderless separator, if not using space
-      (corfu-separator " ") ;; Set to orderless separator, if not using space
+      ;; (corfu-separator " ") ;; Set to orderless separator, if not using space
       (corfu-count 10)
       (corfu-indexed-mode t)
-      ;; (corfu-quit-at-boundary nil) ;; dont stop completing when a space is inserted
+      (corfu-echo-mode t) ;; display brief documentation in echo area
+      (corfu-popupinfo-mode t) ;; display documentation in popup
+      (corfu-quit-at-boundary t)
       (corfu-on-exact-match nil) ;; dont auto insert when there is an exact match
+      (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
       :config
       (unbind-key "RET" corfu-map)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
@@ -803,8 +828,8 @@ space rather than before."
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
-(load-theme 'doom-gruvbox-light t)
-;; (load-theme 'darktooth t)
+;; (load-theme 'doom-gruvbox-light t)
+(load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
 ;; stop org src blocks from bleeding in doom themes (remove background)
@@ -920,14 +945,14 @@ space rather than before."
   :config
   (add-hook 'prog-mode-hook 'lsp-deferred)
   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
-  (setq lsp-auto-guess-root nil)
+  ;; (setq lsp-auto-guess-root t)
   ;; another annoying warning
   (setq lsp-warn-no-matched-clients nil)
   )
 (if (not enable-company)
     (use-package lsp-mode
       :custom
-      (lsp-completion-provider :none) ;; we use Corfu!
+      (lsp-completion-provider :none) ;; we use corfu!
       :init
       (defun my/orderless-dispatch-flex-first (_pattern index _total)
         (and (eq index 0) 'orderless-flex))
@@ -935,7 +960,7 @@ space rather than before."
         (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
               '(orderless)))
       ;; Optionally configure the first word as flex filtered.
-      (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
+      ;; (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
       ;; Optionally configure the cape-capf-buster.
       (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
       :hook
@@ -1113,20 +1138,20 @@ space rather than before."
 ;; (use-package vulpea)
 ;; (use-package dap-mode)
 
-(use-package elfeed-tube
-  :quelpa (:host github :repo "karthink/elfeed-tube")
-  :after elfeed
-  :demand t
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
-  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
-  (elfeed-tube-setup)
-  :bind (:map elfeed-show-mode-map
-              ("F" . elfeed-tube-fetch)
-              ([remap save-buffer] . elfeed-tube-save)
-              :map elfeed-search-mode-map
-              ("F" . elfeed-tube-fetch)
-              ([remap save-buffer] . elfeed-tube-save)))
+;; (use-package elfeed-tube
+;;   :quelpa (:host github :repo "karthink/elfeed-tube")
+;;   :after elfeed
+;;   :demand t
+;;   :config
+;;   ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
+;;   ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+;;   (elfeed-tube-setup)
+;;   :bind (:map elfeed-show-mode-map
+;;               ("F" . elfeed-tube-fetch)
+;;               ([remap save-buffer] . elfeed-tube-save)
+;;               :map elfeed-search-mode-map
+;;               ("F" . elfeed-tube-fetch)
+;;               ([remap save-buffer] . elfeed-tube-save)))
 
 ;; (use-package dumb-jump)
 ;; (use-package ob-async)
@@ -1234,12 +1259,6 @@ space rather than before."
 
 (use-package org-transclusion)
 
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-
 (quelpa '(eat :fetcher git
               :url "https://codeberg.org/akib/emacs-eat"
               :files ("*.el" ("term" "term/*.el") "*.texi"
@@ -1294,24 +1313,27 @@ space rather than before."
 
 (use-package vimrc-mode)
 
-;; (use-package sly
-;;   :config
-;;   (setq inferior-lisp-program "sbcl")
-;;   (setq sly-lisp-implementations
-;;         '((sbcl ("sbcl " "--dynamic-space-size" "1GB"))
-;;           (clisp ("clisp"))
-;;           (ecl ("ecl"))
-;;           (maxima ("rmaxima -r to_lisp();"))))
-;;   ;; make org babel use sly instead of slime
-;;   (setq org-babel-lisp-eval-fn #'sly-eval))
-(use-package slime
+(use-package sly
+  :quelpa (:host github :repo "joaotavora/sly")
   :config
   (setq inferior-lisp-program "")
-  (setq slime-lisp-implementations
+  (setq sly-lisp-implementations
         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
           (clisp ("clisp"))
           (ecl ("ecl"))
-          (maxima ("rmaxima -r to_lisp();")))))
+          (cmucl ("cmucl"))
+          (ccl ("ccl"))
+          (maxima ("rmaxima" "-r" "to_lisp();"))))
+  ;; make org babel use sly instead of slime
+  (setq org-babel-lisp-eval-fn #'sly-eval))
+;; (use-package slime
+;;   :config
+;;   (setq inferior-lisp-program "")
+;;   (setq slime-lisp-implementations
+;;         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
+;;           (clisp ("clisp"))
+;;           (ecl ("ecl"))
+;;           (maxima ("rmaxima" "-r" "to_lisp();")))))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1629,9 +1651,9 @@ space rather than before."
          "|" ; remaining close task
          "DONE(d@)"
          "CANCELLED(c@)"
-         "CANCELED(C@)" ;; for background compatibility
+         "CANCELED(C@)" ;; for backward compatibility
          )))
-;; filter out entries with tag "repeat"
+;; filter out entries with tag "ignore"
 (setq org-agenda-tag-filter-preset '("-ignore"))
 
 (setq org-latex-listings t ;; use listings package for latex code blocks
@@ -1662,8 +1684,8 @@ space rather than before."
 ;; src block indentation / editing / syntax highlighting
 (setq org-src-window-setup 'current-window
       org-src-strip-leading-and-trailing-blank-lines t)
-;; not sure why tikz doesnt work with dvisvgm
-(setq org-preview-latex-default-process 'dvisvgm) ;; inkscape is required for .svg
+;; use dvisvgm instead of dvipng
+(setq org-preview-latex-default-process 'dvisvgm) ;; inkscape is required (is it?) for .svg
 ;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
 (setq org-babel-latex-preamble
       (lambda (_)
@@ -1676,7 +1698,7 @@ space rather than before."
   (interactive)
   (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
     (org-ctrl-c-ctrl-c)))
-;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster
+;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
 (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
 ;; latex syntax highlighting in org mode
 (setq org-highlight-latex-and-related '(latex))
@@ -1716,6 +1738,8 @@ space rather than before."
             ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
+;; stop org mode from moving tags far after headers
+(setq org-tags-column 0)
 
 (defun generate-random-string (NUM)
   "generate a random alphanumerics string of length NUM."
@@ -1926,18 +1950,16 @@ space rather than before."
 ;; make org-open-at-point open link in the same buffer
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 
-(defun go-through-all-roam-files (&optional callback)
+(defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
-  (interactive)
   (dolist (file (all-roam-files))
     (if (not (eq callback nil))
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
           (if (is-buffer-roam-note)
               (funcall callback))))))
 
-(defun go-through-roam-files-with-tag (tag-name &optional callback)
+(defun go-through-roam-files-with-tag (tag-name callback)
   "run a callback function on each file tagged with tag-name"
-  (interactive)
   (dolist (file (roam-files-with-tag tag-name))
     (if (not (eq callback nil))
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
@@ -1952,8 +1974,8 @@ space rather than before."
    (lambda ()
      (org-babel-execute-buffer)
      (org-babel-lob-ingest (buffer-file-name)))))
-;; most/all of my code files are lisp, load them with slime
-(add-hook 'slime-connected-hook 'lob-reload)
+;; most/all of my code files are lisp, load them with sly
+(add-hook 'sly-connected-hook 'lob-reload)
 ;; (lob-reload)
 
 (defun xenops-prerender ()
@@ -1991,6 +2013,14 @@ space rather than before."
 (defun buffer-contains-math ()
   "check if the current buffer contains any math equations (latex blocks)"
   (buffer-contains-substring "$"))
+
+(defmacro save-buffer-modified-p (&rest body)
+  "Eval BODY without affected buffer modification status"
+  `(let ((buffer-modified (buffer-modified-p))
+         (buffer-undo-list t))
+     (unwind-protect
+         ,@body
+       (set-buffer-modified-p buffer-modified))))
 
 (defun update-math-file ()
   "add/remove the math tag to the file"
