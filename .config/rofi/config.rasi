@@ -3,7 +3,7 @@ configuration {
 	display-run:     "Execute";
 	display-window:  "Window";
 	sidebar-mode:    false;
-  font:            "fantasque sans mono 13";
+  font:            "fantasque sans mono 18";
 }
 
 * {
