@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: latex environment
-# key: env
+# key: nv
 # --
 \begin{${1:environment}}
   $0

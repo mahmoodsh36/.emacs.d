@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: sim
-# key: sm
+# name: sin
+# key: si
 # --
-\sim $0
+\sin$0

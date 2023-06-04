@@ -2,6 +2,4 @@
 # name: displaymode
 # key: dm
 # --
-\[
-  $0
-\]
+\[ $1 \]$0
