@@ -106,7 +106,7 @@
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
 (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-(global-whitespace-mode)
+;; (global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; relative line numbers
@@ -145,8 +145,54 @@
 (setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
 
+;; need straight for tecosaur's org version, for now, so install both
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(use-package org
+  :defer
+  :straight `(org
+              :fork (:host nil
+                           :repo "https://git.tecosaur.net/tec/org-mode.git"
+                           :branch "dev"
+                           :remote "tecosaur")
+              :files (:defaults "etc")
+              :build t
+              :pre-build
+              (with-temp-file "org-version.el"
+                (require 'lisp-mnt)
+                (let ((version
+                       (with-temp-buffer
+                         (insert-file-contents "lisp/org.el")
+                         (lm-header "version")))
+                      (git-version
+                       (string-trim
+                        (with-temp-buffer
+                          (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+                          (buffer-string)))))
+                  (insert
+                   (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+                   "(provide 'org-version)\n")))
+              :pin nil))
+
 ;; the all-powerful org mode
-(use-package org)
+;; (setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+;; (quelpa '(org :fetcher git
+;;               :repo "https://git.tecosaur.net/mirrors/org-mode.git"
+;;               :files ("*.el" "resources")
+;;               :branch "dev"
+;;               :pin "68e0f78e5158742800e0a670ad19854639391c41"))
+;; (use-package org)
 (use-package org-contrib)
 
 ;; the key to building a second brain in org mode, requires pre-isntallation of gcc/clang
@@ -172,7 +218,7 @@
           ("t" "todo" plain "* TODO ${title}"
            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
 ;; go to insert mode after for org-capture cursor
-(add-hook 'org-capture-mode-hook 'evil-insert-state)
+;; (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
 ;; side tree
 (use-package treemacs
@@ -370,12 +416,12 @@
       ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
       ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r k" 'org-insert-link)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
-                          (lambda ()
-                            (interactive)
-                            (if (not xenops-mode)
-                                (xenops-mode)
-                              (xenops-render))))
+      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
+      ;;                     (lambda ()
+      ;;                       (interactive)
+      ;;                       (if (not xenops-mode)
+      ;;                           (xenops-mode)
+      ;;                         (xenops-render))))
       ;; (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
       ;; (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
@@ -481,6 +527,7 @@
 
       ;; agenda keys
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" 'org-agenda-list)
+      (general-define-key :states '(normal motion) :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
       (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
@@ -761,6 +808,7 @@ space rather than before."
       :after corfu
       :custom
       (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+      (kind-icon-use-icons nil) ;; use text-based icons
       :config
       (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
@@ -828,8 +876,8 @@ space rather than before."
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
-;; (load-theme 'doom-gruvbox-light t)
-(load-theme 'darktooth t)
+(load-theme 'doom-gruvbox-light t)
+;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
 ;; stop org src blocks from bleeding in doom themes (remove background)
@@ -1046,13 +1094,14 @@ space rather than before."
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
 ;; best latex preview functionality
+;; actually i dont use this anymore since org-mode devs implemented a better method
 (use-package xenops
   :config
   (setq xenops-reveal-on-entry t
         xenops-math-latex-max-tasks-in-flight 3
         xenops-math-latex-process 'dvisvgm)
   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  (add-hook 'org-mode-hook #'xenops-mode)
+  ;; (add-hook 'org-mode-hook #'xenops-mode)
   (add-hook 'xenops-mode-hook 'xenops-render)
   ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
   (add-hook 'org-babel-after-execute-hook (lambda ()
@@ -1287,6 +1336,7 @@ space rather than before."
 (quelpa '(org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources")))
 (add-hook 'org-mode-hook 'org-krita-mode)
 
+
 ;; like org-krita, crashes, unusable...
 ;; (quelpa '(org-xournalpp :fetcher gitlab :repo "vherrmann/org-xournalpp" :files ("*.el" "resources")))
 ;; (add-hook 'org-mode-hook 'org-xournalpp-mode)
@@ -1443,7 +1493,7 @@ space rather than before."
                                           (interactive)
                                           (clear-image-cache)
                                           (org-display-inline-images)))
-;; render latex preview after evaluating code blocks
+;; render latex preview after evaluating code blocks, not needed anymore org detects changes by itself now
 ;; (add-hook 'org-babel-after-execute-hook 'org-latex-preview)
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
@@ -1618,12 +1668,10 @@ space rather than before."
 (defun org-to-pdf ()
   (interactive)
   (let ((outfile (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex")))
-    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
+    ;; (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
     (compile-latex-file outfile)))
-;; change latex images cache location
-(setq org-preview-latex-image-directory (get-latex-cache-dir-path))
 ;; make latex preview bigger
 ;; (plist-put org-format-latex-options :scale 1.5)
 ;; allow usage of #+BIND in latex exports
@@ -1949,6 +1997,12 @@ space rather than before."
 (setq org-agenda-show-future-repeats 'next)
 ;; make org-open-at-point open link in the same buffer
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+;; render latex in org-mode using builtin function
+(add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+(setq org-startup-with-latex-preview t)
+(setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
+;; export to html using dvisvgm aswell
+(setq org-html-with-latex 'dvisvgm)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
@@ -2262,3 +2316,9 @@ note that this doesnt work for exports"
 (defun treemacs-remove-project-at-point-force ()
   "force removal of project at point, even if its the last one"
   (treemacs-do-remove-project-from-workspace (treemacs-project-at-point) t))
+
+;; TODO: add latex auto-completion to org-mode, requires auctex
+;; (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
+;; (TeX--completion-at-point
+;;  t
+;;  LaTeX--arguments-completion-at-point)
