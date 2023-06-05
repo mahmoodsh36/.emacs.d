@@ -3,7 +3,7 @@
 # key: ma
 # --
 \left(
-  \begin{array}{$1}
-    $0
-  \end{array}
+\begin{array}{$1}
+  $0
+\end{array}
 \right)
