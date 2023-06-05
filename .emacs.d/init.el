@@ -186,12 +186,6 @@
               :pin nil))
 
 ;; the all-powerful org mode
-;; (setq load-path (cl-remove-if (lambda (x) (string-match-p "org$" x)) load-path))
-;; (quelpa '(org :fetcher git
-;;               :repo "https://git.tecosaur.net/mirrors/org-mode.git"
-;;               :files ("*.el" "resources")
-;;               :branch "dev"
-;;               :pin "68e0f78e5158742800e0a670ad19854639391c41"))
 ;; (use-package org)
 (use-package org-contrib)
 
@@ -422,8 +416,7 @@
       ;;                       (if (not xenops-mode)
       ;;                           (xenops-mode)
       ;;                         (xenops-render))))
-      ;; (general-define-key :states 'normal :keymaps 'org-mode-map ")" 'org-next-block)
-      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "(" 'org-previous-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'org-latex-preview)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC i"
@@ -2003,6 +1996,8 @@ space rather than before."
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
 ;; export to html using dvisvgm aswell
 (setq org-html-with-latex 'dvisvgm)
+;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
+(add-hook 'org-mode-hook 'visual-line-mode)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
