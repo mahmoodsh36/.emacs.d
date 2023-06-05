@@ -43,7 +43,7 @@
 \DeclareMathOperator{\adj}{adj}
 \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\cov}{cov}
-\newcommand\dif[1]{\:d#1}
+\newcommand\dif[1]{\:\mathrm{d}#1}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 % apparently the physics package has the \rank operator so i dont gotta define it.
@@ -148,7 +148,7 @@
   \begin{algorithm}[H]
   \DontPrintSemicolon
   \SetKwFunction{func}{My-Super-Function}
-  \SetKwProg{fn}{}{:}{}
-  \SetKwRepeat{Do}{do}{while}%
+  \SetKwProg{fn}{}{}{}
+  \SetKwRepeat{Do}{do}{while} % do-while macro
   }
   {\end{algorithm}}
