@@ -184,6 +184,42 @@
                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
                    "(provide 'org-version)\n")))
               :pin nil))
+;; temporary fix for ox-hugo exporting issues with org 9.7-pre
+;; (defun org-html-format-latex (latex-frag processing-type info)
+;;   "Format a LaTeX fragment LATEX-FRAG into HTML.
+;; PROCESSING-TYPE designates the tool used for conversion.  It can
+;; be `mathjax', `verbatim', `html', nil, t or symbols in
+;; `org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
+;; `imagemagick'.  See `org-html-with-latex' for more information.
+;; INFO is a plist containing export properties."
+;;   (let ((cache-relpath "") (cache-dir ""))
+;;     (unless (or (eq processing-type 'mathjax)
+;;                 (eq processing-type 'html))
+;;       (let ((bfn (or (buffer-file-name)
+;;              (make-temp-name
+;;               (expand-file-name "latex" temporary-file-directory))))
+;;         (latex-header
+;;          (let ((header (plist-get info :latex-header)))
+;;            (and header
+;;             (concat (mapconcat
+;;                  (lambda (line) (concat "#+LATEX_HEADER: " line))
+;;                  (org-split-string header "\n")
+;;                  "\n")
+;;                 "\n")))))
+;;     (setq cache-relpath
+;;           (concat (file-name-as-directory org-preview-latex-image-directory)
+;;               (file-name-sans-extension
+;;                (file-name-nondirectory bfn)))
+;;           cache-dir (file-name-directory bfn))
+;;     ;; Re-create LaTeX environment from original buffer in
+;;     ;; temporary buffer so that dvipng/imagemagick can properly
+;;     ;; turn the fragment into an image.
+;;     (setq latex-frag (concat latex-header latex-frag))))
+;;     (with-temp-buffer
+;;       (insert latex-frag)
+;;       (org-format-latex cache-relpath nil nil cache-dir nil
+;;             "Creating LaTeX Image..." nil processing-type)
+;;       (buffer-string))))
 
 ;; the all-powerful org mode
 ;; (use-package org)
@@ -1313,9 +1349,9 @@ space rather than before."
 ;;   :config
 ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 ;; better than org-bullets
-(use-package org-superstar
-  :config
-  (add-hook 'org-mode-hook 'org-superstar-mode))
+;; (use-package org-superstar
+;;   :config
+;;   (add-hook 'org-mode-hook 'org-superstar-mode))
 
 (use-package linum-relative
   :config
@@ -1725,8 +1761,6 @@ space rather than before."
 ;; src block indentation / editing / syntax highlighting
 (setq org-src-window-setup 'current-window
       org-src-strip-leading-and-trailing-blank-lines t)
-;; use dvisvgm instead of dvipng
-(setq org-preview-latex-default-process 'dvisvgm) ;; inkscape is required (is it?) for .svg
 ;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
 (setq org-babel-latex-preamble
       (lambda (_)
@@ -1758,7 +1792,7 @@ space rather than before."
 ;; workaround to make yasnippet expand after dollar sign in org mode
 (add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
 ;; startup with headlines and blocks folded
-(setq org-startup-folded 'content)
+;; (setq org-startup-folded 'content)
       ;; org-hide-block-startup t)
 ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
 (setq org-image-actual-width nil)
@@ -1994,10 +2028,18 @@ space rather than before."
 (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
 (setq org-startup-with-latex-preview t)
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
-;; export to html using dvisvgm aswell
-(setq org-html-with-latex 'dvisvgm)
+;; export to html using dvisvgm/mathjax
+(setq org-html-with-latex 'mathjax)
 ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
 (add-hook 'org-mode-hook 'visual-line-mode)
+;; for live previews below envs
+(setq org-latex-preview-auto-generate 'live)
+(setq org-latex-preview-debounce 0.5)
+(setq org-latex-preview-throttle 0.5)
+;; use dvisvgm instead of dvipng
+(setq org-preview-latex-default-process 'dvisvgm)
+;; dont cache images
+;; (setq org-latex-preview-persist nil)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
@@ -2015,17 +2057,23 @@ space rather than before."
           (if (is-buffer-roam-note)
               (funcall callback))))))
 
-(defun lob-reload ()
-  "load files tagged with 'code' into the org babel library, also execute them"
+;; (defun lob-reload ()
+;;   "load files tagged with 'code' into the org babel library, also execute them"
+;;   (interactive)
+;;   (go-through-roam-files-with-tag
+;;    "code"
+;;    (lambda ()
+;;      (org-babel-execute-buffer)
+;;      (org-babel-lob-ingest (buffer-file-name)))))
+(defun execute-code-files ()
+  "execute files tagged with 'code'"
   (interactive)
   (go-through-roam-files-with-tag
    "code"
    (lambda ()
-     (org-babel-execute-buffer)
-     (org-babel-lob-ingest (buffer-file-name)))))
+     (org-babel-execute-buffer))))
 ;; most/all of my code files are lisp, load them with sly
-(add-hook 'sly-connected-hook 'lob-reload)
-;; (lob-reload)
+(add-hook 'sly-connected-hook 'execute-code-files)
 
 (defun xenops-prerender ()
   "prerender latex blocks in roam files"
