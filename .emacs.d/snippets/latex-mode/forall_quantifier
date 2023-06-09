@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: forall quantifier
+# key: aa
+# --
+\forall $0
