@@ -236,6 +236,7 @@
   (require 'org-roam-export)
   (require 'org-roam-protocol)
   (global-set-key (kbd "C-c r f") 'org-roam-node-find)
+  (global-set-key (kbd "C-c r g") 'org-roam-graph)
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
@@ -814,7 +815,7 @@ space rather than before."
       (global-corfu-mode)
       :custom
       (corfu-cycle t)
-      (corfu-auto t)
+      (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
       (corfu-quit-no-match t)
       (corfu-auto-delay 0)
       ;; (corfu-separator ?_) ;; Set to orderless separator, if not using space
@@ -905,7 +906,7 @@ space rather than before."
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
-(load-theme 'doom-gruvbox-light t)
+;; (load-theme 'doom-gruvbox-light t)
 ;; (load-theme 'darktooth t)
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
@@ -1018,6 +1019,7 @@ space rather than before."
 (use-package f)
 
 ;; language server protocol support
+;; getting errors about (void-variable lsp-ada-project-file)
 (use-package lsp-mode
   :config
   (add-hook 'prog-mode-hook 'lsp-deferred)
@@ -1329,7 +1331,7 @@ space rather than before."
 (use-package all-the-icons-ivy-rich
   :config (all-the-icons-ivy-rich-mode 1))
 
-(use-package lsp-java)
+;; (use-package lsp-java)
 
 (use-package emmet-mode
   :config
@@ -1413,6 +1415,10 @@ space rather than before."
 ;;           (clisp ("clisp"))
 ;;           (ecl ("ecl"))
 ;;           (maxima ("rmaxima" "-r" "to_lisp();")))))
+
+(use-package beacon
+  :config
+  (beacon-mode 1))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1775,8 +1781,9 @@ space rather than before."
     (org-ctrl-c-ctrl-c)))
 ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
 (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
-;; latex syntax highlighting in org mode
-(setq org-highlight-latex-and-related '(latex))
+;; latex syntax highlighting in org mode (and more)
+;; (setq org-highlight-latex-and-related '(latex))
+(setq org-highlight-latex-and-related '(native latex script entities))
 ;; disable org-mode's mathjax because my blog's code uses another version
 (setq org-html-mathjax-template "")
 (setq org-html-mathjax-options '())
@@ -1809,7 +1816,7 @@ space rather than before."
             (org-roam-db-sync)
             (org-agenda-list)
             (delete-other-windows)
-            ;; (switch-to-light-theme)
+            (switch-to-light-theme)
             ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
@@ -1832,7 +1839,7 @@ space rather than before."
 (defun switch-to-dark-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'minimal-light)
+  (disable-theme 'doom-gruvbox-light)
   (load-theme 'darktooth t)
   ;; (load-theme 'minimal t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
@@ -1844,8 +1851,9 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'minimal)
-  (load-theme 'minimal-light t)
+  (disable-theme 'darktooth)
+  (set-face-attribute 'org-block nil :background nil)
+  (load-theme 'doom-gruvbox-light t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
@@ -2109,7 +2117,10 @@ space rather than before."
 
 (defun buffer-contains-math ()
   "check if the current buffer contains any math equations (latex blocks)"
-  (buffer-contains-substring "$"))
+  (or
+   (buffer-contains-substring "$")
+   (buffer-contains-substring "\\(")
+   (buffer-contains-substring "\\[")))
 
 (defmacro save-buffer-modified-p (&rest body)
   "Eval BODY without affected buffer modification status"
