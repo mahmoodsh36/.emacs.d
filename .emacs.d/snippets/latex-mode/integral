@@ -2,4 +2,4 @@
 # name: integral
 # key: nn
 # --
-\int_{$1}^{$2} ${3:$$(yas-delete-if-empty)} \dif{x}$0
+\int_{$1}^{$2} ${3:$$(yas-delete-if-empty)} \dif{${4:x}}$0
