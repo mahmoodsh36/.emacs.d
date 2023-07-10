@@ -1,5 +1,6 @@
-super + Return
-    kitty
+# use emacs vterm
+#super + Return
+#    kitty
 
 super + x ; {e,w,s,j,k,f,p}
     {notify-send "launched emacs" && emacs, \
@@ -78,7 +79,7 @@ super + s; {d, x, c}
      google-chrome-stable "https://www.metal-archives.com/albums/$(current_spotify_song.sh | rev | cut -d '-' -f1 | rev | cut -c2-)"}
 
 super + s; {a,e,r}
-    {setxkbmap ar,\
+    {setxkbmap ara,\
      setxkbmap us,\
      setxkbmap il}
 
