@@ -99,7 +99,7 @@
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
 (add-to-list 'savehist-additional-variables 'kill-ring)
 ;; break long lines into multiple
-(global-visual-line-mode)
+;;(global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
@@ -144,6 +144,7 @@
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
+;;(setq enable-god nil)
 
 ;; need straight for tecosaur's org version, for now, so install both
 (defvar bootstrap-version)
@@ -185,41 +186,41 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 ;; temporary fix for ox-hugo exporting issues with org 9.7-pre
-;; (defun org-html-format-latex (latex-frag processing-type info)
-;;   "Format a LaTeX fragment LATEX-FRAG into HTML.
-;; PROCESSING-TYPE designates the tool used for conversion.  It can
-;; be `mathjax', `verbatim', `html', nil, t or symbols in
-;; `org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
-;; `imagemagick'.  See `org-html-with-latex' for more information.
-;; INFO is a plist containing export properties."
-;;   (let ((cache-relpath "") (cache-dir ""))
-;;     (unless (or (eq processing-type 'mathjax)
-;;                 (eq processing-type 'html))
-;;       (let ((bfn (or (buffer-file-name)
-;;              (make-temp-name
-;;               (expand-file-name "latex" temporary-file-directory))))
-;;         (latex-header
-;;          (let ((header (plist-get info :latex-header)))
-;;            (and header
-;;             (concat (mapconcat
-;;                  (lambda (line) (concat "#+LATEX_HEADER: " line))
-;;                  (org-split-string header "\n")
-;;                  "\n")
-;;                 "\n")))))
-;;     (setq cache-relpath
-;;           (concat (file-name-as-directory org-preview-latex-image-directory)
-;;               (file-name-sans-extension
-;;                (file-name-nondirectory bfn)))
-;;           cache-dir (file-name-directory bfn))
-;;     ;; Re-create LaTeX environment from original buffer in
-;;     ;; temporary buffer so that dvipng/imagemagick can properly
-;;     ;; turn the fragment into an image.
-;;     (setq latex-frag (concat latex-header latex-frag))))
-;;     (with-temp-buffer
-;;       (insert latex-frag)
-;;       (org-format-latex cache-relpath nil nil cache-dir nil
-;;             "Creating LaTeX Image..." nil processing-type)
-;;       (buffer-string))))
+(defun org-html-format-latex (latex-frag processing-type info)
+  "Format a LaTeX fragment LATEX-FRAG into HTML.
+PROCESSING-TYPE designates the tool used for conversion.  It can
+be `mathjax', `verbatim', `html', nil, t or symbols in
+`org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
+`imagemagick'.  See `org-html-with-latex' for more information.
+INFO is a plist containing export properties."
+  (let ((cache-relpath "") (cache-dir ""))
+    (unless (or (eq processing-type 'mathjax)
+                (eq processing-type 'html))
+      (let ((bfn (or (buffer-file-name)
+             (make-temp-name
+              (expand-file-name "latex" temporary-file-directory))))
+        (latex-header
+         (let ((header (plist-get info :latex-header)))
+           (and header
+            (concat (mapconcat
+                 (lambda (line) (concat "#+LATEX_HEADER: " line))
+                 (org-split-string header "\n")
+                 "\n")
+                "\n")))))
+    (setq cache-relpath
+          (concat (file-name-as-directory org-preview-latex-image-directory)
+              (file-name-sans-extension
+               (file-name-nondirectory bfn)))
+          cache-dir (file-name-directory bfn))
+    ;; Re-create LaTeX environment from original buffer in
+    ;; temporary buffer so that dvipng/imagemagick can properly
+    ;; turn the fragment into an image.
+    (setq latex-frag (concat latex-header latex-frag))))
+    (with-temp-buffer
+      (insert latex-frag)
+      (org-format-latex cache-relpath nil nil cache-dir nil
+            "Creating LaTeX Image..." nil processing-type)
+      (buffer-string))))
 
 ;; the all-powerful org mode
 ;; (use-package org)
@@ -264,9 +265,10 @@
 ;; needed for evil mode
 (use-package undo-fu
   :config
-  (global-unset-key (kbd "C-z"))
-  (global-set-key (kbd "C-z") 'undo-fu-only-undo)
-  (global-set-key (kbd "C-S-z") 'undo-fu-only-redo))
+  ;;(global-unset-key (kbd "C-z"))
+  ;;(global-set-key (kbd "C-z") 'undo-fu-only-undo)
+  ;;(global-set-key (kbd "C-S-z") 'undo-fu-only-redo)
+  )
 
 ;; vertical completion interface
 (use-package counsel
@@ -430,11 +432,12 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
+      (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
       (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
-      (general-define-key :states 'normal :keymaps 'override "SPC g" 'counsel-ag)
+      (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'space-x-with-latex-header-hack)
       (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
@@ -496,6 +499,7 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r z" 'org-add-note)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-latex-preview-auto-mode)
       ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
       (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
@@ -543,6 +547,7 @@
                           (lambda ()
                             (interactive)
                             (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" 'vterm)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
@@ -591,6 +596,11 @@
 
       (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
       (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC z"
+                          (lambda ()
+                            (interactive)
+                            (sly-end-of-defun)
+                            (call-interactively 'sly-eval-last-expression-in-repl)))
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -659,67 +669,66 @@ space rather than before."
         (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
       )
-  (progn ;; if not using evil
-    (use-package god-mode
-      :config
-      (god-mode)
-      (global-set-key (kbd "<escape>") #'god-mode-all)
-      (setq god-exempt-major-modes nil)
-      (setq god-exempt-predicates nil))
-    (defun my-god-mode-update-cursor-type ()
-      (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-    (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+  (if enable-god
+      (progn
+        (use-package god-mode
+          :config
+          (god-mode)
+          (global-set-key (kbd "<escape>") #'god-mode-all)
+          (setq god-exempt-major-modes nil)
+          (setq god-exempt-predicates nil))
+        (defun my-god-mode-update-cursor-type ()
+          (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+        (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+        ;; (use-package ryo-modal
+        ;;   :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
+        ;;   :commands ryo-modal-mode
+        ;;   :bind ("C-c SPC" . ryo-modal-mode)
+        ;;   :config
+        ;;   (ryo-modal-keys
+        ;;    ("," ryo-modal-repeat)
+        ;;    ("q" ryo-modal-mode)
+        ;;    ("h" backward-char)
+        ;;    ("j" next-line)
+        ;;    ("k" previous-line)
+        ;;    ("l" forward-char))
 
-    ;; (use-package ryo-modal
-    ;;   :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
-    ;;   :commands ryo-modal-mode
-    ;;   :bind ("C-c SPC" . ryo-modal-mode)
-    ;;   :config
-    ;;   (ryo-modal-keys
-    ;;    ("," ryo-modal-repeat)
-    ;;    ("q" ryo-modal-mode)
-    ;;    ("h" backward-char)
-    ;;    ("j" next-line)
-    ;;    ("k" previous-line)
-    ;;    ("l" forward-char))
+        ;;   (ryo-modal-keys
+        ;;    ;; First argument to ryo-modal-keys may be a list of keywords.
+        ;;    ;; These keywords will be applied to all keybindings.
+        ;;    (:norepeat t)
+        ;;    ("0" "M-0")
+        ;;    ("1" "M-1")
+        ;;    ("2" "M-2")
+        ;;    ("3" "M-3")
+        ;;    ("4" "M-4")
+        ;;    ("5" "M-5")
+        ;;    ("6" "M-6")
+        ;;    ("7" "M-7")
+        ;;    ("8" "M-8")
+        ;;    ("9" "M-9"))
 
-    ;;   (ryo-modal-keys
-    ;;    ;; First argument to ryo-modal-keys may be a list of keywords.
-    ;;    ;; These keywords will be applied to all keybindings.
-    ;;    (:norepeat t)
-    ;;    ("0" "M-0")
-    ;;    ("1" "M-1")
-    ;;    ("2" "M-2")
-    ;;    ("3" "M-3")
-    ;;    ("4" "M-4")
-    ;;    ("5" "M-5")
-    ;;    ("6" "M-6")
-    ;;    ("7" "M-7")
-    ;;    ("8" "M-8")
-    ;;    ("9" "M-9"))
+        ;;   (defun mark-line ()
+        ;;     (interactive)
+        ;;     (beginning-of-line)
+        ;;     (set-mark-command nil)
+        ;;     (end-of-line))
+        
+        ;;   (ryo-modal-key
+        ;;    "g" '(("s" save-buffer)
+        ;;          ("g" magit-status)
+        ;;          ("b" ibuffer-list-buffers)))
 
-    ;;   (defun mark-line ()
-    ;;     (interactive)
-    ;;     (beginning-of-line)
-    ;;     (set-mark-command nil)
-    ;;     (end-of-line))
-      
-    ;;   (ryo-modal-key
-    ;;    "g" '(("s" save-buffer)
-    ;;          ("g" magit-status)
-    ;;          ("b" ibuffer-list-buffers)))
-
-    ;;   (let ((text-objects
-    ;;          '(("w" mark-word :name "Word")
-    ;;            ("l" mark-line :name "line")
-    ;;            )))
-    ;;     (eval `(ryo-modal-keys
-    ;;             ("v" ,text-objects)
-    ;;             ;;("k" ,text-objects :then '(kill-region))
-    ;;             ("c" ,text-objects :then '(kill-region)))))
-    ;;   )
-    )
-  )
+        ;;   (let ((text-objects
+        ;;          '(("w" mark-word :name "Word")
+        ;;            ("l" mark-line :name "line")
+        ;;            )))
+        ;;     (eval `(ryo-modal-keys
+        ;;             ("v" ,text-objects)
+        ;;             ;;("k" ,text-objects :then '(kill-region))
+        ;;             ("c" ,text-objects :then '(kill-region)))))
+        ;;   )
+        )))
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -792,21 +801,6 @@ space rather than before."
       (use-package company-prescient
         :config
         (company-prescient-mode))
-
-      ;; (use-package slime-company
-      ;;   :after (slime company)
-      ;;   :config
-      ;;   (slime-setup '(slime-fuzzy slime-scratch slime-asdf 
-      ;;                              slime-fancy
-      ;;                              slime-company))
-      ;;   (add-hook 'slime-mode-hook 		
-      ;;             (lambda ()
-      ;;               (company-mode 1)
-      ;;               (set (make-local-variable 'company-backends)
-      ;;                    '(company-slime))))
-      ;;   (setq slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
-      ;;   (setq slime-company-completion 'fuzzy
-      ;;         slime-company-after-completion 'slime-company-just-one-space))
       )
   (progn ;; corfu autocompletion
     (use-package corfu
@@ -911,7 +905,6 @@ space rather than before."
 ;; (load-theme 'ample-flat t)
 ;; (modus-themes-load-operandi)
 ;; stop org src blocks from bleeding in doom themes (remove background)
-(set-face-attribute 'org-block nil :background nil)
 ;; (set-face-attribute 'org-block-end-line nil :background nil)
 ;; (set-face-attribute 'org-block-begin-line nil :background nil)
 
@@ -952,7 +945,7 @@ space rather than before."
   :config
   (add-hook 'text-mode-hook 'rainbow-mode))
 
-;; helps figure out which key runs which function
+;; log elisp commands
 (use-package command-log-mode
   :config
   (global-command-log-mode))
@@ -1071,7 +1064,7 @@ space rather than before."
   (which-key-mode 1))
 
 ;; small flash when evaluating a sexp
-(use-package eval-sexp-fu)
+;; (use-package eval-sexp-fu)
 
 ;; flutter setup
 (use-package highlight-indent-guides
@@ -1247,7 +1240,7 @@ space rather than before."
 ;; (use-package code-compass)
 
 ;; best terminal emulation
-;; (use-package vterm)
+(use-package vterm)
 
 ;; check which keys i press most
 (use-package keyfreq
@@ -1281,7 +1274,7 @@ space rather than before."
   :ensure t
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ;;("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
   :init
   ;; Optionally replace the key help with a completing-read interface
@@ -1365,8 +1358,7 @@ space rather than before."
 
 ;; krita-supported manual drawing with org mode
 (quelpa '(org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources")))
-(add-hook 'org-mode-hook 'org-krita-mode)
-
+;; (add-hook 'org-mode-hook 'org-krita-mode)
 
 ;; like org-krita, crashes, unusable...
 ;; (quelpa '(org-xournalpp :fetcher gitlab :repo "vherrmann/org-xournalpp" :files ("*.el" "resources")))
@@ -1410,15 +1402,44 @@ space rather than before."
 ;; (use-package slime
 ;;   :config
 ;;   (setq inferior-lisp-program "")
+;;   (slime-setup '(slime-fancy
+;;                  slime-sbcl-exts
+;;                  slime-scheme
+;;                  slime-sprof
+;;                  slime-asdf
+;;                  slime-indentation
+;;                  slime-cl-indent
+;;                  slime-trace-dialog
+;;                  slime-repl
+;;                  slime-scratch
+;;                  ))
 ;;   (setq slime-lisp-implementations
 ;;         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
 ;;           (clisp ("clisp"))
 ;;           (ecl ("ecl"))
+;;           (cmucl ("cmucl"))
+;;           (ccl ("ccl"))
 ;;           (maxima ("rmaxima" "-r" "to_lisp();")))))
 
 (use-package beacon
   :config
   (beacon-mode 1))
+
+;; better alternative to counsel-ag, best i found for grepping
+(use-package deadgrep)
+
+;; many packages that i use are to replicate evil functionality
+
+;; highlight text inside common delimiters
+(use-package expand-region
+  :config
+  (global-set-key (kbd "C-;") 'er/expand-region))
+
+;; modify/add common delimiters around text
+(use-package smartparens)
+
+;; change text inside delimiters
+(use-package change-inner)
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1522,7 +1543,7 @@ space rather than before."
 (setq org-log-reschedule 'time)
 (setq org-log-redeadline 'time)
 ;; show images when opening a file.
-(setq org-startup-with-inline-images t)
+;; (setq org-startup-with-inline-images t)
 ;; show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook (lambda ()
                                           (interactive)
@@ -1556,8 +1577,9 @@ space rather than before."
 ;; who cares about annoying broken link errors..
 ;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
+(setq org-element-cache-persistent nil)
+(setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -1798,8 +1820,8 @@ space rather than before."
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
 (add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
-;; startup with headlines and blocks folded
-;; (setq org-startup-folded 'content)
+;; startup with headlines and blocks folded or not
+(setq org-startup-folded 'showall)
       ;; org-hide-block-startup t)
 ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
 (setq org-image-actual-width nil)
@@ -1852,8 +1874,8 @@ space rather than before."
   "switch to light theme"
   (interactive)
   (disable-theme 'darktooth)
-  (set-face-attribute 'org-block nil :background nil)
   (load-theme 'doom-gruvbox-light t)
+  (set-face-attribute 'org-block nil :background nil)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
@@ -2034,20 +2056,23 @@ space rather than before."
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 ;; render latex in org-mode using builtin function
 (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
 (setq org-startup-with-latex-preview t)
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
 ;; export to html using dvisvgm/mathjax
-(setq org-html-with-latex 'mathjax)
+(setq org-html-with-latex 'dvisvgm)
 ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
 (add-hook 'org-mode-hook 'visual-line-mode)
 ;; for live previews below envs
 (setq org-latex-preview-auto-generate 'live)
-(setq org-latex-preview-debounce 0.5)
-(setq org-latex-preview-throttle 0.5)
-;; use dvisvgm instead of dvipng
-(setq org-preview-latex-default-process 'dvisvgm)
-;; dont cache images
+(setq org-latex-preview-debounce 0.1)
+(setq org-latex-preview-throttle 0.1)
+;; use dvisvgm instead of dvipng, obsolete
+;; (setq org-preview-latex-default-process 'dvisvgm)
+;; dont cache latex preview images
 ;; (setq org-latex-preview-persist nil)
+;; dont export headlines with tags
+(setq org-export-with-tags nil)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
@@ -2214,7 +2239,7 @@ space rather than before."
           (setf old-point current-point)
           (setf current-point (point))))))
   (org-content))
-(add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
+;; (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
 
 (defun org-fold-all-answer-blocks ()
   "toggle visibility of answer special blocks, i.e. #+begin_answer"
@@ -2376,3 +2401,58 @@ note that this doesnt work for exports"
 ;; (TeX--completion-at-point
 ;;  t
 ;;  LaTeX--arguments-completion-at-point)
+
+(unbind-key "C-z")
+(bind-keys :prefix-map mymap
+           :prefix "C-z"
+           ;;:prefix-docstring "Personal key bindings"
+           ("v" . emacs-version)
+           ("e" . (lambda () (interactive) (find-file user-init-file)))
+           ("a" . kill-all-buffers)
+           ("z" . zap-up-to-char)
+           ("g" . deadgrep)
+           )
+
+(global-set-key (kbd "C-x k") 'kill-this-buffer-volatile)
+(global-set-key (kbd "C-x K") 'kill-buffer-and-window)
+
+;; disable evil mode in deadgrep, they dont work well together
+(evil-set-initial-state 'deadgrep-mode 'emacs)
+(evil-set-initial-state 'calc-mode 'emacs)
+
+;; temporary fix for ox-hugo exporting issues with org 9.7-pre
+(defun org-html-format-latex (latex-frag processing-type info)
+  "Format a LaTeX fragment LATEX-FRAG into HTML.
+PROCESSING-TYPE designates the tool used for conversion.  It can
+be `mathjax', `verbatim', `html', nil, t or symbols in
+`org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
+`imagemagick'.  See `org-html-with-latex' for more information.
+INFO is a plist containing export properties."
+  (let ((cache-relpath "") (cache-dir ""))
+    (unless (or (eq processing-type 'mathjax)
+                (eq processing-type 'html))
+      (let ((bfn (or (buffer-file-name)
+             (make-temp-name
+              (expand-file-name "latex" temporary-file-directory))))
+        (latex-header
+         (let ((header (plist-get info :latex-header)))
+           (and header
+            (concat (mapconcat
+                 (lambda (line) (concat "#+LATEX_HEADER: " line))
+                 (org-split-string header "\n")
+                 "\n")
+                "\n")))))
+    (setq cache-relpath
+          (concat (file-name-as-directory org-preview-latex-image-directory)
+              (file-name-sans-extension
+               (file-name-nondirectory bfn)))
+          cache-dir (file-name-directory bfn))
+    ;; Re-create LaTeX environment from original buffer in
+    ;; temporary buffer so that dvipng/imagemagick can properly
+    ;; turn the fragment into an image.
+    (setq latex-frag (concat latex-header latex-frag))))
+    (with-temp-buffer
+      (insert latex-frag)
+      (org-format-latex cache-relpath nil nil cache-dir nil
+            "Creating LaTeX Image..." nil processing-type)
+      (buffer-string))))
