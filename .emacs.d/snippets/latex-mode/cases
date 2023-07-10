@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: cases
-# key: cas
+# key: cs
 # --
 \begin{cases}
   $0

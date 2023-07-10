@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: defgeneric
+# key: dg
+# --
+(defgeneric $1 ($2)
+  $0)
