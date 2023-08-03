@@ -91,7 +91,7 @@
 (setq dabbrev-case-replace nil)
 (global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
-;; (desktop-save-mode 1)
+(desktop-save-mode 1)
 ;; save minibuffer history
 (setq savehist-file (expand-file-name (concat brain-path "/emacs_savehist")))
 (savehist-mode 1)
@@ -233,7 +233,7 @@ INFO is a plist containing export properties."
   (org-roam-completion-everywhere t)
   :config
   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
-  (org-roam-db-autosync-mode)
+  (org-roam-db-autosync-mode 1)
   (require 'org-roam-export)
   (require 'org-roam-protocol)
   (global-set-key (kbd "C-c r f") 'org-roam-node-find)
@@ -245,7 +245,8 @@ INFO is a plist containing export properties."
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
            :kill-buffer :unnarrowed t)
-          ("d" "daily" plain "* %<%Y-%m-%d %H:%M:%S> %?"
+          ("d" "daily" plain "* %T %?"
+          ;; ("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+filetags: :daily:"))
           ("t" "todo" plain "* TODO ${title}"
            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
@@ -506,7 +507,7 @@ INFO is a plist containing export properties."
       (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
-      (general-define-key :states 'normal :keymaps 'override "SPC r d"
+      (general-define-key :states 'normal :keymaps 'override "SPC a N"
                           (lambda ()
                             (interactive)
                             (org-roam-capture-no-title-prompt nil "d")))
@@ -576,6 +577,7 @@ INFO is a plist containing export properties."
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s n" 'yas-new-snippet)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -1428,18 +1430,25 @@ space rather than before."
 ;; better alternative to counsel-ag, best i found for grepping
 (use-package deadgrep)
 
-;; many packages that i use are to replicate evil functionality
+;; some packages that i use are to replicate evil functionality
+;; ;; highlight text inside common delimiters
+;; (use-package expand-region
+;;   :config
+;;   (global-set-key (kbd "C-;") 'er/expand-region))
 
-;; highlight text inside common delimiters
-(use-package expand-region
-  :config
-  (global-set-key (kbd "C-;") 'er/expand-region))
+;; ;; modify/add common delimiters around text
+;; (use-package smartparens)
 
-;; modify/add common delimiters around text
-(use-package smartparens)
+;; ;; change text inside delimiters
+;; (use-package change-inner)
 
-;; change text inside delimiters
-(use-package change-inner)
+;; emacs workspaces
+(use-package perspective
+  :init
+  (persp-mode))
+
+;; center buffer
+(use-package olivetti)
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1476,7 +1485,6 @@ space rather than before."
 ;; (use-package svg-tag-mode)
 
 ;; (use-package alert)
-;; (use-package olivetti)
 ;; (use-package ox-json)
 
 ;;(use-package org-tree-slide)
@@ -1543,7 +1551,7 @@ space rather than before."
 (setq org-log-reschedule 'time)
 (setq org-log-redeadline 'time)
 ;; show images when opening a file.
-;; (setq org-startup-with-inline-images t)
+(setq org-startup-with-inline-images t)
 ;; show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook (lambda ()
                                           (interactive)
@@ -1578,6 +1586,8 @@ space rather than before."
 ;; (setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
+;; dont cache latex preview images
+(setq org-latex-preview-persist nil)
 (setq org-element-cache-persistent nil)
 (setq org-element-use-cache nil)
 
@@ -1720,6 +1730,7 @@ space rather than before."
     (eshell/ls)))
 ;; eshell history file location
 (setq eshell-history-file-name (concat brain-path "/eshell_history")) ;; save history to filesystem
+(setq eshell-history-size 100000000)
 
 ;; compile org docs to pdfs and put them in cache dir
 (defun org-to-pdf ()
@@ -1755,8 +1766,8 @@ space rather than before."
          "REVIEW(r!)"
          "|" ; remaining close task
          "DONE(d@)"
-         "CANCELLED(c@)"
-         "CANCELED(C@)" ;; for backward compatibility
+         "CANCELED(c@)"
+         "CANCELLED(C@)" ;; for backward compatibility
          )))
 ;; filter out entries with tag "ignore"
 (setq org-agenda-tag-filter-preset '("-ignore"))
@@ -1844,6 +1855,7 @@ space rather than before."
 (setq calc-multiplication-has-precedence nil)
 ;; stop org mode from moving tags far after headers
 (setq org-tags-column 0)
+(setq org-attach-use-inheritance t)
 
 (defun generate-random-string (NUM)
   "generate a random alphanumerics string of length NUM."
@@ -2066,13 +2078,13 @@ space rather than before."
 ;; for live previews below envs
 (setq org-latex-preview-auto-generate 'live)
 (setq org-latex-preview-debounce 0.1)
-(setq org-latex-preview-throttle 0.1)
+(setq org-latex-preview-throttle 0.01)
 ;; use dvisvgm instead of dvipng, obsolete
 ;; (setq org-preview-latex-default-process 'dvisvgm)
-;; dont cache latex preview images
-;; (setq org-latex-preview-persist nil)
 ;; dont export headlines with tags
 (setq org-export-with-tags nil)
+;; allow characters as list modifiers in org mode
+(setq org-list-allow-alphabetical t)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
