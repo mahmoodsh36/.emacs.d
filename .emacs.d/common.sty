@@ -31,8 +31,9 @@
 \usepackage{circuitikz}
 \usepackage{listofitems}
 \usepackage{proof}
-% dont enable this its horrible
+% dont enable this its horrible, makes rendering from org-babel not work properly
 % \tikzstyle{every picture}+=[remember picture]
+\usepackage{enumitem}
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
@@ -59,6 +60,7 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand\brm[1]{\bm{\mathrm{#1}}}
+\DeclareMathOperator{\vct}{vec}
 
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
 \definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
