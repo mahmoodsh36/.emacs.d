@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: lisp block
+# key: ai
+# --
+#+begin_src lisp
+  $0
+#+end_src
