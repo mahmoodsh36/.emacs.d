@@ -7,12 +7,12 @@ sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
 parcellite &
-pulseaudio &
+# pulseaudio & # pulseaudio is bugged on startup dunno why
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
 
 # songs_progress_monitor.py &
-picom --config ~/.config/compton.conf &
+# picom --config ~/.config/compton.conf &
 while true; do setxkbmap -option caps:swapescape; sleep 5; done &
 while true; do setxkbmap -option ctrl:ralt_rctrl; sleep 5; done &
 #setxkbmap -option ctrl:nocaps
@@ -36,6 +36,8 @@ sudo rmmod pcspkr &
 #emacs &
 #google-chrome-stable &
 #flatpak run com.client.Spotify || spotify &
+
+touchegg & # run touchegg for touch gestures
 
 #xsetroot -cursor_name left_ptr
 exec awesome
