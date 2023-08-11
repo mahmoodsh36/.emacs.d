@@ -1,4 +1,3 @@
-set recolor
 set selection-clipboard clipboard
 map K zoom in
 map J zoom out
@@ -6,8 +5,9 @@ map d scroll half-down
 map u scroll half-up
 map g goto top
 map D toggle_page_mode
-set window-height 700
-set window-width 680
-set recolor-lightcolor \#222222
-set recolor-keephue
-set default-bg \#222230
+set window-height 1500
+set window-width 1400
+# set recolor
+# set recolor-lightcolor \#222222
+# set recolor-keephue
+# set default-bg \#222230
