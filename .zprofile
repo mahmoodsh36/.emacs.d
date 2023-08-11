@@ -13,3 +13,4 @@ export _JAVA_AWT_WM_NONREPARENTING=1.
 #source /etc/profile
 export GUILE_LOAD_PATH="$HOME/workspace/guix/"
 # export PATH="$PATH:/usr/bin"
+export QT_SCALE_FACTOR=2
