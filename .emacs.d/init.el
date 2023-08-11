@@ -185,42 +185,6 @@
                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
                    "(provide 'org-version)\n")))
               :pin nil))
-;; temporary fix for ox-hugo exporting issues with org 9.7-pre
-(defun org-html-format-latex (latex-frag processing-type info)
-  "Format a LaTeX fragment LATEX-FRAG into HTML.
-PROCESSING-TYPE designates the tool used for conversion.  It can
-be `mathjax', `verbatim', `html', nil, t or symbols in
-`org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
-`imagemagick'.  See `org-html-with-latex' for more information.
-INFO is a plist containing export properties."
-  (let ((cache-relpath "") (cache-dir ""))
-    (unless (or (eq processing-type 'mathjax)
-                (eq processing-type 'html))
-      (let ((bfn (or (buffer-file-name)
-             (make-temp-name
-              (expand-file-name "latex" temporary-file-directory))))
-        (latex-header
-         (let ((header (plist-get info :latex-header)))
-           (and header
-            (concat (mapconcat
-                 (lambda (line) (concat "#+LATEX_HEADER: " line))
-                 (org-split-string header "\n")
-                 "\n")
-                "\n")))))
-    (setq cache-relpath
-          (concat (file-name-as-directory org-preview-latex-image-directory)
-              (file-name-sans-extension
-               (file-name-nondirectory bfn)))
-          cache-dir (file-name-directory bfn))
-    ;; Re-create LaTeX environment from original buffer in
-    ;; temporary buffer so that dvipng/imagemagick can properly
-    ;; turn the fragment into an image.
-    (setq latex-frag (concat latex-header latex-frag))))
-    (with-temp-buffer
-      (insert latex-frag)
-      (org-format-latex cache-relpath nil nil cache-dir nil
-            "Creating LaTeX Image..." nil processing-type)
-      (buffer-string))))
 
 ;; the all-powerful org mode
 ;; (use-package org)
@@ -434,6 +398,7 @@ INFO is a plist containing export properties."
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
+      (general-define-key :states '(normal motion) :keymaps 'slime-repl-mode "SPC b k" 'slime-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
@@ -469,12 +434,12 @@ INFO is a plist containing export properties."
       (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
       (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
       (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
-      (general-define-key :states 'normal :keymaps 'override "SPC r o" 'org-open-at-point)
-      (general-define-key :states 'normal :keymaps 'override "SPC r a" 'org-attach)
-      (general-define-key :states 'normal :keymaps 'override "SPC r A" 'org-attach-open)
-      (general-define-key :states 'normal :keymaps 'override "SPC r l" 'org-roam-alias-add)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r o" 'org-open-at-point)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r a" 'org-attach)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r A" 'org-attach-open)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r l" 'org-roam-alias-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
-      (general-define-key :states 'normal :keymaps 'override "SPC r w" 'org-roam-tag-add)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r w" 'org-roam-tag-add)
       (general-define-key :states 'normal :keymaps 'override "SPC r q"
                           (lambda ()
                             (interactive)
@@ -525,13 +490,14 @@ INFO is a plist containing export properties."
                     (search-open-file-in-emacs "~/data" "")))
 
       ;; keybinding to evaluate math expressions
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
-                          (lambda ()
-                            (interactive)
-                            (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
-                            (end-of-line)
-                            (insert " ")
-                            (insert result)))
+      ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+      ;;                     (lambda ()
+      ;;                       (interactive)
+      ;;                       (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
+      ;;                       (end-of-line)
+      ;;                       (insert " ")
+      ;;                       (insert result)))
+
       ;; general keys
       ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
       (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
@@ -547,7 +513,7 @@ INFO is a plist containing export properties."
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
                           (lambda ()
                             (interactive)
-                            (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+                            (let ((current-prefix-arg '-)) (call-interactively 'slime))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" 'vterm)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
@@ -559,10 +525,10 @@ INFO is a plist containing export properties."
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
       (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
       (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC l" 'calc)
+      ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC l" 'calc)
 
       ;; agenda keys
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" 'org-agenda-list)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" (lambda () (interactive) (org-agenda nil "n")))
       (general-define-key :states '(normal motion) :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
@@ -578,6 +544,9 @@ INFO is a plist containing export properties."
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
+
+      ;; some slime keys
+      (general-define-key :states '(normal motion) :keymaps 'slime-repl-mode-map "K" 'slime-describe-symbol)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -596,13 +565,17 @@ INFO is a plist containing export properties."
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
       (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'slime-compile-defun)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'slime-eval-buffer)
       (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC z"
                           (lambda ()
                             (interactive)
-                            (sly-end-of-defun)
-                            (call-interactively 'sly-eval-last-expression-in-repl)))
+                            (slime-end-of-defun)
+                            (call-interactively 'slime-eval-last-expression-in-repl)))
+
+      ;; language-specific keybindings
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'slime-repl-inspect)
+      (general-define-key :states '(normal) :keymaps 'slime-repl-mode-map "SPC l i" 'slime-repl-inspect)
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -1388,40 +1361,42 @@ space rather than before."
 
 (use-package vimrc-mode)
 
-(use-package sly
-  :quelpa (:host github :repo "joaotavora/sly")
+;; (use-package sly
+;;   :quelpa (:host github :repo "joaotavora/sly")
+;;   :config
+;;   (setq inferior-lisp-program "")
+;;   (setq sly-lisp-implementations
+;;         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
+;;           (clisp ("clisp"))
+;;           (ecl ("ecl"))
+;;           (cmucl ("cmucl"))
+;;           (ccl ("ccl"))
+;;           (maxima ("rmaxima" "-r" "to_lisp();"))))
+;;   ;; make org babel use sly instead of slime
+;;   (setq org-babel-lisp-eval-fn #'sly-eval)
+;;   (setq sly-mrepl-history-file-name (concat brain-path "/sly_history")))
+(use-package slime
   :config
   (setq inferior-lisp-program "")
-  (setq sly-lisp-implementations
+  (slime-setup '(slime-fancy
+                 slime-sbcl-exts
+                 slime-scheme
+                 slime-sprof
+                 slime-asdf
+                 slime-indentation
+                 slime-cl-indent
+                 slime-trace-dialog
+                 slime-repl
+                 slime-scratch))
+  (setq slime-lisp-implementations
         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
           (clisp ("clisp"))
           (ecl ("ecl"))
           (cmucl ("cmucl"))
           (ccl ("ccl"))
           (maxima ("rmaxima" "-r" "to_lisp();"))))
-  ;; make org babel use sly instead of slime
-  (setq org-babel-lisp-eval-fn #'sly-eval))
-;; (use-package slime
-;;   :config
-;;   (setq inferior-lisp-program "")
-;;   (slime-setup '(slime-fancy
-;;                  slime-sbcl-exts
-;;                  slime-scheme
-;;                  slime-sprof
-;;                  slime-asdf
-;;                  slime-indentation
-;;                  slime-cl-indent
-;;                  slime-trace-dialog
-;;                  slime-repl
-;;                  slime-scratch
-;;                  ))
-;;   (setq slime-lisp-implementations
-;;         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
-;;           (clisp ("clisp"))
-;;           (ecl ("ecl"))
-;;           (cmucl ("cmucl"))
-;;           (ccl ("ccl"))
-;;           (maxima ("rmaxima" "-r" "to_lisp();")))))
+  ;; disable evil-mode 
+  (setq slime-repl-history-file (concat brain-path "/slime_history")))
 
 (use-package beacon
   :config
@@ -1449,6 +1424,18 @@ space rather than before."
 
 ;; center buffer
 (use-package olivetti)
+
+;; depth-dependent coloring of code
+(use-package prism
+  :quelpa (prism :fetcher github :repo "alphapapa/prism.el"))
+
+;; its great but it uses alot of cpu especially when the gif has a fast timer
+(use-package org-inline-anim
+  :config
+  (add-hook 'org-mode-hook #'org-inline-anim-mode)
+  ;; (add-hook 'org-mode-hook #'org-inline-anim-animate-all)
+  (setq org-inline-anim-loop t)
+  (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1573,6 +1560,7 @@ space rather than before."
    (C . t)
    (shell . t)
    (sql . t)
+   (julia . t)
    (lua . t)))
 ;; make g++ compile with std=c++17 flag
 (setq org-babel-C++-compiler "g++ -std=c++17")
@@ -1615,7 +1603,8 @@ space rather than before."
                (progn
                  (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
-(define-key dired-mode-map (kbd "?") 'dired-get-size)
+;; (define-key dired-mode-map (kbd "?") 'dired-get-size)
+(general-define-key :states '(normal) :keymaps 'dired-mode-map "?" 'dired-get-size)
 
 ;; vim like keys for dired image viewer
 (setq image-dired-show-all-from-dir-max-files 100000000)
@@ -1668,6 +1657,17 @@ space rather than before."
   "compile the current latex document being edited"
   (interactive)
   (compile-latex-file (buffer-file-name)))
+
+;; someone needed this so i whipped it up for them
+;; (defun compile-this-latex-file (outfile)
+;;   "compile the current latex document being edited"
+;;   (interactive "sEnter output file: ")
+;;   (message "outfile %s" outfile)
+;;   (start-process-shell-command
+;;    "latex"
+;;    "latex"
+;;    (format "pdflatex -shell-escape -jobname=%s %s"
+;;            outfile (buffer-file-name))))
 
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
@@ -2069,7 +2069,7 @@ space rather than before."
 ;; render latex in org-mode using builtin function
 (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
 ;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
-(setq org-startup-with-latex-preview t)
+(setq org-startup-with-latex-preview nil)
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
 ;; export to html using dvisvgm/mathjax
 (setq org-html-with-latex 'dvisvgm)
@@ -2117,8 +2117,8 @@ space rather than before."
    "code"
    (lambda ()
      (org-babel-execute-buffer))))
-;; most/all of my code files are lisp, load them with sly
-(add-hook 'sly-connected-hook 'execute-code-files)
+;; most/all of my code files are lisp, load them with sly/slime
+(add-hook 'slime-connected-hook 'execute-code-files)
 
 (defun xenops-prerender ()
   "prerender latex blocks in roam files"
@@ -2431,6 +2431,7 @@ note that this doesnt work for exports"
 ;; disable evil mode in deadgrep, they dont work well together
 (evil-set-initial-state 'deadgrep-mode 'emacs)
 (evil-set-initial-state 'calc-mode 'emacs)
+(evil-set-initial-state 'sldb-mode 'emacs)
 
 ;; temporary fix for ox-hugo exporting issues with org 9.7-pre
 (defun org-html-format-latex (latex-frag processing-type info)
