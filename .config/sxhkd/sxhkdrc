@@ -1,6 +1,5 @@
-# use emacs vterm
-#super + Return
-#    kitty
+super + Return
+    kitty
 
 super + x ; {e,w,s,j,k,f,p}
     {notify-send "launched emacs" && emacs, \
