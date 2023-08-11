@@ -1,4 +1,4 @@
-% \usepackage[margin=0.2in]{geometry}
+\usepackage[margin=0.2in]{geometry}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{indentfirst}
@@ -34,6 +34,7 @@
 % dont enable this its horrible, makes rendering from org-babel not work properly
 % \tikzstyle{every picture}+=[remember picture]
 \usepackage{enumitem}
+\usepackage{caption}
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
@@ -62,6 +63,7 @@
 \newcommand\brm[1]{\bm{\mathrm{#1}}}
 \DeclareMathOperator{\vct}{vec}
 
+% lst
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
 \definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
 \definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
@@ -76,9 +78,8 @@
   stepnumber=1,                           % Step between two line-numbers
   numbersep=5pt,                          % How far are line-numbers from code
   backgroundcolor=\color{lightlightgray}, % Choose background color
-  frame=single,                           % A frame around the code
   tabsize=2,                              % Default tab size
-  captionpos=b,                           % Caption-position = bottom
+  captionpos=t,                           % Caption-position = bottom
   breaklines=true,                        % Automatic line breaking?
   breakatwhitespace=false,                % Automatic breaks only at whitespace?
   showspaces=false,                       % Dont make spaces visible
@@ -86,6 +87,7 @@
   columns=flexible,                       % Column format
   morekeywords={__global__, __device__},  % CUDA specific keywords
   showstringspaces=false,                 % dont show spaces in strings
+  frame=shadowbox,
 }
 % so that latex doesnt complain about sage not being a language
 \lstdefinelanguage{sage}{}
@@ -155,3 +157,8 @@
   \SetKwRepeat{Do}{do}{while} % do-while macro
   }
   {\end{algorithm}}
+
+% code evaluation results environment
+\newenvironment{results}
+  {}
+  {}
