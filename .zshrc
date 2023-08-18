@@ -1,3 +1,4 @@
+# disabled vi mode in zsh for now, i use emacs vterm
 # cursor handling for vi-mode
 function zle-keymap-select zle-line-init zle-line-finish {
   case $KEYMAP in
@@ -22,7 +23,7 @@ bindkey '^N' down-history
 bindkey '^r' history-incremental-search-backward
 bindkey '^f' history-incremental-search-forward
 autoload edit-command-line; zle -N edit-command-line
-bindkey -M vicmd v edit-command-line
+# bindkey -M vicmd v edit-command-line
 
 # auto completion
 autoload -Uz compinit && compinit
