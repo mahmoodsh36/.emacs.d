@@ -451,8 +451,9 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x"
                           (lambda ()
                             (interactive)
-                            (org-to-pdf)
-                            (org-hugo-export-to-md)))
+                            (let ((org-startup-with-latex-preview nil))
+                              (org-to-pdf)
+                              (org-hugo-export-to-md))))
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
       ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
@@ -544,6 +545,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
       ;; some slime keys
       (general-define-key :states '(normal motion) :keymaps 'slime-repl-mode-map "K" 'slime-describe-symbol)
@@ -1001,17 +1003,17 @@ space rather than before."
       :custom
       (lsp-completion-provider :none) ;; we use corfu!
       :init
-      (defun my/orderless-dispatch-flex-first (_pattern index _total)
-        (and (eq index 0) 'orderless-flex))
-      (defun my/lsp-mode-setup-completion ()
-        (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-              '(orderless)))
+      ;; (defun my/orderless-dispatch-flex-first (_pattern index _total)
+      ;;   (and (eq index 0) 'orderless-flex))
+      ;; (defun my/lsp-mode-setup-completion ()
+      ;;   (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+      ;;         '(orderless)))
       ;; Optionally configure the first word as flex filtered.
       ;; (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
       ;; Optionally configure the cape-capf-buster.
       (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
-      :hook
-      (lsp-completion-mode . my/lsp-mode-setup-completion)
+      ;; :hook
+      ;; (lsp-completion-mode . my/lsp-mode-setup-completion)
       ))
 
 ;; show simple info on the right
@@ -1094,46 +1096,46 @@ space rather than before."
 
 ;; best latex preview functionality
 ;; actually i dont use this anymore since org-mode devs implemented a better method
-(use-package xenops
-  :config
-  (setq xenops-reveal-on-entry t
-        xenops-math-latex-max-tasks-in-flight 3
-        xenops-math-latex-process 'dvisvgm)
-  ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-  ;; (add-hook 'org-mode-hook #'xenops-mode)
-  (add-hook 'xenops-mode-hook 'xenops-render)
-  ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
-  (add-hook 'org-babel-after-execute-hook (lambda ()
-                                            (interactive)
-                                            (ignore-errors (xenops-render))))
-  ;; (setq xenops-math-image-scale-factor 1.1)
-  ;; (setq xenops-math-image-current-scale-factor 1.1)
-  (setcar (cdr (car xenops-elements))
-          '(:delimiters
-            ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
-            ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
-  ;; for inline previews
-  (advice-add 'xenops-math-latex-get-colors :filter-return
-              (lambda (col)
-                (interactive)
-                (list (org-latex-color :foreground) (org-latex-color :background))))
-                ;; (list (org-latex-color :foreground) (org-latex-color :background))))
-  ;; for code blocks i think, i make backgrounds transparent so dont gotta set a color
-  (plist-put org-format-latex-options :foreground "black")
-  ;; (add-to-list 'xenops-math-latex-process-alist
-  ;;              '(mymath :programs ("latex" "dvisvgm")
-  ;;                       :description "pdf > svg"
-  ;;                       :message "you need to install the programs: latex and dvisvgm (they come together in texlive distro)."
-  ;;                       :image-input-type "dvi"
-  ;;                       :image-output-type "svg"
-  ;;                       :image-size-adjust (1.7 . 1.5)
-  ;;                       :latex-compiler ("latex -output-directory %o %f")
-  ;;                       :image-converter ("dvisvgm %f -o %O")))
-  ;; this fixes issues with dvisvgm, phhhewww, took me a long time to figure out.
-  (defun preamble-advice (document)
-    (concat "\\def\\pgfsysdriver{pgfsys-tex4ht.def}" document))
-  (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
-  )
+;; (use-package xenops
+;;   :config
+;;   (setq xenops-reveal-on-entry t
+;;         xenops-math-latex-max-tasks-in-flight 3
+;;         xenops-math-latex-process 'dvisvgm)
+;;   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
+;;   ;; (add-hook 'org-mode-hook #'xenops-mode)
+;;   (add-hook 'xenops-mode-hook 'xenops-render)
+;;   ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
+;;   (add-hook 'org-babel-after-execute-hook (lambda ()
+;;                                             (interactive)
+;;                                             (ignore-errors (xenops-render))))
+;;   ;; (setq xenops-math-image-scale-factor 1.1)
+;;   ;; (setq xenops-math-image-current-scale-factor 1.1)
+;;   (setcar (cdr (car xenops-elements))
+;;           '(:delimiters
+;;             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
+;;             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
+;;   ;; for inline previews
+;;   (advice-add 'xenops-math-latex-get-colors :filter-return
+;;               (lambda (col)
+;;                 (interactive)
+;;                 (list (org-latex-color :foreground) (org-latex-color :background))))
+;;                 ;; (list (org-latex-color :foreground) (org-latex-color :background))))
+;;   ;; for code blocks i think, i make backgrounds transparent so dont gotta set a color
+;;   (plist-put org-format-latex-options :foreground "black")
+;;   ;; (add-to-list 'xenops-math-latex-process-alist
+;;   ;;              '(mymath :programs ("latex" "dvisvgm")
+;;   ;;                       :description "pdf > svg"
+;;   ;;                       :message "you need to install the programs: latex and dvisvgm (they come together in texlive distro)."
+;;   ;;                       :image-input-type "dvi"
+;;   ;;                       :image-output-type "svg"
+;;   ;;                       :image-size-adjust (1.7 . 1.5)
+;;   ;;                       :latex-compiler ("latex -output-directory %o %f")
+;;   ;;                       :image-converter ("dvisvgm %f -o %O")))
+;;   ;; this fixes issues with dvisvgm, phhhewww, took me a long time to figure out.
+;;   (defun preamble-advice (document)
+;;     (concat "\\def\\pgfsysdriver{pgfsys-tex4ht.def}" document))
+;;   (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
+;;   )
 
 (use-package mixed-pitch
   :hook
@@ -1303,6 +1305,7 @@ space rather than before."
 
 (use-package emmet-mode
   :config
+  (add-hook 'mhtml-mode-hook 'emmet-mode)
   (add-hook 'web-mode-hook 'emmet-mode))
 
 (use-package org-transclusion)
@@ -1396,7 +1399,8 @@ space rather than before."
           (ccl ("ccl"))
           (maxima ("rmaxima" "-r" "to_lisp();"))))
   ;; disable evil-mode 
-  (setq slime-repl-history-file (concat brain-path "/slime_history")))
+  (setq slime-repl-history-file (concat brain-path "/slime_history"))
+  (setq slime-repl-history-size 1000000))
 
 (use-package beacon
   :config
@@ -1412,7 +1416,7 @@ space rather than before."
 ;;   (global-set-key (kbd "C-;") 'er/expand-region))
 
 ;; ;; modify/add common delimiters around text
-;; (use-package smartparens)
+(use-package smartparens)
 
 ;; ;; change text inside delimiters
 ;; (use-package change-inner)
@@ -1571,7 +1575,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken link errors..
-;; (setq org-export-with-broken-links t)
+(setq org-export-with-broken-links t)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
@@ -1747,7 +1751,7 @@ space rather than before."
 ;; decrease image size in latex exports
 ;; (setq org-latex-image-default-scale "0.6")
 ;; disable images from being scaled/their dimensions being changed
-(setq org-latex-image-default-width "")
+;; (setq org-latex-image-default-width "")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -1831,6 +1835,8 @@ space rather than before."
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
 (add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
+;; also treat ' as a separator or whatever
+(add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?' "_" org-mode-syntax-table)))
 ;; startup with headlines and blocks folded or not
 (setq org-startup-folded 'showall)
       ;; org-hide-block-startup t)
@@ -1856,6 +1862,8 @@ space rather than before."
 ;; stop org mode from moving tags far after headers
 (setq org-tags-column 0)
 (setq org-attach-use-inheritance t)
+;; use html5 for org exports
+(setq org-html-html5-fancy t)
 
 (defun generate-random-string (NUM)
   "generate a random alphanumerics string of length NUM."
@@ -2069,7 +2077,7 @@ space rather than before."
 ;; render latex in org-mode using builtin function
 (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
 ;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
-(setq org-startup-with-latex-preview nil)
+(setq org-startup-with-latex-preview t)
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
 ;; export to html using dvisvgm/mathjax
 (setq org-html-with-latex 'dvisvgm)
@@ -2085,6 +2093,15 @@ space rather than before."
 (setq org-export-with-tags nil)
 ;; allow characters as list modifiers in org mode
 (setq org-list-allow-alphabetical t)
+;; also number equations
+(setq org-latex-preview-numbered t)
+;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
+;; (setq pdf-latex-compiler "lualatex")
+;; ;; make dvisvgm preview use lualatex
+;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
+;;   (plist-put (cdr pos) :programs '("lualatex" "dvisvgm")))
+;; make org-agenda open up in the current window
+(setq org-agenda-window-setup 'current-window)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
@@ -2469,3 +2486,77 @@ INFO is a plist containing export properties."
       (org-format-latex cache-relpath nil nil cache-dir nil
             "Creating LaTeX Image..." nil processing-type)
       (buffer-string))))
+
+;; this doesnt work properly unfortunately
+(defun export-lisp ()
+  "export a lisp project"
+  (interactive)
+  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230520175032-convolutional_neural_network.org" "~/lisp/20230520175032-convolutional_neural_network.lisp")
+  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230503204107-common_lisp_math.org" "~/lisp/20230503204107-common_lisp_math.lisp")
+  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230224163920-common_lisp.org" "~/lisp/20230224163920-common_lisp.lisp")
+  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230806001155-training_on_mnist_2.org" "~/lisp/20230806001155-training_on_mnist_2.lisp"))
+
+;; temporary fix for latex preview exports
+(plist-put org-html-latex-image-options :inline "svg")
+;; temporary fix for ox-hugo with new org latex preview system
+(advice-add 'org-blackfriday--update-ltximg-path
+            :around
+            (lambda (orig-fn html-string)
+              (if (plist-get org-html-latex-image-options :inline)
+                  html-string
+                (funcall orig-fn html-string)))
+            '((name . inline-image-workaround)))
+
+(setq org-publish-project-alist
+      '(("orgfiles"
+         :base-directory "~/brain/notes/"
+         :base-extension "org"
+         :publishing-directory "~/publish/"
+         :publishing-function org-html-publish-to-html
+         ;; :exclude "PrivatePage.org" ;; regexp
+         :headline-levels 3
+         :section-numbers nil
+         :with-toc nil
+         :recursive t
+         :html-preamble t)
+
+        ("images"
+         :base-directory "~/brain/"
+         :base-extension "jpg\\|gif\\|png\\|webp\\|jpeg\\|svg"
+         :publishing-directory "~/publish/"
+         :recursive t
+         :publishing-function org-publish-attachment)
+
+        ("website" :components ("orgfiles" "images"))))
+
+;; https://karthinks.com/software/a-consistent-structural-editing-interface/
+(repeat-mode 1)
+(defvar structural-edit-map
+  (let ((map (make-sparse-keymap)))
+    (pcase-dolist (`(,k . ,f)
+                   '(("u" . backward-up-list)
+                     ("f" . forward-sexp)
+                     ("b" . backward-sexp)
+                     ("d" . down-list)
+                     ("k" . kill-sexp)
+                     ("n" . sp-next-sexp)
+                     ("p" . sp-previous-sexp)
+                     ("K" . sp-kill-hybrid-sexp)
+                     ("]" . sp-forward-slurp-sexp)
+                     ("[" . sp-backward-slurp-sexp)
+                     ("}" . sp-forward-barf-sexp)
+                     ("{" . sp-backward-barf-sexp)
+                     ("C" . sp-convolute-sexp)
+                     ("J" . sp-join-sexp)
+                     ("S" . sp-split-sexp)
+                     ("R" . sp-raise-sexp)
+                     ("\\" . indent-region)
+                     ("/" . undo)
+                     ("t" . transpose-sexps)
+                     ("x" . eval-defun)))
+      (define-key map (kbd k) f))
+    map))
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'structural-edit-map))
+ structural-edit-map)
