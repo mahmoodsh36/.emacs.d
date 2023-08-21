@@ -1,3 +1,5 @@
+#+begin_comment
+i dont need this anymore, i use prerendered svg's and inline them
 #+begin_export html
 <p style="height:0px; display: none;">
   \(\DeclareMathOperator{\spn}{span}\)
@@ -18,9 +20,7 @@
   \(\DeclareMathOperator*{\argmax}{arg\,max}\
   \(\DeclareMathOperator*{\argmin}{arg\,min}\)
 </p>
-#+end_export
 
-#+begin_export html
 <!-- mathjax -->
 <script>
 // auto load modules like cancel
@@ -60,6 +60,7 @@ window.onload = function() {
 <script type="text/javascript" id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
 </script>
 #+end_export
+#+end_comment
 
 #+begin_comment
 /*
@@ -128,9 +129,12 @@ pre {
   {\end{tcolorbox}}
 #+end_comment
 
+#+begin_comment
+dont think i need this
 #+begin_export latex
 \begin{note}
 this document and others can be found on my website\\
 \url{https://mahmoodsheikh36.github.io/}
 \end{note}
 #+end_export
+#+end_comment
