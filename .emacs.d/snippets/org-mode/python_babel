@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: python babel block
+# key: an
+# --
+#+begin_src python
+  $0
+#+end_src

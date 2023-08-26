@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: julia org-babel block
+# key: aj
+# --
+#+begin_src julia
+  $0
+#+end_src
