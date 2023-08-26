@@ -17,7 +17,7 @@
 \usepackage{tikz-3dplot}
 \usepackage{mathtools}
 \usepackage{pgfplots}
-\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections}%,graphdrawing}
+\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections}
 \usepackage{centernot}
 \usepackage{lmodern}
 \usepackage{physics}
@@ -35,7 +35,13 @@
 % \tikzstyle{every picture}+=[remember picture]
 \usepackage{enumitem}
 \usepackage{caption}
-% \usegdlibrary{force}
+\usepackage{iftex}
+\ifLuaTeX
+\usetikzlibrary{positioning,calc,graphs,graphdrawing,quotes}
+\usegdlibrary{force}
+\else
+% ⟨material not for LuaTEX⟩
+\fi
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
