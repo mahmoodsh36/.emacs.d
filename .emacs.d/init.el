@@ -398,7 +398,7 @@
       (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
       (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
-      (general-define-key :states '(normal motion) :keymaps 'slime-repl-mode "SPC b k" 'slime-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
+      (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode "SPC b k" 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
@@ -448,12 +448,7 @@
       ;;                     (lambda ()
       ;;                       (interactive)
       ;;                       (org-roam-capture nil "t")))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x"
-                          (lambda ()
-                            (interactive)
-                            (let ((org-startup-with-latex-preview nil))
-                              (org-to-pdf)
-                              (org-hugo-export-to-md))))
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x" #'export-current-buffer)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
       ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
@@ -514,7 +509,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
                           (lambda ()
                             (interactive)
-                            (let ((current-prefix-arg '-)) (call-interactively 'slime))))
+                            (let ((current-prefix-arg '-)) (call-interactively 'sly))))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" 'vterm)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
@@ -547,8 +542,8 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
       (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
-      ;; some slime keys
-      (general-define-key :states '(normal motion) :keymaps 'slime-repl-mode-map "K" 'slime-describe-symbol)
+      ;; some sly keys
+      ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
 
       ;; key to clear the screen in eshell
       (defun run-this-in-eshell (cmd)
@@ -567,17 +562,28 @@
                   (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
       (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
 
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'slime-compile-defun)
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'slime-eval-buffer)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
       (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC z"
                           (lambda ()
                             (interactive)
-                            (slime-end-of-defun)
-                            (call-interactively 'slime-eval-last-expression-in-repl)))
+                            (sly-end-of-defun)
+                            (call-interactively 'sly-eval-last-expression-in-repl)))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
+      (general-define-key :states '(normal) :keymaps 'override "SPC s m" 'man)
 
       ;; language-specific keybindings
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'slime-repl-inspect)
-      (general-define-key :states '(normal) :keymaps 'slime-repl-mode-map "SPC l i" 'slime-repl-inspect)
+      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'sly-repl-inspect)
+      (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l i" 'sly-repl-inspect)
+      (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l s" 'sly-inspect-presentation-at-point)
+      (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode "SPC c" 'eval-buffer)
+
+      ;; python/elpy
+      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC x" 'elpy-shell-send-defun)
+      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l x" 'elpy-shell-send-defun)
+      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l t" 'elpy-shell-send-statement)
+      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC c" 'elpy-shell-send-buffer)
+      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l b" 'elpy-shell-send-buffer)
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -640,10 +646,10 @@ space rather than before."
             ad-do-it
             (evil-normal-state))))
 
-      (use-package evil-snipe
-        :config
-        (evil-snipe-override-mode 1)
-        (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
+      ;; (use-package evil-snipe
+      ;;   :config
+      ;;   (evil-snipe-override-mode 1)
+      ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
       )
   (if enable-god
@@ -971,7 +977,7 @@ space rather than before."
   (global-flycheck-mode))
 
 ;; edit multiple instances of a word simulataneously
-(use-package iedit)
+;; (use-package iedit)
 
 ;; highlight surrounding parentheses
 (use-package highlight-parentheses
@@ -1216,7 +1222,7 @@ space rather than before."
   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
-;; best terminal emulation
+;; best terminal emulation, required for julia-snail
 (use-package vterm)
 
 ;; check which keys i press most
@@ -1364,44 +1370,47 @@ space rather than before."
 
 (use-package vimrc-mode)
 
-;; (use-package sly
-;;   :quelpa (:host github :repo "joaotavora/sly")
-;;   :config
-;;   (setq inferior-lisp-program "")
-;;   (setq sly-lisp-implementations
-;;         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
-;;           (clisp ("clisp"))
-;;           (ecl ("ecl"))
-;;           (cmucl ("cmucl"))
-;;           (ccl ("ccl"))
-;;           (maxima ("rmaxima" "-r" "to_lisp();"))))
-;;   ;; make org babel use sly instead of slime
-;;   (setq org-babel-lisp-eval-fn #'sly-eval)
-;;   (setq sly-mrepl-history-file-name (concat brain-path "/sly_history")))
-(use-package slime
+(use-package sly
+  :quelpa (:host github :repo "joaotavora/sly")
   :config
   (setq inferior-lisp-program "")
-  (slime-setup '(slime-fancy
-                 slime-sbcl-exts
-                 slime-scheme
-                 slime-sprof
-                 slime-asdf
-                 slime-indentation
-                 slime-cl-indent
-                 slime-trace-dialog
-                 slime-repl
-                 slime-scratch))
-  (setq slime-lisp-implementations
+  (setq sly-lisp-implementations
         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
           (clisp ("clisp"))
           (ecl ("ecl"))
           (cmucl ("cmucl"))
           (ccl ("ccl"))
           (maxima ("rmaxima" "-r" "to_lisp();"))))
-  ;; disable evil-mode 
-  (setq slime-repl-history-file (concat brain-path "/slime_history"))
-  (setq slime-repl-history-size 1000000))
+  ;; make org babel use sly instead of slime
+  (setq org-babel-lisp-eval-fn #'sly-eval)
+  (setq sly-mrepl-history-file-name (concat brain-path "/sly_history"))
+  ;; i think this increases history file size
+  (setq comint-input-ring-size 1000000))
+;; (use-package slime
+;;   :config
+;;   (setq inferior-lisp-program "")
+;;   (slime-setup '(slime-fancy
+;;                  slime-sbcl-exts
+;;                  slime-scheme
+;;                  slime-sprof
+;;                  slime-asdf
+;;                  slime-indentation
+;;                  slime-cl-indent
+;;                  slime-trace-dialog
+;;                  slime-repl
+;;                  slime-scratch))
+;;   (setq slime-lisp-implementations
+;;         '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
+;;           (clisp ("clisp"))
+;;           (ecl ("ecl"))
+;;           (cmucl ("cmucl"))
+;;           (ccl ("ccl"))
+;;           (maxima ("rmaxima" "-r" "to_lisp();"))))
+;;   ;; disable evil-mode 
+;;   (setq slime-repl-history-file (concat brain-path "/slime_history"))
+;;   (setq slime-repl-history-size 1000000))
 
+;; flash cursor when jumping around
 (use-package beacon
   :config
   (beacon-mode 1))
@@ -1411,9 +1420,9 @@ space rather than before."
 
 ;; some packages that i use are to replicate evil functionality
 ;; ;; highlight text inside common delimiters
-;; (use-package expand-region
-;;   :config
-;;   (global-set-key (kbd "C-;") 'er/expand-region))
+(use-package expand-region
+  :config
+  (global-set-key (kbd "C-;") 'er/expand-region))
 
 ;; ;; modify/add common delimiters around text
 (use-package smartparens)
@@ -1440,6 +1449,14 @@ space rather than before."
   ;; (add-hook 'org-mode-hook #'org-inline-anim-animate-all)
   (setq org-inline-anim-loop t)
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
+
+(use-package julia-snail
+  :hook (julia-mode . julia-snail-mode)
+  :custom ((julia-snail-extensions . (repl-history formatter ob-julia))))
+
+(use-package elpy
+  :init
+  (elpy-enable))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1508,6 +1525,7 @@ space rather than before."
               (message "couldnt fetch lyrics :("))))
       (find-file song-file))))
 
+;; these spotify functions are old af, they were for when i had a mac
 (defun delete-spotify-lyrics-file ()
   (interactive)
   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
@@ -1547,6 +1565,7 @@ space rather than before."
 (add-hook 'org-babel-after-execute-hook (lambda ()
                                           (interactive)
                                           (clear-image-cache)
+                                          ;; (org-latex-preview) ;; this makes everything super slow and even buggy
                                           (org-display-inline-images)))
 ;; render latex preview after evaluating code blocks, not needed anymore org detects changes by itself now
 ;; (add-hook 'org-babel-after-execute-hook 'org-latex-preview)
@@ -2045,13 +2064,14 @@ space rather than before."
 (add-hook 'before-save-hook #'update-todo-tag)
 (defun update-todo-tag ()
   "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
-  (when (and (not (active-minibuffer-window))
-             (is-buffer-roam-note))
-    (save-excursion
-      (goto-char (point-min))
-      (if (buffer-contains-todo)
-          (org-roam-tag-add '("todo"))
-        (ignore-errors (org-roam-tag-remove '("todo"))))))
+  (let ((kill-ring)) ;; keep kill ring, dont modify it
+    (when (and (not (active-minibuffer-window))
+               (is-buffer-roam-note))
+      (save-excursion
+        (goto-char (point-min))
+        (if (buffer-contains-todo)
+            (org-roam-tag-add '("todo"))
+          (ignore-errors (org-roam-tag-remove '("todo")))))))
   (agenda-files-update))
 (defun is-buffer-roam-note ()
   "Return non-nil if the currently visited buffer is a note."
@@ -2102,6 +2122,8 @@ space rather than before."
 ;;   (plist-put (cdr pos) :programs '("lualatex" "dvisvgm")))
 ;; make org-agenda open up in the current window
 (setq org-agenda-window-setup 'current-window)
+;; dont prompt for downloading remote files on export
+(setq org-resource-download-policy nil)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
@@ -2135,7 +2157,7 @@ space rather than before."
    (lambda ()
      (org-babel-execute-buffer))))
 ;; most/all of my code files are lisp, load them with sly/slime
-(add-hook 'slime-connected-hook 'execute-code-files)
+(add-hook 'sly-connected-hook 'execute-code-files)
 
 (defun xenops-prerender ()
   "prerender latex blocks in roam files"
@@ -2186,13 +2208,14 @@ space rather than before."
 
 (defun update-math-file ()
   "add/remove the math tag to the file"
-  (when (and (not (active-minibuffer-window))
-             (is-buffer-roam-note))
-    (save-excursion
-      (goto-char (point-min))
-      (if (buffer-contains-math)
-          (org-roam-tag-add '("math"))
-        (ignore-errors (org-roam-tag-remove '("math")))))))
+  (let ((kill-ring)) ;; keep kill ring, dont modify it
+    (when (and (not (active-minibuffer-window))
+               (is-buffer-roam-note))
+      (save-excursion
+        (goto-char (point-min))
+        (if (buffer-contains-math)
+            (org-roam-tag-add '("math"))
+          (ignore-errors (org-roam-tag-remove '("math"))))))))
 (add-hook 'before-save-hook #'update-math-file)
 
 (defun find-math-files (basedir)
@@ -2448,7 +2471,10 @@ note that this doesnt work for exports"
 ;; disable evil mode in deadgrep, they dont work well together
 (evil-set-initial-state 'deadgrep-mode 'emacs)
 (evil-set-initial-state 'calc-mode 'emacs)
-(evil-set-initial-state 'sldb-mode 'emacs)
+;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
+(evil-set-initial-state 'sly-db-mode 'emacs)
+;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
+(evil-set-initial-state 'vterm-mode 'emacs)
 
 ;; temporary fix for ox-hugo exporting issues with org 9.7-pre
 (defun org-html-format-latex (latex-frag processing-type info)
@@ -2506,6 +2532,9 @@ INFO is a plist containing export properties."
                   html-string
                 (funcall orig-fn html-string)))
             '((name . inline-image-workaround)))
+;; make org not evaluate code blocks on exporting
+(add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
+(add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
 
 (setq org-publish-project-alist
       '(("orgfiles"
@@ -2560,3 +2589,91 @@ INFO is a plist containing export properties."
  (lambda (_ cmd)
    (put cmd 'repeat-map 'structural-edit-map))
  structural-edit-map)
+
+;; automatic recursive exporting of linked notes
+(defun nodes-linked-from-node (node)
+  "return list of roam nodes linked to from node with node-id";
+  (when node
+    (mapcar
+     #'org-roam-node-from-id
+     (mapcar
+      #'car
+      (org-roam-db-query
+       [:select :distinct [dest]
+                :from links
+                :where (= source $s1)
+                :and (= type "id")]
+       (org-roam-node-id node))))))
+
+(defun nodes-linked-from-node-file (node)
+  (when node
+    (mapcar
+     #'org-roam-node-from-id
+     (mapcar
+      #'car
+      (org-roam-db-query
+       [:select :distinct [links:dest]
+                :from links
+                :left-join nodes
+                :on (= links:source nodes:id)
+                :left-join files
+                :on (= files:file nodes:file)
+                :where (= nodes:file $s1)]
+       (org-roam-node-file node))))))
+
+(defun this-buffer-roam-node ()
+  "get the roam-node of the current buffer"
+  (save-excursion
+    (goto-char 0)
+    (when (org-id-get)
+      (org-roam-node-from-id (org-id-get)))))
+
+(defun nodes-linked-from-this-node ()
+  "nodes linked to from this node"
+  (let ((node (this-buffer-roam-node)))
+    (nodes-linked-from-node node)))
+
+(defun nodes-linked-from-this-file ()
+  "nodes linked to from this node"
+  (let ((node (this-buffer-roam-node)))
+    (nodes-linked-from-node-file node)))
+
+(defun export-node (node)
+  "export a node's file to both hugo md and pdf"
+  (let ((org-startup-with-latex-preview t);;nil)
+        (file (org-roam-node-file node)))
+    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+      (org-to-pdf)
+      (org-hugo-export-to-md))))
+
+(defun export-current-buffer ()
+  "gets the node associated with the current buffer, exports it"
+  (interactive)
+  (let ((node (this-buffer-roam-node)))
+    (when node
+      (export-node node))))
+
+(defun export-current-buffer-recursively ()
+  "gets the node associated with the current buffer, exports it with export-node-recursively, see its docstring"
+  (interactive)
+  (let ((node (this-buffer-roam-node)))
+    (when node
+      (export-node-recursively node))))
+
+(defun export-node-recursively (node)
+  (let ((export-exceptions nil))
+    (export-node-recursively-helper node)))
+
+(defun export-node-recursively-helper (node)
+  "export current buffer, export all files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node of the current buffer exists in, exceptions is used for recursion to keep a record of exported nodes"
+  (when node
+    (when (not (cl-find node export-exceptions
+                        :test (lambda (node1 node2)
+                                (string= (org-roam-node-file node1)
+                                         (org-roam-node-file node2)))))
+      (push node export-exceptions)
+      (let ((nodes (nodes-linked-from-node-file node)))
+        (dolist (other-node nodes)
+          (export-node-recursively-helper other-node)))
+      (message (format "exporting %s" (org-roam-node-file node)))
+      (ignore-errors (export-node node)))))
