@@ -127,6 +127,7 @@ table th {
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .collage img {
   max-width: 95px;
@@ -147,7 +148,7 @@ table th {
   text-align: center;
   border: 1px solid blue;
   border-radius: 6px;
-  padding: 5px 0;
+  padding: 5px 2px;
 
   /* Position the tooltip */
   position: absolute;

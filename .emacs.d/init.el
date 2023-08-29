@@ -65,7 +65,7 @@
   (modify-syntax-entry ?_ "w"))
 ;;(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
 ;; highlight current line
-;; (global-hl-line-mode)
+(global-hl-line-mode)
 ;; reload file automatically
 (global-auto-revert-mode t)
 ;; enable all disabled commands
@@ -106,7 +106,7 @@
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
 (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-;; (global-whitespace-mode)
+(global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; relative line numbers
@@ -380,7 +380,7 @@
 
       (general-evil-setup)
 
-      (evil-define-key 'normal 'TeX-mode-map (kbd "SPC v") 'open-current-document-this-window)
+      (general-define-key :states 'normal :keymaps '(org-mode-map TeX-mode-map) "SPC v" 'open-current-document-this-window)
       (general-define-key :states 'normal "s" 'save-buffer)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
       (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
@@ -404,7 +404,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
       (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
       (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'space-x-with-latex-header-hack)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
       (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
       (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
@@ -650,6 +650,9 @@ space rather than before."
       ;;   :config
       ;;   (evil-snipe-override-mode 1)
       ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
+
+      ;; so that forward-sexp works at end of line, see https://github.com/Fuco1/smartparens/issues/1037
+      (setq evil-move-beyond-eol t)
 
       )
   (if enable-god
@@ -1452,7 +1455,9 @@ space rather than before."
 
 (use-package julia-snail
   :hook (julia-mode . julia-snail-mode)
-  :custom ((julia-snail-extensions . (repl-history formatter ob-julia))))
+  :custom
+  (julia-snail-extensions '(repl-history formatter ob-julia))
+  (julia-snail/ob-julia-mirror-output-in-repl t))
 
 (use-package elpy
   :init
@@ -1831,6 +1836,7 @@ space rather than before."
 ;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
 ;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
 ;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
+;; i think this is irrelevant at this point
 (defun space-x-with-latex-header-hack ()
   (interactive)
   (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
@@ -1848,8 +1854,9 @@ space rather than before."
         (:exports . "results")
         ;; (:fit . t)
         ;; (:imagemagick . t)
-        (:eval . "no-export")
-        (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))))
+        ;; (:eval . "no-export")
+        ;; (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
+        ))
 ;; make org export deeply nested headlines as headlines still
 (setq org-export-headline-levels 20)
 ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -1874,12 +1881,14 @@ space rather than before."
             (org-roam-db-sync)
             (org-agenda-list)
             (delete-other-windows)
-            (switch-to-light-theme)
+            ;; (switch-to-light-theme)
+            (switch-to-dark-theme)
             ))
 ;; disable multiplication precedence over division
 (setq calc-multiplication-has-precedence nil)
 ;; stop org mode from moving tags far after headers
 (setq org-tags-column 0)
+;; inherit attach folders
 (setq org-attach-use-inheritance t)
 ;; use html5 for org exports
 (setq org-html-html5-fancy t)
@@ -1903,8 +1912,8 @@ space rather than before."
   (disable-theme 'doom-gruvbox-light)
   (load-theme 'darktooth t)
   ;; (load-theme 'minimal t)
-  ;; (set-face-attribute 'whitespace-space nil :background nil)
-  ;; (set-face-attribute 'whitespace-newline nil :background nil)
+  (set-face-attribute 'whitespace-space nil :background nil)
+  (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
@@ -1915,10 +1924,10 @@ space rather than before."
   (disable-theme 'darktooth)
   (load-theme 'doom-gruvbox-light t)
   (set-face-attribute 'org-block nil :background nil)
-  ;; (set-face-attribute 'whitespace-space nil :background nil)
-  ;; (set-face-attribute 'whitespace-newline nil :background nil)
+  (set-face-attribute 'whitespace-space nil :background nil)
+  (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
-  ;; (set-face-background hl-line-face "PeachPuff3"))
+  (set-face-background hl-line-face "PeachPuff3")
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
@@ -2124,6 +2133,10 @@ space rather than before."
 (setq org-agenda-window-setup 'current-window)
 ;; dont prompt for downloading remote files on export
 (setq org-resource-download-policy nil)
+;; enable eval: keyword in local variables
+;; (setq enable-local-eval t)
+;; dont number headers on exports
+(setq org-export-with-section-numbers nil)
 
 (defun go-through-all-roam-files (callback)
   "run a callback function on each file in the org-roam database"
