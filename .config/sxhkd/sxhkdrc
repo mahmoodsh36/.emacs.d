@@ -24,11 +24,12 @@ super + x ; {h,m,R,c,T,o,i}
       notify-send 'launched Envision' && java -jar ~/data/dl/Envision\ Loader.jar,\
       emacsclient -c,\
       pgrep transmission-da || transmission-daemon; terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\"",\
-      terminal_with_cmd.sh btop,\
+      terminal_with_cmd.sh top,\
       sxiv ~/data/images/scrots/$(ls -t ~/data/images/scrots | head -1)}
 
-super + x ; {n}
-     {pr="$(xclip -selection clipboard -o)"; notify-send "opening $pr"; xdg-open "$pr"}
+super + x ; {n,a}
+     {pr="$(xclip -selection clipboard -o)"; notify-send "opening $pr"; xdg-open "$pr",\
+      add_magnet.sh "$(xclip -selection clipboard -o)"}
 
 
 super + ctrl + p ; {i, u}
