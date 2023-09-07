@@ -1,6 +1,6 @@
 # exports
-export TERMINAL="st"
-export BROWSER="firefox"
+export TERMINAL="kitty"
+export BROWSER="google-chrome-stable"
 export EDITOR="nvim"
 
 # fix a java swing problem
