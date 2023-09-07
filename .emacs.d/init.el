@@ -486,13 +486,14 @@
                     (search-open-file-in-emacs "~/data" "")))
 
       ;; keybinding to evaluate math expressions
-      ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
-      ;;                     (lambda ()
-      ;;                       (interactive)
-      ;;                       (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
-      ;;                       (end-of-line)
-      ;;                       (insert " ")
-      ;;                       (insert result)))
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+                          (lambda ()
+                            (interactive)
+                            (calc-latex-language 2)
+                            (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
+                            (end-of-line)
+                            (insert " ")
+                            (insert result)))
 
       ;; general keys
       ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
@@ -652,7 +653,7 @@ space rather than before."
       ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
       ;; so that forward-sexp works at end of line, see https://github.com/Fuco1/smartparens/issues/1037
-      (setq evil-move-beyond-eol t)
+      ;; (setq evil-move-beyond-eol t)
 
       )
   (if enable-god
@@ -699,7 +700,7 @@ space rather than before."
         ;;     (beginning-of-line)
         ;;     (set-mark-command nil)
         ;;     (end-of-line))
-        
+
         ;;   (ryo-modal-key
         ;;    "g" '(("s" save-buffer)
         ;;          ("g" magit-status)
@@ -1031,6 +1032,14 @@ space rather than before."
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (setq lsp-ui-doc-delay 0)
   (setq lsp-ui-sideline-delay 0)
+  (setq lsp-ui-sideline-show-diagnostics t)
+  (setq lsp-ui-sideline-show-hover t)
+  (setq lsp-ui-sideline-show-symbol t)
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-lens-enable t)
+  (setq lsp-completion-show-detail t)
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
@@ -1992,19 +2001,16 @@ space rather than before."
         (jump-to-register 'my-stored-pos)))))
 
 ;; disable stupid ox-hugo relative path exports
-(defun non-relative-path (obj)
-  "return non-relative path for hugo"
-  (interactive)
-  (if (eq (type-of obj) 'string)
-      (progn
-        ;; (message (format "filename: %s" obj))
-        (file-name-nondirectory obj))
-    obj))
-(advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
-;; make hugo page dates be the export date of the document
-(defun org-date-advice (whatever-time)
-  (org-format-time-string (cdr org-time-stamp-formats)))
-(advice-add 'org-hugo--get-date :filter-return 'org-date-advice)
+;; (defun non-relative-path (obj)
+;;   "return non-relative path for hugo"
+;;   (interactive)
+;;   (if (eq (type-of obj) 'string)
+;;       (progn
+;;         ;; if we're here, obj is a link to a file, file-truename can be used to get the full path of it
+;;         ;; (message (format "filename: %s" obj))
+;;         (file-name-nondirectory obj))
+;;     obj))
+;; (advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
 
 ;; move over text object
 ;; (evil-define-motion evil-forward-text-object
@@ -2138,30 +2144,23 @@ space rather than before."
 ;; dont number headers on exports
 (setq org-export-with-section-numbers nil)
 
-(defun go-through-all-roam-files (callback)
-  "run a callback function on each file in the org-roam database"
-  (dolist (file (all-roam-files))
-    (if (not (eq callback nil))
-        (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          (if (is-buffer-roam-note)
-              (funcall callback))))))
+;; (defun go-through-all-roam-files (callback)
+;;   "run a callback function on each file in the org-roam database"
+;;   (dolist (file (all-roam-files))
+;;     (if (not (eq callback nil))
+;;         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+;;           (if (is-buffer-roam-note)
+;;               (funcall callback))))))
 
 (defun go-through-roam-files-with-tag (tag-name callback)
   "run a callback function on each file tagged with tag-name"
   (dolist (file (roam-files-with-tag tag-name))
     (if (not (eq callback nil))
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          (if (is-buffer-roam-note)
-              (funcall callback))))))
+          (when (is-buffer-roam-note)
+            (funcall callback)
+            (kill-this-buffer))))))
 
-;; (defun lob-reload ()
-;;   "load files tagged with 'code' into the org babel library, also execute them"
-;;   (interactive)
-;;   (go-through-roam-files-with-tag
-;;    "code"
-;;    (lambda ()
-;;      (org-babel-execute-buffer)
-;;      (org-babel-lob-ingest (buffer-file-name)))))
 (defun execute-code-files ()
   "execute files tagged with 'code'"
   (interactive)
@@ -2169,33 +2168,42 @@ space rather than before."
    "code"
    (lambda ()
      (org-babel-execute-buffer))))
+(defun lob-reload ()
+  "load files tagged with 'code' into the org babel library (lob - library of babel)"
+  (interactive)
+  (go-through-roam-files-with-tag
+   "code"
+   (lambda ()
+     (org-babel-lob-ingest (buffer-file-name)))))
 ;; most/all of my code files are lisp, load them with sly/slime
 (add-hook 'sly-connected-hook 'execute-code-files)
+;; i need those in library of babel on startup too
+(lob-reload)
 
-(defun xenops-prerender ()
-  "prerender latex blocks in roam files"
-  (interactive)
-  (go-through-roam-files-with-tag
-   "math"
-   (lambda ()
-     (message "processing math file %s" (buffer-file-name)))))
+;; (defun xenops-prerender ()
+;;   "prerender latex blocks in roam files"
+;;   (interactive)
+;;   (go-through-roam-files-with-tag
+;;    "math"
+;;    (lambda ()
+;;      (message "processing math file %s" (buffer-file-name)))))
 
-(defun run-all-code-blocks ()
-  "run code blocks in all org-roam files"
-  (interactive)
-  (go-through-all-roam-files
-   (lambda ()
-     (message "processing file %s" (buffer-file-name))
-     (org-babel-execute-buffer))))
+;; (defun run-all-code-blocks ()
+;;   "run code blocks in all org-roam files"
+;;   (interactive)
+;;   (go-through-all-roam-files
+;;    (lambda ()
+;;      (message "processing file %s" (buffer-file-name))
+;;      (org-babel-execute-buffer))))
 
 ;; (go-through-roam-files-with-tag "math" (lambda () (message buffer-file-name)))
-(defun publicize-files ()
-  (interactive)
-  (go-through-roam-files-with-tag
-   "computer-science"
-   (lambda ()
-     (org-roam-tag-add '("public"))
-     (save-buffer))))
+;; (defun publicize-files ()
+;;   (interactive)
+;;   (go-through-roam-files-with-tag
+;;    "computer-science"
+;;    (lambda ()
+;;      (org-roam-tag-add '("public"))
+;;      (save-buffer))))
 
 (defun buffer-contains-substring (string)
   "check if the current buffer contains a specific string"
@@ -2221,7 +2229,8 @@ space rather than before."
 
 (defun update-math-file ()
   "add/remove the math tag to the file"
-  (let ((kill-ring)) ;; keep kill ring, dont modify it
+  (let ((kill-ring)  ;; keep kill ring, dont modify it
+        buffer-undo-list) ;; keep the undo "ring" too, doesnt work tho, hmmmm
     (when (and (not (active-minibuffer-window))
                (is-buffer-roam-note))
       (save-excursion
@@ -2526,16 +2535,7 @@ INFO is a plist containing export properties."
             "Creating LaTeX Image..." nil processing-type)
       (buffer-string))))
 
-;; this doesnt work properly unfortunately
-(defun export-lisp ()
-  "export a lisp project"
-  (interactive)
-  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230520175032-convolutional_neural_network.org" "~/lisp/20230520175032-convolutional_neural_network.lisp")
-  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230503204107-common_lisp_math.org" "~/lisp/20230503204107-common_lisp_math.lisp")
-  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230224163920-common_lisp.org" "~/lisp/20230224163920-common_lisp.lisp")
-  (org-babel-tangle-file "/home/mahmooz/brain/notes/20230806001155-training_on_mnist_2.org" "~/lisp/20230806001155-training_on_mnist_2.lisp"))
-
-;; temporary fix for latex preview exports
+;; temporary fix for latex preview exports in html
 (plist-put org-html-latex-image-options :inline "svg")
 ;; temporary fix for ox-hugo with new org latex preview system
 (advice-add 'org-blackfriday--update-ltximg-path
@@ -2653,7 +2653,7 @@ INFO is a plist containing export properties."
 
 (defun export-node (node)
   "export a node's file to both hugo md and pdf"
-  (let ((org-startup-with-latex-preview t);;nil)
+  (let ((org-startup-with-latex-preview nil)
         (file (org-roam-node-file node)))
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
       (org-to-pdf)
@@ -2674,11 +2674,12 @@ INFO is a plist containing export properties."
       (export-node-recursively node))))
 
 (defun export-node-recursively (node)
+  "export an org-roam recursively with `export-node`"
   (let ((export-exceptions nil))
     (export-node-recursively-helper node)))
 
 (defun export-node-recursively-helper (node)
-  "export current buffer, export all files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node of the current buffer exists in, exceptions is used for recursion to keep a record of exported nodes"
+  "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `export-exceptions` is used for recursion to keep a record of exported nodes"
   (when node
     (when (not (cl-find node export-exceptions
                         :test (lambda (node1 node2)
@@ -2687,6 +2688,48 @@ INFO is a plist containing export properties."
       (push node export-exceptions)
       (let ((nodes (nodes-linked-from-node-file node)))
         (dolist (other-node nodes)
+          (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
           (export-node-recursively-helper other-node)))
-      (message (format "exporting %s" (org-roam-node-file node)))
-      (ignore-errors (export-node node)))))
+      (when (and node (member "public" (org-roam-node-tags node)))
+        (message (format "exporting: %s" (org-roam-node-file node)))
+        (export-node node)))))
+
+(defun my-org-link-advice (fn link desc info)
+  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
+  (let* ((link-type (org-element-property :type link))
+         (link-path (org-element-property :path link))
+         (is-id-link (string= link-type "id")))
+    (if is-id-link
+        (let* ((node (org-roam-node-from-id link-path))
+               (tags (org-roam-node-tags node)))
+          (if (member "public" tags) ;; if note is public export as usual, otherwise dont export it as link but just as text
+              (funcall fn link desc info)
+            (format "<b>%s</b>" desc)))
+      (funcall fn link desc info))))
+(advice-add #'org-html-link :around #'my-org-link-advice)
+(advice-add #'org-hugo-link :around #'my-org-link-advice)
+
+(defun message-no-format (msg)
+  "invoke 'message' without it invoking 'format' (not really)"
+  (message "%s" msg))
+
+;; set org-mode date's export according to file creation date
+(defun file-modif-time (filepath)
+  "the time the file was last modified"
+  (let ((atr (file-attributes filepath)))
+    (file-attribute-modification-time atr)))
+;; (defun file-status-change-time (filepath)
+;;   (let ((atr (file-attributes filepath)))
+;;     (file-attribute-status-change-time atr)))
+(defun my-org-date-advice (fn info &optional fmt)
+  (let ((myfile (plist-get info :input-file)))
+    (format-time-string (cdr org-time-stamp-formats) (file-modif-time myfile))))
+(advice-add #'org-export-get-date :around #'my-org-date-advice)
+
+(defun export-all-public ()
+  "export nodes with tag 'public'"
+  (interactive)
+  (go-through-roam-files-with-tag
+   "public"
+   (lambda ()
+     (export-node-recursively (org-roam-node-from-id (org-id-get))))))
