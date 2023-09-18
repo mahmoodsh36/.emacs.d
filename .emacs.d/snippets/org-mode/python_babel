@@ -2,6 +2,6 @@
 # name: python babel block
 # key: an
 # --
-#+begin_src python
+#+begin_src python :session
   $0
 #+end_src

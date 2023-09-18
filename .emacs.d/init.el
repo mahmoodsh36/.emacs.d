@@ -489,7 +489,7 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
                           (lambda ()
                             (interactive)
-                            (calc-latex-language 2)
+                            (call-interactively 'calc-latex-language)
                             (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
                             (end-of-line)
                             (insert " ")
@@ -511,7 +511,7 @@
                           (lambda ()
                             (interactive)
                             (let ((current-prefix-arg '-)) (call-interactively 'sly))))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" 'vterm)
+      (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" #'eat);;'vterm)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
       (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
       (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
@@ -573,6 +573,10 @@
       (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
       (general-define-key :states '(normal) :keymaps 'override "SPC s m" 'man)
 
+      ;; general keys for programming
+      (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
+      (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)
+
       ;; language-specific keybindings
       (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'sly-repl-inspect)
       (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l i" 'sly-repl-inspect)
@@ -580,11 +584,15 @@
       (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode "SPC c" 'eval-buffer)
 
       ;; python/elpy
+      (general-define-key :states '(normal) :keymaps 'override "SPC s p" 'run-python)
       (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC x" 'elpy-shell-send-defun)
       (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l x" 'elpy-shell-send-defun)
       (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l t" 'elpy-shell-send-statement)
       (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC c" 'elpy-shell-send-buffer)
       (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l b" 'elpy-shell-send-buffer)
+
+      ;;sagemasth
+      (general-define-key :states '(normal) :keymaps 'sage-shell-mode-map "SPC b k" 'comint-quit-subjob)
 
       ;; evil mode multiple cursors
       (use-package evil-mc
@@ -1030,16 +1038,16 @@ space rather than before."
 (use-package lsp-ui
   :config
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  (setq lsp-ui-doc-delay 0)
-  (setq lsp-ui-sideline-delay 0)
-  (setq lsp-ui-sideline-show-diagnostics t)
-  (setq lsp-ui-sideline-show-hover t)
-  (setq lsp-ui-sideline-show-symbol t)
-  (setq lsp-ui-sideline-show-code-actions t)
-  (setq lsp-ui-doc-enable t)
-  (setq lsp-ui-sideline-enable t)
-  (setq lsp-lens-enable t)
-  (setq lsp-completion-show-detail t)
+  (setq lsp-ui-doc-delay 0
+        lsp-ui-sideline-delay 0
+        lsp-ui-sideline-show-diagnostics t
+        lsp-ui-sideline-show-hover t
+        lsp-ui-sideline-show-symbol t
+        lsp-ui-sideline-show-code-actions t
+        lsp-ui-doc-enable t
+        lsp-ui-sideline-enable t
+        lsp-lens-enable t
+        lsp-completion-show-detail t)
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
@@ -1197,11 +1205,11 @@ space rather than before."
 ;;         org-appear-autosubmarkers t)
 ;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
-;; ;; more featureful ivy menus, it causes some error when switching buffers
-;; (use-package ivy-rich
-;;   :config
-;;   (ivy-rich-mode 1)
-;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+;; ;; more featureful ivy menus, it may cause some error when switching buffers
+(use-package ivy-rich
+  :config
+  (ivy-rich-mode 1)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 ;; (use-package vulpea)
 ;; (use-package dap-mode)
@@ -1316,6 +1324,7 @@ space rather than before."
 
 ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
+;; icons for ivy
 (use-package all-the-icons-ivy-rich
   :config (all-the-icons-ivy-rich-mode 1))
 
@@ -1326,6 +1335,7 @@ space rather than before."
   (add-hook 'mhtml-mode-hook 'emmet-mode)
   (add-hook 'web-mode-hook 'emmet-mode))
 
+;; transclusions (including text from other documents) for org mode
 (use-package org-transclusion)
 
 (quelpa '(eat :fetcher git
@@ -1344,6 +1354,7 @@ space rather than before."
 ;;   :config
 ;;   (add-hook 'org-mode-hook 'org-superstar-mode))
 
+;; relative line numbers
 (use-package linum-relative
   :config
   (add-hook 'prog-mode-hook 'linum-relative-mode)
@@ -1468,9 +1479,14 @@ space rather than before."
   (julia-snail-extensions '(repl-history formatter ob-julia))
   (julia-snail/ob-julia-mirror-output-in-repl t))
 
+;; for python
 (use-package elpy
   :init
   (elpy-enable))
+
+;; mastodon fediverse
+(use-package mastodon
+  :ensure t)
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -1574,7 +1590,7 @@ space rather than before."
 (setq org-log-reschedule 'time)
 (setq org-log-redeadline 'time)
 ;; show images when opening a file.
-(setq org-startup-with-inline-images t)
+(setq org-startup-with-inline-images nil)
 ;; show images after evaluating code blocks.
 (add-hook 'org-babel-after-execute-hook (lambda ()
                                           (interactive)
@@ -1712,7 +1728,10 @@ space rather than before."
   (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
 (defun open-current-document-this-window ()
   (interactive)
-  (find-file (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
+  (let ((pdf-file (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
+    (if (file-exists-p pdf-file)
+        (find-file pdf-file)
+      (message "pdf file hasnt been generated"))))
 
 ;; tex hook to auto compile on save
 ;; (add-hook
@@ -1936,7 +1955,7 @@ space rather than before."
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
-  (set-face-background hl-line-face "PeachPuff3")
+  ;; (set-face-background hl-line-face "PeachPuff3")
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
@@ -2718,12 +2737,12 @@ INFO is a plist containing export properties."
   "the time the file was last modified"
   (let ((atr (file-attributes filepath)))
     (file-attribute-modification-time atr)))
-;; (defun file-status-change-time (filepath)
-;;   (let ((atr (file-attributes filepath)))
-;;     (file-attribute-status-change-time atr)))
+(defun file-status-change-time (filepath)
+  (let ((atr (file-attributes filepath)))
+    (file-attribute-status-change-time atr)))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
-    (format-time-string (cdr org-time-stamp-formats) (file-modif-time myfile))))
+    (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
 (advice-add #'org-export-get-date :around #'my-org-date-advice)
 
 (defun export-all-public ()
@@ -2733,3 +2752,8 @@ INFO is a plist containing export properties."
    "public"
    (lambda ()
      (export-node-recursively (org-roam-node-from-id (org-id-get))))))
+
+;; org-special-edit with lsp?, laggy af
+;; (defun org-babel-edit-prep:python (babel-info)
+;;   (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
+;;   (lsp))
