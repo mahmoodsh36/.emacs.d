@@ -61,9 +61,6 @@ else
   export PS1="%1~ λ "
 fi
 
-export PYTHONSTARTUP=$HOME/.pythonrc
-export PYTHON_HISTORY_FILE=$HOME/.python_history
-
 # aliases
 alias l="ls"
 alias ls="ls --color"

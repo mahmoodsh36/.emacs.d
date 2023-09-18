@@ -14,3 +14,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1.
 export GUILE_LOAD_PATH="$HOME/workspace/guix/"
 # export PATH="$PATH:/usr/bin"
 export QT_SCALE_FACTOR=2
+
+export PYTHONSTARTUP=$HOME/.pythonrc
+export PYTHON_HISTORY_FILE=$HOME/brain/python_history
