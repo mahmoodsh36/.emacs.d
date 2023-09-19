@@ -1879,7 +1879,7 @@ space rather than before."
 (setq org-html-mathjax-options '())
 (setq org-babel-default-header-args:latex
       '((:results . "file graphics")
-        (:exports . "results")
+        ;; (:exports . "results")
         ;; (:fit . t)
         ;; (:imagemagick . t)
         ;; (:eval . "no-export")
@@ -1912,7 +1912,7 @@ space rather than before."
             ;; (switch-to-light-theme)
             (switch-to-dark-theme)
             ))
-;; disable multiplication precedence over division
+;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
 ;; stop org mode from moving tags far after headers
 (setq org-tags-column 0)
@@ -1924,12 +1924,13 @@ space rather than before."
 (defun generate-random-string (NUM)
   "generate a random alphanumerics string of length NUM."
   (interactive "P")
-  (setq random-str "")
-  (let* (($charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-         ($baseCount (length $charset)))
+  (let* ((random-str "")
+         (charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+         (baseCount (length charset)))
     (dotimes (_ (if (numberp NUM) (abs NUM) NUM))
-      (setq random-str (concat random-str (char-to-string (elt $charset (random $baseCount)))))))
-  random-str)
+      (setq random-str (concat random-str
+                               (char-to-string (elt charset (random baseCount))))))
+    random-str))
 (defun temp-file (EXT)
   (format "%stmp_%s.%s" (concat brain-path "out/") (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c R") (lambda () (interactive) (insert (generate-random-string 7))))
