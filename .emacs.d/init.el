@@ -144,7 +144,7 @@
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
-;;(setq enable-god nil)
+(setq enable-god nil)
 
 ;; need straight for tecosaur's org version, for now, so install both
 (defvar bootstrap-version)
@@ -244,486 +244,483 @@
   (global-set-key (kbd "C-x C-f") 'counsel-find-file))
 
 ;; evil-mode
-(if enable-evil
-    (progn
-      (use-package evil
-        :config
-        (evil-mode 1)
-        (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
-        ;; undo/redo keys
-        (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-        (define-key evil-normal-state-map "r" 'undo-fu-only-redo)
-        ;; make ESC cancel all
-        (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
-      ;;dont copy the overwritten text when overwriting text by pasting
-      ;;(setq-default evil-kill-on-visual-paste nil))
+(when enable-evil
+  (use-package evil
+    :config
+    (evil-mode 1)
+    (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
+    ;; undo/redo keys
+    (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+    (define-key evil-normal-state-map "r" 'undo-fu-only-redo)
+    ;; make ESC cancel all
+    (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
+  ;;dont copy the overwritten text when overwriting text by pasting
+  ;;(setq-default evil-kill-on-visual-paste nil))
 
-      ;; evil-surround for evil mode
-      (use-package evil-surround
-        :config
-        (global-evil-surround-mode 1))
+  ;; evil-surround for evil mode
+  (use-package evil-surround
+    :config
+    (global-evil-surround-mode 1))
 
-      ;; exchange portions of text more easily with evil
-      (use-package evil-exchange
-        :config
-        (evil-exchange-install))
+  ;; exchange portions of text more easily with evil
+  (use-package evil-exchange
+    :config
+    (evil-exchange-install))
 
-      ;; search for the current visual selection with *
-      (use-package evil-visualstar
-        :config
-        (global-evil-visualstar-mode))
+  ;; search for the current visual selection with *
+  (use-package evil-visualstar
+    :config
+    (global-evil-visualstar-mode))
 
-      ;; support to make evil more compatible with the whole of emacs
-      (use-package evil-collection
-        :after (evil)
-        :config
-        (evil-collection-init))
+  ;; support to make evil more compatible with the whole of emacs
+  (use-package evil-collection
+    :after (evil)
+    :config
+    (evil-collection-init))
 
-      ;; ;; display visual hints for evil actions
-      ;; (use-package evil-goggles
-      ;;   :config
-      ;;   (evil-goggles-mode))
+  ;; ;; display visual hints for evil actions
+  ;; (use-package evil-goggles
+  ;;   :config
+  ;;   (evil-goggles-mode))
 
-      ;; make line a text object - yil dil cil, etc..
-      (use-package evil-textobj-line)
+  ;; make line a text object - yil dil cil, etc..
+  (use-package evil-textobj-line)
 
-      ;; quick commenting
-      (use-package evil-nerd-commenter
-        :config
-        (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
+  ;; quick commenting
+  (use-package evil-nerd-commenter
+    :config
+    (global-set-key (kbd "M-;") 'evilnc-comment-or-uncomment-lines))
 
-      ;; evil mode support for org
-      (use-package evil-org
-        :config
-        (add-hook 'org-mode-hook 'evil-org-mode)
-        (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading return calendar))
-        (require 'evil-org-agenda)
-        (evil-org-agenda-set-keys)
-        ;; the package annoyingly binds O to another function so here im just restoring it
-        (general-define-key :states 'normal :keymaps 'override "O" 'evil-open-above)
+  ;; evil mode support for org
+  (use-package evil-org
+    :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
+    (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading return calendar))
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys)
+    ;; the package annoyingly binds O to another function so here im just restoring it
+    (general-define-key :states 'normal :keymaps 'override "O" 'evil-open-above)
 
-        ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
-        ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
-        ;; (general-define-key :states 'normal :keymaps 'override "o"
-        ;;                     (lambda ()
-        ;;                       (interactive)
-        ;;                       (evil-org-append-line 1)
-        ;;                       (evil-ret 1)
-        ;;                       (indent-according-to-mode))))
-        (general-define-key :states '(normal visual motion operator) :keymaps 'override "0" 'evil-beginning-of-line)
-        (general-define-key :states '(normal visual motion operator) :keymaps 'override "$" 'evil-end-of-line)
-        (general-define-key :states '(normal visual motion operator) :keymaps 'override "^" 'evil-first-non-blank))
+    ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
+    ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
+    ;; (general-define-key :states 'normal :keymaps 'override "o"
+    ;;                     (lambda ()
+    ;;                       (interactive)
+    ;;                       (evil-org-append-line 1)
+    ;;                       (evil-ret 1)
+    ;;                       (indent-according-to-mode))))
+    (general-define-key :states '(normal visual motion operator) :keymaps 'override "0" 'evil-beginning-of-line)
+    (general-define-key :states '(normal visual motion operator) :keymaps 'override "$" 'evil-end-of-line)
+    (general-define-key :states '(normal visual motion operator) :keymaps 'override "^" 'evil-first-non-blank))
 
-      ;; for evil mode compatibility
-      (use-package treemacs-evil
-        :config
-        (general-define-key :states '(normal motion treemacs) :keymaps 'override "SPC t" 'treemacs))
+  ;; for evil mode compatibility
+  (use-package treemacs-evil
+    :config
+    (general-define-key :states '(normal motion treemacs) :keymaps 'override "SPC t" 'treemacs))
 
-      ;; indentation-based text objects for evil
-      (use-package evil-indent-plus
-        :config
-        (define-key evil-inner-text-objects-map "i" 'evil-indent-plus-i-indent)
-        (define-key evil-outer-text-objects-map "i" 'evil-indent-plus-a-indent)
-        (define-key evil-inner-text-objects-map "I" 'evil-indent-plus-i-indent-up-down)
-        (define-key evil-outer-text-objects-map "I" 'evil-indent-plus-a-indent-up-down))
+  ;; indentation-based text objects for evil
+  (use-package evil-indent-plus
+    :config
+    (define-key evil-inner-text-objects-map "i" 'evil-indent-plus-i-indent)
+    (define-key evil-outer-text-objects-map "i" 'evil-indent-plus-a-indent)
+    (define-key evil-inner-text-objects-map "I" 'evil-indent-plus-i-indent-up-down)
+    (define-key evil-outer-text-objects-map "I" 'evil-indent-plus-a-indent-up-down))
 
-      ;; jump to matching tags
-      (use-package evil-matchit
-        :config
-        (global-evil-matchit-mode 1))
+  ;; jump to matching tags
+  (use-package evil-matchit
+    :config
+    (global-evil-matchit-mode 1))
 
-      ;; text evil objects for latex
-      (use-package evil-tex
-        :config
-        (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
-        (add-hook 'org-mode-hook #'evil-tex-mode))
+  ;; text evil objects for latex
+  (use-package evil-tex
+    :config
+    (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
+    (add-hook 'org-mode-hook #'evil-tex-mode))
 
-      ;; preview registers and marks before actually using them
-      (use-package evil-owl
-        :config
-        (evil-owl-mode))
+  ;; preview registers and marks before actually using them
+  (use-package evil-owl
+    :config
+    (evil-owl-mode))
 
-      ;; interpret words of columns as a text object
-      (use-package evil-textobj-column
-        :config
-        (define-key evil-inner-text-objects-map "c" 'evil-textobj-column-word)
-        (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
+  ;; interpret words of columns as a text object
+  (use-package evil-textobj-column
+    :config
+    (define-key evil-inner-text-objects-map "c" 'evil-textobj-column-word)
+    (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
 
-      ;; extend evil-surround functionality
-      (use-package evil-embrace
-        :config
-        (evil-embrace-enable-evil-surround-integration)
-        (add-hook 'org-mode-hook 'embrace-org-mode-hook))
+  ;; extend evil-surround functionality
+  (use-package evil-embrace
+    :config
+    (evil-embrace-enable-evil-surround-integration)
+    (add-hook 'org-mode-hook 'embrace-org-mode-hook))
 
-      ;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
-      (defmacro define-and-bind-quoted-text-object (name key start-regex end-regex)
-        (let ((inner-name (make-symbol (concat "evil-inner-" name)))
-              (outer-name (make-symbol (concat "evil-a-" name))))
-          `(progn
-             (evil-define-text-object ,inner-name (count &optional beg end type)
-               (evil-select-paren ,start-regex ,end-regex beg end type count nil))
-             (evil-define-text-object ,outer-name (count &optional beg end type)
-               (evil-select-paren ,start-regex ,end-regex beg end type count t))
-             (define-key evil-inner-text-objects-map ,key #',inner-name)
-             (define-key evil-outer-text-objects-map ,key #',outer-name))))
-      (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
-      (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
-      (define-and-bind-quoted-text-object "slash" "/" "/" "/")
-      (define-and-bind-quoted-text-object "space" " " " " " ")
-      (define-and-bind-quoted-text-object "tilda" "~" "~" "~")
-      (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
+  ;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
+  (defmacro define-and-bind-quoted-text-object (name key start-regex end-regex)
+    (let ((inner-name (make-symbol (concat "evil-inner-" name)))
+          (outer-name (make-symbol (concat "evil-a-" name))))
+      `(progn
+         (evil-define-text-object ,inner-name (count &optional beg end type)
+           (evil-select-paren ,start-regex ,end-regex beg end type count nil))
+         (evil-define-text-object ,outer-name (count &optional beg end type)
+           (evil-select-paren ,start-regex ,end-regex beg end type count t))
+         (define-key evil-inner-text-objects-map ,key #',inner-name)
+         (define-key evil-outer-text-objects-map ,key #',outer-name))))
+  (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
+  (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
+  (define-and-bind-quoted-text-object "slash" "/" "/" "/")
+  (define-and-bind-quoted-text-object "space" " " " " " ")
+  (define-and-bind-quoted-text-object "tilda" "~" "~" "~")
+  (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
 
-      ;; create "il"/"al" (inside/around) line text objects:
-      ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
-      ;; create "ia"/"aa" (inside/around) entire buffer text objects:
-      (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
+  ;; create "il"/"al" (inside/around) line text objects:
+  ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
+  ;; create "ia"/"aa" (inside/around) entire buffer text objects:
+  (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
 
-      (general-evil-setup)
+  (general-evil-setup)
 
-      (general-define-key :states 'normal :keymaps '(org-mode-map TeX-mode-map) "SPC v" 'open-current-document-this-window)
-      (general-define-key :states 'normal "s" 'save-buffer)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired "~/brain/music/")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
-      (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
-      (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode "SPC b k" 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
-      (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
-      (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
-      (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
-      (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
-      ;; (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
-      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
-      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
-      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
-      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
-      ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
-      ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r k" 'org-insert-link)
-      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
-      ;;                     (lambda ()
-      ;;                       (interactive)
-      ;;                       (if (not xenops-mode)
-      ;;                           (xenops-mode)
-      ;;                         (xenops-render))))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'org-latex-preview)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC i"
-                          (lambda ()
-                            (interactive)
-                            (org-insert-time-stamp (current-time) t)))
-      ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-      ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
-      (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
-      (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r o" 'org-open-at-point)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r a" 'org-attach)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r A" 'org-attach-open)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r l" 'org-roam-alias-add)
-      (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r w" 'org-roam-tag-add)
-      (general-define-key :states 'normal :keymaps 'override "SPC r q"
-                          (lambda ()
-                            (interactive)
-                            (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
-      ;; (general-define-key :states 'normal :keymaps 'override "SPC r h"
-      ;;                     (lambda ()
-      ;;                       (interactive)
-      ;;                       (org-roam-capture nil "t")))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x" #'export-current-buffer)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
-      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
-      ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
-      (general-define-key :states 'normal :keymaps 'override "SPC r g"
-                          (lambda ()
-                            (interactive)
-                            (find-file (concat brain-path "/bib.bib"))))
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r z" 'org-add-note)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-latex-preview-auto-mode)
-      ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
-      (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
-      (general-define-key :states 'normal :keymaps 'override "SPC a N"
-                          (lambda ()
-                            (interactive)
-                            (org-roam-capture-no-title-prompt nil "d")))
+  (general-define-key :states 'normal :keymaps '(org-mode-map TeX-mode-map) "SPC v" 'open-current-document-this-window)
+  (general-define-key :states 'normal "s" 'save-buffer)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired "~/brain/music/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
+  (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
+  (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
+  (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode "SPC b k" 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
+  (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
+  (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
+  (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
+  (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
+  ;; (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
+  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
+  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
+  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
+  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
+  ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
+  ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r k" 'org-insert-link)
+  ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
+  ;;                     (lambda ()
+  ;;                       (interactive)
+  ;;                       (if (not xenops-mode)
+  ;;                           (xenops-mode)
+  ;;                         (xenops-render))))
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'org-latex-preview)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC i"
+                      (lambda ()
+                        (interactive)
+                        (org-insert-time-stamp (current-time) t)))
+  ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+  ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
+  (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
+  (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r o" 'org-open-at-point)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r a" 'org-attach)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r A" 'org-attach-open)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r l" 'org-roam-alias-add)
+  (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r w" 'org-roam-tag-add)
+  (general-define-key :states 'normal :keymaps 'override "SPC r q"
+                      (lambda ()
+                        (interactive)
+                        (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
+  ;; (general-define-key :states 'normal :keymaps 'override "SPC r h"
+  ;;                     (lambda ()
+  ;;                       (interactive)
+  ;;                       (org-roam-capture nil "t")))
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x" #'export-current-buffer)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
+  ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
+  ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
+  (general-define-key :states 'normal :keymaps 'override "SPC r g"
+                      (lambda ()
+                        (interactive)
+                        (find-file (concat brain-path "/bib.bib"))))
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r z" 'org-add-note)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-latex-preview-auto-mode)
+  ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
+  (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
+  (general-define-key :states 'normal :keymaps 'override "SPC a N"
+                      (lambda ()
+                        (interactive)
+                        (org-roam-capture-no-title-prompt nil "d")))
 
-      ;; keys to search for files
-      (general-define-key :states 'normal :keymaps 'override "SPC f b"
-                          (lambda () (interactive) (search-open-file brain-path".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
-      (general-define-key :states 'normal :keymaps 'override "SPC F b"
-                  (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+  ;; keys to search for files
+  (general-define-key :states 'normal :keymaps 'override "SPC f b"
+                      (lambda () (interactive) (search-open-file brain-path".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+  (general-define-key :states 'normal :keymaps 'override "SPC F b"
+                      (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 
-      (define-key evil-normal-state-map (kbd "SPC f d")
-                  (lambda () (interactive) (search-open-file "~/data" "")))
-      (define-key evil-normal-state-map (kbd "SPC F d")
-                  (lambda () (interactive)
-                    (search-open-file-in-emacs "~/data" "")))
+  (define-key evil-normal-state-map (kbd "SPC f d")
+              (lambda () (interactive) (search-open-file "~/data" "")))
+  (define-key evil-normal-state-map (kbd "SPC F d")
+              (lambda () (interactive)
+                (search-open-file-in-emacs "~/data" "")))
 
-      ;; keybinding to evaluate math expressions
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
-                          (lambda ()
-                            (interactive)
-                            (call-interactively 'calc-latex-language)
-                            (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
-                            (end-of-line)
-                            (insert " ")
-                            (insert result)))
+  ;; keybinding to evaluate math expressions
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+                      (lambda ()
+                        (interactive)
+                        (call-interactively 'calc-latex-language)
+                        (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
+                        (end-of-line)
+                        (insert " ")
+                        (insert result)))
 
-      ;; general keys
-      ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
-      (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
-      (general-define-key :states 'normal :keymaps 'override "SPC w m"
-                          (lambda () (interactive)
-                            (when window-system (set-frame-size (selected-frame) 180 50))))
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override ")" 'evil-scroll-page-down)
-      (general-define-key :states '(normal treemacs motion) :keymaps 'override "(" 'evil-scroll-page-up)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
-                          (lambda ()
-                            (interactive)
-                            (let ((current-prefix-arg '-)) (call-interactively 'sly))))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" #'eat);;'vterm)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
-      (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
-      (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
-      (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
-      ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC l" 'calc)
+  ;; general keys
+  ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
+  (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
+  (general-define-key :states 'normal :keymaps 'override "SPC w m"
+                      (lambda () (interactive)
+                        (when window-system (set-frame-size (selected-frame) 180 50))))
+  (general-define-key :states '(normal treemacs motion) :keymaps 'override ")" 'evil-scroll-page-down)
+  (general-define-key :states '(normal treemacs motion) :keymaps 'override "(" 'evil-scroll-page-up)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
+                      (lambda ()
+                        (interactive)
+                        (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" #'eat);;'vterm)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
+  (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
+  (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
+  (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
+  ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC l" 'calc)
 
-      ;; agenda keys
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" (lambda () (interactive) (org-agenda nil "n")))
-      (general-define-key :states '(normal motion) :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
-      (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a J" 'org-clock-in-last)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a k" 'org-clock-out)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a b" 'org-clock-cancel)
-      (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a p" 'org-clock-display)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a t" (lambda () (interactive) (org-roam-capture nil "t")))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a n" 'today-entry)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC a o" 'open-todays-file)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s n" 'yas-new-snippet)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
-      (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
+  ;; agenda keys
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" (lambda () (interactive) (org-agenda nil "n")))
+  (general-define-key :states '(normal motion) :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
+  (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a J" 'org-clock-in-last)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a k" 'org-clock-out)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a b" 'org-clock-cancel)
+  (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a p" 'org-clock-display)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a t" (lambda () (interactive) (org-roam-capture nil "t")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a n" 'today-entry)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a o" 'open-todays-file)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s n" 'yas-new-snippet)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
-      ;; some sly keys
-      ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
+  ;; some sly keys
+  ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
 
-      ;; key to clear the screen in eshell
-      (defun run-this-in-eshell (cmd)
-        "Runs the command 'cmd' in eshell."
-        (with-current-buffer "*eshell*"
-          (end-of-buffer)
-          (eshell-kill-input)
-          (message (concat "Running in Eshell: " cmd))
-          (insert cmd)
-          (eshell-send-input)
-          (end-of-buffer)
-          (eshell-bol)
-          (yank)))
-      (add-hook 'eshell-mode-hook
+  ;; key to clear the screen in eshell
+  (defun run-this-in-eshell (cmd)
+    "Runs the command 'cmd' in eshell."
+    (with-current-buffer "*eshell*"
+      (end-of-buffer)
+      (eshell-kill-input)
+      (message (concat "Running in Eshell: " cmd))
+      (insert cmd)
+      (eshell-send-input)
+      (end-of-buffer)
+      (eshell-bol)
+      (yank)))
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
+  (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
+
+  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
+  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
+  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC z"
+                      (lambda ()
+                        (interactive)
+                        (sly-end-of-defun)
+                        (call-interactively 'sly-eval-last-expression-in-repl)))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
+  (general-define-key :states '(normal) :keymaps 'override "SPC s m" 'man)
+
+  ;; general keys for programming
+  (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
+  (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)
+
+  ;; language-specific keybindings
+  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'sly-repl-inspect)
+  (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l i" 'sly-repl-inspect)
+  (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l s" 'sly-inspect-presentation-at-point)
+  (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode "SPC c" 'eval-buffer)
+
+  ;; python/elpy
+  (general-define-key :states '(normal) :keymaps 'override "SPC s p" 'run-python)
+  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC x" 'elpy-shell-send-defun)
+  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l x" 'elpy-shell-send-defun)
+  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l t" 'elpy-shell-send-statement)
+  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC c" 'elpy-shell-send-buffer)
+  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l b" 'elpy-shell-send-buffer)
+
+  ;;sagemasth
+  (general-define-key :states '(normal) :keymaps 'sage-shell-mode-map "SPC b k" 'comint-quit-subjob)
+
+  ;; evil mode multiple cursors
+  (use-package evil-mc
+    :config
+    (global-evil-mc-mode)
+    (general-define-key :states 'normal :keymaps 'override "g . p" 'evil-mc-pause-cursors)
+    (general-define-key :states 'normal :keymaps 'override "g . r" 'evil-mc-resume-cursors))
+
+  ;; (use-package evil-escape)
+  ;; (evil-escape-mode)
+
+  ;; interpret function arguments as a text object
+  (use-package evil-args)
+  (use-package evil-lion)
+
+  (use-package evil-extra-operator)
+
+  (use-package evil-textobj-tree-sitter
+    :config
+    ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+    ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+    ;; You can also bind multiple items and we will match the first one we can find
+    (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+    (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
+    ;; Goto start of next function
+    (define-key evil-normal-state-map (kbd "]f")
                 (lambda ()
-                  (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
-      (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+    ;; Goto start of previous function
+    (define-key evil-normal-state-map (kbd "[f")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+    ;; Goto end of next function
+    (define-key evil-normal-state-map (kbd "]F")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+    ;; Goto end of previous function
+    (define-key evil-normal-state-map (kbd "[F")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+    )
 
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC z"
-                          (lambda ()
-                            (interactive)
-                            (sly-end-of-defun)
-                            (call-interactively 'sly-eval-last-expression-in-repl)))
-      (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
-      (general-define-key :states '(normal) :keymaps 'override "SPC s m" 'man)
-
-      ;; general keys for programming
-      (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
-      (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)
-
-      ;; language-specific keybindings
-      (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'sly-repl-inspect)
-      (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l i" 'sly-repl-inspect)
-      (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l s" 'sly-inspect-presentation-at-point)
-      (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode "SPC c" 'eval-buffer)
-
-      ;; python/elpy
-      (general-define-key :states '(normal) :keymaps 'override "SPC s p" 'run-python)
-      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC x" 'elpy-shell-send-defun)
-      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l x" 'elpy-shell-send-defun)
-      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l t" 'elpy-shell-send-statement)
-      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC c" 'elpy-shell-send-buffer)
-      (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l b" 'elpy-shell-send-buffer)
-
-      ;;sagemasth
-      (general-define-key :states '(normal) :keymaps 'sage-shell-mode-map "SPC b k" 'comint-quit-subjob)
-
-      ;; evil mode multiple cursors
-      (use-package evil-mc
-        :config
-        (global-evil-mc-mode)
-        (general-define-key :states 'normal :keymaps 'override "g . p" 'evil-mc-pause-cursors)
-        (general-define-key :states 'normal :keymaps 'override "g . r" 'evil-mc-resume-cursors))
-
-      ;; (use-package evil-escape)
-      ;; (evil-escape-mode)
-
-      ;; interpret function arguments as a text object
-      (use-package evil-args)
-      (use-package evil-lion)
-
-      (use-package evil-extra-operator)
-
-      (use-package evil-textobj-tree-sitter
-        :config
-        ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-        (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-        ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-        (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
-        ;; You can also bind multiple items and we will match the first one we can find
-        (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
-        (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
-        ;; Goto start of next function
-        (define-key evil-normal-state-map (kbd "]f")
-                    (lambda ()
-                      (interactive)
-                      (evil-textobj-tree-sitter-goto-textobj "function.outer")))
-        ;; Goto start of previous function
-        (define-key evil-normal-state-map (kbd "[f")
-                    (lambda ()
-                      (interactive)
-                      (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
-        ;; Goto end of next function
-        (define-key evil-normal-state-map (kbd "]F")
-                    (lambda ()
-                      (interactive)
-                      (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
-        ;; Goto end of previous function
-        (define-key evil-normal-state-map (kbd "[F")
-                    (lambda ()
-                      (interactive)
-                      (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
-        )
-
-      ;; make org roam insert link after cursor in evil mode
-      (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
-        "If in evil normal mode and cursor is on a whitespace character, then go into
+  ;; make org roam insert link after cursor in evil mode
+  (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
+    "If in evil normal mode and cursor is on a whitespace character, then go into
 append mode first before inserting the link. This is to put the link after the
 space rather than before."
-        (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
-                                           (not (bound-and-true-p evil-insert-state-minor-mode))
-                                           (looking-at "[[:blank:]]"))))
-          (if (not is-in-evil-normal-mode)
-              ad-do-it
-            (evil-append 0)
-            ad-do-it
-            (evil-normal-state))))
+    (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
+                                       (not (bound-and-true-p evil-insert-state-minor-mode))
+                                       (looking-at "[[:blank:]]"))))
+      (if (not is-in-evil-normal-mode)
+          ad-do-it
+        (evil-append 0)
+        ad-do-it
+        (evil-normal-state))))
 
-      ;; (use-package evil-snipe
-      ;;   :config
-      ;;   (evil-snipe-override-mode 1)
-      ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
+  ;; (use-package evil-snipe
+  ;;   :config
+  ;;   (evil-snipe-override-mode 1)
+  ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
-      ;; so that forward-sexp works at end of line, see https://github.com/Fuco1/smartparens/issues/1037
-      ;; (setq evil-move-beyond-eol t)
+  ;; so that forward-sexp works at end of line, see https://github.com/Fuco1/smartparens/issues/1037
+  ;; (setq evil-move-beyond-eol t)
 
-      )
-  (if enable-god
-      (progn
-        (use-package god-mode
-          :config
-          (god-mode)
-          (global-set-key (kbd "<escape>") #'god-mode-all)
-          (setq god-exempt-major-modes nil)
-          (setq god-exempt-predicates nil))
-        (defun my-god-mode-update-cursor-type ()
-          (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-        (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-        ;; (use-package ryo-modal
-        ;;   :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
-        ;;   :commands ryo-modal-mode
-        ;;   :bind ("C-c SPC" . ryo-modal-mode)
-        ;;   :config
-        ;;   (ryo-modal-keys
-        ;;    ("," ryo-modal-repeat)
-        ;;    ("q" ryo-modal-mode)
-        ;;    ("h" backward-char)
-        ;;    ("j" next-line)
-        ;;    ("k" previous-line)
-        ;;    ("l" forward-char))
+  (when enable-god
+    (use-package god-mode
+      :config
+      (god-mode)
+      (global-set-key (kbd "<escape>") #'god-mode-all)
+      (setq god-exempt-major-modes nil)
+      (setq god-exempt-predicates nil))
+    (defun my-god-mode-update-cursor-type ()
+      (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+    (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+    ;; (use-package ryo-modal
+    ;;   :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
+    ;;   :commands ryo-modal-mode
+    ;;   :bind ("C-c SPC" . ryo-modal-mode)
+    ;;   :config
+    ;;   (ryo-modal-keys
+    ;;    ("," ryo-modal-repeat)
+    ;;    ("q" ryo-modal-mode)
+    ;;    ("h" backward-char)
+    ;;    ("j" next-line)
+    ;;    ("k" previous-line)
+    ;;    ("l" forward-char))
 
-        ;;   (ryo-modal-keys
-        ;;    ;; First argument to ryo-modal-keys may be a list of keywords.
-        ;;    ;; These keywords will be applied to all keybindings.
-        ;;    (:norepeat t)
-        ;;    ("0" "M-0")
-        ;;    ("1" "M-1")
-        ;;    ("2" "M-2")
-        ;;    ("3" "M-3")
-        ;;    ("4" "M-4")
-        ;;    ("5" "M-5")
-        ;;    ("6" "M-6")
-        ;;    ("7" "M-7")
-        ;;    ("8" "M-8")
-        ;;    ("9" "M-9"))
+    ;;   (ryo-modal-keys
+    ;;    ;; First argument to ryo-modal-keys may be a list of keywords.
+    ;;    ;; These keywords will be applied to all keybindings.
+    ;;    (:norepeat t)
+    ;;    ("0" "M-0")
+    ;;    ("1" "M-1")
+    ;;    ("2" "M-2")
+    ;;    ("3" "M-3")
+    ;;    ("4" "M-4")
+    ;;    ("5" "M-5")
+    ;;    ("6" "M-6")
+    ;;    ("7" "M-7")
+    ;;    ("8" "M-8")
+    ;;    ("9" "M-9"))
 
-        ;;   (defun mark-line ()
-        ;;     (interactive)
-        ;;     (beginning-of-line)
-        ;;     (set-mark-command nil)
-        ;;     (end-of-line))
+    ;;   (defun mark-line ()
+    ;;     (interactive)
+    ;;     (beginning-of-line)
+    ;;     (set-mark-command nil)
+    ;;     (end-of-line))
 
-        ;;   (ryo-modal-key
-        ;;    "g" '(("s" save-buffer)
-        ;;          ("g" magit-status)
-        ;;          ("b" ibuffer-list-buffers)))
+    ;;   (ryo-modal-key
+    ;;    "g" '(("s" save-buffer)
+    ;;          ("g" magit-status)
+    ;;          ("b" ibuffer-list-buffers)))
 
-        ;;   (let ((text-objects
-        ;;          '(("w" mark-word :name "Word")
-        ;;            ("l" mark-line :name "line")
-        ;;            )))
-        ;;     (eval `(ryo-modal-keys
-        ;;             ("v" ,text-objects)
-        ;;             ;;("k" ,text-objects :then '(kill-region))
-        ;;             ("c" ,text-objects :then '(kill-region)))))
-        ;;   )
-        )))
+    ;;   (let ((text-objects
+    ;;          '(("w" mark-word :name "Word")
+    ;;            ("l" mark-line :name "line")
+    ;;            )))
+    ;;     (eval `(ryo-modal-keys
+    ;;             ("v" ,text-objects)
+    ;;             ;;("k" ,text-objects :then '(kill-region))
+    ;;             ("c" ,text-objects :then '(kill-region)))))
+    ;;   )
+    ))
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
