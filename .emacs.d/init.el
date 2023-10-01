@@ -91,7 +91,7 @@
 (setq dabbrev-case-replace nil)
 (global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 ;; save minibuffer history
 (setq savehist-file (expand-file-name (concat brain-path "/emacs_savehist")))
 (savehist-mode 1)
@@ -106,9 +106,11 @@
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
 (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-(global-whitespace-mode)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
+;; change newline character
+;;(setf (elt (car (cdr (cdr (assoc 'newline-mark whitespace-display-mappings)))) 0) ?⤸)
+;; (global-whitespace-mode)
 ;; relative line numbers
 ;; (add-hook 'prog-mode-hook
 ;;           (lambda ()
@@ -582,6 +584,9 @@
   (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l s" 'sly-inspect-presentation-at-point)
   (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode "SPC c" 'eval-buffer)
 
+  ;; common lisp/sly
+  (general-define-key :states '(normal) :keymaps '(lisp-mode-map sly-mrepl-mode-map) "SPC l d" 'sly-documentation-lookup)
+
   ;; python/elpy
   (general-define-key :states '(normal) :keymaps 'override "SPC s p" 'run-python)
   (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC x" 'elpy-shell-send-defun)
@@ -590,7 +595,7 @@
   (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC c" 'elpy-shell-send-buffer)
   (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l b" 'elpy-shell-send-buffer)
 
-  ;;sagemasth
+  ;;sagemath
   (general-define-key :states '(normal) :keymaps 'sage-shell-mode-map "SPC b k" 'comint-quit-subjob)
 
   ;; evil mode multiple cursors
@@ -874,10 +879,11 @@ space rather than before."
 
 ;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
+;; (set-face-attribute 'default nil :family "Iosevka" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Cascadia Code" :weight 'light :height 110)
-(set-face-attribute 'fixed-pitch nil :font "Cascadia Code" :weight 'light :height 110)
-(set-face-attribute 'variable-pitch nil :font "Cascadia Code":weight 'light :height 1.1)
+(set-face-attribute 'default nil :font "Fira Code" :weight 'light :height 100)
+(set-face-attribute 'fixed-pitch nil :font "Fira Code" :weight 'light :height 100)
+(set-face-attribute 'variable-pitch nil :font "Fira Code":weight 'light :height 1.0)
 (use-package darktooth-theme)
 ;; (use-package modus-themes)
 (use-package ample-theme)
@@ -1395,7 +1401,7 @@ space rather than before."
   :config
   (setq inferior-lisp-program "")
   (setq sly-lisp-implementations
-        '((sbcl ("sbcl" "--dynamic-space-size" "10GB"))
+        '((sbcl ("sbcl" "--dynamic-space-size" "12GB"))
           (clisp ("clisp"))
           (ecl ("ecl"))
           (cmucl ("cmucl"))
@@ -1621,7 +1627,7 @@ space rather than before."
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
 ;; who cares about annoying broken link errors..
-(setq org-export-with-broken-links t)
+(setq org-export-with-broken-links 'mark)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
@@ -1639,7 +1645,7 @@ space rather than before."
 
 ;; hide unnecessary stuff
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-(setq dired-listing-switches "-l")
+(setq dired-listing-switches "-Al") ;; default is ls -al
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
 
@@ -1762,10 +1768,10 @@ space rather than before."
     (find-file (expand-file-name my-file) "'")))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
-(defun run-script ()
-  "run the current bash script being edited"
-  (interactive)
-  (run-command-show-output (buffer-file-name)))
+;; (defun run-script ()
+;;   "run the current bash script being edited"
+;;   (interactive)
+;;   (run-command-show-output (buffer-file-name)))
 ;; (add-hook 'sh-mode-hook
 ;;           (lambda ()
 ;;             (add-hook 'after-save-hook 'run-script 0 t)))
@@ -2078,7 +2084,7 @@ space rather than before."
                      :on (= tags:node-id nodes:id)
                      :where (like tag ,tag-name))))))
 
-;; idea adapted from https://d12frosted.io/posts/2021-01-16-task-management-with-roam-vol5.html
+;; dynamic org-agenda
 (add-to-list 'org-tags-exclude-from-inheritance "todo")
 (add-to-list 'org-tags-exclude-from-inheritance "band")
 (defun buffer-contains-todo ()
@@ -2088,10 +2094,6 @@ space rather than before."
       'headline
     (lambda (h)
       (eq (org-element-property :todo-type h) 'todo))
-    ;; (or (eq (org-element-property :todo-type h)
-    ;;         'todo)
-    ;;     (eq (org-element-property :todo-type h)
-    ;;         'done)))
     nil 'first-match))
 (add-hook 'before-save-hook #'update-todo-tag)
 (defun update-todo-tag ()
@@ -2131,7 +2133,7 @@ space rather than before."
 ;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
 (setq org-startup-with-latex-preview t)
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
-;; export to html using dvisvgm/mathjax
+;; export to html using dvisvgm/mathjax/whatever
 (setq org-html-with-latex 'dvisvgm)
 ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
 (add-hook 'org-mode-hook 'visual-line-mode)
@@ -2176,7 +2178,8 @@ space rather than before."
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
           (when (is-buffer-roam-note)
             (funcall callback)
-            (kill-this-buffer))))))
+            ;; (kill-this-buffer)
+            )))))
 
 (defun execute-code-files ()
   "execute files tagged with 'code'"
@@ -2247,7 +2250,7 @@ space rather than before."
 (defun update-math-file ()
   "add/remove the math tag to the file"
   (let ((kill-ring)  ;; keep kill ring, dont modify it
-        buffer-undo-list) ;; keep the undo "ring" too, doesnt work tho, hmmmm
+        (buffer-undo-list)) ;; keep the undo "ring" too, doesnt work tho, hmmmm
     (when (and (not (active-minibuffer-window))
                (is-buffer-roam-note))
       (save-excursion
@@ -2717,11 +2720,13 @@ INFO is a plist containing export properties."
          (link-path (org-element-property :path link))
          (is-id-link (string= link-type "id")))
     (if is-id-link
-        (let* ((node (org-roam-node-from-id link-path))
-               (tags (org-roam-node-tags node)))
-          (if (member "public" tags) ;; if note is public export as usual, otherwise dont export it as link but just as text
-              (funcall fn link desc info)
-            (format "<b>%s</b>" desc)))
+        (condition-case err ;; handle error when org-roam cannot find link in database
+            (let* ((node (org-roam-node-from-id link-path))
+                   (tags (org-roam-node-tags node)))
+              (if (member "public" tags) ;; if note is public export as usual, otherwise dont export it as link but just as text
+                  (funcall fn link desc info)
+                (format "<b>%s</b>" desc)))
+          (error (message "org-roam couldnt handle link %s, error was: %s" link-path err) ))
       (funcall fn link desc info))))
 (advice-add #'org-html-link :around #'my-org-link-advice)
 (advice-add #'org-hugo-link :around #'my-org-link-advice)
@@ -2735,9 +2740,9 @@ INFO is a plist containing export properties."
   "the time the file was last modified"
   (let ((atr (file-attributes filepath)))
     (file-attribute-modification-time atr)))
-(defun file-status-change-time (filepath)
-  (let ((atr (file-attributes filepath)))
-    (file-attribute-status-change-time atr)))
+;; (defun file-status-change-time (filepath)
+;;   (let ((atr (file-attributes filepath)))
+;;     (file-attribute-status-change-time atr)))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
     (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
@@ -2755,3 +2760,64 @@ INFO is a plist containing export properties."
 ;; (defun org-babel-edit-prep:python (babel-info)
 ;;   (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
 ;;   (lsp))
+
+;; dont override my labels, silly org
+(setq org-latex-prefer-user-labels t)
+
+;; prettify symbols..
+(global-prettify-symbols-mode +1)
+;; replace lambda text with symbol
+(defconst lisp--prettify-symbols-alist
+  '(("lambda"  . ?λ)))
+;; convert back to text when cursor is over the symbol
+(setq prettify-symbols-unprettify-at-point t)
+;; (add-hook 'emacs-lisp-mode-hook
+;;             (lambda ()
+;;               (push '(">=" . ?≥) prettify-symbols-alist)))
+(defun org-set-prettify-symbols ()
+  (setq-local prettify-symbols-alist
+              (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                      '(("#+begin_src" . ?➤)
+                        ("#+end_src" . ?⮜)
+                        ("#+begin_example" . ?)
+                        ("#+end_example" . ?)
+                        ("#+header:" . ?)
+                        ("#+title:" . ?🌐)
+                        ("#+results:" . ?)
+                        ("#+name:" . ?ᘏ)
+                        ("#+call:" . ?)
+                        (":properties:" . ?)
+                        ("#+include:" . ?📎);;?🔗) ;;?📌)
+                        ("#+setupfile:" . ?🔧)
+                        ("#+filetags:" . "🔑")
+                        ;;💡🔥🔑💡🚀🔥💎📝🎯📌🔒🎁⭐💌🌺☢️
+                        ;; 𓍢ִ໋🌷͙֒
+                        )))
+  ;; org mode doesnt inherit the global mode for some example so imma hook it manually
+  (prettify-symbols-mode))
+(add-hook 'org-mode-hook #'org-set-prettify-symbols)
+
+(general-define-key
+ "C-x C-S-e"
+ (lambda ()
+   (interactive)
+   (let ((current-prefix-arg (list 0)))
+     (call-interactively 'eros-eval-last-sexp))))
+
+(defun ascii-table ()
+  "display basic ASCII table (0 thru 128)."
+  (interactive)
+  (switch-to-buffer "*ASCII*")
+  (erase-buffer)
+  (setq buffer-read-only nil)        ;; Not need to edit the content, just read mode (added)
+  (local-set-key "q" 'bury-buffer)   ;; Nice to have the option to bury the buffer (added)
+  (save-excursion (let ((i -1))
+                    (insert "ASCII characters 0 thru 127.\n\n")
+                    (insert " Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char\n")
+                    (while (< i 31)
+                      (insert (format "%4x %4d %4s | %4x %4d %4s | %4x %4d %4s | %4x %4d %4s\n"
+                                      (setq i (+ 1  i)) i (single-key-description i)
+                                      (setq i (+ 32 i)) i (single-key-description i)
+                                      (setq i (+ 32 i)) i (single-key-description i)
+                                      (setq i (+ 32 i)) i (single-key-description i)))
+                      (setq i (- i 96))))))
