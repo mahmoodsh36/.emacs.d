@@ -7,7 +7,7 @@ map g goto top
 map D toggle_page_mode
 set window-height 1500
 set window-width 1400
-# set recolor
-# set recolor-lightcolor \#222222
-# set recolor-keephue
-# set default-bg \#222230
+set recolor
+set recolor-lightcolor \#222222
+set recolor-keephue
+set default-bg \#222230
