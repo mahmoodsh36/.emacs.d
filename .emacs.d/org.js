@@ -11,14 +11,27 @@ function wrap (toWrap, wrapper) {
 };
 
 function getTextBlocks() {
-  return document.getElementsByClassName('language-text');
+  let elts = document.getElementsByClassName('language-text');
+  let textBlocks = [];
+  for (let elt of elts) {
+    textBlocks.push(elt.parentElement.parentElement);
+  }
+  return textBlocks;
+}
+
+function getCodeBlocks() {
+  return document.getElementsByClassName('highlight');
 }
 
 function prettifyCodeBlocks() {
-  for (let elt of getTextBlocks()) {
-    let codeBlock = elt.parentElement.parentElement; // codeBlock has class .highlight
-    console.log(codeBlock);
-    codeBlock.classList.add('output');
+  // do code blocks before text blocks cuz text blocks are a subset of them so doing them later overrides the properties set for code blocks
+  for (let codeBlock of getCodeBlocks()) {
+    codeBlock.classList.add('code');
+  }
+  for (let textBlock of getTextBlocks()) {
+    console.log(textBlock);
+    textBlock.classList.remove('code');
+    textBlock.classList.add('code-output');
     // let wrapper = document.createElement('div');
     // wrapper.classList.add('output-block-wrapper');
     // wrap(codeBlock, wrapper);
