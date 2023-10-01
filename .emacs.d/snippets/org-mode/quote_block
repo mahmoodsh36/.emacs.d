@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: quote block
+# key: ub
+# --
+#+begin_quote
+$0
+#+end_quote

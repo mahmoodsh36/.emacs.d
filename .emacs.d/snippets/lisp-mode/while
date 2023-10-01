@@ -2,6 +2,5 @@
 # name: while
 # key: wh
 # --
-\While {\\($1\\)} {
-  $2
-}$0
+(loop while $1 do
+  $0)
