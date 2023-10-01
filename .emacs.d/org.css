@@ -1,11 +1,11 @@
-.lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step {
+.lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step, .output {
   border-radius: 10px;
   box-shadow: 10px 10px 15px rgba(0,0,0,.1);
   padding: 10px;
   border: 1px black solid;
   /* border-top: 1px solid red; */
 }
-.lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before {
+.lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before, .output:before {
   background-color: #bbb;
   position: relative;
   border-radius: 10px;
@@ -168,4 +168,14 @@ table th {
   border-top: 20px solid black;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
+}
+
+/* code blocks */
+.output {
+    background-color: #5cbcbc;
+}
+.output:before {
+    content: "[code output]";
+    padding: 5px;
+    
 }
