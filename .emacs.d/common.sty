@@ -17,7 +17,7 @@
 \usepackage{tikz-3dplot}
 \usepackage{mathtools}
 \usepackage{pgfplots}
-\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections}
+\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections,arrows.meta}
 \usepackage{centernot}
 \usepackage{lmodern}
 \usepackage{physics}
@@ -37,11 +37,15 @@
 \usepackage{caption}
 \usepackage{iftex}
 \ifLuaTeX
-\usetikzlibrary{positioning,calc,graphs,graphdrawing,quotes}
-\usegdlibrary{force}
+% graphdrawing library is only available to luatex
+\usetikzlibrary{graphdrawing}
+\usegdlibrary{force, trees, layered}
 \else
-% ⟨material not for LuaTEX⟩
+% whatever
 \fi
+
+% a dummy environment to group together "stuff"
+\newenvironment*{dummyenv}{}{}
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
@@ -164,6 +168,18 @@
   \SetKwRepeat{Do}{do}{while} % do-while macro
   }
   {\end{algorithm}}
+% more keywords for algorithm2e
+\SetKwInput{returns}{returns}
+\SetKwInput{args}{arguments}
+\SetKw{yield}{yield}
+\SetKw{return}{return}
+% get rid of annoying italics in for and if statements
+\SetArgSty{textnormal}%{textup}
+\SetFuncSty{textnormal}
+\SetFuncArgSty{textnormal}
+% \SetKwSty{mykwsty}
+% \SetDataSty{myvarsty}
+% search through https://ctan.ebinger.cc/tex-archive/macros/latex/contrib/algorithm2e/tex/algorithm2e.sty for the full list of commands
 
 % code evaluation results environment
 \newenvironment{results}
