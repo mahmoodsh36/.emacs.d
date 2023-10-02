@@ -3,6 +3,7 @@
   box-shadow: 10px 10px 15px rgba(0,0,0,.1);
   padding: 10px;
   border: 1px black solid;
+  margin: 5px;
   /* border-top: 1px solid red; */
 }
 .lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before, .code-output:before, .code:before {
@@ -168,6 +169,11 @@ table th {
   border-top: 20px solid black;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
+}
+
+/* equations */
+.equation-container {
+    margin: 5px;
 }
 
 /* code blocks */
