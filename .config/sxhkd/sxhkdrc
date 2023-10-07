@@ -27,9 +27,10 @@ super + x ; {h,m,R,c,T,o,i}
       terminal_with_cmd.sh top,\
       sxiv ~/data/images/scrots/$(ls -t ~/data/images/scrots | head -1)}
 
-super + x ; {n,a}
+super + x ; {n,a,x}
      {pr="$(xclip -selection clipboard -o)"; notify-send "opening $pr"; xdg-open "$pr",\
-      add_magnet.sh "$(xclip -selection clipboard -o)"}
+      add_magnet.sh "$(xclip -selection clipboard -o)",\
+      last_scrot=~/data/images/scrots/$(ls -t ~/data/images/scrots | head -1 | tr -d '\n'); ~/.local/bin/pix2tex "$last_scrot" --show > /tmp/pix2tex; tex=$(sed 's/^.*: //' /tmp/pix2tex); notify-send "copied $tex"}
 
 
 super + ctrl + p ; {i, u}
