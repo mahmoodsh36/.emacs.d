@@ -18,6 +18,7 @@
 \usepackage{mathtools}
 \usepackage{pgfplots}
 \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections,arrows.meta}
+\usepgfplotslibrary{fillbetween}
 \usepackage{centernot}
 \usepackage{lmodern}
 \usepackage{physics}
@@ -43,6 +44,7 @@
 \else
 % whatever
 \fi
+\usepackage{kpfonts} % better looking fonts
 
 % a dummy environment to group together "stuff"
 \newenvironment*{dummyenv}{}{}
@@ -73,6 +75,7 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand\brm[1]{\bm{\mathrm{#1}}}
 \DeclareMathOperator{\vct}{vec}
+\newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 
 % lst
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
