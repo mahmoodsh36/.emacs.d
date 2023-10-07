@@ -544,6 +544,9 @@
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
   (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
+  ;; dired
+  (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
+
   ;; some sly keys
   ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
 
@@ -597,6 +600,9 @@
 
   ;;sagemath
   (general-define-key :states '(normal) :keymaps 'sage-shell-mode-map "SPC b k" 'comint-quit-subjob)
+
+  ;; elisp
+  (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode-map "SPC c" 'eval-buffer)
 
   ;; evil mode multiple cursors
   (use-package evil-mc
@@ -884,6 +890,8 @@ space rather than before."
 (set-face-attribute 'default nil :font "Fira Code" :weight 'light :height 100)
 (set-face-attribute 'fixed-pitch nil :font "Fira Code" :weight 'light :height 100)
 (set-face-attribute 'variable-pitch nil :font "Fira Code":weight 'light :height 1.0)
+ ;; this font makes hebrew text unreadable, gotta disable it
+(add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
 (use-package darktooth-theme)
 ;; (use-package modus-themes)
 (use-package ample-theme)
@@ -1320,10 +1328,13 @@ space rather than before."
 ;;   (load-library "eaf-pdf-viewer")
 ;;   (load-library "eaf-browser"))
 
-(use-package tree-sitter
+;; (use-package tree-sitter
+;;   :config
+;;   (global-tree-sitter-mode 1))
+;; (global-tree-sitter-mode 1)
+(use-package tree-sitter-langs
   :config
-  (global-tree-sitter-mode 1))
-(use-package tree-sitter-langs)
+  (tree-sitter-langs-install-grammars t))
 
 ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
@@ -1490,6 +1501,15 @@ space rather than before."
 ;; mastodon fediverse
 (use-package mastodon
   :ensure t)
+
+;; display number of matches when searching
+;; (use-package anzu)
+(use-package evil-anzu)
+
+;; (use-package org-modern-indent
+;;   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+;;   :config ; add late to hook
+;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
 ;; this just doesnt work...
 ;; (use-package roam-block
@@ -2444,6 +2464,8 @@ Version 2018-06-18 2021-09-30"
   (open-todays-file)
   (org-insert-heading-respect-content)
   (org-clock-in)
+  (org-up-heading-safe)
+  (end-of-line)
   (ignore-errors (evil-insert 0)))
 
 (defun check-svg-duplicates ()
@@ -2623,6 +2645,30 @@ INFO is a plist containing export properties."
    (put cmd 'repeat-map 'structural-edit-map))
  structural-edit-map)
 
+;; org mode navigation map
+(defvar org-nav-map
+  (let ((map (make-sparse-keymap)))
+    (pcase-dolist (`(,k . ,f)
+                   '(("c" . org-babel-next-src-block)
+                     ("C" . org-babel-previous-src-block)
+                     ("h" . org-next-visible-heading)
+                     ("H" . org-previous-visible-heading)
+                     ("o" . org-next-block)
+                     ("O" . org-previous-block)
+                     ("i" . org-next-item)
+                     ("I" . org-previous-item)
+                     ("l" . org-next-link)
+                     ("L" . org-previous-link)
+                     ("s" . scroll-up-command)
+                     ("S" . scroll-down-command)))
+      (define-key map (kbd k) f))
+    map))
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'org-nav-map))
+ org-nav-map)
+(define-key org-mode-map (kbd "C-l") org-nav-map)
+
 ;; automatic recursive exporting of linked notes
 (defun nodes-linked-from-node (node)
   "return list of roam nodes linked to from node with node-id";
@@ -2770,7 +2816,7 @@ INFO is a plist containing export properties."
 (defconst lisp--prettify-symbols-alist
   '(("lambda"  . ?λ)))
 ;; convert back to text when cursor is over the symbol
-(setq prettify-symbols-unprettify-at-point t)
+(setq prettify-symbols-unprettify-at-point 'right-edge)
 ;; (add-hook 'emacs-lisp-mode-hook
 ;;             (lambda ()
 ;;               (push '(">=" . ?≥) prettify-symbols-alist)))
@@ -2796,6 +2842,7 @@ INFO is a plist containing export properties."
   ;; org mode doesnt inherit the global mode for some example so imma hook it manually
   (prettify-symbols-mode))
 (add-hook 'org-mode-hook #'org-set-prettify-symbols)
+
 
 (general-define-key
  "C-x C-S-e"
