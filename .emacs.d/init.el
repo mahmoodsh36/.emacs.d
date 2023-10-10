@@ -620,36 +620,36 @@
 
   (use-package evil-extra-operator)
 
-  (use-package evil-textobj-tree-sitter
-    :config
-    ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-    ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
-    ;; You can also bind multiple items and we will match the first one we can find
-    (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
-    (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
-    ;; Goto start of next function
-    (define-key evil-normal-state-map (kbd "]f")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer")))
-    ;; Goto start of previous function
-    (define-key evil-normal-state-map (kbd "[f")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
-    ;; Goto end of next function
-    (define-key evil-normal-state-map (kbd "]F")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
-    ;; Goto end of previous function
-    (define-key evil-normal-state-map (kbd "[F")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
-    )
+  ;; (use-package evil-textobj-tree-sitter
+  ;;   :config
+  ;;   ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+  ;;   (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  ;;   ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+  ;;   (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+  ;;   ;; You can also bind multiple items and we will match the first one we can find
+  ;;   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+  ;;   (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
+  ;;   ;; Goto start of next function
+  ;;   (define-key evil-normal-state-map (kbd "]f")
+  ;;               (lambda ()
+  ;;                 (interactive)
+  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+  ;;   ;; Goto start of previous function
+  ;;   (define-key evil-normal-state-map (kbd "[f")
+  ;;               (lambda ()
+  ;;                 (interactive)
+  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+  ;;   ;; Goto end of next function
+  ;;   (define-key evil-normal-state-map (kbd "]F")
+  ;;               (lambda ()
+  ;;                 (interactive)
+  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+  ;;   ;; Goto end of previous function
+  ;;   (define-key evil-normal-state-map (kbd "[F")
+  ;;               (lambda ()
+  ;;                 (interactive)
+  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+  ;;   )
 
   ;; make org roam insert link after cursor in evil mode
   (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
@@ -1298,7 +1298,14 @@ space rather than before."
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
-                 (window-parameters (mode-line-format . none)))))
+                 (window-parameters (mode-line-format . none))))
+  ;; not sure why defining this map doesnt work as intended tho
+  (defvar-keymap embark-file-map
+    :doc "custom file actions"
+    :parent embark-general-map
+    "k" #'kill-this-buffer)
+  )
+
 
 ;; (use-package ialign)
 ;; (use-package 'org-protocol-capture-html)
@@ -1332,9 +1339,9 @@ space rather than before."
 ;;   :config
 ;;   (global-tree-sitter-mode 1))
 ;; (global-tree-sitter-mode 1)
-(use-package tree-sitter-langs
-  :config
-  (tree-sitter-langs-install-grammars t))
+;; (use-package tree-sitter-langs
+;;   :config
+;;   (tree-sitter-langs-install-grammars t))
 
 ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
@@ -1542,7 +1549,6 @@ space rather than before."
 
 ;; (use-package delve
 ;;   :quelpa (:repo "publicimageltd/delve" :host github))
-;; (use-package embark)
 ;; (use-package svg-tag-mode)
 
 ;; (use-package alert)
@@ -2182,6 +2188,7 @@ space rather than before."
 ;; (setq enable-local-eval t)
 ;; dont number headers on exports
 (setq org-export-with-section-numbers nil)
+(setq org-use-property-inheritance t)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -2719,11 +2726,19 @@ INFO is a plist containing export properties."
 
 (defun export-node (node)
   "export a node's file to both hugo md and pdf"
-  (let ((org-startup-with-latex-preview nil)
-        (file (org-roam-node-file node)))
-    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      (org-to-pdf)
-      (org-hugo-export-to-md))))
+  (condition-case nil
+      (let ((org-startup-with-latex-preview nil)
+            (file (org-roam-node-file node)))
+        (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+          ;; (org-to-pdf)
+          (org-hugo-export-to-md)))
+    (error
+     (message "export-node failed %s, not retrying" (org-roam-node-file node))
+     ;; (org-latex-preview--clear-preamble-cache)
+     ;; (org-latex-preview-clear-cache)
+     ;; (export-node node)
+     )))
+
 
 (defun export-current-buffer ()
   "gets the node associated with the current buffer, exports it"
@@ -2769,10 +2784,11 @@ INFO is a plist containing export properties."
         (condition-case err ;; handle error when org-roam cannot find link in database
             (let* ((node (org-roam-node-from-id link-path))
                    (tags (org-roam-node-tags node)))
-              (if (member "public" tags) ;; if note is public export as usual, otherwise dont export it as link but just as text
+              (if (and (member "public" tags) ;; if note is public export as usual, otherwise dont export it as link but just as text
+                       (not (string-match-p "::" link-path))) ;; if link isnt of form [[id::block]], dont export it as link, we cant handle those yet
                   (funcall fn link desc info)
                 (format "<b>%s</b>" desc)))
-          (error (message "org-roam couldnt handle link %s, error was: %s" link-path err) ))
+          (error (message "org-roam couldnt handle link %s, error was: %s" link-path err)))
       (funcall fn link desc info))))
 (advice-add #'org-html-link :around #'my-org-link-advice)
 (advice-add #'org-hugo-link :around #'my-org-link-advice)
@@ -2789,9 +2805,16 @@ INFO is a plist containing export properties."
 ;; (defun file-status-change-time (filepath)
 ;;   (let ((atr (file-attributes filepath)))
 ;;     (file-attribute-status-change-time atr)))
+(defun file-creation-time (filepath)
+  "get file creation timestamp, only works on ext4 (and other fs's that support 'crtime'),
+timestamp example: 2023-09-28 15:04:30.887059861 +0300"
+  (decode-time
+   (string-to-number
+    (shell-command-to-string (format "stat --format='%%W' '%s'" filepath)))))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
-    (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
+    ;; (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
+    (format-time-string "<%Y-%m-%d>" (file-creation-time myfile))))
 (advice-add #'org-export-get-date :around #'my-org-date-advice)
 
 (defun export-all-public ()
