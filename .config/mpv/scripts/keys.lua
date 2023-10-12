@@ -22,4 +22,4 @@ end
 --mp.add_key_binding("d", "download_video", video_downloader)
 --mp.add_key_binding("s", "save_local_video", save_local_video)
 --mp.add_key_binding("x", "remove_video", remove_video)
---mp.add_key_binding("y", "yank_path", yank_path_to_clipboard)
+mp.add_key_binding("y", "yank_path", yank_path_to_clipboard)
