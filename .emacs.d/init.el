@@ -239,12 +239,12 @@
   )
 
 ;; vertical completion interface
-(use-package counsel
-  :config
-  (ivy-mode)
-  (setq ivy-height 20)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file))
+;; (use-package counsel
+;;   :config
+;;   (ivy-mode)
+;;   (setq ivy-height 20)
+;;   (global-set-key (kbd "M-x") 'counsel-M-x)
+;;   (global-set-key (kbd "C-x C-f") 'counsel-find-file))
 
 ;; evil-mode
 (when enable-evil
@@ -388,6 +388,7 @@
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d r" (lambda () (interactive) (dired (concat brain-path "/resources"))))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
@@ -395,9 +396,9 @@
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired *music-dir*)))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'find-file)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
-  (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
+  (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" #'execute-extended-command)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
   (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
   (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode "SPC b k" 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
@@ -407,7 +408,7 @@
                         (interactive)
                         (kill-all-buffers)
                         (switch-to-buffer "*scratch*")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'switch-to-buffer)
   (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
   (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
   (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
@@ -549,7 +550,7 @@
   (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'counsel-load-theme)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'load-theme)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
   (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
   (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
@@ -776,7 +777,7 @@ space rather than before."
 (use-package projectile
   :quelpa (:host github :repo "bbatsov/projectile")
   :config
-  (setq projectile-completion-system 'ivy)
+  ;; (setq projectile-completion-system 'ivy)
   (projectile-mode +1))
 
 ;; auto completion
@@ -851,7 +852,7 @@ space rather than before."
       (corfu-indexed-mode t)
       (corfu-echo-mode t) ;; display brief documentation in echo area
       (corfu-popupinfo-mode t) ;; display documentation in popup
-      (corfu-quit-at-boundary t)
+      (corfu-quit-at-boundary nil)
       (corfu-on-exact-match nil) ;; dont auto insert when there is an exact match
       (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
       :config
@@ -933,6 +934,7 @@ space rather than before."
 (use-package inkpot-theme)
 (use-package minimal-theme
   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
+(use-package soothe-theme)
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
@@ -1126,12 +1128,20 @@ space rather than before."
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
 ;; history for ivy completion, it sometimes makes ivy really slow, so maybe remove the cache file every once in a while
-(use-package ivy-prescient
-  :config
-  (ivy-prescient-mode)
-  (prescient-persist-mode 1)
-  (setq prescient-history-length 10000)
-  (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
+;; (use-package ivy-prescient
+;;   :config
+;;   (ivy-prescient-mode)
+;;   (prescient-persist-mode 1)
+;;   (setq prescient-history-length 10000)
+;;   (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
+;; ;; more featureful ivy menus, it may cause some error when switching buffers
+;; (use-package ivy-rich
+;;   :config
+;;   (ivy-rich-mode 1)
+;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+;; icons for ivy
+;; (use-package all-the-icons-ivy-rich
+;;   :config (all-the-icons-ivy-rich-mode 1))
 
 ;; ;; auto indentation
 ;; (use-package aggressive-indent
@@ -1246,12 +1256,6 @@ space rather than before."
 ;;         org-appear-autosubmarkers t)
 ;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
-;; ;; more featureful ivy menus, it may cause some error when switching buffers
-(use-package ivy-rich
-  :config
-  (ivy-rich-mode 1)
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
-
 ;; (use-package vulpea)
 ;; (use-package dap-mode)
 
@@ -1302,17 +1306,11 @@ space rather than before."
             (lambda ()
               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
                 (ggtags-mode 1)))))
-(use-package counsel-gtags)
+;; (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
 ;; (use-package avy)
 ;; (use-package auto-yasnippet)
-
-;; i think this is similar to ivy-rich
-;; (use-package marginalia
-;;   :ensure t
-;;   :config
-;;   (marginalia-mode))
 
 (use-package embark
   :ensure t
@@ -1374,10 +1372,6 @@ space rather than before."
 ;;   (tree-sitter-langs-install-grammars t))
 
 ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
-
-;; icons for ivy
-(use-package all-the-icons-ivy-rich
-  :config (all-the-icons-ivy-rich-mode 1))
 
 ;; (use-package lsp-java)
 
@@ -1487,9 +1481,9 @@ space rather than before."
 ;;   (setq slime-repl-history-size 1000000))
 
 ;; flash cursor when jumping around
-(use-package beacon
-  :config
-  (beacon-mode 1))
+;; (use-package beacon
+;;   :config
+;;   (beacon-mode 1))
 
 ;; better alternative to counsel-ag, best i found for grepping
 (use-package deadgrep)
@@ -1544,6 +1538,60 @@ space rather than before."
 ;; display number of matches when searching
 ;; (use-package anzu)
 (use-package evil-anzu)
+
+;; vertico config
+(use-package vertico
+  :init
+  (vertico-mode))
+(defun crm-indicator (args)
+  (cons (format "[CRM%s] %s"
+                (replace-regexp-in-string
+                 "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                 crm-separator)
+                (car args))
+        (cdr args)))
+(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+;; do not allow the cursor in the minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+;; emacs 28: Hide commands in M-x which do not work in the current mode.
+;; vertico commands are hidden in normal buffers.
+;; (setq read-extended-command-predicate
+;;       #'command-completion-default-include-p)
+;; enable recursive minibuffers
+(setq enable-recursive-minibuffers t)
+;; optionally use the `orderless' completion style.
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+        orderless-component-separator "\s+"
+        corfu-separator orderless-component-separator)
+  (setq completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+(setq read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t)
+;; display vertico in different buffer
+(require 'vertico-buffer)
+(vertico-buffer-mode)
+;; Commands for Ido-like directory navigation.
+(use-package vertico-directory)
+(use-package vertico-reverse)
+;; is similar to ivy-rich
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+(use-package consult)
+;; corfu with orderless
+(defun orderless-fast-dispatch (word index total)
+  (and (= index 0) (= total 1) (length< word 4)
+       `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
+(orderless-define-completion-style orderless-fast
+  (orderless-style-dispatchers '(orderless-fast-dispatch))
+  (orderless-matching-styles '(orderless-literal orderless-regexp)))
+(setq completion-styles '(substring orderless-fast basic))
 
 ;; (use-package org-modern-indent
 ;;   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
@@ -1817,12 +1865,12 @@ space rather than before."
 (defun search-open-file (directory-path regex)
   "search for file and open it similar to dmenu"
   (interactive)
-  (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex t))))
+  (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex t))))
     (browse-url (expand-file-name my-file))))
 
 (defun search-open-file-in-emacs (directory-path regex)
   "search for a file recursively in a directory and open it in emacs"
-  (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
+  (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
 ;; automatically run script being edited, demonstrates how we can auto compile files on save
@@ -2000,7 +2048,8 @@ space rather than before."
   "switch to dark theme"
   (interactive)
   (disable-theme 'doom-gruvbox-light)
-  (load-theme 'darktooth t)
+  ;; (load-theme 'darktooth t)
+  (load-theme 'doom-rouge t)
   ;; (load-theme 'minimal t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
@@ -2011,7 +2060,8 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'darktooth)
+  ;; (disable-theme 'darktooth)
+  (disable-theme 'doom-rouge)
   (load-theme 'doom-gruvbox-light t)
   (set-face-attribute 'org-block nil :background nil)
   (set-face-attribute 'whitespace-space nil :background nil)
