@@ -35,6 +35,7 @@
 
 ;; path where all my notes etc go
 (setq brain-path (file-truename "~/brain/"))
+(defconst *music-dir* (file-truename "~/music/"))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
@@ -393,7 +394,7 @@
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired "~/brain/music/")))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired *music-dir*)))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'counsel-find-file)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
   (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" 'counsel-M-x)
@@ -401,7 +402,11 @@
   (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
   (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode "SPC b k" 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
   (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b a" 'kill-all-buffers)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b a"
+                      (lambda ()
+                        (interactive)
+                        (kill-all-buffers)
+                        (switch-to-buffer "*scratch*")))
   (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'counsel-switch-buffer)
   (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
   (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
@@ -426,10 +431,7 @@
   (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'org-latex-preview)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC i"
-                      (lambda ()
-                        (interactive)
-                        (org-insert-time-stamp (current-time) t)))
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC a i" #'org-timestamp)
   ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
   ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
@@ -476,9 +478,11 @@
 
   ;; keys to search for files
   (general-define-key :states 'normal :keymaps 'override "SPC f b"
-                      (lambda () (interactive) (search-open-file brain-path".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+                      (lambda () (interactive) (search-open-file brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
   (general-define-key :states 'normal :keymaps 'override "SPC F b"
                       (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+  (general-define-key :states 'normal :keymaps 'override "SPC f h" (lambda () (interactive) (search-open-file "./" ".*")))
+  (general-define-key :states 'normal :keymaps 'override "SPC f m" (lambda () (interactive) (search-open-file *music-dir* ".*")))
 
   (define-key evil-normal-state-map (kbd "SPC f d")
               (lambda () (interactive) (search-open-file "~/data" "")))
@@ -486,15 +490,41 @@
               (lambda () (interactive)
                 (search-open-file-in-emacs "~/data" "")))
 
-  ;; keybinding to evaluate math expressions
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+  ;; music keys
+  ;; play artist
+  (general-define-key :states 'normal :keymaps 'override "SPC m a"
                       (lambda ()
                         (interactive)
-                        (call-interactively 'calc-latex-language)
-                        (setq result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end))))
-                        (end-of-line)
-                        (insert " ")
-                        (insert result)))
+                        (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+                          (let ((chosen-artist (completing-read "pick artist: " artist-names)))
+                            (dired (format "%s/%s" *music-dir* chosen-artist))))))
+  ;; play album
+  (general-define-key :states 'normal :keymaps 'override "SPC m b"
+                      (lambda ()
+                        (interactive)
+                        (let ((album-titles
+                               (apply
+                                #'cl-concatenate
+                                (list*
+                                 'list
+                                 (mapcar
+                                  (lambda (dir)
+                                    (directory-files dir nil "^[^.]*$"))
+                                  (cl-remove-if-not
+                                   #'file-directory-p
+                                   (directory-files *music-dir* t "^[^.]*$")))))))
+                          (let ((chosen-album (completing-read "pick album: " album-titles)))
+                            (message "playing album %s" chosen-album)))))
+
+  ;; keybinding to evaluate math expressions
+  ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+  ;;                     (lambda ()
+  ;;                       (interactive)
+  ;;                       (call-interactively 'calc-latex-language)
+  ;;                       (let ((result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end)))))
+  ;;                         (end-of-line)
+  ;;                         (insert " ")
+  ;;                         (insert result))))
 
   ;; general keys
   ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
@@ -1357,7 +1387,9 @@ space rather than before."
   (add-hook 'web-mode-hook 'emmet-mode))
 
 ;; transclusions (including text from other documents) for org mode
-(use-package org-transclusion)
+(use-package org-transclusion
+  :config
+  (add-hook 'org-mode-hook #'org-transclusion-mode))
 
 (quelpa '(eat :fetcher git
               :url "https://codeberg.org/akib/emacs-eat"
@@ -1785,7 +1817,7 @@ space rather than before."
 (defun search-open-file (directory-path regex)
   "search for file and open it similar to dmenu"
   (interactive)
-  (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex))))
+  (let ((my-file (ivy-completing-read "select file: " (directory-files-recursively directory-path regex t))))
     (browse-url (expand-file-name my-file))))
 
 (defun search-open-file-in-emacs (directory-path regex)
@@ -2214,7 +2246,9 @@ space rather than before."
   (go-through-roam-files-with-tag
    "code"
    (lambda ()
-     (org-babel-execute-buffer))))
+     (condition-case err
+         (org-babel-execute-buffer)
+       (error (message "got error %s while executing %s" err (buffer-file-name)))))))
 (defun lob-reload ()
   "load files tagged with 'code' into the org babel library (lob - library of babel)"
   (interactive)
@@ -2223,7 +2257,7 @@ space rather than before."
    (lambda ()
      (org-babel-lob-ingest (buffer-file-name)))))
 ;; most/all of my code files are lisp, load them with sly/slime
-(add-hook 'sly-connected-hook 'execute-code-files)
+(add-hook 'sly-connected-hook #'execute-code-files)
 ;; i need those in library of babel on startup too
 (lob-reload)
 
@@ -2726,14 +2760,14 @@ INFO is a plist containing export properties."
 
 (defun export-node (node)
   "export a node's file to both hugo md and pdf"
-  (condition-case nil
+  (condition-case err
       (let ((org-startup-with-latex-preview nil)
             (file (org-roam-node-file node)))
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          ;; (org-to-pdf)
+          (org-to-pdf)
           (org-hugo-export-to-md)))
     (error
-     (message "export-node failed %s, not retrying" (org-roam-node-file node))
+     (message "export-node failed %s, not retrying, err: %s" (org-roam-node-file node) err)
      ;; (org-latex-preview--clear-preamble-cache)
      ;; (org-latex-preview-clear-cache)
      ;; (export-node node)
@@ -2806,11 +2840,9 @@ INFO is a plist containing export properties."
 ;;   (let ((atr (file-attributes filepath)))
 ;;     (file-attribute-status-change-time atr)))
 (defun file-creation-time (filepath)
-  "get file creation timestamp, only works on ext4 (and other fs's that support 'crtime'),
-timestamp example: 2023-09-28 15:04:30.887059861 +0300"
-  (decode-time
-   (string-to-number
-    (shell-command-to-string (format "stat --format='%%W' '%s'" filepath)))))
+  "get file creation timestamp, only works on ext4 (and other fs's that support 'crtime'),"
+  (string-to-number
+   (shell-command-to-string (format "stat --format='%%W' '%s'" filepath))))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
     ;; (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
@@ -2891,3 +2923,6 @@ timestamp example: 2023-09-28 15:04:30.887059861 +0300"
                                       (setq i (+ 32 i)) i (single-key-description i)
                                       (setq i (+ 32 i)) i (single-key-description i)))
                       (setq i (- i 96))))))
+
+;; run some python code from my org notes on shell startup
+(add-hook 'python-shell-first-prompt-hook #'execute-code-files)
