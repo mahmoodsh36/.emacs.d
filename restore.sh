@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
 
 mkdir ~/.emacs.d/
-ln -s "$HOME/workspace/dotfiles/.emacs.d/init.el" "$HOME/.emacs.d/"
-ln -s "$HOME/workspace/dotfiles/.emacs.d/snippets" "$HOME/.emacs.d/"
+ln -s "$HOME/workspace/dotfiles/.emacs.d/*" "$HOME/.emacs.d/"
 
 for filename in .xinitrc .zshrc .zprofile .Xresources .vimrc .tmux.conf; do
 	ln -s "$HOME/workspace/dotfiles/$filename" "$HOME/"
@@ -13,6 +12,8 @@ for filename in alacritty compton.conf gtk-3.0 mimeapps.list mpv vifm qutebrowse
 	rofi sxhkd sxiv user-dirs.dirs transmission-daemon zathura; do
 	ln -s "$HOME/workspace/dotfiles/.config/$filename" "$HOME/.config/"
 done
+
+ln -s "$HOME/workspace/dotfiles/.config/transmission-daemon" "$HOME/.config/transmission"
 
 mkdir "$HOME/.config/guix/"
 ln -s "$HOME/workspace/dotfiles/channels.scm" "$HOME/.config/guix/"
