@@ -499,6 +499,7 @@
                         (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
                           (let ((chosen-artist (completing-read "pick artist: " artist-names)))
                             (dired (format "%s/%s" *music-dir* chosen-artist))))))
+
   ;; play album
   (general-define-key :states 'normal :keymaps 'override "SPC m b"
                       (lambda ()
@@ -515,6 +516,8 @@
                                    #'file-directory-p
                                    (directory-files *music-dir* t "^[^.]*$")))))))
                           (let ((chosen-album (completing-read "pick album: " album-titles)))
+                            (call-process "play_dir_as_album.sh" nil 0 nil
+                                          (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
                             (message "playing album %s" chosen-album)))))
 
   ;; keybinding to evaluate math expressions
@@ -1576,7 +1579,17 @@ space rather than before."
 (require 'vertico-buffer)
 (vertico-buffer-mode)
 ;; Commands for Ido-like directory navigation.
-(use-package vertico-directory)
+;; Configure directory extension.
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 (use-package vertico-reverse)
 ;; is similar to ivy-rich
 (use-package marginalia
@@ -1590,7 +1603,7 @@ space rather than before."
        `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
 (orderless-define-completion-style orderless-fast
   (orderless-style-dispatchers '(orderless-fast-dispatch))
-  (orderless-matching-styles '(orderless-literal orderless-regexp)))
+  (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
 (setq completion-styles '(substring orderless-fast basic))
 
 ;; (use-package org-modern-indent
