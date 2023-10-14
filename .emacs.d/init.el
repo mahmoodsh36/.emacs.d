@@ -408,7 +408,7 @@
                         (interactive)
                         (kill-all-buffers)
                         (switch-to-buffer "*scratch*")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'switch-to-buffer)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'consult-buffer)
   (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
   (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
   (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
@@ -500,8 +500,30 @@
                           (let ((chosen-artist (completing-read "pick artist: " artist-names)))
                             (dired (format "%s/%s" *music-dir* chosen-artist))))))
 
-  ;; play album
+  ;; play album by artist name + album name
   (general-define-key :states 'normal :keymaps 'override "SPC m b"
+                      (lambda ()
+                        (interactive)
+                        (let ((album-titles
+                               (apply
+                                #'cl-concatenate
+                                (list*
+                                 'list
+                                 (mapcar
+                                  (lambda (dir)
+                                    (mapcar (lambda (album-title)
+                                              (concat (file-name-base dir) "/" album-title))
+                                            (directory-files dir nil "^[^.]*$")))
+                                  (cl-remove-if-not
+                                   #'file-directory-p
+                                   (directory-files *music-dir* t "^[^.]*$")))))))
+                          (let ((chosen-album (completing-read "pick album: " album-titles)))
+                            (call-process "play_dir_as_album.sh" nil 0 nil
+                                          (concat *music-dir* chosen-album))
+                            (message "playing album %s" chosen-album)))))
+
+  ;; play album
+  (general-define-key :states 'normal :keymaps 'override "SPC m B"
                       (lambda ()
                         (interactive)
                         (let ((album-titles
@@ -553,7 +575,7 @@
   (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" 'load-theme)
+  (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" #'consult-theme)
   (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
   (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
   (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
@@ -579,7 +601,7 @@
   (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
   ;; dired
-  (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
+  (general-define-key :states 'normal :keymaps 'dired-mode-map "M-y" #'copy-file-path)
 
   ;; some sly keys
   ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
@@ -1590,7 +1612,7 @@ space rather than before."
               ("M-DEL" . vertico-directory-delete-word))
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
-(use-package vertico-reverse)
+;; (use-package vertico-reverse)
 ;; is similar to ivy-rich
 (use-package marginalia
   :ensure t
@@ -2062,7 +2084,7 @@ space rather than before."
   (interactive)
   (disable-theme 'doom-gruvbox-light)
   ;; (load-theme 'darktooth t)
-  (load-theme 'doom-rouge t)
+  (load-theme 'soothe t)
   ;; (load-theme 'minimal t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
@@ -2074,7 +2096,7 @@ space rather than before."
   "switch to light theme"
   (interactive)
   ;; (disable-theme 'darktooth)
-  (disable-theme 'doom-rouge)
+  (disable-theme 'soothe)
   (load-theme 'doom-gruvbox-light t)
   (set-face-attribute 'org-block nil :background nil)
   (set-face-attribute 'whitespace-space nil :background nil)
@@ -2948,7 +2970,7 @@ INFO is a plist containing export properties."
                         ("#+header:" . ?)
                         ("#+title:" . ?🌐)
                         ("#+results:" . ?)
-                        ("#+name:" . ?ᘏ)
+                        ("#+name:" . ?📌)
                         ("#+call:" . ?)
                         (":properties:" . ?)
                         ("#+include:" . ?📎);;?🔗) ;;?📌)
