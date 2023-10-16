@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: for
+# key: fr
+# --
+for ${1:i} in $2:
+    $0
