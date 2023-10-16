@@ -483,7 +483,7 @@
   (general-define-key :states 'normal :keymaps 'override "SPC F b"
                       (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
   (general-define-key :states 'normal :keymaps 'override "SPC f h" (lambda () (interactive) (search-open-file "./" ".*")))
-  (general-define-key :states 'normal :keymaps 'override "SPC f m" (lambda () (interactive) (search-open-file *music-dir* ".*")))
+  (general-define-key :states 'normal :keymaps 'override "SPC f m" (lambda () (interactive) (search-open-file *music-dir* "")))
 
   (define-key evil-normal-state-map (kbd "SPC f d")
               (lambda () (interactive) (search-open-file "~/data" "")))
@@ -499,7 +499,6 @@
                         (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
                           (let ((chosen-artist (completing-read "pick artist: " artist-names)))
                             (dired (format "%s/%s" *music-dir* chosen-artist))))))
-
   ;; play album by artist name + album name
   (general-define-key :states 'normal :keymaps 'override "SPC m b"
                       (lambda ()
@@ -521,7 +520,6 @@
                             (call-process "play_dir_as_album.sh" nil 0 nil
                                           (concat *music-dir* chosen-album))
                             (message "playing album %s" chosen-album)))))
-
   ;; play album
   (general-define-key :states 'normal :keymaps 'override "SPC m B"
                       (lambda ()
@@ -541,6 +539,11 @@
                             (call-process "play_dir_as_album.sh" nil 0 nil
                                           (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
                             (message "playing album %s" chosen-album)))))
+  ;; open music table file
+  (general-define-key :states 'normal :keymaps 'override "SPC m f"
+                      (lambda ()
+                        (interactive)
+                        (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
 
   ;; keybinding to evaluate math expressions
   ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
@@ -601,7 +604,7 @@
   (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
   ;; dired
-  (general-define-key :states 'normal :keymaps 'dired-mode-map "M-y" #'copy-file-path)
+  (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
 
   ;; some sly keys
   ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
@@ -645,6 +648,9 @@
 
   ;; common lisp/sly
   (general-define-key :states '(normal) :keymaps '(lisp-mode-map sly-mrepl-mode-map) "SPC l d" 'sly-documentation-lookup)
+
+  ;; julia
+  (general-define-key :states '(normal) :keymaps 'override "SPC s j" 'julia-snail)
 
   ;; python/elpy
   (general-define-key :states '(normal) :keymaps 'override "SPC s p" 'run-python)
@@ -2083,8 +2089,8 @@ space rather than before."
   "switch to dark theme"
   (interactive)
   (disable-theme 'doom-gruvbox-light)
-  ;; (load-theme 'darktooth t)
-  (load-theme 'soothe t)
+  (load-theme 'darktooth t)
+  ;; (load-theme 'soothe t)
   ;; (load-theme 'minimal t)
   (set-face-attribute 'whitespace-space nil :background nil)
   (set-face-attribute 'whitespace-newline nil :background nil)
@@ -2095,8 +2101,8 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  ;; (disable-theme 'darktooth)
-  (disable-theme 'soothe)
+  (disable-theme 'darktooth)
+  ;; (disable-theme 'soothe)
   (load-theme 'doom-gruvbox-light t)
   (set-face-attribute 'org-block nil :background nil)
   (set-face-attribute 'whitespace-space nil :background nil)
@@ -2306,6 +2312,8 @@ space rather than before."
 ;; dont number headers on exports
 (setq org-export-with-section-numbers nil)
 (setq org-use-property-inheritance t)
+;; increase max number of messages
+(setq message-log-max 100000)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -2849,7 +2857,7 @@ INFO is a plist containing export properties."
       (let ((org-startup-with-latex-preview nil)
             (file (org-roam-node-file node)))
         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          (org-to-pdf)
+          ;; (org-to-pdf)
           (org-hugo-export-to-md)))
     (error
      (message "export-node failed %s, not retrying, err: %s" (org-roam-node-file node) err)
@@ -2873,26 +2881,25 @@ INFO is a plist containing export properties."
     (when node
       (export-node-recursively node))))
 
-(defun export-node-recursively (node)
-  "export an org-roam recursively with `export-node`"
-  (let ((export-exceptions nil))
-    (export-node-recursively-helper node)))
-
-(defun export-node-recursively-helper (node)
-  "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `export-exceptions` is used for recursion to keep a record of exported nodes"
-  (when node
-    (when (not (cl-find node export-exceptions
-                        :test (lambda (node1 node2)
-                                (string= (org-roam-node-file node1)
-                                         (org-roam-node-file node2)))))
-      (push node export-exceptions)
-      (let ((nodes (nodes-linked-from-node-file node)))
-        (dolist (other-node nodes)
-          (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
-          (export-node-recursively-helper other-node)))
-      (when (and node (member "public" (org-roam-node-tags node)))
-        (message (format "exporting: %s" (org-roam-node-file node)))
-        (export-node node)))))
+(defun export-node-recursively (node &optional exceptions)
+  "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
+  ;; (message "%s" exceptions)
+  (if (and node
+           (when (not (cl-find node exceptions
+                               :test (lambda (node1 node2)
+                                       (string= (org-roam-node-file node1)
+                                                (org-roam-node-file node2)))))))
+      (progn
+        (push node exceptions)
+        (let ((nodes (nodes-linked-from-node-file node)))
+          (dolist (other-node nodes)
+            (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
+            (setf exceptions (export-node-recursively other-node exceptions))))
+        (when (and node (member "public" (org-roam-node-tags node)))
+          (message (format "exporting: %s" (org-roam-node-file node)))
+          (export-node node))
+        exceptions)
+    exceptions))
 
 (defun my-org-link-advice (fn link desc info)
   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
@@ -2907,7 +2914,8 @@ INFO is a plist containing export properties."
                        (not (string-match-p "::" link-path))) ;; if link isnt of form [[id::block]], dont export it as link, we cant handle those yet
                   (funcall fn link desc info)
                 (format "<b>%s</b>" desc)))
-          (error (message "org-roam couldnt handle link %s, error was: %s" link-path err)))
+          (error (message "org-roam couldnt find link %s, error was: %s" link-path err)
+                 (format "<b>%s</b>" desc))) ;; even when we cant find it in the database we still render it
       (funcall fn link desc info))))
 (advice-add #'org-html-link :around #'my-org-link-advice)
 (advice-add #'org-hugo-link :around #'my-org-link-advice)
@@ -2937,10 +2945,13 @@ INFO is a plist containing export properties."
 (defun export-all-public ()
   "export nodes with tag 'public'"
   (interactive)
-  (go-through-roam-files-with-tag
-   "public"
-   (lambda ()
-     (export-node-recursively (org-roam-node-from-id (org-id-get))))))
+  (let ((exceptions))
+    (go-through-roam-files-with-tag
+     "public"
+     (lambda ()
+       ;; (message "%s" exceptions)
+       (setf exceptions
+             (export-node-recursively (org-roam-node-from-id (org-id-get)) exceptions))))))
 
 ;; org-special-edit with lsp?, laggy af
 ;; (defun org-babel-edit-prep:python (babel-info)
