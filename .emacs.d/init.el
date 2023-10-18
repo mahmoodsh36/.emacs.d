@@ -208,13 +208,14 @@
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
-           :kill-buffer :unnarrowed t)
+           :kill-buffer t :unnarrowed t :empty-lines-after 0)
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
-           :kill-buffer :unnarrowed t)
-          ("d" "daily" plain "* %T %?"
-          ;; ("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
-           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+filetags: :daily:"))
+           :kill-buffer t :unnarrowed t :empty-lines-after 0)
+          ("d" "daily" plain "%?" ;;"* %T %?"
+           ;; ("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
+           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
+           :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
           ("t" "todo" plain "* TODO ${title}"
            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
 ;; go to insert mode after for org-capture cursor
@@ -1164,7 +1165,6 @@ space rather than before."
 ;;   (ivy-prescient-mode)
 ;;   (prescient-persist-mode 1)
 ;;   (setq prescient-history-length 10000)
-;;   (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
 ;; ;; more featureful ivy menus, it may cause some error when switching buffers
 ;; (use-package ivy-rich
 ;;   :config
@@ -1200,6 +1200,7 @@ space rather than before."
   (setq org-hugo-section "post")
   (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
+  (defconst *org-static-dir* (file-truename "~/workspace/blog/static/ox-hugo"))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
 
 ;; best latex preview functionality
@@ -1633,6 +1634,17 @@ space rather than before."
   (orderless-style-dispatchers '(orderless-fast-dispatch))
   (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
 (setq completion-styles '(substring orderless-fast basic))
+
+;; prescient history location
+(use-package prescient
+  :config
+  (prescient-persist-mode 1)
+  (setq prescient-history-length 100000)
+  (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
+(use-package vertico-prescient
+  :config
+  (vertico-prescient-mode))
+
 
 ;; (use-package org-modern-indent
 ;;   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
@@ -2157,6 +2169,7 @@ space rather than before."
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
+(setq bookmark-file (concat brain-path "emacs_bookmarks"))
 
 (defun yas-delete-if-empty ()
   "function to remove _{} or ^{} fields, used by some of my latex yasnippets"
@@ -2257,7 +2270,7 @@ space rather than before."
           (ignore-errors (org-roam-tag-remove '("todo")))))))
   (agenda-files-update))
 (defun is-buffer-roam-note ()
-  "Return non-nil if the currently visited buffer is a note."
+  "return non-nil if the currently visited buffer is a note."
   (and buffer-file-name
        (string-prefix-p
         (expand-file-name (file-name-as-directory org-roam-directory))
@@ -2326,12 +2339,11 @@ space rather than before."
 (defun go-through-roam-files-with-tag (tag-name callback)
   "run a callback function on each file tagged with tag-name"
   (dolist (file (roam-files-with-tag tag-name))
-    (if (not (eq callback nil))
-        (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          (when (is-buffer-roam-note)
-            (funcall callback)
-            ;; (kill-this-buffer)
-            )))))
+    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+      (when (is-buffer-roam-note)
+        (funcall callback)
+        ;; (kill-this-buffer)
+        ))))
 
 (defun execute-code-files ()
   "execute files tagged with 'code'"
