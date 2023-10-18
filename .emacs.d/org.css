@@ -129,12 +129,24 @@ table th {
   flex-flow: row;
   flex-wrap: wrap;
   justify-content: center;
+  font-size: 13px;
 }
 .collage img {
   max-width: 95px;
   border: 1px solid red;
   margin: 3px;
   justify-content: center;
+}
+/* for album collages - images with text below them */
+.collage div {
+  display: flex;
+  flex-flow: column;
+  margin: 5px;
+}
+.collage span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .tooltip {
   position: relative;
@@ -151,7 +163,7 @@ table th {
   border-radius: 6px;
   padding: 5px 2px;
 
-  /* Position the tooltip */
+  /* position the tooltip */
   position: absolute;
   z-index: 1;
   bottom: 100%;
