@@ -25,5 +25,5 @@ x-scheme-handler/about=google-chrome-stable.desktop
 x-scheme-handler/http=google-chrome-stable.desktop
 x-scheme-handler/https=google-chrome-stable.desktop
 x-scheme-handler/unknown=google-chrome-stable.desktop
-application/pdf=org.pwmt.zathura.desktop
+application/pdf=emacsclient.desktop
 inode/directory=emacsclient.desktop
