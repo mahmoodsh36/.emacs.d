@@ -99,6 +99,7 @@
 (add-to-list 'savehist-additional-variables 'search-ring)
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
 (add-to-list 'savehist-additional-variables 'kill-ring)
+(setq history-length t) ;; no limit to history length
 ;; break long lines into multiple
 ;;(global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
@@ -146,8 +147,13 @@
 (setq evil-want-keybinding nil)
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
-(setq enable-evil t)
+(setq enable-evil nil)
 (setq enable-god nil)
+;;(defconst *leader-key* "C-z");;"SPC")
+(defconst *leader-key* "ESC")
+(defun leadered (key-str)
+  "return the keybinding `key-str', which is taken as a string, prefixed by the leader key defined in '*leader-key'"
+  (concat *leader-key* " " key-str))
 
 ;; need straight for tecosaur's org version, for now, so install both
 (defvar bootstrap-version)
@@ -352,6 +358,29 @@
     (define-key evil-inner-text-objects-map "c" 'evil-textobj-column-word)
     (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
 
+  ;; disable evil mode in deadgrep, they dont work well together
+  (evil-set-initial-state 'deadgrep-mode 'emacs)
+  (evil-set-initial-state 'calc-mode 'emacs)
+  ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
+  (evil-set-initial-state 'sly-db-mode 'emacs)
+  ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
+  (evil-set-initial-state 'vterm-mode 'emacs)
+
+  (general-define-key :keymaps 'override "{" 'evil-scroll-line-up)
+  (general-define-key :keymaps 'override "}" 'evil-scroll-line-down)
+
+  (general-define-key :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
+
+  (general-define-key :keymaps 'override ")" 'evil-scroll-page-down)
+  (general-define-key :keymaps 'override "(" 'evil-scroll-page-up)
+
+  (general-define-key :keymaps 'override (leadered "w") 'evil-window-map)
+  (general-define-key :keymaps 'override (leadered "h") (general-simulate-key "C-h"))
+
+  ;; display number of matches when searching
+  ;; (use-package anzu)
+  (use-package evil-anzu)
+
   ;; extend evil-surround functionality
   (use-package evil-embrace
     :config
@@ -385,224 +414,13 @@
 
   (general-define-key :states 'normal :keymaps '(org-mode-map TeX-mode-map) "SPC v" 'open-current-document-this-window)
   (general-define-key :states 'normal "s" 'save-buffer)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d w" (lambda () (interactive) (dired "~/dl/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d a" (lambda () (interactive) (dired "~/data/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d b" (lambda () (interactive) (dired brain-path)))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d r" (lambda () (interactive) (dired (concat brain-path "/resources"))))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d h" (lambda () (interactive) (dired "~/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d p" (lambda () (interactive) (dired "~/p/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d d" 'dired)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d c" (lambda () (interactive) (dired default-directory)))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d o" (lambda () (interactive) (dired "~/brain/out/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d g" (lambda () (interactive) (dired "~/workspace/blog/")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC d m" (lambda () (interactive) (dired *music-dir*)))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC f f" 'find-file)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC f s" 'sudo-find-file)
-  (general-define-key :states '(normal treemacs motion) :keymaps 'override "SPC SPC" #'execute-extended-command)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b k" 'kill-this-buffer)
-  (general-define-key :states '(normal motion) :keymaps 'eshell-mode-map "SPC b k" (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
-  (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode "SPC b k" 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b K" 'kill-buffer-and-window)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b a"
-                      (lambda ()
-                        (interactive)
-                        (kill-all-buffers)
-                        (switch-to-buffer "*scratch*")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC b s" 'consult-buffer)
-  (general-define-key :states 'normal :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) "SPC x" 'eval-defun)
-  (general-define-key :states 'normal :keymaps 'override "SPC g" 'deadgrep)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC x" 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
-  (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC x" 'compile-current-document)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC e" (lambda () (interactive) (find-file user-init-file)))
-  (general-define-key :states 'normal :keymaps 'override "SPC p" 'projectile-command-map)
-  ;; (general-define-key :states 'normal :keymaps 'TeX-mode-map "SPC c" 'compile-sagetex)
+
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
   ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
   ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r k" 'org-insert-link)
-  ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z"
-  ;;                     (lambda ()
-  ;;                       (interactive)
-  ;;                       (if (not xenops-mode)
-  ;;                           (xenops-mode)
-  ;;                         (xenops-render))))
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC z" 'org-latex-preview)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC w" 'evil-window-map)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC h" (general-simulate-key "C-h"))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a i" #'org-timestamp)
-  ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-  ;; (general-define-key :states 'normal :keymaps 'override "SPC r t" 'org-roam-buffer-toggle)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC r f" 'org-roam-node-find)
-  (general-define-key :states 'normal :keymaps 'override "SPC r i" 'org-roam-node-insert)
-  (general-define-key :states 'normal :keymaps 'override "SPC r c" 'org-id-get-create)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r o" 'org-open-at-point)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r a" 'org-attach)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r A" 'org-attach-open)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r l" 'org-roam-alias-add)
-  (general-define-key :states 'normal :keymaps 'override "SPC r n" (lambda () (interactive) (org-roam-capture nil "n")))
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r w" 'org-roam-tag-add)
-  (general-define-key :states 'normal :keymaps 'override "SPC r q"
-                      (lambda ()
-                        (interactive)
-                        (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
-  ;; (general-define-key :states 'normal :keymaps 'override "SPC r h"
-  ;;                     (lambda ()
-  ;;                       (interactive)
-  ;;                       (org-roam-capture nil "t")))
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r x" #'export-current-buffer)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r e" 'org-babel-tangle)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r E" 'org-babel-tangle-file)
-  ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r d" 'org-deadline)
-  ;; (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-schedule)
-  (general-define-key :states 'normal :keymaps 'override "SPC r g"
-                      (lambda ()
-                        (interactive)
-                        (find-file (concat brain-path "/bib.bib"))))
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r v" 'org-babel-execute-buffer)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r r" 'org-redisplay-inline-images)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r P" 'org-set-property)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r z" 'org-add-note)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r p" 'org-latex-preview-auto-mode)
-  ;; (general-define-key :states 'normal :keymaps 'override "/" 'swiper)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC c" "C-c C-c")
-  (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
-  (general-define-key :states 'normal :keymaps 'override "SPC a N"
-                      (lambda ()
-                        (interactive)
-                        (org-roam-capture-no-title-prompt nil "d")))
-
-  ;; keys to search for files
-  (general-define-key :states 'normal :keymaps 'override "SPC f b"
-                      (lambda () (interactive) (search-open-file brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
-  (general-define-key :states 'normal :keymaps 'override "SPC F b"
-                      (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
-  (general-define-key :states 'normal :keymaps 'override "SPC f h" (lambda () (interactive) (search-open-file "./" ".*")))
-  (general-define-key :states 'normal :keymaps 'override "SPC f m" (lambda () (interactive) (search-open-file *music-dir* "")))
-
-  (define-key evil-normal-state-map (kbd "SPC f d")
-              (lambda () (interactive) (search-open-file "~/data" "")))
-  (define-key evil-normal-state-map (kbd "SPC F d")
-              (lambda () (interactive)
-                (search-open-file-in-emacs "~/data" "")))
-
-  ;; music keys
-  ;; play artist
-  (general-define-key :states 'normal :keymaps 'override "SPC m a"
-                      (lambda ()
-                        (interactive)
-                        (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
-                          (let ((chosen-artist (completing-read "pick artist: " artist-names)))
-                            (dired (format "%s/%s" *music-dir* chosen-artist))))))
-  ;; play album by artist name + album name
-  (general-define-key :states 'normal :keymaps 'override "SPC m b"
-                      (lambda ()
-                        (interactive)
-                        (let ((album-titles
-                               (apply
-                                #'cl-concatenate
-                                (list*
-                                 'list
-                                 (mapcar
-                                  (lambda (dir)
-                                    (mapcar (lambda (album-title)
-                                              (concat (file-name-base dir) "/" album-title))
-                                            (directory-files dir nil "^[^.]*$")))
-                                  (cl-remove-if-not
-                                   #'file-directory-p
-                                   (directory-files *music-dir* t "^[^.]*$")))))))
-                          (let ((chosen-album (completing-read "pick album: " album-titles)))
-                            (call-process "play_dir_as_album.sh" nil 0 nil
-                                          (concat *music-dir* chosen-album))
-                            (message "playing album %s" chosen-album)))))
-  ;; play album
-  (general-define-key :states 'normal :keymaps 'override "SPC m B"
-                      (lambda ()
-                        (interactive)
-                        (let ((album-titles
-                               (apply
-                                #'cl-concatenate
-                                (list*
-                                 'list
-                                 (mapcar
-                                  (lambda (dir)
-                                    (directory-files dir nil "^[^.]*$"))
-                                  (cl-remove-if-not
-                                   #'file-directory-p
-                                   (directory-files *music-dir* t "^[^.]*$")))))))
-                          (let ((chosen-album (completing-read "pick album: " album-titles)))
-                            (call-process "play_dir_as_album.sh" nil 0 nil
-                                          (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
-                            (message "playing album %s" chosen-album)))))
-  ;; open music table file
-  (general-define-key :states 'normal :keymaps 'override "SPC m f"
-                      (lambda ()
-                        (interactive)
-                        (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
-
-  ;; keybinding to evaluate math expressions
-  ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
-  ;;                     (lambda ()
-  ;;                       (interactive)
-  ;;                       (call-interactively 'calc-latex-language)
-  ;;                       (let ((result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end)))))
-  ;;                         (end-of-line)
-  ;;                         (insert " ")
-  ;;                         (insert result))))
-
-  ;; general keys
-  ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
-  (general-define-key :states 'normal :keymaps 'override "SPC '" (general-simulate-key "C-c '"))
-  (general-define-key :states 'normal :keymaps 'override "SPC w m"
-                      (lambda () (interactive)
-                        (when window-system (set-frame-size (selected-frame) 180 50))))
-  (general-define-key :states '(normal treemacs motion) :keymaps 'override ")" 'evil-scroll-page-down)
-  (general-define-key :states '(normal treemacs motion) :keymaps 'override "(" 'evil-scroll-page-up)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s d" 'switch-to-dark-theme)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s l" 'switch-to-light-theme)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s g" 'magit)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s i"
-                      (lambda ()
-                        (interactive)
-                        (let ((current-prefix-arg '-)) (call-interactively 'sly))))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s r" #'eat);;'vterm)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC u" (general-simulate-key "C-u"))
-  (general-define-key :states '(normal motion) :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC o l" 'avy-goto-line)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC o c" 'avy-goto-char)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s s" 'spotify-lyrics)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s w" 'open-spotify-lyrics-file)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s t" #'consult-theme)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s k" 'open-kitty-here)
-  (general-define-key :states '(normal motion) :keymaps 'override "{" 'evil-scroll-line-up)
-  (general-define-key :states '(normal motion) :keymaps 'override "}" 'evil-scroll-line-down)
-  ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC l" 'calc)
-
-  ;; agenda keys
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a a" (lambda () (interactive) (org-agenda nil "n")))
-  (general-define-key :states '(normal motion) :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a s" 'org-schedule)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a d" 'org-deadline)
-  (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a j" 'org-clock-in)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a J" 'org-clock-in-last)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a k" 'org-clock-out)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a b" 'org-clock-cancel)
-  (general-define-key :states '(normal motion) :keymaps 'org-mode-map "SPC a p" 'org-clock-display)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a t" (lambda () (interactive) (org-roam-capture nil "t")))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a n" 'today-entry)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC a o" 'open-todays-file)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s n" 'yas-new-snippet)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s v" 'yas-visit-snippet-file)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s h" 'yas-insert-snippet)
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s a" 'dictionary-search)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "SPC r s" 'org-cite-insert)
 
   ;; dired
   (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
@@ -610,62 +428,16 @@
   ;; some sly keys
   ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
 
-  ;; key to clear the screen in eshell
-  (defun run-this-in-eshell (cmd)
-    "Runs the command 'cmd' in eshell."
-    (with-current-buffer "*eshell*"
-      (end-of-buffer)
-      (eshell-kill-input)
-      (message (concat "Running in Eshell: " cmd))
-      (insert cmd)
-      (eshell-send-input)
-      (end-of-buffer)
-      (eshell-bol)
-      (yank)))
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (general-define-key :states '(normal) :keymaps 'local "SPC c" (lambda () (interactive) (run-this-in-eshell "clear 1")))))
-  (general-define-key :states '(normal) :keymaps 'eshell-mode-map "SPC x" 'eshell-interrupt-process)
+  (general-define-key :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
+  (general-define-key :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+  (general-define-key :keymaps 'org-mode-map "]o" 'org-next-block)
+  (general-define-key :keymaps 'org-mode-map "[o" 'org-previous-block)
 
-  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC x" 'sly-compile-defun)
-  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC c" 'sly-eval-buffer)
-  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC z"
-                      (lambda ()
-                        (interactive)
-                        (sly-end-of-defun)
-                        (call-interactively 'sly-eval-last-expression-in-repl)))
-  (general-define-key :states '(normal motion) :keymaps 'override "SPC s e" 'eshell)
-  (general-define-key :states '(normal) :keymaps 'override "SPC s m" 'man)
 
   ;; general keys for programming
   (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
   (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)
 
-  ;; language-specific keybindings
-  (general-define-key :states '(normal) :keymaps 'lisp-mode-map "SPC l i" 'sly-repl-inspect)
-  (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l i" 'sly-repl-inspect)
-  (general-define-key :states '(normal) :keymaps 'sly-repl-mode-map "SPC l s" 'sly-inspect-presentation-at-point)
-  (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode "SPC c" 'eval-buffer)
-
-  ;; common lisp/sly
-  (general-define-key :states '(normal) :keymaps '(lisp-mode-map sly-mrepl-mode-map) "SPC l d" 'sly-documentation-lookup)
-
-  ;; julia
-  (general-define-key :states '(normal) :keymaps 'override "SPC s j" 'julia-snail)
-
-  ;; python/elpy
-  (general-define-key :states '(normal) :keymaps 'override "SPC s p" 'run-python)
-  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC x" 'elpy-shell-send-defun)
-  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l x" 'elpy-shell-send-defun)
-  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l t" 'elpy-shell-send-statement)
-  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC c" 'elpy-shell-send-buffer)
-  (general-define-key :states '(normal) :keymaps 'python-mode-map "SPC l b" 'elpy-shell-send-buffer)
-
-  ;;sagemath
-  (general-define-key :states '(normal) :keymaps 'sage-shell-mode-map "SPC b k" 'comint-quit-subjob)
-
-  ;; elisp
-  (general-define-key :states '(normal) :keymaps 'emacs-lisp-mode-map "SPC c" 'eval-buffer)
 
   ;; evil mode multiple cursors
   (use-package evil-mc
@@ -796,6 +568,289 @@ space rather than before."
     ;;   )
     ))
 
+;; keybindings here
+(general-define-key :keymaps 'override (leadered "d w") (lambda () (interactive) (dired "~/dl/")))
+(general-define-key :keymaps 'override (leadered "d a") (lambda () (interactive) (dired "~/data/")))
+(general-define-key :keymaps 'override (leadered "d l") (lambda () (interactive) (dired (get-latex-cache-dir-path))))
+(general-define-key :keymaps 'override (leadered "d b") (lambda () (interactive) (dired brain-path)))
+(general-define-key :keymaps 'override (leadered "d r") (lambda () (interactive) (dired (concat brain-path "/resources"))))
+(general-define-key :keymaps 'override (leadered "d h") (lambda () (interactive) (dired "~/")))
+(general-define-key :keymaps 'override (leadered "d p") (lambda () (interactive) (dired "~/p/")))
+(general-define-key :keymaps 'override (leadered "d d") 'dired)
+(general-define-key :keymaps 'override (leadered "d c") (lambda () (interactive) (dired default-directory)))
+(general-define-key :keymaps 'override (leadered "d o") (lambda () (interactive) (dired "~/brain/out/")))
+(general-define-key :keymaps 'override (leadered "d g") (lambda () (interactive) (dired "~/workspace/blog/")))
+(general-define-key :keymaps 'override (leadered "d m") (lambda () (interactive) (dired *music-dir*)))
+(general-define-key :keymaps 'override (leadered "f f") 'find-file)
+(general-define-key :keymaps 'override (leadered "f s") 'sudo-find-file)
+(general-define-key :keymaps 'override (leadered "SPC") #'execute-extended-command)
+(general-define-key :keymaps 'override (leadered "b k") 'kill-this-buffer)
+(general-define-key :keymaps 'eshell-mode-map (leadered "b k") (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
+(general-define-key :keymaps 'sly-repl-mode (leadered "b k") 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
+(general-define-key :keymaps 'override (leadered "b K") 'kill-buffer-and-window)
+(general-define-key :keymaps 'override (leadered "b a")
+                    (lambda ()
+                      (interactive)
+                      (kill-all-buffers)
+                      (switch-to-buffer "*scratch*")))
+(general-define-key :keymaps 'override (leadered "b s") 'consult-buffer)
+(general-define-key :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) (leadered "x") 'eval-defun)
+(general-define-key :keymaps 'override (leadered "g") 'deadgrep)
+(general-define-key :keymaps 'org-mode-map (leadered "x") 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
+(general-define-key :keymaps 'TeX-mode-map (leadered "x") 'compile-current-document)
+(general-define-key :keymaps 'override (leadered "e") (lambda () (interactive) (find-file user-init-file)))
+(general-define-key :keymaps 'override (leadered "p") 'projectile-command-map)
+;; (general-define-key :keymaps 'TeX-mode-map (leadered "c" 'compile-sagetex)
+(general-define-key :keymaps 'org-mode-map (leadered "r k") 'org-insert-link)
+;; (general-define-key :keymaps 'org-mode-map (leadered "z"
+;;                     (lambda ()
+;;                       (interactive)
+;;                       (if (not xenops-mode)
+;;                           (xenops-mode)
+;;                         (xenops-render))))
+(general-define-key :keymaps 'org-mode-map (leadered "z") 'org-latex-preview)
+(general-define-key :keymaps 'override (leadered "a i") #'org-timestamp)
+(general-define-key :keymaps 'override (leadered "a I")
+                    (lambda ()
+                      (interactive)
+                      (org-insert-time-stamp (current-time) t))) ;; timestamp with full time
+;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+;; (general-define-key :keymaps 'override (leadered "r t" 'org-roam-buffer-toggle)
+(general-define-key :keymaps 'override (leadered "r f")
+                    (lambda ()
+                      (interactive)
+                      (org-roam-node-find
+                       nil
+                       nil
+                       (lambda (my-roam-node)
+                         (and my-roam-node
+                              (not (equal (org-roam-node-title my-roam-node) "")))))))
+(general-define-key :keymaps 'override (leadered "r i") 'org-roam-node-insert)
+(general-define-key :keymaps 'override (leadered "r c") 'org-id-get-create)
+(general-define-key :keymaps 'org-mode-map (leadered "r o") 'org-open-at-point)
+(general-define-key :keymaps 'org-mode-map (leadered "r a") 'org-attach)
+(general-define-key :keymaps 'org-mode-map (leadered "r A") 'org-attach-open)
+(general-define-key :keymaps 'org-mode-map (leadered "r l") 'org-roam-alias-add)
+(general-define-key :keymaps 'override (leadered "r n") (lambda () (interactive) (org-roam-capture nil "n")))
+(general-define-key :keymaps 'org-mode-map (leadered "r w") 'org-roam-tag-add)
+(general-define-key :keymaps 'org-mode-map (leadered "r W") 'org-roam-tag-remove)
+(general-define-key :keymaps 'override (leadered "r q")
+                    (lambda ()
+                      (interactive)
+                      (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
+;; (general-define-key :keymaps 'override "SPC r h"
+;;                     (lambda ()
+;;                       (interactive)
+;;                       (org-roam-capture nil "t")))
+(general-define-key :keymaps 'org-mode-map (leadered "r x") #'export-current-buffer)
+(general-define-key :keymaps 'org-mode-map (leadered "r e") 'org-babel-tangle)
+(general-define-key :keymaps 'org-mode-map (leadered "r E") 'org-babel-tangle-file)
+;; (general-define-key :keymaps 'org-mode-map "SPC r d" 'org-deadline)
+;; (general-define-key :keymaps 'org-mode-map "SPC r s" 'org-schedule)
+(general-define-key :keymaps 'override (leadered "r g")
+                    (lambda ()
+                      (interactive)
+                      (find-file (concat brain-path "/bib.bib"))))
+(general-define-key :keymaps 'org-mode-map (leadered "r v") 'org-babel-execute-buffer)
+(general-define-key :keymaps 'org-mode-map (leadered "r r") 'org-redisplay-inline-images)
+(general-define-key :keymaps 'org-mode-map (leadered "r P") 'org-set-property)
+(general-define-key :keymaps 'org-mode-map (leadered "r z") 'org-add-note)
+(general-define-key :keymaps 'org-mode-map (leadered "r p") 'org-latex-preview-auto-mode)
+;; (general-define-key :keymaps 'override "/" 'swiper)
+(general-define-key :keymaps 'org-mode-map (leadered "c") "C-c C-c")
+(general-define-key :keymaps 'override (leadered "a N")
+                    (lambda ()
+                      (interactive)
+                      (org-roam-capture-no-title-prompt nil "d")))
+
+;; keys to search for files
+(general-define-key :keymaps 'override (leadered "f b")
+                    (lambda () (interactive) (search-open-file brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+(general-define-key :keymaps 'override (leadered "F b")
+                    (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+(general-define-key :keymaps 'override (leadered "f h") (lambda () (interactive) (search-open-file "./" ".*")))
+(general-define-key :keymaps 'override (leadered "f m")
+                    (lambda () (interactive)
+                      (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
+                                                                                      (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
+                                                                                    (directory-files-recursively *music-dir* "")))))
+                        (browse-url (expand-file-name my-file)))))
+
+;; (define-key evil-normal-state-map (kbd "SPC f d")
+;;             (lambda () (interactive) (search-open-file "~/data" "")))
+;; (define-key evil-normal-state-map (kbd "SPC F d")
+;;             (lambda () (interactive)
+;;               (search-open-file-in-emacs "~/data" "")))
+
+;; music keys
+;; play artist
+(general-define-key :keymaps 'override (leadered "m a")
+                    (lambda ()
+                      (interactive)
+                      (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+                        (let ((chosen-artist (completing-read "pick artist: " artist-names)))
+                          (dired (format "%s/%s" *music-dir* chosen-artist))))))
+;; play album by artist name + album name
+(general-define-key :keymaps 'override (leadered "m b")
+                    (lambda ()
+                      (interactive)
+                      (let ((album-titles
+                             (apply
+                              #'cl-concatenate
+                              (list*
+                               'list
+                               (mapcar
+                                (lambda (dir)
+                                  (mapcar (lambda (album-title)
+                                            (concat (file-name-base dir) "/" album-title))
+                                          (directory-files dir nil "^[^.]*$")))
+                                (cl-remove-if-not
+                                 #'file-directory-p
+                                 (directory-files *music-dir* t "^[^.]*$")))))))
+                        (let ((chosen-album (completing-read "pick album: " album-titles)))
+                          (call-process "play_dir_as_album.sh" nil 0 nil
+                                        (concat *music-dir* chosen-album))
+                          (message "playing album %s" chosen-album)))))
+;; play album
+(general-define-key :keymaps 'override (leadered "m B")
+                    (lambda ()
+                      (interactive)
+                      (let ((album-titles
+                             (apply
+                              #'cl-concatenate
+                              (list*
+                               'list
+                               (mapcar
+                                (lambda (dir)
+                                  (directory-files dir nil "^[^.]*$"))
+                                (cl-remove-if-not
+                                 #'file-directory-p
+                                 (directory-files *music-dir* t "^[^.]*$")))))))
+                        (let ((chosen-album (completing-read "pick album: " album-titles)))
+                          (call-process "play_dir_as_album.sh" nil 0 nil
+                                        (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
+                          (message "playing album %s" chosen-album)))))
+;; open music table file
+(general-define-key :keymaps 'override (leadered "m f")
+                    (lambda ()
+                      (interactive)
+                      (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
+;; open artist's last.fm page
+(general-define-key :keymaps 'override (leadered "m l")
+                    (lambda ()
+                      (interactive)
+                      (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+                        (let ((chosen-artist (completing-read "pick artist: "
+                                                              artist-names
+                                                              nil
+                                                              nil
+                                                              (current-mpv-artist))))
+                          (browse-url (format "https://www.last.fm/music/%s" chosen-artist))))))
+
+;; keybinding to evaluate math expressions
+;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
+;;                     (lambda ()
+;;                       (interactive)
+;;                       (call-interactively 'calc-latex-language)
+;;                       (let ((result (calc-eval (buffer-substring-no-properties (region-beginning) (region-end)))))
+;;                         (end-of-line)
+;;                         (insert " ")
+;;                         (insert result))))
+
+;; general keys
+;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
+(general-define-key :keymaps 'override (leadered "'") (general-simulate-key "C-c '"))
+(general-define-key :keymaps 'override (leadered "w m")
+                    (lambda () (interactive)
+                      (when window-system (set-frame-size (selected-frame) 180 50))))
+(general-define-key :keymaps 'override (leadered "s d") 'switch-to-dark-theme)
+(general-define-key :keymaps 'override (leadered "s l") 'switch-to-light-theme)
+(general-define-key :keymaps 'override (leadered "s e") 'eshell)
+(general-define-key :keymaps 'override (leadered "s g") 'magit)
+(general-define-key :keymaps 'override (leadered "s i")
+                    (lambda ()
+                      (interactive)
+                      (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+(general-define-key :keymaps 'override (leadered "s r") #'eat);;'vterm)
+(general-define-key :keymaps 'override (leadered "u") (general-simulate-key "C-u"))
+(general-define-key :keymaps 'override (leadered "o l") 'avy-goto-line)
+(general-define-key :keymaps 'override (leadered "o c") 'avy-goto-char)
+(general-define-key :keymaps 'override (leadered "s s") 'spotify-lyrics)
+(general-define-key :keymaps 'override (leadered "s w") 'open-spotify-lyrics-file)
+(general-define-key :keymaps 'override (leadered "s t") #'consult-theme)
+(general-define-key :keymaps 'override (leadered "s k") 'open-kitty-here)
+;; (general-define-key :keymaps 'override "SPC l" 'calc)
+
+;; agenda keys
+(general-define-key :keymaps 'override (leadered "a a") (lambda () (interactive) (org-agenda nil "n")))
+(general-define-key :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
+(general-define-key :keymaps 'override (leadered "a s") 'org-schedule)
+(general-define-key :keymaps 'override (leadered "a d") 'org-deadline)
+(general-define-key :keymaps 'org-mode-map (leadered "a j") 'org-clock-in)
+(general-define-key :keymaps 'override (leadered "a J") 'org-clock-in-last)
+(general-define-key :keymaps 'override (leadered "a k") 'org-clock-out)
+(general-define-key :keymaps 'override (leadered "a b") 'org-clock-cancel)
+(general-define-key :keymaps 'org-mode-map (leadered "a p") 'org-clock-display)
+(general-define-key :keymaps 'override (leadered "a t") (lambda () (interactive) (org-roam-capture nil "t")))
+(general-define-key :keymaps 'override (leadered "a n") 'today-entry)
+(general-define-key :keymaps 'override (leadered "a o") 'open-todays-file)
+(general-define-key :keymaps 'override (leadered "s n") 'yas-new-snippet)
+(general-define-key :keymaps 'override (leadered "s v") 'yas-visit-snippet-file)
+(general-define-key :keymaps 'override (leadered "s h") 'yas-insert-snippet)
+(general-define-key :keymaps 'override (leadered "s a") 'dictionary-search)
+(general-define-key :keymaps 'org-mode-map (leadered "r s") 'org-cite-insert)
+;; key to clear the screen in eshell
+(defun run-this-in-eshell (cmd)
+  "Runs the command 'cmd' in eshell."
+  (with-current-buffer "*eshell*"
+    (end-of-buffer)
+    (eshell-kill-input)
+    (message (concat "Running in Eshell: " cmd))
+    (insert cmd)
+    (eshell-send-input)
+    (end-of-buffer)
+    (eshell-bol)
+    (yank)))
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (general-define-key :keymaps 'local (leadered "c") (lambda () (interactive) (run-this-in-eshell "clear 1")))))
+(general-define-key :keymaps 'eshell-mode-map (leadered "x") 'eshell-interrupt-process)
+(general-define-key :keymaps 'lisp-mode-map (leadered "x") 'sly-compile-defun)
+(general-define-key :keymaps 'lisp-mode-map (leadered "c") 'sly-eval-buffer)
+(general-define-key :keymaps 'lisp-mode-map (leadered "z")
+                    (lambda ()
+                      (interactive)
+                      (sly-end-of-defun)
+                      (call-interactively 'sly-eval-last-expression-in-repl)))
+(general-define-key :keymaps 'override (leadered "s e") 'eshell)
+(general-define-key :keymaps 'override (leadered "s m") 'man)
+
+;; language-specific keybindings
+(general-define-key :keymaps 'lisp-mode-map (leadered "l i") 'sly-repl-inspect)
+(general-define-key :keymaps 'sly-repl-mode-map (leadered "l i") 'sly-repl-inspect)
+(general-define-key :keymaps 'sly-repl-mode-map (leadered "l s") 'sly-inspect-presentation-at-point)
+(general-define-key :keymaps 'emacs-lisp-mode-map (leadered "c") 'eval-buffer)
+
+;; common lisp/sly
+(general-define-key :keymaps '(lisp-mode-map sly-mrepl-mode-map) (leadered "l d") 'sly-documentation-lookup)
+
+;; julia
+(general-define-key :keymaps 'override (leadered "s j") 'julia-snail)
+
+;; python/elpy
+(general-define-key :keymaps 'override (leadered "s p") 'run-python)
+(general-define-key :keymaps 'python-mode-map (leadered "x") 'elpy-shell-send-defun)
+(general-define-key :keymaps 'python-mode-map (leadered "l) x") 'elpy-shell-send-defun)
+(general-define-key :keymaps 'python-mode-map (leadered "l t") 'elpy-shell-send-statement)
+(general-define-key :keymaps 'python-mode-map (leadered "c") 'elpy-shell-send-buffer)
+(general-define-key :keymaps 'python-mode-map (leadered "l b") 'elpy-shell-send-buffer)
+
+;;sagemath
+(general-define-key :keymaps 'sage-shell-mode-map (leadered "b k") 'comint-quit-subjob)
+
+;; elisp
+(general-define-key :keymaps 'emacs-lisp-mode-map (leadered "c") 'eval-buffer)
+
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
   (org-roam-capture- :goto goto
@@ -864,9 +919,9 @@ space rather than before."
         :config
         (company-auctex-init))
 
-      (use-package company-prescient
-        :config
-        (company-prescient-mode))
+      ;; (use-package company-prescient
+        ;; :config
+        ;; (company-prescient-mode))
       )
   (progn ;; corfu autocompletion
     (use-package corfu
@@ -1246,9 +1301,10 @@ space rather than before."
 ;;   (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
 ;;   )
 
-(use-package mixed-pitch
-  :hook
-  (text-mode . mixed-pitch-mode))
+;; (use-package mixed-pitch
+;;   :hook
+;;   (text-mode . mixed-pitch-mode))
+;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; add edition/creation timestamps to headers and files, this is absurd, git would be a bbetter option
 ;; (use-package org-roam-timestamps
@@ -1532,10 +1588,13 @@ space rather than before."
 ;; ;; change text inside delimiters
 ;; (use-package change-inner)
 
-;; emacs workspaces
+;; emacs "workspaces"
 (use-package perspective
   :init
-  (persp-mode))
+  (persp-mode)
+  :config
+  (general-define-key :keymaps 'override (leadered "s c") 'persp-switch))
+  ;; (add-hook 'kill-emacs-hook #'persp-state-save)) ;; need to provide a file for this to work tho
 
 ;; center buffer
 (use-package olivetti)
@@ -1566,10 +1625,6 @@ space rather than before."
 ;; mastodon fediverse
 (use-package mastodon
   :ensure t)
-
-;; display number of matches when searching
-;; (use-package anzu)
-(use-package evil-anzu)
 
 ;; vertico config
 (use-package vertico
@@ -1636,15 +1691,24 @@ space rather than before."
 (setq completion-styles '(substring orderless-fast basic))
 
 ;; prescient history location
-(use-package prescient
-  :config
-  (prescient-persist-mode 1)
-  (setq prescient-history-length 100000)
-  (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
-(use-package vertico-prescient
-  :config
-  (vertico-prescient-mode))
+;; (use-package prescient
+;;   :config
+;;   (prescient-persist-mode 1)
+;;   (setq prescient-history-length 100000)
+;;   (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
+;; (use-package vertico-prescient
+;;   :config
+;;   (vertico-prescient-mode))
 
+;; i think its provided by elpy, but just in case
+(use-package pyvenv)
+
+(use-package multiple-cursors
+  :config
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
 
 ;; (use-package org-modern-indent
 ;;   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
@@ -2580,6 +2644,7 @@ Version 2018-06-18 2021-09-30"
 ;; disable stupid beep sounds on macos
 (setq ring-bell-function #'ignore)
 
+;; from https://www.emacswiki.org/emacs/FindingNonAsciiCharacters
 (defun find-first-non-ascii-char ()
   "Find the first non-ascii character from point onwards."
   (interactive)
@@ -2595,6 +2660,37 @@ Version 2018-06-18 2021-09-30"
     (if point
         (goto-char point)
       (message "No non-ascii characters."))))
+(defun find-next-unsafe-char (&optional coding-system)
+  "Find the next character in the buffer that cannot be encoded by
+coding-system. If coding-system is unspecified, default to the coding
+system that would be used to save this buffer. With prefix argument,
+prompt the user for a coding system."
+  (interactive "Zcoding-system: ")
+  (if (stringp coding-system) (setq coding-system (intern coding-system)))
+  (if coding-system nil
+    (setq coding-system
+          (or save-buffer-coding-system buffer-file-coding-system)))
+  (let ((found nil) (char nil) (csets nil) (safe nil))
+    (setq safe (coding-system-get coding-system 'safe-chars))
+    ;; some systems merely specify the charsets as ones they can encode:
+    (setq csets (coding-system-get coding-system 'safe-charsets))
+    (save-excursion
+      ;;(message "zoom to <")
+      (let ((end  (point-max))
+            (here (point    ))
+            (char  nil))
+        (while (and (< here end) (not found))
+          (setq char (char-after here))
+          (if (or (eq safe t)
+                  (< char ?\177)
+                  (and safe  (aref safe char))
+                  (and csets (memq (char-charset char) csets)))
+              nil ;; safe char, noop
+            (setq found (cons here char)))
+          (setq here (1+ here))) ))
+    (and found (goto-char (1+ (car found))))
+    found))
+
 
 (defun open-todays-file ()
   "open todays org file"
@@ -2655,6 +2751,7 @@ note that this doesnt work for exports"
 (advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
 
 (defun treemacs-remove-project-at-point-force ()
+  (interactive)
   "force removal of project at point, even if its the last one"
   (treemacs-do-remove-project-from-workspace (treemacs-project-at-point) t))
 
@@ -2678,13 +2775,6 @@ note that this doesnt work for exports"
 (global-set-key (kbd "C-x k") 'kill-this-buffer-volatile)
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
-;; disable evil mode in deadgrep, they dont work well together
-(evil-set-initial-state 'deadgrep-mode 'emacs)
-(evil-set-initial-state 'calc-mode 'emacs)
-;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
-(evil-set-initial-state 'sly-db-mode 'emacs)
-;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
-(evil-set-initial-state 'vterm-mode 'emacs)
 
 ;; temporary fix for ox-hugo exporting issues with org 9.7-pre
 (defun org-html-format-latex (latex-frag processing-type info)
@@ -3034,3 +3124,6 @@ INFO is a plist containing export properties."
 
 ;; run some python code from my org notes on shell startup
 (add-hook 'python-shell-first-prompt-hook #'execute-code-files)
+
+(defun current-mpv-artist ()
+  (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist'"))
