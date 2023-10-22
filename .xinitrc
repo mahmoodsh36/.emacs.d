@@ -6,7 +6,8 @@ fi
 sxhkd &
 #while true; do dwm_statusbar_update.sh; sleep 0.9; done &
 #dunst &
-parcellite &
+# parcellite unbinds C-M-x from emacs :(
+#parcellite &
 # pulseaudio & # pulseaudio is bugged on startup dunno why
 # backgrounder.sh ~/pictures 200 0 & disown
 nm-applet &
