@@ -66,8 +66,10 @@ super + a ; {s,w,n,x}
      notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager,\
      xrandr --auto}
 
-super + s; {l,h,s}
-    playerctl {next,previous,play-pause}
+# super + s; {l,h,s}
+#     playerctl {next,previous,play-pause}
+super + s; {s}
+      echo cycle {pause} | socat - "/tmp/mpv_socket"
 
 super + s; {w, W, q, f, a}
     {spotify_lyrics.sh,\
