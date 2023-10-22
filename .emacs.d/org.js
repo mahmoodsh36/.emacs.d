@@ -1,14 +1,44 @@
 // modify some html to make code blocks distinguishable from output blocks
 // output blocks have a child with class '.language-text' (theyre basicly text code blocks)
-window.onload = function() {
+window.addEventListener("load", function () {
   prettifyCodeBlocks();
-}
+  let customBlocks = [
+      'lemma',
+      'proof',
+      'entail',
+      "lemma",
+      "proof",
+      "entailment",
+      "definition",
+      "note",
+      "my_example",
+      "characteristic",
+      "assumption",
+      "question",
+      "subquestion",
+      "answer",
+      "step",
+      "code-output",
+      "code",
+  ];
+  for (let cb of customBlocks) {
+    for (let element of document.getElementsByClassName(cb)) {
+      if (cb == 'my_example') {
+        element.setAttribute('data-before-content', 'example');
+      } else if (cb == 'code-output') {
+        element.setAttribute('data-before-content', 'code output');
+      } else {
+        element.setAttribute('data-before-content', cb);
+      }
+    }
+  }
+});
 
-function wrap (toWrap, wrapper) {
+function wrap(toWrap, wrapper) {
     wrapper = wrapper || document.createElement('div');
     toWrap.parentNode.insertBefore(wrapper, toWrap);
     return wrapper.appendChild(toWrap);
-};
+}
 
 function getTextBlocks() {
   let elts = document.getElementsByClassName('language-text');
@@ -29,7 +59,6 @@ function prettifyCodeBlocks() {
     codeBlock.classList.add('code');
   }
   for (let textBlock of getTextBlocks()) {
-    console.log(textBlock);
     textBlock.classList.remove('code');
     textBlock.classList.add('code-output');
     // let wrapper = document.createElement('div');

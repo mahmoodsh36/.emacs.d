@@ -1,10 +1,11 @@
+/* old styling */
+/*
 .lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step, .code-output, .code {
   border-radius: 10px;
   box-shadow: 10px 10px 15px rgba(0,0,0,.1);
   padding: 10px;
   border: 1px black solid;
   margin: 5px;
-  /* border-top: 1px solid red; */
 }
 .lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before, .code-output:before, .code:before {
   background-color: #bbb;
@@ -99,6 +100,7 @@ img {
 .step:before {
   content: "step:";
 }
+*/
 /* center images */
 img {
   margin: auto;
@@ -129,7 +131,7 @@ table th {
   flex-flow: row;
   flex-wrap: wrap;
   justify-content: center;
-  font-size: 13px;
+  font-size: 12px;
 }
 .collage img {
   max-width: 95px;
@@ -189,17 +191,27 @@ table th {
 }
 
 /* code blocks */
-.code-output {
-    background-color: #5cbcbc;
-}
 .code-output:before {
     content: "[code output]";
-    padding: 5px;
-}
-.code {
-    background-color: #4c4c7c;
 }
 .code:before {
     content: "[code]";
-    padding: 5px;
+}
+
+/* new style for custom blocks */
+.lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step, .code-output, .code {
+    margin: 20px 0 0 0;
+    position: relative;
+    border: 1px solid tomato;
+    border-radius: 12px;
+    padding: 10px;
+}
+.lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before, .code-output:before, .code:before {
+  content: 'lemma';
+  position: absolute;
+  top: -10px;
+  padding: 0 10px;
+  background-color: floralwhite;
+  border-radius: 6px;
+  content: attr(data-before-content);
 }
