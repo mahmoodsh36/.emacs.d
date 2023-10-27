@@ -140,12 +140,12 @@ table th {
   justify-content: center;
 }
 /* for album collages - images with text below them */
-.collage div {
+.collage .card {
   display: flex;
   flex-flow: column;
   margin: 5px;
 }
-.collage span {
+.collage .card span {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
