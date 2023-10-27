@@ -1,21 +1,22 @@
 # disabled vi mode in zsh for now, i use emacs vterm
 # cursor handling for vi-mode
-function zle-keymap-select zle-line-init zle-line-finish {
-  case $KEYMAP in
-    vicmd)         echo -ne '\e[1 q';;
-    viins|main)    echo -ne '\e[5 q';;
-  esac
+#function zle-keymap-select zle-line-init zle-line-finish {
+  #case $KEYMAP in
+    #vicmd)         echo -ne '\e[1 q';;
+    #viins|main)    echo -ne '\e[5 q';;
+  #esac
 
-  zle reset-prompt
-  zle -R
-}
-zle -N zle-line-init
-zle -N zle-line-finish
-zle -N zle-keymap-select
+  #zle reset-prompt
+  #zle -R
+#}
+#zle -N zle-line-init
+#zle -N zle-line-finish
+#zle -N zle-keymap-select
 
 # vim keys
-bindkey -v
-export KEYTIMEOUT=1
+#bindkey -v
+#export KEYTIMEOUT=1
+bindkey -e
 
 # bindings
 bindkey '^P' up-history
