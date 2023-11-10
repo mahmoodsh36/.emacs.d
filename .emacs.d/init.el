@@ -131,6 +131,9 @@
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
 
+;; bibliography file (i use one global one for everything)
+(setq org-cite-global-bibliography '("~/brain/bib.bib"))
+
 (defun kill-all-buffers ()
   "kill all buffers excluding internal buffers (buffers starting with a space)"
   (interactive)
@@ -582,7 +585,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "d m") (lambda () (interactive) (dired *music-dir*)))
 (general-define-key :keymaps 'override (led "f f") 'find-file)
 (general-define-key :keymaps 'override (led "f s") 'sudo-find-file)
-(general-define-key :keymaps 'override (led "SPC") #'execute-extended-command)
+(general-define-key :keymaps 'override (led "ESC") #'execute-extended-command)
 (general-define-key :keymaps 'override (led "b k") 'kill-this-buffer)
 (general-define-key :keymaps 'eshell-mode-map (led "b k") (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
 (general-define-key :keymaps 'sly-repl-mode (led "b k") 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
@@ -594,7 +597,7 @@ space rather than before."
                       (switch-to-buffer "*scratch*")))
 (general-define-key :keymaps 'override (led "b s") 'consult-buffer)
 (general-define-key :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) (led "x") 'eval-defun)
-(general-define-key :keymaps 'override (led "g") 'deadgrep)
+(general-define-key :keymaps 'override (led "s g") 'deadgrep)
 (general-define-key :keymaps 'org-mode-map (led "x") 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
 (general-define-key :keymaps 'TeX-mode-map (led "x") 'compile-current-document)
 (general-define-key :keymaps 'override (led "e") (lambda () (interactive) (find-file user-init-file)))
@@ -688,7 +691,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "m a")
                     (lambda ()
                       (interactive)
-                      (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+                      (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
                         (let ((chosen-artist (completing-read "pick artist: " artist-names)))
                           (dired (format "%s/%s" *music-dir* chosen-artist))))))
 ;; play album by artist name + album name
@@ -703,11 +706,11 @@ space rather than before."
                                (mapcar
                                 (lambda (dir)
                                   (mapcar (lambda (album-title)
-                                            (concat (file-name-base dir) "/" album-title))
-                                          (directory-files dir nil "^[^.]*$")))
+                                            (concat (file-name-nondirectory dir) "/" album-title))
+                                          (directory-files dir nil "^[^.].*$")))
                                 (cl-remove-if-not
                                  #'file-directory-p
-                                 (directory-files *music-dir* t "^[^.]*$")))))))
+                                 (directory-files *music-dir* t "^[^.].*$")))))))
                         (let ((chosen-album (completing-read "pick album: " album-titles)))
                           (message (concat *music-dir* chosen-album))
                           (call-process "play_dir_as_album.sh" nil 0 nil
@@ -724,10 +727,10 @@ space rather than before."
                                'list
                                (mapcar
                                 (lambda (dir)
-                                  (directory-files dir nil "^[^.]*$"))
+                                  (directory-files dir nil "^[^.].*$"))
                                 (cl-remove-if-not
                                  #'file-directory-p
-                                 (directory-files *music-dir* t "^[^.]*$")))))))
+                                 (directory-files *music-dir* t "^[^.].*$")))))))
                         (let ((chosen-album (completing-read "pick album: " album-titles)))
                           (call-process "play_dir_as_album.sh" nil 0 nil
                                         (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
@@ -741,7 +744,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "m l")
                     (lambda ()
                       (interactive)
-                      (let ((artist-names (mapcar #'file-name-base (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+                      (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
                         (let ((chosen-artist (completing-read "pick artist: "
                                                               artist-names
                                                               nil
@@ -768,7 +771,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "s d") 'switch-to-dark-theme)
 (general-define-key :keymaps 'override (led "s l") 'switch-to-light-theme)
 (general-define-key :keymaps 'override (led "s e") 'eshell)
-(general-define-key :keymaps 'override (led "s g") 'magit)
+;; (general-define-key :keymaps 'override (led "s g") 'magit)
 (general-define-key :keymaps 'override (led "s i")
                     (lambda ()
                       (interactive)
@@ -839,7 +842,7 @@ space rather than before."
 ;; julia
 (general-define-key :keymaps 'override (led "s j") 'julia-snail)
 
-;; python/elpy
+;; python
 (general-define-key :keymaps 'override (led "s p") 'run-python)
 (general-define-key :keymaps 'python-mode-map (led "x") 'python-shell-send-defun)
 (general-define-key :keymaps 'python-mode-map (led "l) x") 'python-shell-send-defun)
@@ -865,13 +868,14 @@ space rather than before."
 (general-define-key :keymaps 'override (led "w s") #'split-window-below)
 (general-define-key :keymaps 'override (led "w o") #'other-window)
 (general-define-key :keymaps 'override (led "w c") #'delete-window)
+(general-define-key :keymaps 'override (led "w t") #'recenter)
 (general-define-key :keymaps '(org-mode-map TeX-mode-map) (led "v") #'open-current-document-this-window)
 (keymap-global-set "M-o" ;; new line without breaking current line
                    (lambda ()
                      (interactive)
                      (end-of-line)
                      (newline-and-indent)))
-(keymap-global-set "M-S-o" ;; new line above current line without breaking it
+(keymap-global-set "M-O" ;;"M-S-o" ;; new line above current line without breaking it
                    (lambda ()
                      (interactive)
                      (move-beginning-of-line nil)
@@ -888,8 +892,16 @@ space rather than before."
 (keymap-global-unset "<RET>")
 (keymap-global-unset "<backspace>")
 (keymap-global-set "C-S-d" #'backward-delete-char-untabify)
-(keymap-global-set "M-S-d" #'backward-kill-word)
+(keymap-global-set "M-D" #'backward-kill-word)
 (keymap-global-set "C-M-S-k" #'backward-kill-sexp)
+(keymap-global-set "C-c c" #'recenter)
+;; (keymap-global-set "C-'" #'save-buffer)
+(general-define-key :keymaps 'override "C-'" #'save-buffer)
+
+;; C-j in repl's to emulate RETURN
+(define-key comint-mode-map (kbd "C-j") #'comint-send-input)
+;; SPC g to cancel like C-g
+(define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
 
 ;; evaluate and insert without truncating output
 (general-define-key
@@ -898,6 +910,10 @@ space rather than before."
    (interactive)
    (let ((current-prefix-arg (list 0)))
      (call-interactively 'eros-eval-last-sexp))))
+
+(keymap-global-set (led "t") #'treemacs)
+;; (keymap-global-set "C-a" #'back-to-indentation)
+;; (keymap-global-set "M-m" #'beginning-of-line)
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -1282,7 +1298,7 @@ space rather than before."
 ;;   :config
 ;;   (aggressive-indent-global-mode))
 
-;; ;; auto pairs insertion
+;; modify/add common delimiters around text
 ;; (use-package smartparens
 ;;   :config
 ;;   ;; dont insert pair when cursor is before text
@@ -1304,7 +1320,8 @@ space rather than before."
   (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
   (ignore-errors (make-directory org-more-dir))
   (defconst *org-static-dir* (file-truename "~/workspace/blog/static/ox-hugo"))
-  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html"))
 
 ;; best latex preview functionality
 ;; actually i dont use this anymore since org-mode devs implemented a better method
@@ -1416,11 +1433,10 @@ space rather than before."
 (use-package org-roam-ui)
 ;; (use-package jupyter)
 ;; (use-package plantuml-mode)
-(use-package org-ref
-  :config
-  (setq bibtex-completion-bibliography '("~/brain/bib.bib"))
-  (setq org-cite-global-bibliography '("~/brain/bib.bib"))
-  (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
+;; (use-package org-ref
+;;   :config
+;;   (setq bibtex-completion-bibliography '("~/brain/bib.bib"))
+;;   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
 ;; best terminal emulation, required for julia-snail
@@ -1469,12 +1485,16 @@ space rather than before."
     :parent embark-general-map
     "k" #'kill-this-buffer)
   )
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
+(use-package org-ql)
 
 ;; (use-package ialign)
 ;; (use-package 'org-protocol-capture-html)
 ;; (use-package org-download)
-;;(use-package org-ql)
 
 ;; evaulation overlay for elisp
 (use-package eros
@@ -1630,9 +1650,6 @@ space rather than before."
   :config
   (global-set-key (kbd "C-;") 'er/expand-region))
 
-;; ;; modify/add common delimiters around text
-(use-package smartparens)
-
 ;; ;; change text inside delimiters
 ;; (use-package change-inner)
 
@@ -1663,7 +1680,8 @@ space rather than before."
   :hook (julia-mode . julia-snail-mode)
   :custom
   (julia-snail-extensions '(repl-history formatter ob-julia))
-  (julia-snail/ob-julia-mirror-output-in-repl t))
+  (julia-snail/ob-julia-mirror-output-in-repl t)
+  (julia-snail-terminal-type :eat))
 
 ;; for python, it doesnt work with corfu so i disabled it
 ;; (use-package elpy
@@ -1724,6 +1742,11 @@ space rather than before."
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 ;; (use-package vertico-reverse)
+;; (use-package vertico-grid
+;;   :after vertico
+;;   :ensure nil
+;;   :config
+;;   (vertico-grid-mode))
 ;; is similar to ivy-rich
 (use-package marginalia
   :ensure t
@@ -1776,6 +1799,21 @@ space rather than before."
    (tsx-ts-mode . combobulate-mode))
   :config
   (setq combobulate-key-prefix "C-c o"))
+
+(use-package embrace
+  :config
+  (global-set-key (kbd "C-,") #'embrace-commander)
+  ;; org-mode has a default binding for C-, override it
+  (define-key org-mode-map (kbd "C-,") #'embrace-commander)
+  (add-hook 'org-mode-hook #'embrace-org-mode-hook))
+
+(use-package easy-kill)
+
+;; (use-package dired-rsync)
+
+;;(use-package el-easydraw
+;;  :straight
+;;  (el-easydraw :type git :host github :repo "misohena/el-easydraw"))
 
 ;; (use-package org-timeblock)
 
@@ -2460,6 +2498,8 @@ space rather than before."
 (setq org-use-property-inheritance t)
 ;; increase max number of messages
 (setq message-log-max 100000)
+;; dont set a default width for latex previews
+(setq org-latex-preview-width 1.0)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -2843,7 +2883,6 @@ note that this doesnt work for exports"
 (global-set-key (kbd "C-x k") 'kill-this-buffer-volatile)
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
-
 ;; temporary fix for ox-hugo exporting issues with org 9.7-pre
 (defun org-html-format-latex (latex-frag processing-type info)
   "Format a LaTeX fragment LATEX-FRAG into HTML.
@@ -2927,8 +2966,8 @@ INFO is a plist containing export properties."
                      ("b" . backward-sexp)
                      ("d" . down-list)
                      ("k" . kill-sexp)
-                     ("n" . sp-next-sexp)
-                     ("p" . sp-previous-sexp)
+                     ("n" . forward-list)
+                     ("p" . backward-list)
                      ("K" . sp-kill-hybrid-sexp)
                      ("]" . sp-forward-slurp-sexp)
                      ("[" . sp-backward-slurp-sexp)
@@ -3188,7 +3227,7 @@ INFO is a plist containing export properties."
 (add-hook 'python-shell-first-prompt-hook #'execute-code-files)
 
 (defun current-mpv-artist ()
-  (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist 2>/dev/null'"))
+  (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist' 2>/dev/null"))
 
 ;; tree-sitter
 (setq treesit-language-source-alist
@@ -3212,14 +3251,18 @@ INFO is a plist containing export properties."
 ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
 
 ;; remap some modes to their tree-sitter alternatives, tree-sitter isnt used by default, yet
-(setq major-mode-remap-alist
- '((yaml-mode . yaml-ts-mode)
-   (bash-mode . bash-ts-mode)
-   (js2-mode . js-ts-mode)
-   (typescript-mode . typescript-ts-mode)
-   (json-mode . json-ts-mode)
-   (css-mode . css-ts-mode)
-   (python-mode . python-ts-mode)))
+(dolist (mapping '((python-mode . python-ts-mode)
+                   (css-mode . css-ts-mode)
+                   (js-mode . js-ts-mode)
+                   (typescript-mode . tsx-ts-mode)
+                   (json-mode . json-ts-mode)
+                   (html-mode . html-ts-mode)
+                   (yaml-mode . yaml-ts-mode)))
+  (add-to-list 'major-mode-remap-alist mapping))
+;; also make org-special-edit respect tree-sitter modes
+(dolist (mapping major-mode-remap-alist)
+  (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
+    (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
 
 ;; change cursor color when repeat-map is active, buggy
 ;; (setq my-repeat-p nil)
@@ -3236,3 +3279,153 @@ INFO is a plist containing export properties."
 ;; 		                   (face-foreground 'error)
 ;; 		                 ccol))))))
 ;;           90)
+
+;; FIRST: git clone https://github.com/casouri/tree-sitter-module
+;;        bash batch.sh
+;; THEN : sudo cp dist/* /usr/local/lib
+;; FINALLY:
+;;(setq treesit-extra-load-path '("/usr/local/lib"))
+;;;; Treesit ;; Eglot
+;;(setq treesit-eglot-modes
+;;      '((:ts (bash-mode . bash-ts-mode) :pacman "bash-language-server")
+;;        (:ts (c++-mode . c++-ts-mode) :pacman "ccls")
+;;        (:ts (c-mode . c-ts-mode) :pacman "ccls")
+;;        (:ts (cpp-mode . cpp-ts-mode) :pacman "ccls")
+;;        (:ts (c-sharp-mode . sharp-ts-mode))
+;;        (:ts (cmake-mode . cmake-ts-mode))
+;;        (:ts (css-mode . css-ts-mode) :pacman "vscode-css-languageserver")
+;;        (:ts (dockerfile-mode . dockerfile-ts-mode))
+;;        (:ts (elixir-mode . elixir-ts-mode))
+;;        (:ts (glsl-mode . glsl-ts-mode))
+;;        (:ts (go-mode . go-ts-mode) :pacman "gopls")
+;;        (:ts (heex-mode . heex-ts-mode))
+;;        (:ts (html-mode . html-ts-mode) :pacman "vscode-html-languageserver")
+;;        (:ts (java-mode . java-ts-mode))
+;;        (:ts (javascript-mode . js-ts-mode) :pacman "typescript-language-server")
+;;        (:ts (js-json-mode . json-ts-mode) :pacman "vscode-json-languageserver")
+;;        (:ts (julia-mode . julia-ts-mode))
+;;        (:ts (make-mode . make-ts-mode))
+;;        (:ts (markdown-mode . markdown-ts-mode))
+;;        (:ts (python-mode . python-ts-mode) :pacman "jedi-language-server")
+;;        (:ts (typescript-mode . typescript-ts-mode) :pacman "typescript-language-server")
+;;        (:ts (proto-mode . proto-ts-mode))
+;;        (:ts (ruby-mode . ruby-ts-mode))
+;;        (:ts (rust-mode . rust-ts-mode) :pacman "rust-analyzer")
+;;        (:ts (sql-mode . sql-ts-mode))
+;;        (:ts (toml-mode . toml-ts-mode))
+;;        (:ts (tsx-mode . tsx-ts-mode))
+;;        (:ts (verilog-mode . verilog-ts-mode))
+;;        (:ts (vhdl-mode . vhdl-ts-mode))
+;;        (:ts (wgsl-mode . wgsl-ts-mode))
+;;        (:ts (yaml-mode . yaml-ts-mode) :pacman "yaml-language-server")))
+;;;; Not mature yet:
+;;;; (push '(org-mode . org-ts-mode) major-mode-remap-alist)
+;;;; (push '(perl-mode . perl-ts-mode) major-mode-remap-alist)              ;; cpan Perl::LanguageServer
+;;(require 'treesit)
+;;
+;;;; Function to parse the above and make an install command
+;;(if (treesit-available-p)
+;;    (let ((pacman-install-list (list )))
+;;      (dolist (ts-pm treesit-eglot-modes)
+;;        (let ((majmode-remap (plist-get ts-pm :ts))
+;;              (pacman-cmd (plist-get ts-pm :pacman)))
+;;          ;; bind default major-mode to ts-mode
+;;          (push majmode-remap major-mode-remap-alist)
+;;          ;; populate install cmd
+;;          (if pacman-cmd
+;;              (unless (member pacman-cmd pacman-install-list)
+;;                (push pacman-cmd pacman-install-list)))))
+;;      (let ((install-cmd (concat
+;;                          "pacman -S --needed "
+;;                          (--reduce (concat acc " " it) pacman-install-list))))
+;;        (message install-cmd)))
+;;  (user-error "Treesitter not available"))
+;;
+
+;; (setq treesit-language-source-alist
+;;   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+;;     (c "https://github.com/tree-sitter/tree-sitter-c")
+;;     (cmake "https://github.com/uyha/tree-sitter-cmake")
+;;     (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+;;     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+;;     (css "https://github.com/tree-sitter/tree-sitter-css")
+;;     (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+;;     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+;;     (go "https://github.com/tree-sitter/tree-sitter-go")
+;;     (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+;;     (html "https://github.com/tree-sitter/tree-sitter-html")
+;;     (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+;;     (json "https://github.com/tree-sitter/tree-sitter-json")
+;;     (lua "https://github.com/Azganoth/tree-sitter-lua")
+;;     (make "https://github.com/alemuller/tree-sitter-make")
+;;     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+;;     (python "https://github.com/tree-sitter/tree-sitter-python")
+;;     (r "https://github.com/r-lib/tree-sitter-r")
+;;     (rust "https://github.com/tree-sitter/tree-sitter-rust")
+;;     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+;;     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+;;     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+;;     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+;;
+
+
+;; persistent comint history
+;; https://oleksandrmanzyuk.wordpress.com/2011/10/23/a-persistent-command-history-in-emacs/
+(defun comint-write-history-on-exit (process event)
+  (comint-write-input-ring)
+  (let ((buf (process-buffer process)))
+    (when (buffer-live-p buf)
+      (with-current-buffer buf
+        (insert (format "\nProcess %s %s" process event))))))
+(defun turn-on-comint-history ()
+  (let ((process (get-buffer-process (current-buffer))))
+    (when process
+      (setq comint-input-ring-file-name
+            (format "%s/inferior-%s-history"
+                    brain-path (process-name process)))
+      (comint-read-input-ring)
+      (set-process-sentinel process
+                            #'comint-write-history-on-exit))))
+(add-hook 'inferior-haskell-mode-hook 'turn-on-comint-history)
+(add-hook 'inferior-python-mode-hook 'turn-on-comint-history)
+(add-hook 'kill-buffer-hook 'comint-write-input-ring)
+(defun mapc-buffers (fn)
+  (mapc (lambda (buffer)
+          (with-current-buffer buffer
+            (funcall fn)))
+        (buffer-list)))
+(defun comint-write-input-ring-all-buffers ()
+  (mapc-buffers 'comint-write-input-ring))
+(add-hook 'kill-emacs-hook 'comint-write-input-ring-all-buffers)
+
+;; combobulate, see https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter
+;; here’s some example code that navigates to the next dictionary, list or set:
+(defun move-to-next-container ()
+  (interactive)
+  (with-navigation-nodes (:nodes '("dictionary" "set" "list"))
+    (combobulate-visual-move-to-node
+     (combobulate-nav-logical-next) t)))
+
+(defvar combobulate-edit-map
+  (let ((map (make-sparse-keymap)))
+    (pcase-dolist (`(,k . ,f)
+                   '(("u" . combobulate-navigate-up-list-maybe)
+                     ("f" . combobulate-navigate-forward)
+                     ("b" . combobulate-navigate-backward)
+                     ("d" . combobulate-navigate-down-list-maybe)
+                     ("k" . combobulate-kill-node-dwim)
+                     ("n" . combobulate-navigate-next)
+                     ("p" . combobulate-navigate-previous)
+                     ("J" . combobulate-splice)
+                     ("a" . combobulate-navigate-beginning-of-defun)
+                     ("e" . combobulate-navigate-end-of-defun)
+                     ("\\" . indent-region)
+                     ("/" . undo)
+                     ("t" . combobulate-transpose-sexps)
+                     ("x" . eval-defun)))
+      (define-key map (kbd k) f))
+    map))
+(map-keymap
+ (lambda (_ cmd)
+   (put cmd 'repeat-map 'combobulate-edit-map))
+ combobulate-edit-map)
