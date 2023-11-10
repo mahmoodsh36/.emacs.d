@@ -21,5 +21,9 @@ do
         "y")
             echo "$file" | xclip -selection c
             ;;
+        "d")
+            rm "$file"
+            notify-send "deleted $file"
+            ;;
     esac
 done
