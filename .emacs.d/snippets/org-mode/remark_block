@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: remark block
+# key: rb
+# --
+#+begin_remark
+$0
+#+end_remark
