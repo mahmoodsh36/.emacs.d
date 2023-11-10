@@ -1,7 +1,7 @@
 #+OPTIONS: toc:nil creator:nil timestamp:nil validate:nil
-# #+LATEX_CLASS: article
-# #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
-# #+LATEX_HEADER: \usepackage{\string~/.emacs.d/common}
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper,12pt]
+#+LATEX_HEADER: \usepackage{\string~/.emacs.d/common}
 # #+LATEX_HEADER: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 #+macro: mywebsite [[https://mahmoodsheikh36.github.io]]
