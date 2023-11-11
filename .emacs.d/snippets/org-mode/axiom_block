@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: axiom block
+# key: mb
+# --
+#+begin_axiom
+$0
+#+end_axiom
