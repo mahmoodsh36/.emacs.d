@@ -1069,9 +1069,11 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Iosevka" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Fira Code" :weight 'light :height 100)
-(set-face-attribute 'fixed-pitch nil :font "Fira Code" :weight 'light :height 100)
-(set-face-attribute 'variable-pitch nil :font "Fira Code":weight 'light :height 1.0)
+(ignore-errors
+  (set-face-attribute 'default nil :font "Fira Code" :weight 'light :height 100)
+  (set-face-attribute 'fixed-pitch nil :font "Fira Code" :weight 'light :height 100)
+  (set-face-attribute 'variable-pitch nil :font "Fira Code":weight 'light :height 1.0)
+  )
 ;; this font makes hebrew text unreadable, gotta disable it
 (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
 (use-package darktooth-theme)
@@ -1440,7 +1442,7 @@ space rather than before."
 ;; (use-package code-compass)
 
 ;; best terminal emulation, required for julia-snail
-(use-package vterm)
+;; (use-package vterm)
 
 ;; check which keys i press most
 (use-package keyfreq
@@ -3062,21 +3064,29 @@ INFO is a plist containing export properties."
   (let ((node (this-buffer-roam-node)))
     (nodes-linked-from-node-file node)))
 
+;; old one
+;; (defun export-node (node)
+;;   "export a node's file to both hugo md and pdf"
+;;   (condition-case err
+;;       (let ((org-startup-with-latex-preview nil)
+;;             (file (org-roam-node-file node)))
+;;         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+;;           ;; (org-to-pdf)
+;;           (org-hugo-export-to-md)))
+;;     (error
+;;      (error (format "export-node failed %s, not retrying, err: %s" (org-roam-node-file node) err))
+;;      ;; (org-latex-preview--clear-preamble-cache)
+;;      ;; (org-latex-preview-clear-cache)
+;;      ;; (export-node node)
+;;      )))
+
 (defun export-node (node)
   "export a node's file to both hugo md and pdf"
-  (condition-case err
-      (let ((org-startup-with-latex-preview nil)
-            (file (org-roam-node-file node)))
-        (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-          ;; (org-to-pdf)
-          (org-hugo-export-to-md)))
-    (error
-     (error (format "export-node failed %s, not retrying, err: %s" (org-roam-node-file node) err))
-     ;; (org-latex-preview--clear-preamble-cache)
-     ;; (org-latex-preview-clear-cache)
-     ;; (export-node node)
-     )))
-
+  (let ((org-startup-with-latex-preview nil)
+        (file (org-roam-node-file node)))
+    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+      ;; (org-to-pdf)
+      (org-hugo-export-to-md))))
 
 (defun export-current-buffer ()
   "gets the node associated with the current buffer, exports it"
@@ -3429,3 +3439,30 @@ INFO is a plist containing export properties."
  (lambda (_ cmd)
    (put cmd 'repeat-map 'combobulate-edit-map))
  combobulate-edit-map)
+
+;; org html title of blocks
+(defun my-org-block-advice (fn special-block contents info)
+  "i use properties like :title <block title>, make those available in html output too"
+  (let ((args (org-babel-parse-header-arguments
+               (org-element-property :parameters
+                                     special-block))))
+    
+    (if args
+        (progn
+          (let ((mytitle (alist-get :title args)))
+            ;; this is temporary, it replaces all html attributes instead of appending
+            (setf (plist-get (plist-get special-block 'special-block) :attr_html)
+                  (list (format ":data-title %s" mytitle)))
+            (funcall fn special-block contents info)))
+      (funcall fn special-block contents info))))
+(advice-add #'org-html-special-block :around #'my-org-block-advice)
+(advice-add #'org-hugo-special-block :around #'my-org-block-advice)
+
+;; (defun execute-src-block-with-dependencies (&optional arg info params executor-type)
+;;   (save-excursion
+;;     (let ((src-block-location (nth 5 info)))
+;;       )
+;;     (message "%s" info)))
+;; (defun org-babel-execute-src-block-advice ()
+;;   (message "hi"))
+;; (advice-add #'org-babel-execute-src-block :before #'execute-src-block-with-dependencies)
