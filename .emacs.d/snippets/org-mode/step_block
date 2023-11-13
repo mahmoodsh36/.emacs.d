@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: step block
-# key: tb
-# --
-#+begin_step
-$0
-#+end_step

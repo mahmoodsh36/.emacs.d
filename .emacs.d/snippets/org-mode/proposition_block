@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: proposition block
+# key: tb
+# --
+#+begin_proposition
+$0
+#+end_proposition

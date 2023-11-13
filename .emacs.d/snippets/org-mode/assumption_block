@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: assumption block
+# key: hb
+# --
+#+begin_assumption
+$0
+#+end_assumption
