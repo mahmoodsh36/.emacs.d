@@ -36,6 +36,9 @@
 ;; path where all my notes etc go
 (setq brain-path (file-truename "~/brain/"))
 (defconst *music-dir* (file-truename "~/music/"))
+(defun brain-file (filename)
+  "return `filename', prefixed by the path to the brain dir"
+  (concat brain-path filename))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
@@ -79,7 +82,7 @@
 (set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
-(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
 ;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
 (add-hook 'pdf-view-mode-hook
@@ -222,8 +225,9 @@
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
            :kill-buffer t :unnarrowed t :empty-lines-after 0)
-          ("d" "daily" plain "%?" ;;"* %T %?"
-           ;; ("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
+          ;;("d" "daily" plain "%?" ;;"* %T %?"
+          ;;("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
+          ("d" "daily" plain "* %T %?"
            :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
            :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
           ("t" "todo" plain "* TODO ${title}"
@@ -584,22 +588,25 @@ space rather than before."
 (general-define-key :keymaps 'override (led "d g") (lambda () (interactive) (dired "~/workspace/blog/")))
 (general-define-key :keymaps 'override (led "d m") (lambda () (interactive) (dired *music-dir*)))
 (general-define-key :keymaps 'override (led "f f") 'find-file)
+(general-define-key :keymaps 'override (led "f v") 'find-alternate-file)
 (general-define-key :keymaps 'override (led "f s") 'sudo-find-file)
 (general-define-key :keymaps 'override (led "ESC") #'execute-extended-command)
 (general-define-key :keymaps 'override (led "b k") 'kill-this-buffer)
 (general-define-key :keymaps 'eshell-mode-map (led "b k") (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
 (general-define-key :keymaps 'sly-repl-mode (led "b k") 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
 (general-define-key :keymaps 'override (led "b K") 'kill-buffer-and-window)
-(general-define-key :keymaps 'override (led "b a")
-                    (lambda ()
-                      (interactive)
-                      (kill-all-buffers)
-                      (switch-to-buffer "*scratch*")))
+;; (general-define-key :keymaps 'override (led "b a")
+;;                     (lambda ()
+;;                       (interactive)
+;;                       (kill-all-buffers)
+;;                       (switch-to-buffer "*scratch*")))
 (general-define-key :keymaps 'override (led "b s") 'consult-buffer)
+(general-define-key :keymaps 'override (led "b b") 'bookmark-jump)
 (general-define-key :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) (led "x") 'eval-defun)
 (general-define-key :keymaps 'override (led "s g") 'deadgrep)
 (general-define-key :keymaps 'org-mode-map (led "x") 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
-(general-define-key :keymaps 'TeX-mode-map (led "x") 'compile-current-document)
+;; (general-define-key :keymaps 'TeX-mode-map (led "x") 'compile-current-document)
+(general-define-key :keymaps 'latex-mode-map (led "x") 'compile-current-document)
 (general-define-key :keymaps 'override (led "e") (lambda () (interactive) (find-file user-init-file)))
 (general-define-key :keymaps 'override (led "p") 'projectile-command-map)
 ;; (general-define-key :keymaps 'TeX-mode-map (led "c" 'compile-sagetex)
@@ -866,10 +873,14 @@ space rather than before."
 ;;                       (call-interactively 'newline))) ;; call newline interactively for proper indentation in code
 (general-define-key :keymaps 'override (led "w v") #'split-window-right)
 (general-define-key :keymaps 'override (led "w s") #'split-window-below)
-(general-define-key :keymaps 'override (led "w o") #'other-window)
+;; (general-define-key :keymaps 'override (led "w o") #'other-window)
 (general-define-key :keymaps 'override (led "w c") #'delete-window)
 (general-define-key :keymaps 'override (led "w t") #'recenter)
-(general-define-key :keymaps '(org-mode-map TeX-mode-map) (led "v") #'open-current-document-this-window)
+(general-define-key :keymaps 'override (led "w l") #'windmove-right)
+(general-define-key :keymaps 'override (led "w h") #'windmove-left)
+(general-define-key :keymaps 'override (led "w j") #'windmove-down)
+(general-define-key :keymaps 'override (led "w k") #'windmove-up)
+(general-define-key :keymaps '(org-mode-map TeX-mode-map latex-mode-map) (led "v") #'open-current-document-this-window)
 (keymap-global-set "M-o" ;; new line without breaking current line
                    (lambda ()
                      (interactive)
@@ -914,6 +925,11 @@ space rather than before."
 (keymap-global-set (led "t") #'treemacs)
 ;; (keymap-global-set "C-a" #'back-to-indentation)
 ;; (keymap-global-set "M-m" #'beginning-of-line)
+
+;; multiple cursors keys
+(keymap-global-set (led ", e") #'mc/edit-lines)
+(keymap-global-set (led ", n") #'mc/mark-next-like-this)
+(keymap-global-set (led ", n") #'mc/mark-previous-like-this)
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -1655,14 +1671,6 @@ space rather than before."
 ;; ;; change text inside delimiters
 ;; (use-package change-inner)
 
-;; emacs "workspaces"
-(use-package perspective
-  :init
-  (persp-mode)
-  :config
-  (general-define-key :keymaps 'override (led "s c") 'persp-switch))
-;; (add-hook 'kill-emacs-hook #'persp-state-save)) ;; need to provide a file for this to work tho
-
 ;; center buffer
 (use-package olivetti)
 
@@ -1936,6 +1944,7 @@ space rather than before."
 ;; (add-hook 'org-babel-after-execute-hook 'org-latex-preview)
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
+(setq org-link-elisp-confirm-function nil)
 ;; enable more code block languages for org mode
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -2242,10 +2251,11 @@ space rather than before."
 (add-hook 'after-init-hook
           (lambda ()
             (org-roam-db-sync)
-            (org-agenda-list)
-            (delete-other-windows)
+            ;; (org-agenda-list)
+            ;; (delete-other-windows)
             ;; (switch-to-light-theme)
             (switch-to-dark-theme)
+            ;; (persp-state-load persp-state-default-file)
             ))
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
@@ -2539,7 +2549,7 @@ space rather than before."
 ;; most/all of my code files are lisp, load them with sly/slime
 (add-hook 'sly-connected-hook #'execute-code-files)
 ;; i need those in library of babel on startup too
-(lob-reload)
+;; (lob-reload)
 
 ;; (defun xenops-prerender ()
 ;;   "prerender latex blocks in roam files"
@@ -3466,3 +3476,17 @@ INFO is a plist containing export properties."
 ;; (defun org-babel-execute-src-block-advice ()
 ;;   (message "hi"))
 ;; (advice-add #'org-babel-execute-src-block :before #'execute-src-block-with-dependencies)
+
+;; emacs "workspaces"
+(use-package perspective
+  ;; :after consult
+  :init
+  (persp-mode)
+  :config
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (add-to-list 'consult-buffer-sources persp-consult-source)
+  (general-define-key :keymaps 'override (led "s c") 'persp-switch)
+  (add-hook 'kill-emacs-hook #'persp-state-save)
+  (setq persp-state-default-file (concat brain-path "/emacs_persp"))
+  (when (file-exists-p persp-state-default-file) (persp-state-load persp-state-default-file))
+  (persp-switch "main"))
