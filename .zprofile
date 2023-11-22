@@ -14,8 +14,8 @@ export _JAVA_AWT_WM_NONREPARENTING=1.
 export GUILE_LOAD_PATH="$HOME/workspace/guix/"
 export QT_SCALE_FACTOR=2
 
-# for pipx packages
-export PATH="$PATH:~/.local/bin/"
+# for pipx packages and scripts etc
+export PATH="$HOME/.local/bin/:$PATH"
 
 export PYTHONSTARTUP=$HOME/.pythonrc
 export PYTHON_HISTORY_FILE=$HOME/brain/python_history
