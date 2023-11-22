@@ -201,10 +201,14 @@
                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
                    "(provide 'org-version)\n")))
               :pin nil))
+;; (use-package org-contrib
+;;   :straight (:host github :repo "emacsmirror/org-contrib")
+;;   :config
+;;   (load-library "org-contrib"))
 
 ;; the all-powerful org mode
 ;; (use-package org)
-(use-package org-contrib)
+;; (use-package org-contrib)
 
 ;; the key to building a second brain in org mode, requires pre-isntallation of gcc/clang
 (use-package org-roam
@@ -714,7 +718,7 @@ space rather than before."
                                 (lambda (dir)
                                   (mapcar (lambda (album-title)
                                             (concat (file-name-nondirectory dir) "/" album-title))
-                                          (directory-files dir nil "^[^.].*$")))
+                                          (directory-files dir)))
                                 (cl-remove-if-not
                                  #'file-directory-p
                                  (directory-files *music-dir* t "^[^.].*$")))))))
@@ -876,10 +880,10 @@ space rather than before."
 ;; (general-define-key :keymaps 'override (led "w o") #'other-window)
 (general-define-key :keymaps 'override (led "w c") #'delete-window)
 (general-define-key :keymaps 'override (led "w t") #'recenter)
-(general-define-key :keymaps 'override (led "w l") #'windmove-right)
-(general-define-key :keymaps 'override (led "w h") #'windmove-left)
-(general-define-key :keymaps 'override (led "w j") #'windmove-down)
-(general-define-key :keymaps 'override (led "w k") #'windmove-up)
+(general-define-key :keymaps 'override (led "w f") #'windmove-right)
+(general-define-key :keymaps 'override (led "w b") #'windmove-left)
+(general-define-key :keymaps 'override (led "w n") #'windmove-down)
+(general-define-key :keymaps 'override (led "w p") #'windmove-up)
 (general-define-key :keymaps '(org-mode-map TeX-mode-map latex-mode-map) (led "v") #'open-current-document-this-window)
 (keymap-global-set "M-o" ;; new line without breaking current line
                    (lambda ()
@@ -930,6 +934,9 @@ space rather than before."
 (keymap-global-set (led ", e") #'mc/edit-lines)
 (keymap-global-set (led ", n") #'mc/mark-next-like-this)
 (keymap-global-set (led ", n") #'mc/mark-previous-like-this)
+
+(define-key org-mode-map (kbd "M-N") #'org-metadown)
+(define-key org-mode-map (kbd "M-P") #'org-metaup)
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -1007,7 +1014,7 @@ space rather than before."
     (use-package corfu
       ;; :quelpa (:files (:defaults "extensions/*"))
       :init
-      (global-corfu-mode)
+      ;; (global-corfu-mode)
       :custom
       (corfu-cycle t)
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
@@ -1688,10 +1695,10 @@ space rather than before."
 
 (use-package julia-snail
   :hook (julia-mode . julia-snail-mode)
-  :custom
-  (julia-snail-extensions '(repl-history formatter ob-julia))
-  (julia-snail/ob-julia-mirror-output-in-repl t)
-  (julia-snail-terminal-type :eat))
+  :config
+  (setq julia-snail-terminal-type :eat)
+  (setq julia-snail-extensions '(repl-history formatter ob-julia))
+  (setq julia-snail/ob-julia-mirror-output-in-repl t))
 
 ;; for python, it doesnt work with corfu so i disabled it
 ;; (use-package elpy
@@ -1819,7 +1826,37 @@ space rather than before."
 
 (use-package easy-kill)
 
+;; emacs "workspaces"
+(use-package perspective
+  ;; :after consult
+  :init
+  (persp-mode)
+  :config
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (add-to-list 'consult-buffer-sources persp-consult-source)
+  (general-define-key :keymaps 'override (led "s c") 'persp-switch)
+  (add-hook 'kill-emacs-hook #'persp-state-save)
+  (setq persp-state-default-file (concat brain-path "/emacs_persp")))
 ;; (use-package dired-rsync)
+
+(use-package org-src-context
+  :straight
+  (org-src-context :type git :host github :repo "karthink/org-src-context"))
+
+;; (use-package wolfram)
+;; (use-package wolfram-mode)
+(use-package wolfram-mode
+  :straight (wolfram-mode :fetcher github :repo "dalanicolai/wolfram-mode" :files ("*.el"))
+  :config
+  (load-library "ob-wolfram")
+  (setq org-babel-wolfram-command "wolfram -script")
+  (setq wolfram-program "wolfram"))
+;; from https://github.com/tririver/ob-mathematica/
+;; (when (file-exists-p "~/.emacs.d/ob-mathematica.el")
+;;  (load-file "~/.emacs.d/ob-mathematica.el"))
+
+;; emacs-ipython-notebook
+(use-package ein)
 
 ;;(use-package el-easydraw
 ;;  :straight
@@ -1958,6 +1995,8 @@ space rather than before."
    (shell . t)
    (sql . t)
    (julia . t)
+   ;; (mathematica . t)
+   ;; (wolfram . t)
    (lua . t)))
 ;; make g++ compile with std=c++17 flag
 (setq org-babel-C++-compiler "g++ -std=c++17")
@@ -2254,8 +2293,10 @@ space rather than before."
             ;; (org-agenda-list)
             ;; (delete-other-windows)
             ;; (switch-to-light-theme)
+            (when (file-exists-p persp-state-default-file)
+              (persp-state-load persp-state-default-file)
+              (persp-switch "main"))
             (switch-to-dark-theme)
-            ;; (persp-state-load persp-state-default-file)
             ))
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
@@ -2284,11 +2325,12 @@ space rather than before."
   "switch to dark theme"
   (interactive)
   (disable-theme 'doom-gruvbox-light)
-  (load-theme 'darktooth t)
+  (load-theme 'doom-tomorrow-night t)
+  ;; (load-theme 'darktooth t)
   ;; (load-theme 'soothe t)
   ;; (load-theme 'minimal t)
-  (set-face-attribute 'whitespace-space nil :background nil)
-  (set-face-attribute 'whitespace-newline nil :background nil)
+  ;; (set-face-attribute 'whitespace-space nil :background nil)
+  ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
@@ -2296,7 +2338,8 @@ space rather than before."
 (defun switch-to-light-theme ()
   "switch to light theme"
   (interactive)
-  (disable-theme 'darktooth)
+  ;; (disable-theme 'doom-tomorrow-night)
+  ;; (disable-theme 'darktooth)
   ;; (disable-theme 'soothe)
   (load-theme 'doom-gruvbox-light t)
   (set-face-attribute 'org-block nil :background nil)
@@ -2512,6 +2555,8 @@ space rather than before."
 (setq message-log-max 100000)
 ;; dont set a default width for latex previews
 (setq org-latex-preview-width 1.0)
+;; dont ask to confirm when opening large files
+(setq large-file-warning-threshold nil)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -3167,10 +3212,21 @@ INFO is a plist containing export properties."
   "get file creation timestamp, only works on ext4 (and other fs's that support 'crtime'),"
   (string-to-number
    (shell-command-to-string (format "stat --format='%%W' '%s'" filepath))))
+(defun file-creation-time-using-git (gitdir filepath)
+  "get the most distant timestamp in the git repo for the file modification/creation"
+  (let ((default-directory gitdir))
+    (string-to-number
+     (shell-command-to-string
+      (format ;;"git log --format=%%ad --date=unix -- %s | tail -1"
+       "git log --follow --name-status --format=%%ad --date=unix -- '%s' | egrep -i 'm\\s+%s' -A1 | tail -1"
+       (file-relative-name filepath gitdir) (file-relative-name filepath gitdir))))))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
     ;; (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
-    (format-time-string "<%Y-%m-%d>" (file-creation-time myfile))))
+    ;;(format-time-string "<%Y-%m-%d>" (file-creation-time myfile))))
+    (format-time-string "<%Y-%m-%d>" (file-creation-time-using-git
+                                      brain-path
+                                      myfile))))
 (advice-add #'org-export-get-date :around #'my-org-date-advice)
 
 (defun export-all-public ()
@@ -3477,16 +3533,4 @@ INFO is a plist containing export properties."
 ;;   (message "hi"))
 ;; (advice-add #'org-babel-execute-src-block :before #'execute-src-block-with-dependencies)
 
-;; emacs "workspaces"
-(use-package perspective
-  ;; :after consult
-  :init
-  (persp-mode)
-  :config
-  (consult-customize consult--source-buffer :hidden t :default nil)
-  (add-to-list 'consult-buffer-sources persp-consult-source)
-  (general-define-key :keymaps 'override (led "s c") 'persp-switch)
-  (add-hook 'kill-emacs-hook #'persp-state-save)
-  (setq persp-state-default-file (concat brain-path "/emacs_persp"))
-  (when (file-exists-p persp-state-default-file) (persp-state-load persp-state-default-file))
-  (persp-switch "main"))
+;; (load-file "~/brain/projects/org-recursport/recursport.el")
