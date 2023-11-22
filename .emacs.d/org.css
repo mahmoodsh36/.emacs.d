@@ -200,11 +200,11 @@ table th {
 
 /* new style for custom blocks */
 .lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step, .code-output, .code {
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
     position: relative;
     border: 1px solid tomato;
     border-radius: 12px;
-    padding: 10px;
+    padding: 10px 3px 3px 3px;
 }
 .lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before, .code-output:before, .code:before {
   content: 'lemma';
@@ -215,3 +215,10 @@ table th {
   border-radius: 6px;
   content: attr(data-before-content);
 }
+
+h1 { font-size: 2em; margin: .67em 0 }
+h2 { font-size: 1.5em; margin: .75em 0 }
+h3 { font-size: 1.5em; margin: .75em 0 }
+h4 { font-size: 1.5em; margin: .75em 0 }
+h5 { font-size: 1.5em; margin: .75em 0 }
+h6 { font-size: 1.5em; margin: .75em 0 }
