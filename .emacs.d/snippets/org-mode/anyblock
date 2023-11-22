@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: any block
-# key: ab
+# key: anyblock
 # --
 #+begin_any
 $0

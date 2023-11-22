@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: problem block
+# key: eb
+# --
+#+begin_problem
+$0
+#+end_problem

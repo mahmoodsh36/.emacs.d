@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: dummy block
+# key: yb
+# --
+#+begin_dummy
+$0
+#+end_dummy

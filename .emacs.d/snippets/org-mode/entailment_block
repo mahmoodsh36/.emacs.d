@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: entailment block
-# key: eb
-# --
-#+begin_entailment
-$0
-#+end_entailment
