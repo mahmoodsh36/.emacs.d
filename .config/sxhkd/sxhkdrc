@@ -25,7 +25,7 @@ super + x ; {h,m,R,c,T,o,i}
       emacsclient -c,\
       pgrep transmission-da || transmission-daemon; terminal_with_cmd.sh "watch -n0.5 \"sh -c 'transmission-remote -l | cut -c -110'\"",\
       terminal_with_cmd.sh top,\
-      sxiv ~/data/images/scrots/$(ls -t ~/data/images/scrots | head -1)}
+      cd ~/data/images/scrots/; ls -t ~/data/images/scrots | sxiv -i}
 
 super + x ; {n,a,x}
      {pr="$(xclip -selection clipboard -o)"; notify-send "opening $pr"; xdg-open "$pr",\
@@ -60,11 +60,13 @@ super + g ; {R,r,s,w}
     pkill ffmpeg && notify-send "stopped recording", \
     notify-send "started recording from webcam" && ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -f pulse -i default -c:v libx264 -preset ultrafast -c:a aac "$HOME/recording_$(date | tr " " "_").mkv"}
 
-super + a ; {s,w,n,x}
+super + a ; {s,w,n,x,t,b}
     {kill -s USR1 `pgrep sxhkd` && notify-send "restarted sxhkd", \
      feh --bg-scale ~/.cache/wallpaper && notify-send "reset wallpaper", \
      notify-send 'restarted NetworkManager'; sudo systemctl restart NetworkManager,\
-     xrandr --auto}
+     xrandr --auto,\
+     notify-send "$PATH",\
+     notify-send 'restarted bluetooth'; sudo systemctl restart bluetooth}
 
 # super + s; {l,h,s}
 #     playerctl {next,previous,play-pause}
