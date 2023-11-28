@@ -37,6 +37,7 @@
 \usepackage{enumitem}
 \usepackage{caption}
 \usepackage{iftex}
+% \usepackage{unicode-math} % only usable with lualatex
 \ifLuaTeX
 % graphdrawing library is only available to luatex
 \usetikzlibrary{graphdrawing}
@@ -74,9 +75,11 @@
 \newcommand{\xmark}{\text{\ding{55}}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
-\newcommand\brm[1]{\bm{\mathrm{#1}}}
+\newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
+% \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
 \DeclareMathOperator{\vct}{vec}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
+\DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 
 % lst
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -109,24 +112,25 @@
 
 % environment definition for special blocks
 \theoremstyle{definition}
-\newtheorem{my_example}{Example}
+\newtheorem{my_example}{example}
 \counterwithin{my_example}{section}
 \counterwithin{my_example}{subsection}
-\newtheorem{definition}{Definition}
+\newtheorem{definition}{definition}
 \counterwithin{definition}{section}
 \counterwithin{definition}{subsection}
-\newtheorem{characteristic}{Characteristic}
-\newtheorem{entailment}{Entailment}
+\newtheorem{characteristic}{characteristic}
+\newtheorem{entailment}{entailment}
 %\newtheore*{proof}{Proof}
-\newtheorem{lemma}{Lemma}
-\newtheorem{question}{Question}
-\newtheorem{remark}{Remark}
-\newtheorem{subquestion}{Subquestion}[question]
+\newtheorem{lemma}{lemma}
+\newtheorem{question}{question}
+\newtheorem{remark}{remark}
+\newtheorem{subquestion}{subquestion}[question]
 %\newtheorem{note}{Note}
-\newtheorem{answer}{Answer}
+\newtheorem{answer}{answer}
 \counterwithin{answer}{question}
 \counterwithin{answer}{subquestion}
-\newtheorem{step}{Step}[answer]
+\newtheorem{step}{step}[answer]
+\newtheorem{problem}{problem}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
@@ -190,3 +194,14 @@
 \newenvironment{results}
   {}
   {}
+
+% extensible \vec alternative from https://tex.stackexchange.com/questions/114321/extensible-vec-instead-of-overrightarrow
+\makeatletter
+\newcommand{\vect}[1]{%
+  \vbox{\m@th \ialign {##\crcr
+  \vectfill\crcr\noalign{\kern-\p@ \nointerlineskip}
+  $\hfil\displaystyle{#1}\hfil$\crcr}}}
+\def\vectfill{%
+  $\m@th\smash-\mkern-7mu%
+  \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
+  \mkern-7mu\raisebox{-3.81pt}[\p@][\p@]{$\mathord\mathchar"017E$}$}
