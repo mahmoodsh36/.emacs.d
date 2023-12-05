@@ -37,6 +37,7 @@
 \usepackage{enumitem}
 \usepackage{caption}
 \usepackage{iftex}
+\usepackage{turnstile}
 % \usepackage{unicode-math} % only usable with lualatex
 \ifLuaTeX
 % graphdrawing library is only available to luatex
@@ -73,6 +74,7 @@
 \newcommand{\?}{\stackrel{?}{=}}
 \newcommand{\cmark}{\text{\ding{51}}}
 \newcommand{\xmark}{\text{\ding{55}}}
+\renewcommand{\Pr}{\bm{\mathrm{P}}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
@@ -120,6 +122,7 @@
 \counterwithin{definition}{subsection}
 \newtheorem{characteristic}{characteristic}
 \newtheorem{entailment}{entailment}
+\newtheorem{corollary}{corollary}
 %\newtheore*{proof}{Proof}
 \newtheorem{lemma}{lemma}
 \newtheorem{question}{question}
@@ -131,6 +134,9 @@
 \counterwithin{answer}{subquestion}
 \newtheorem{step}{step}[answer]
 \newtheorem{problem}{problem}
+\newtheorem{solution}{solution}[problem]
+\newtheorem{subproblem}{subproblem}[problem]
+\newtheorem{thought}{thought}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
