@@ -74,7 +74,7 @@ super + s; {l,h,s}
        echo cycle pause | socat - "/tmp/mpv_socket"}
 
 super + s; {w, W, q, f, a}
-    {spotify_lyrics.sh,\
+    {mpv_lyrics.sh,\
      terminal_with_cmd.sh 'nvim ~/brain/lyrics/"$(current_spotify_song.sh)"',\
      rm "/home/mahmooz/brain/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)",\
      choice=$(awk '\{print FILENAME ":" $0\}' ~/brain/lyrics/* | rofi -dmenu -i -p lyrics); notify-send "$(echo $choice | cut -d ':' -f1 | rev | cut -d '/' -f1 | rev)" "$(cat "$(echo $choice | cut -d ':' -f1)")"}
