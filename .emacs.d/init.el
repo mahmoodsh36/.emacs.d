@@ -795,7 +795,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "s w") 'open-spotify-lyrics-file)
 (general-define-key :keymaps 'override (led "s t") #'consult-theme)
 (general-define-key :keymaps 'override (led "s k") 'open-kitty-here)
-;; (general-define-key :keymaps 'override "SPC l" 'calc)
+(general-define-key :keymaps 'override (led "s q") 'calc)
 
 ;; agenda keys
 (general-define-key :keymaps 'override (led "a a") (lambda () (interactive) (org-agenda nil "n")))
@@ -808,6 +808,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "a b") 'org-clock-cancel)
 (general-define-key :keymaps 'org-mode-map (led "a p") 'org-clock-display)
 (general-define-key :keymaps 'override (led "a t") (lambda () (interactive) (org-roam-capture nil "t")))
+(general-define-key :keymaps 'override (led "a c") #'org-todo)
 (general-define-key :keymaps 'override (led "a n") 'today-entry)
 (general-define-key :keymaps 'override (led "a o") 'open-todays-file)
 (general-define-key :keymaps 'override (led "s n") 'yas-new-snippet)
@@ -877,7 +878,7 @@ space rather than before."
 ;;                       (call-interactively 'newline))) ;; call newline interactively for proper indentation in code
 (general-define-key :keymaps 'override (led "w v") #'split-window-right)
 (general-define-key :keymaps 'override (led "w s") #'split-window-below)
-;; (general-define-key :keymaps 'override (led "w o") #'other-window)
+(general-define-key :keymaps 'override (led "w o") #'other-window)
 (general-define-key :keymaps 'override (led "w c") #'delete-window)
 (general-define-key :keymaps 'override (led "w t") #'recenter)
 (general-define-key :keymaps 'override (led "w f") #'windmove-right)
@@ -933,7 +934,7 @@ space rather than before."
 ;; multiple cursors keys
 (keymap-global-set (led ", e") #'mc/edit-lines)
 (keymap-global-set (led ", n") #'mc/mark-next-like-this)
-(keymap-global-set (led ", n") #'mc/mark-previous-like-this)
+(keymap-global-set (led ", p") #'mc/mark-previous-like-this)
 
 (define-key org-mode-map (kbd "M-N") #'org-metadown)
 (define-key org-mode-map (kbd "M-P") #'org-metaup)
@@ -1111,6 +1112,7 @@ space rather than before."
 (use-package minimal-theme
   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 (use-package soothe-theme)
+(use-package stimmung-themes)
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
@@ -1780,6 +1782,7 @@ space rather than before."
 (setq completion-styles '(substring orderless-fast basic))
 
 (use-package all-the-icons-completion
+  :after all-the-icons
   :config
   (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
 
@@ -1796,12 +1799,12 @@ space rather than before."
 ;; virtual env integration for python
 (use-package pyvenv)
 
-(use-package multiple-cursors
-  :config
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
+(use-package multiple-cursors)
+;;  :config
+;;  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;;  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+;;  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;;  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
 
 (use-package combobulate
   :straight
@@ -2198,16 +2201,15 @@ space rather than before."
 ;; indent headings properly
 ;; (add-hook 'org-mode-hook 'org-indent-mode)
 (setq org-todo-keywords
-      '((sequence
-         "TODO(t!)"
-         "GO(g@)";
-         "WAIT(w@)"
-         "REVIEW(r!)"
-         "|" ; remaining close task
-         "DONE(d@)"
-         "CANCELED(c@)"
-         "CANCELLED(C@)" ;; for backward compatibility
-         )))
+      '("TODO(t!)"
+        "GO(g@)";
+        "WAIT(w@)"
+        "REVIEW(r!)"
+        "|" ; remaining entries close tasks
+        "DONE(d@)"
+        "CANCELED(c@)"
+        "CANCELLED(C@)" ;; for backward compatibility
+        ))
 ;; filter out entries with tag "ignore"
 (setq org-agenda-tag-filter-preset '("-ignore"))
 
@@ -2292,10 +2294,10 @@ space rather than before."
             (org-roam-db-sync)
             ;; (org-agenda-list)
             ;; (delete-other-windows)
-            ;; (switch-to-light-theme)
             (when (file-exists-p persp-state-default-file)
               (persp-state-load persp-state-default-file)
               (persp-switch "main"))
+            ;; (switch-to-light-theme)
             (switch-to-dark-theme)
             ))
 ;; disable multiplication precedence over division in calc
@@ -2325,8 +2327,7 @@ space rather than before."
   "switch to dark theme"
   (interactive)
   (disable-theme 'doom-gruvbox-light)
-  (load-theme 'doom-tomorrow-night t)
-  ;; (load-theme 'darktooth t)
+  (load-theme 'darktooth-dark t)
   ;; (load-theme 'soothe t)
   ;; (load-theme 'minimal t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
@@ -2339,7 +2340,7 @@ space rather than before."
   "switch to light theme"
   (interactive)
   ;; (disable-theme 'doom-tomorrow-night)
-  ;; (disable-theme 'darktooth)
+  (disable-theme 'darktooth-dark)
   ;; (disable-theme 'soothe)
   (load-theme 'doom-gruvbox-light t)
   (set-face-attribute 'org-block nil :background nil)
@@ -2512,6 +2513,7 @@ space rather than before."
 ;; remove done items
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-timestamp-if-done t)
 ;; show only the first occurrence of a recurring task
 (setq org-agenda-show-future-repeats 'next)
 ;; make org-open-at-point open link in the same buffer
@@ -3332,7 +3334,6 @@ INFO is a plist containing export properties."
                    (js-mode . js-ts-mode)
                    (typescript-mode . tsx-ts-mode)
                    (json-mode . json-ts-mode)
-                   (html-mode . html-ts-mode)
                    (yaml-mode . yaml-ts-mode)))
   (add-to-list 'major-mode-remap-alist mapping))
 ;; also make org-special-edit respect tree-sitter modes
@@ -3534,3 +3535,26 @@ INFO is a plist containing export properties."
 ;; (advice-add #'org-babel-execute-src-block :before #'execute-src-block-with-dependencies)
 
 ;; (load-file "~/brain/projects/org-recursport/recursport.el")
+
+;; dont deactivate the mark on non-shift commands
+(setq shift-select-mode 'permanent)
+
+;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
+(defun my/org-latex-preview-center (ov)
+  (save-excursion
+    (goto-char (overlay-start ov))
+    (when-let* ((elem (org-element-context))
+                ((or (eq (org-element-type elem) 'latex-environment)
+                     (string-match-p
+                      "^\\\\\\[" (org-element-property :value elem))))
+                (img (overlay-get ov 'display))
+                (width (car-safe (image-display-size img)))
+                (offset (floor (- (window-max-chars-per-line) width) 2))
+                ((> offset 0)))
+      (overlay-put ov 'before-string
+                   (propertize
+                    (make-string offset ?\ )
+                    'face (org-latex-preview--face-around
+                           (overlay-start ov) (overlay-end ov)))))))
+(add-hook 'org-latex-preview-update-overlay-functions
+          #'my/org-latex-preview-center)
