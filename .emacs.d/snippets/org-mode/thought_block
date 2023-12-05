@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: thought block
+# key: vb
+# --
+#+begin_thought
+$0
+#+end_thought

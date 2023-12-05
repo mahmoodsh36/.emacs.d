@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: notation block
+# key: ib
+# --
+#+begin_notation
+$0
+#+end_notation

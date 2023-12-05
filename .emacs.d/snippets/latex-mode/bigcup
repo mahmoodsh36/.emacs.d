@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bigcup
+# key: bu
+# --
+\bigcup_{$1}^{$2}$0

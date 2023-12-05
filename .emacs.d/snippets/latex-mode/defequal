@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: defequal
+# key: dq
+# --
+\defeq$0

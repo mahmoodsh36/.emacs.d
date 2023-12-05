@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# name: subquestion block
+# name: subproblem block
 # key: sb
 # --
-#+begin_subquestion
+#+begin_subproblem
 $0
-#+end_subquestion
+#+end_subproblem
