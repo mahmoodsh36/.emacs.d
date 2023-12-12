@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: task block
+# key: kb
+# --
+#+begin_task
+$0
+#+end_task
