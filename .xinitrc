@@ -8,16 +8,17 @@ sxhkd &
 #dunst &
 # parcellite unbinds C-M-x from emacs :(
 #parcellite &
-# pulseaudio & # pulseaudio is bugged on startup dunno why
+pulseaudio & # pulseaudio is bugged on startup dunno why
 # backgrounder.sh ~/pictures 200 0 & disown
-nm-applet &
+# nm-applet &
 
 # songs_progress_monitor.py &
 # picom --config ~/.config/compton.conf &
-while true; do setxkbmap -option caps:swapescape; sleep 5; done &
+# while true; do setxkbmap -option caps:swapescape; sleep 5; done &
 while true; do setxkbmap -option ctrl:ralt_rctrl; sleep 5; done &
 #setxkbmap -option ctrl:nocaps
-feh --bg-fill ~/.cache/wallpaper &
+#feh --bg-fill ~/.cache/wallpaper &
+hsetroot -solid '#222222'
 unclutter -root &
 #blueman-applet &
 mpris-proxy &
@@ -38,10 +39,10 @@ sudo rmmod pcspkr &
 #google-chrome-stable &
 #flatpak run com.client.Spotify || spotify &
 
-touchegg & # run touchegg for touch gestures
+# touchegg & # run touchegg for touch gestures
 
 #xsetroot -cursor_name left_ptr
 exec awesome
 #exec qtile
-#exec bspwm
+# exec bspwm
 #exec emacs
