@@ -604,7 +604,7 @@ space rather than before."
 ;;                       (interactive)
 ;;                       (kill-all-buffers)
 ;;                       (switch-to-buffer "*scratch*")))
-(general-define-key :keymaps 'override (led "b s") 'consult-buffer)
+(general-define-key :keymaps 'override (led "b s") 'switch-to-buffer)
 (general-define-key :keymaps 'override (led "b b") 'bookmark-jump)
 (general-define-key :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) (led "x") 'eval-defun)
 (general-define-key :keymaps 'override (led "s g") 'deadgrep)
@@ -673,10 +673,7 @@ space rather than before."
 (general-define-key :keymaps 'org-mode-map (led "r p") 'org-latex-preview-auto-mode)
 ;; (general-define-key :keymaps 'override "/" 'swiper)
 (general-define-key :keymaps 'org-mode-map (led "c") "C-c C-c")
-(general-define-key :keymaps 'override (led "a N")
-                    (lambda ()
-                      (interactive)
-                      (org-roam-capture-no-title-prompt nil "d")))
+(general-define-key :keymaps 'override (led "a N") #'today-entry-text-simple)
 
 ;; keys to search for files
 (general-define-key :keymaps 'override (led "f b")
@@ -690,6 +687,9 @@ space rather than before."
                                                                                       (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
                                                                                     (directory-files-recursively *music-dir* "")))))
                         (browse-url (expand-file-name my-file)))))
+
+(general-define-key :keymaps 'override (led "f n")
+                    (lambda () (interactive) (find-file "~/workspace/nixos/configuration.nix")))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
@@ -808,7 +808,8 @@ space rather than before."
 (general-define-key :keymaps 'override (led "a b") 'org-clock-cancel)
 (general-define-key :keymaps 'org-mode-map (led "a p") 'org-clock-display)
 (general-define-key :keymaps 'override (led "a t") (lambda () (interactive) (org-roam-capture nil "t")))
-(general-define-key :keymaps 'override (led "a c") #'org-todo)
+(general-define-key :keymaps 'org-mode-map (led "a c") #'org-todo)
+(general-define-key :keymaps 'org-agenda-mode-map (led "a c") #'org-agenda-todo)
 (general-define-key :keymaps 'override (led "a n") 'today-entry)
 (general-define-key :keymaps 'override (led "a o") 'open-todays-file)
 (general-define-key :keymaps 'override (led "s n") 'yas-new-snippet)
@@ -856,11 +857,11 @@ space rather than before."
 
 ;; python
 (general-define-key :keymaps 'override (led "s p") 'run-python)
-(general-define-key :keymaps 'python-mode-map (led "x") 'python-shell-send-defun)
-(general-define-key :keymaps 'python-mode-map (led "l) x") 'python-shell-send-defun)
-(general-define-key :keymaps 'python-mode-map (led "l t") 'python-shell-send-statement)
-(general-define-key :keymaps 'python-mode-map (led "c") 'python-shell-send-buffer)
-(general-define-key :keymaps 'python-mode-map (led "l b") 'python-shell-send-buffer)
+(general-define-key :keymaps 'python-ts-mode-map (led "x") 'python-shell-send-defun)
+(general-define-key :keymaps 'python-ts-mode-map (led "l x") 'python-shell-send-defun)
+(general-define-key :keymaps 'python-ts-mode-map (led "l t") 'python-shell-send-statement)
+(general-define-key :keymaps 'python-ts-mode-map (led "c") 'python-shell-send-buffer)
+(general-define-key :keymaps 'python-ts-mode-map (led "l b") 'python-shell-send-buffer)
 
 ;;sagemath
 (general-define-key :keymaps 'sage-shell-mode-map (led "b k") 'comint-quit-subjob)
@@ -870,7 +871,6 @@ space rather than before."
 
 ;; other keybinds
 (general-define-key :keymaps 'override "C-S-k" 'kill-whole-line)
-(general-define-key :keymaps 'override (led "h") (general-simulate-key "C-h"))
 ;; (general-define-key :keymaps 'override "M-RET"
 ;;                     (lambda ()
 ;;                       (interactive)
@@ -886,18 +886,20 @@ space rather than before."
 (general-define-key :keymaps 'override (led "w n") #'windmove-down)
 (general-define-key :keymaps 'override (led "w p") #'windmove-up)
 (general-define-key :keymaps '(org-mode-map TeX-mode-map latex-mode-map) (led "v") #'open-current-document-this-window)
-(keymap-global-set "M-o" ;; new line without breaking current line
-                   (lambda ()
-                     (interactive)
-                     (end-of-line)
-                     (newline-and-indent)))
-(keymap-global-set "M-O" ;;"M-S-o" ;; new line above current line without breaking it
-                   (lambda ()
-                     (interactive)
-                     (move-beginning-of-line nil)
-                     (newline-and-indent)
-                     (forward-line -1)
-                     (indent-according-to-mode)))
+(general-define-key :keymaps 'override
+                    "M-o" ;; new line without breaking current line
+                    (lambda ()
+                      (interactive)
+                      (end-of-line)
+                      (newline-and-indent)))
+(general-define-key :keymaps 'override
+                    "M-O" ;;"M-S-o" ;; new line above current line without breaking it
+                    (lambda ()
+                      (interactive)
+                      (move-beginning-of-line nil)
+                      (newline-and-indent)
+                      (forward-line -1)
+                      (indent-according-to-mode)))
 ;; (global-set-key (kbd "M-S-o"))
 (general-define-key :keymaps 'override "M-z" #'zap-up-to-char)
 
@@ -938,6 +940,11 @@ space rather than before."
 
 (define-key org-mode-map (kbd "M-N") #'org-metadown)
 (define-key org-mode-map (kbd "M-P") #'org-metaup)
+
+;; remap the help map, use C-h for something else
+(keymap-global-set (led "h") help-map)
+
+(keymap-global-set "C-h" #'indent-according-to-mode)
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -1113,6 +1120,7 @@ space rather than before."
   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 (use-package soothe-theme)
 (use-package stimmung-themes)
+(use-package acme-theme)
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
@@ -1175,19 +1183,19 @@ space rather than before."
 ;; executing sage in org babel
 (use-package ob-sagemath
   :config
-  ;; Ob-sagemath supports only evaluating with a session.
+  ;; ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
                                              (:results . "drawer")))
-  (setq sage-shell:input-history-cache-file (concat brain-path "/sage_history"))
+  (setq sage-shell:input-history-cache-file (brain-file "/sage_history"))
   (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
-(use-package helpful
-  :config
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h a") #'helpful-symbol)
-  (global-set-key (kbd "C-h k") #'helpful-key))
+;; (use-package helpful
+;;   :config
+;;   (global-set-key (kbd "C-h f") #'helpful-callable)
+;;   (global-set-key (kbd "C-h v") #'helpful-variable)
+;;   (global-set-key (kbd "C-h a") #'helpful-symbol)
+;;   (global-set-key (kbd "C-h k") #'helpful-key))
 
 ;; yasnippet
 ;; (use-package yasnippet-snippets)
@@ -1201,6 +1209,11 @@ space rather than before."
   ;; prevent warnings about snippets using elisp
   (require 'warnings)
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+  ;; disable the default tab binding
+  ;; (define-key yas-minor-mode-map [(tab)] nil)
+  ;; (define-key yas-minor-mode-map (kbd "TAB") nil)
+  ;; bind C-h to snippet expand
+  ;; (define-key yas-minor-mode-map (kbd "C-h") #'yas-expand))
 ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise).
 ;; (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
@@ -1300,6 +1313,7 @@ space rather than before."
 (use-package lsp-dart)
 
 ;; best pdf viewer
+;; main repo for pdf-tools, below another repo is used for continuous scroll
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
@@ -1343,10 +1357,10 @@ space rather than before."
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
-  (setq org-hugo-section "post")
-  (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
-  (ignore-errors (make-directory org-more-dir))
-  (defconst *org-static-dir* (file-truename "~/workspace/blog/static/ox-hugo"))
+  (setq org-hugo-section "blog")
+  ;; (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
+  ;; (ignore-errors (make-directory org-more-dir))
+  (defconst *org-static-dir* (file-truename "~/workspace/blog/static/"))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html"))
 
@@ -1436,8 +1450,8 @@ space rather than before."
 ;;         org-appear-autosubmarkers t)
 ;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
-;; (use-package vulpea)
 ;; (use-package dap-mode)
+;; (use-package dape)
 
 ;; (use-package elfeed-tube
 ;;   :quelpa (:host github :repo "karthink/elfeed-tube")
@@ -1496,7 +1510,8 @@ space rather than before."
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ;;("C-;" . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+   ;; ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+   )
   :init
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
@@ -1748,6 +1763,8 @@ space rather than before."
 ;; display vertico in different buffer
 (require 'vertico-buffer)
 (vertico-buffer-mode)
+;; use selected window
+(setq vertico-buffer-display-action '(display-buffer-same-window))
 ;; Commands for Ido-like directory navigation.
 ;; Configure directory extension.
 (use-package vertico-directory
@@ -1838,7 +1855,7 @@ space rather than before."
   (consult-customize consult--source-buffer :hidden t :default nil)
   (add-to-list 'consult-buffer-sources persp-consult-source)
   (general-define-key :keymaps 'override (led "s c") 'persp-switch)
-  (add-hook 'kill-emacs-hook #'persp-state-save)
+  ;; (add-hook 'kill-emacs-hook #'persp-state-save)
   (setq persp-state-default-file (concat brain-path "/emacs_persp")))
 ;; (use-package dired-rsync)
 
@@ -2014,9 +2031,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-(setq org-latex-preview-persist nil)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-latex-preview-persist nil)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -2298,7 +2315,12 @@ space rather than before."
               (persp-state-load persp-state-default-file)
               (persp-switch "main"))
             ;; (switch-to-light-theme)
-            (switch-to-dark-theme)
+            ;; (switch-to-theme 'minimal-light)
+            ;; (switch-to-theme 'darktooth-darker)
+            ;; (switch-to-theme 'acme)
+               (switch-to-theme 'doom-sourcerer)
+               (add-hook 'kill-emacs-hook #'persp-state-save)
+            ;;(switch-to-darktooth-theme)
             ))
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
@@ -2323,11 +2345,15 @@ space rather than before."
   (format "%stmp_%s.%s" (concat brain-path "out/") (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c R") (lambda () (interactive) (insert (generate-random-string 7))))
 
-(defun switch-to-dark-theme ()
+(defun switch-to-theme (theme)
+  "remove current theme, switch to another"
+  (disable-theme (car custom-enabled-themes))
+  (load-theme theme t))
+
+(defun switch-to-darktooth-theme ()
   "switch to dark theme"
   (interactive)
-  (disable-theme 'doom-gruvbox-light)
-  (load-theme 'darktooth-dark t)
+  (switch-to-theme 'darktooth-dark)
   ;; (load-theme 'soothe t)
   ;; (load-theme 'minimal t)
   ;; (set-face-attribute 'whitespace-space nil :background nil)
@@ -2336,7 +2362,7 @@ space rather than before."
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
   (set-themed-pdf 1))
 
-(defun switch-to-light-theme ()
+(defun switch-to-gruvbox-light-theme ()
   "switch to light theme"
   (interactive)
   ;; (disable-theme 'doom-tomorrow-night)
@@ -2864,7 +2890,11 @@ prompt the user for a coding system."
   (interactive)
   (let ((todays-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org"))))
     (if (not (file-exists-p todays-file))
-        (org-roam-capture-no-title-prompt nil "d"))
+        (progn
+          (find-file todays-file)
+          (org-id-get-create)
+          (end-of-buffer)
+          (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d"))))
     (find-file todays-file)))
 
 (defun today-entry ()
@@ -2874,8 +2904,15 @@ prompt the user for a coding system."
   (org-insert-heading-respect-content)
   (org-clock-in)
   (org-up-heading-safe)
-  (end-of-line)
-  (ignore-errors (evil-insert 0)))
+  (end-of-line))
+
+(defun today-entry-text-simple ()
+  "insert a heading with a timestamp for simple journalling"
+  (interactive)
+  (open-todays-file)
+  (org-insert-heading-respect-content)
+  (org-insert-time-stamp (current-time) t)
+  (insert " "))
 
 (defun check-svg-duplicates ()
   "check for code blocks with same svg files, TODO needs to be implemented"
@@ -3249,6 +3286,8 @@ INFO is a plist containing export properties."
 
 ;; dont override my labels, silly org
 (setq org-latex-prefer-user-labels t)
+;; dont let org handle subscripts lol
+(setq org-export-with-sub-superscripts nil)
 
 ;; prettify symbols..
 (global-prettify-symbols-mode +1)
@@ -3558,3 +3597,20 @@ INFO is a plist containing export properties."
                            (overlay-start ov) (overlay-end ov)))))))
 (add-hook 'org-latex-preview-update-overlay-functions
           #'my/org-latex-preview-center)
+
+;; https://stackoverflow.com/questions/39882624/setting-arbitrary-cursor-positions-with-multiple-cursors-in-emacs
+;; insert cursor at point
+;; (require 'multiple-cursors)
+;; (defun mc/toggle-cursor-at-point ()
+;;   "Add or remove a cursor at point."
+;;   (interactive)
+;;   (if multiple-cursors-mode
+;;       (message "Cannot toggle cursor at point while `multiple-cursors-mode' is active.")
+;;     (let ((existing (mc/fake-cursor-at-point)))
+;;       (if existing
+;;           (mc/remove-fake-cursor existing)
+;;         (mc/create-fake-cursor-at-point)))))
+;; (add-to-list 'mc/cmds-to-run-once 'mc/toggle-cursor-at-point)
+;; (add-to-list 'mc/cmds-to-run-once 'multiple-cursors-mode)
+;;(global-set-key (kbd "C-S-SPC") 'mc/toggle-cursor-at-point)
+;;(global-set-key (kbd "<C-S-return>") 'multiple-cursors-mode)
