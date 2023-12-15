@@ -52,6 +52,9 @@
 \newenvironment*{dummyenv}{}{}
 \newenvironment*{dummy}{}{}
 
+% no space before paragraph (is this desired?)
+\setlength{\parindent}{0pt}
+
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
 \DeclareMathOperator{\dom}{domain}
@@ -82,6 +85,11 @@
 \DeclareMathOperator{\vct}{vec}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
+
+% some symbols for cryptography notation (Gen,Enc,Dec)
+\DeclareMathOperator{\Gen}{Gen}
+\DeclareMathOperator{\Enc}{Enc}
+\DeclareMathOperator{\Dec}{Dec}
 
 % lst
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -137,6 +145,7 @@
 \newtheorem{solution}{solution}[problem]
 \newtheorem{subproblem}{subproblem}[problem]
 \newtheorem{thought}{thought}
+\newtheorem{task}{task}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
