@@ -5,3 +5,6 @@
 # #+LATEX_HEADER: \setlength{\parindent}{0pt}
 #+AUTHOR: mahmood
 #+macro: mywebsite [[https://mahmoodsheikh36.github.io]]
+#+macro: if-latex (eval (if (org-export-derived-backend-p org-export-current-backend 'latex) $1))
+#+macro: newline src_emacs-lisp[:results raw]{"\n"}
+#+macro: comment
