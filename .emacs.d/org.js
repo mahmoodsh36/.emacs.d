@@ -1,5 +1,5 @@
 // modify some html to make code blocks distinguishable from output blocks
-// output blocks have a child with class '.language-text' (theyre basicly text code blocks)
+// output blocks have a child with class '.language-text' (theyre basically text code blocks)
 window.addEventListener("load", function () {
   prettifyCodeBlocks();
   let customBlocks = [
@@ -17,6 +17,10 @@ window.addEventListener("load", function () {
       "question",
       "subquestion",
       "answer",
+      "solution",
+      "proposition",
+      "problem",
+      "subproblem",
       "step",
       "code-output",
       "code",
@@ -29,6 +33,11 @@ window.addEventListener("load", function () {
         element.setAttribute('data-before-content', 'code output');
       } else {
         element.setAttribute('data-before-content', cb);
+      }
+
+      let title = element.getAttribute('data-title');
+      if (title) {
+        console.log(title);
       }
     }
   }
