@@ -1090,9 +1090,11 @@ space rather than before."
 
 ;; icons for dired
 (use-package all-the-icons
+  :after vertico
   :custom
   (all-the-icons-dired-monochrome nil))
 (use-package all-the-icons-dired
+  :after vertico
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
@@ -1190,12 +1192,12 @@ space rather than before."
   (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
-;; (use-package helpful
-;;   :config
-;;   (global-set-key (kbd "C-h f") #'helpful-callable)
-;;   (global-set-key (kbd "C-h v") #'helpful-variable)
-;;   (global-set-key (kbd "C-h a") #'helpful-symbol)
-;;   (global-set-key (kbd "C-h k") #'helpful-key))
+(use-package helpful
+  :config
+  (define-key help-map (kbd "f") #'helpful-callable)
+  (define-key help-map (kbd "v") #'helpful-variable)
+  (define-key help-map (kbd "a") #'helpful-symbol)
+  (define-key help-map (kbd "k") #'helpful-key))
 
 ;; yasnippet
 ;; (use-package yasnippet-snippets)
@@ -1480,7 +1482,6 @@ space rather than before."
 ;;   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
-;; best terminal emulation, required for julia-snail
 ;; (use-package vterm)
 
 ;; check which keys i press most
@@ -1715,7 +1716,39 @@ space rather than before."
   :config
   (setq julia-snail-terminal-type :eat)
   (setq julia-snail-extensions '(repl-history formatter ob-julia))
+  ;;(setq julia-snail-extensions '(repl-history formatter))
   (setq julia-snail/ob-julia-mirror-output-in-repl t))
+
+;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
+;; (use-package ob-julia
+;;   :straight (ob-julia :host github :repo "nico202/ob-julia"
+;;                       :files ("*.el" "julia")
+;;                       :fork (:host github
+;;                              :repo "karthink/ob-julia"
+;;                              :branch "main"))
+;;   :after ob
+;;   :hook (org-babel-julia-after-async-execute . my/org-redisplay-babel-result)
+;;   :init (setq ob-julia-insert-latex-environment-advice nil)
+;;   :config
+;;   (add-to-list 'org-structure-template-alist
+;;                '("j" . "src julia"))
+;;   (setq org-babel-default-header-args:julia
+;;         '((:session . nil)
+;;           (:async   . "yes")))
+;;   (setq org-babel-julia-backend 'julia-snail)
+;;   (when (featurep 'ess)
+;;     (setq ess-eval-visibly 'nowait)
+;;     (defun org-babel-julia-initiate-session (&optional session params)
+;;       "Create or switch to an ESS Julia session.
+;; 
+;; Return the initialized session, if any."
+;;       (unless (string= session "none")
+;;         (let ((session (or session "*julia*")))
+;;           (if (org-babel-comint-buffer-livep session)
+;;               session
+;;             (save-window-excursion
+;;               (org-babel-prep-session:julia session params))))))))
+
 
 ;; for python, it doesnt work with corfu so i disabled it
 ;; (use-package elpy
@@ -2195,7 +2228,7 @@ space rather than before."
 (defun org-to-pdf ()
   (interactive)
   (let ((outfile (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex")))
-    ;; (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
+    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
     (compile-latex-file outfile)))
@@ -2316,9 +2349,9 @@ space rather than before."
               (persp-switch "main"))
             ;; (switch-to-light-theme)
             ;; (switch-to-theme 'minimal-light)
-            ;; (switch-to-theme 'darktooth-darker)
+             (switch-to-theme 'darktooth-darker)
             ;; (switch-to-theme 'acme)
-               (switch-to-theme 'doom-sourcerer)
+            ;; (switch-to-theme 'doom-sourcerer)
                (add-hook 'kill-emacs-hook #'persp-state-save)
             ;;(switch-to-darktooth-theme)
             ))
@@ -2612,6 +2645,15 @@ space rather than before."
      (condition-case err
          (org-babel-execute-buffer)
        (error (message "got error %s while executing %s" err (buffer-file-name)))))))
+(defun execute-files (tag)
+  "execute files tagged with 'code'"
+  (interactive)
+  (go-through-roam-files-with-tag
+   tag
+   (lambda ()
+     (condition-case err
+         (org-babel-execute-buffer)
+       (error (message "got error %s while executing %s" err (buffer-file-name)))))))
 (defun lob-reload ()
   "load files tagged with 'code' into the org babel library (lob - library of babel)"
   (interactive)
@@ -2620,7 +2662,9 @@ space rather than before."
    (lambda ()
      (org-babel-lob-ingest (buffer-file-name)))))
 ;; most/all of my code files are lisp, load them with sly/slime
-(add-hook 'sly-connected-hook #'execute-code-files)
+(add-hook 'sly-connected-hook (lambda () (execute-files "lisp-code")))
+;; run some python code from my org notes on shell startup
+(add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
 ;; i need those in library of babel on startup too
 ;; (lob-reload)
 
@@ -3339,9 +3383,6 @@ INFO is a plist containing export properties."
                                       (setq i (+ 32 i)) i (single-key-description i)
                                       (setq i (+ 32 i)) i (single-key-description i)))
                       (setq i (- i 96))))))
-
-;; run some python code from my org notes on shell startup
-(add-hook 'python-shell-first-prompt-hook #'execute-code-files)
 
 (defun current-mpv-artist ()
   (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist' 2>/dev/null"))
