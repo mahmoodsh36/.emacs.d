@@ -134,3 +134,7 @@ p {
     display: block;
     margin: auto;
 }
+img.figure {
+    margin: auto;
+    display: block;
+}

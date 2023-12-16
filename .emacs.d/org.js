@@ -24,6 +24,7 @@ window.addEventListener("load", function () {
       "step",
       "code-output",
       "code",
+      "axiom",
   ];
   for (let cb of customBlocks) {
     for (let element of document.getElementsByClassName(cb)) {
@@ -50,12 +51,16 @@ function wrap(toWrap, wrapper) {
 }
 
 function getTextBlocks() {
+  let elts = document.getElementsByClassName('example');
+  return elts;
+  /*
   let elts = document.getElementsByClassName('language-text');
   let textBlocks = [];
   for (let elt of elts) {
     textBlocks.push(elt.parentElement.parentElement);
   }
   return textBlocks;
+  */
 }
 
 function getCodeBlocks() {
