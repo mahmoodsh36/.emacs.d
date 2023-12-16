@@ -38,11 +38,11 @@
 \usepackage{caption}
 \usepackage{iftex}
 \usepackage{turnstile}
-% \usepackage{unicode-math} % only usable with lualatex
 \ifLuaTeX
 % graphdrawing library is only available to luatex
 \usetikzlibrary{graphdrawing}
 \usegdlibrary{force, trees, layered}
+\usepackage{unicode-math} % only usable with lualatex
 \else
 % whatever
 \fi
@@ -53,7 +53,7 @@
 \newenvironment*{dummy}{}{}
 
 % no space before paragraph (is this desired?)
-\setlength{\parindent}{0pt}
+% \setlength{\parindent}{0pt}
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
