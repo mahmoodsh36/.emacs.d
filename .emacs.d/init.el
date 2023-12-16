@@ -2225,9 +2225,13 @@ space rather than before."
 (setq eshell-history-size 100000000)
 
 ;; compile org docs to pdfs and put them in cache dir
+(defun latex-out-file ()
+  (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex"))
+(defun pdf-out-file ()
+  (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".pdf"))
 (defun org-to-pdf ()
   (interactive)
-  (let ((outfile (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex")))
+  (let ((outfile (latex-out-file)))
     (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
