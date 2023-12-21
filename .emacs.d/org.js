@@ -6,8 +6,6 @@ window.addEventListener("load", function () {
       'lemma',
       'proof',
       'entail',
-      "lemma",
-      "proof",
       "entailment",
       "definition",
       "note",
@@ -25,21 +23,29 @@ window.addEventListener("load", function () {
       "code-output",
       "code",
       "axiom",
+      "thought",
   ];
   for (let cb of customBlocks) {
-    for (let element of document.getElementsByClassName(cb)) {
+    let elements = document.getElementsByClassName(cb);
+    for (let element of elements) {
+//      console.log(elements);
+//      if (element.classList.contains('custom-block'))
+//        continue;
+      let wrapper = document.createElement('div');
+      wrapper.classList.add('custom-block');
       if (cb == 'my_example') {
-        element.setAttribute('data-before-content', 'example');
+        wrapper.setAttribute('data-before-content', 'example');
       } else if (cb == 'code-output') {
-        element.setAttribute('data-before-content', 'code output');
+        wrapper.setAttribute('data-before-content', 'code output');
       } else {
-        element.setAttribute('data-before-content', cb);
+        wrapper.setAttribute('data-before-content', cb);
       }
+      wrap(element, wrapper);
 
-      let title = element.getAttribute('data-title');
+      /*let title = element.getAttribute('data-title');
       if (title) {
-        console.log(title);
-      }
+        // console.log(title);
+      }*/
     }
   }
 });
