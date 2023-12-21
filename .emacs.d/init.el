@@ -946,6 +946,14 @@ space rather than before."
 
 (keymap-global-set "C-h" #'indent-according-to-mode)
 
+;; perspective keys
+(general-define-key :keymaps 'override (led "s 1") (lambda () (interactive) (persp-switch "main")))
+(general-define-key :keymaps 'override (led "s 2") (lambda () (interactive) (persp-switch "college")))
+(general-define-key :keymaps 'override (led "s 3") (lambda () (interactive) (persp-switch "agenda")))
+
+(general-define-key :keymaps 'override (led "s z") #'zeal-at-point)
+(general-define-key :keymaps 'override (led "s f") #'devdocs-lookup)
+
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
   (org-roam-capture- :goto goto
@@ -1022,7 +1030,7 @@ space rather than before."
     (use-package corfu
       ;; :quelpa (:files (:defaults "extensions/*"))
       :init
-      ;; (global-corfu-mode)
+      (global-corfu-mode)
       :custom
       (corfu-cycle t)
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
@@ -1712,6 +1720,7 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
 (use-package julia-snail
+  :quelpa (julia-snail :fetcher github :repo "https://github.com/gcv/julia-snail")
   :hook (julia-mode . julia-snail-mode)
   :config
   (setq julia-snail-terminal-type :eat)
@@ -1911,6 +1920,17 @@ space rather than before."
 ;; emacs-ipython-notebook
 (use-package ein)
 
+(use-package zeal-at-point)
+
+;; devdocs seems to have more docs than zeal?
+(use-package devdocs)
+
+;; (use-package ob-julia-vterm
+;;   :config
+;;   (add-to-list 'org-babel-load-languages '(julia-vterm . t))
+;;   (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+;;   (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
+
 ;;(use-package el-easydraw
 ;;  :straight
 ;;  (el-easydraw :type git :host github :repo "misohena/el-easydraw"))
@@ -2064,9 +2084,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-;; (setq org-latex-preview-persist nil)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+(setq org-latex-preview-persist nil)
+(setq org-element-cache-persistent nil)
+(setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -2353,10 +2373,10 @@ space rather than before."
               (persp-switch "main"))
             ;; (switch-to-light-theme)
             ;; (switch-to-theme 'minimal-light)
-             (switch-to-theme 'darktooth-darker)
-            ;; (switch-to-theme 'acme)
+             ;;(switch-to-theme 'darktooth-darker)
+            (switch-to-theme 'acme)
             ;; (switch-to-theme 'doom-sourcerer)
-               (add-hook 'kill-emacs-hook #'persp-state-save)
+            (add-hook 'kill-emacs-hook #'persp-state-save)
             ;;(switch-to-darktooth-theme)
             ))
 ;; disable multiplication precedence over division in calc
