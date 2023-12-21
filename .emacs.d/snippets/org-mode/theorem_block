@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: theorem block
+# key: jb
+# --
+#+begin_theorem
+$0
+#+end_theorem
