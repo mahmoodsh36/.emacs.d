@@ -43,8 +43,9 @@
 \usetikzlibrary{graphdrawing}
 \usegdlibrary{force, trees, layered}
 \usepackage{unicode-math} % only usable with lualatex
+\newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
 \else
-% whatever
+\newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
 \usepackage{kpfonts} % better looking fonts
 
@@ -80,11 +81,10 @@
 \renewcommand{\Pr}{\bm{\mathrm{P}}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
-\newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
-% \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
 \DeclareMathOperator{\vct}{vec}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
+\DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
 
 % some symbols for cryptography notation (Gen,Enc,Dec)
 \DeclareMathOperator{\Gen}{Gen}
@@ -113,7 +113,7 @@
   showspaces=false,                       % Dont make spaces visible
   showtabs=false,                         % Dont make tabls visible
   columns=flexible,                       % Column format
-  morekeywords={__global__, __device__},  % CUDA specific keywords
+  morekeywords={__global__, __device__},   % CUDA specific keywords
   showstringspaces=false,                 % dont show spaces in strings
   frame=shadowbox,
 }
