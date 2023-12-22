@@ -796,6 +796,7 @@ space rather than before."
 (general-define-key :keymaps 'override (led "s t") #'consult-theme)
 (general-define-key :keymaps 'override (led "s k") 'open-kitty-here)
 (general-define-key :keymaps 'override (led "s q") 'calc)
+(general-define-key :keymaps 'override (led "s u") 'copy-file-path)
 
 ;; agenda keys
 (general-define-key :keymaps 'override (led "a a") (lambda () (interactive) (org-agenda nil "n")))
@@ -2373,8 +2374,10 @@ space rather than before."
               (persp-switch "main"))
             ;; (switch-to-light-theme)
             ;; (switch-to-theme 'minimal-light)
-             ;;(switch-to-theme 'darktooth-darker)
-            (switch-to-theme 'acme)
+            ;; (switch-to-theme 'darktooth-darker)
+            ;; (switch-to-theme 'acme)
+            (switch-to-theme 'doom-gruvbox-light)
+            (switch-to-theme 'tango)
             ;; (switch-to-theme 'doom-sourcerer)
             (add-hook 'kill-emacs-hook #'persp-state-save)
             ;;(switch-to-darktooth-theme)
@@ -3661,7 +3664,7 @@ INFO is a plist containing export properties."
                     'face (org-latex-preview--face-around
                            (overlay-start ov) (overlay-end ov)))))))
 (add-hook 'org-latex-preview-update-overlay-functions
-          #'my/org-latex-preview-center)
+         #'my/org-latex-preview-center)
 
 ;; https://stackoverflow.com/questions/39882624/setting-arbitrary-cursor-positions-with-multiple-cursors-in-emacs
 ;; insert cursor at point
