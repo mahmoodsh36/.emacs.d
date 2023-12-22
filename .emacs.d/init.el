@@ -153,14 +153,31 @@
 (setq evil-want-keybinding nil)
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
-(setq enable-evil nil)
+(setq enable-evil t)
 (setq enable-god nil)
 ;;(defconst *leader-key* "C-z");;"SPC")
-;;(global-set-key (kbd "<escape>") (make-sparse-keymap))
-(defconst *leader-key* "<escape>")
+(defconst *leader-key* "<SPC>")
+;; (global-set-key (kbd "<SPC>") (make-sparse-keymap))
+;;(defconst *leader-key* "<escape>")
 (defun led (key-str)
   "return the keybinding `key-str', which is taken as a string, prefixed by the leader key defined in '*leader-key*'"
   (concat *leader-key* " " key-str))
+;; (defun mykbd ()
+;;   "to be written"
+;;     )
+(defun led-kbd (binding function &rest args)
+  "define a keybinding prefixed by `*leader-key*'"
+  (interactive)
+  (let ((mykeymaps (plist-get args :keymaps)))
+    (if mykeymaps
+        (general-define-key :states '(normal visual motion operator)
+                            :keymaps mykeymaps
+                            (led binding) function)
+      (general-define-key :states '(normal visual motion operator)
+                          :keymaps 'override
+                          (led binding) function))))
+(defun my-kbd (binding function &rest args)
+  )
 
 ;; need straight for tecosaur's org version, for now, so install both
 (defvar bootstrap-version)
@@ -378,15 +395,15 @@
   ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
   (evil-set-initial-state 'vterm-mode 'emacs)
 
-  (general-define-key :keymaps 'override "{" 'evil-scroll-line-up)
-  (general-define-key :keymaps 'override "}" 'evil-scroll-line-down)
+  (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
+  (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
 
-  (general-define-key :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
+  (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
 
-  (general-define-key :keymaps 'override ")" 'evil-scroll-page-down)
-  (general-define-key :keymaps 'override "(" 'evil-scroll-page-up)
+  (general-define-key :states 'normal :keymaps 'override ")" 'evil-scroll-page-down)
+  (general-define-key :states 'normal :keymaps 'override "(" 'evil-scroll-page-up)
 
-  (general-define-key :keymaps 'override (led "w") 'evil-window-map)
+  (led-kbd "w" 'evil-window-map)
 
   ;; display number of matches when searching
   ;; (use-package anzu)
@@ -423,7 +440,9 @@
 
   (general-evil-setup)
 
-  (general-define-key :states 'normal "s" 'save-buffer)
+ (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map) "s" 'save-buffer) ;; restore it, not sure why evil disables it
+ (general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
+  ;; rebind s to sort in dired
 
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
@@ -579,117 +598,117 @@ space rather than before."
     ))
 
 ;; keybindings here
-(general-define-key :keymaps 'override (led "d w") (lambda () (interactive) (dired "~/dl/")))
-(general-define-key :keymaps 'override (led "d a") (lambda () (interactive) (dired "~/data/")))
-(general-define-key :keymaps 'override (led "d l") (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-(general-define-key :keymaps 'override (led "d b") (lambda () (interactive) (dired brain-path)))
-(general-define-key :keymaps 'override (led "d r") (lambda () (interactive) (dired (concat brain-path "/resources"))))
-(general-define-key :keymaps 'override (led "d h") (lambda () (interactive) (dired "~/")))
-(general-define-key :keymaps 'override (led "d p") (lambda () (interactive) (dired "~/p/")))
-(general-define-key :keymaps 'override (led "d d") 'dired)
-(general-define-key :keymaps 'override (led "d c") (lambda () (interactive) (dired default-directory)))
-(general-define-key :keymaps 'override (led "d o") (lambda () (interactive) (dired "~/brain/out/")))
-(general-define-key :keymaps 'override (led "d g") (lambda () (interactive) (dired "~/workspace/blog/")))
-(general-define-key :keymaps 'override (led "d m") (lambda () (interactive) (dired *music-dir*)))
-(general-define-key :keymaps 'override (led "f f") 'find-file)
-(general-define-key :keymaps 'override (led "f v") 'find-alternate-file)
-(general-define-key :keymaps 'override (led "f s") 'sudo-find-file)
-(general-define-key :keymaps 'override (led "ESC") #'execute-extended-command)
-(general-define-key :keymaps 'override (led "b k") 'kill-this-buffer)
-(general-define-key :keymaps 'eshell-mode-map (led "b k") (lambda () (interactive) (run-this-in-eshell "exit"))) ;; if we manually kill the buffer it doesnt save eshell command history
-(general-define-key :keymaps 'sly-repl-mode (led "b k") 'sly-quit-lisp) ;; if we manually kill the buffer it doesnt save eshell command history
-(general-define-key :keymaps 'override (led "b K") 'kill-buffer-and-window)
+(led-kbd "d w" (lambda () (interactive) (dired "~/dl/")))
+(led-kbd "d a" (lambda () (interactive) (dired "~/data/")))
+(led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
+(led-kbd "d b" (lambda () (interactive) (dired brain-path)))
+(led-kbd "d r" (lambda () (interactive) (dired (concat brain-path "/resources"))))
+(led-kbd "d h" (lambda () (interactive) (dired "~/")))
+(led-kbd "d p" (lambda () (interactive) (dired "~/p/")))
+(led-kbd "d d" 'dired)
+(led-kbd "d c" (lambda () (interactive) (dired default-directory)))
+(led-kbd "d o" (lambda () (interactive) (dired "~/brain/out/")))
+(led-kbd "d g" (lambda () (interactive) (dired "~/workspace/blog/")))
+(led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
+(led-kbd "f f" 'find-file)
+(led-kbd "f v" 'find-alternate-file)
+(led-kbd "f s" 'sudo-find-file)
+(led-kbd *leader-key* #'execute-extended-command)
+(led-kbd "b k" 'kill-this-buffer)
+(led-kbd "b k" (lambda () (interactive) (run-this-in-eshell "exit")) :keymaps 'eshell-mode-map) ;; if we manually kill the buffer it doesnt save eshell command history
+(led-kbd "b k" 'sly-quit-lisp :keymaps 'sly-repl-mode) ;; if we manually kill the buffer it doesnt save eshell command history
+(led-kbd "b K" 'kill-buffer-and-window)
 ;; (general-define-key :keymaps 'override (led "b a")
 ;;                     (lambda ()
 ;;                       (interactive)
 ;;                       (kill-all-buffers)
 ;;                       (switch-to-buffer "*scratch*")))
-(general-define-key :keymaps 'override (led "b s") 'switch-to-buffer)
-(general-define-key :keymaps 'override (led "b b") 'bookmark-jump)
-(general-define-key :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map) (led "x") 'eval-defun)
-(general-define-key :keymaps 'override (led "s g") 'deadgrep)
-(general-define-key :keymaps 'org-mode-map (led "x") 'org-ctrl-c-ctrl-c) ;;'space-x-with-latex-header-hack)
+(led-kbd "b s" 'switch-to-buffer)
+(led-kbd "b b" 'bookmark-jump)
+(led-kbd "x" 'eval-defun  :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map))
+(led-kbd "s g" 'deadgrep)
+(led-kbd "x" 'org-ctrl-c-ctrl-c :keymaps 'org-mode-map) ;;'space-x-with-latex-header-hack)
 ;; (general-define-key :keymaps 'TeX-mode-map (led "x") 'compile-current-document)
-(general-define-key :keymaps 'latex-mode-map (led "x") 'compile-current-document)
-(general-define-key :keymaps 'override (led "e") (lambda () (interactive) (find-file user-init-file)))
-(general-define-key :keymaps 'override (led "p") 'projectile-command-map)
+(led-kbd "x" 'compile-current-document :keymaps 'latex-mode-map)
+(led-kbd "e" (lambda () (interactive) (find-file user-init-file)))
+(led-kbd "p" 'projectile-command-map)
 ;; (general-define-key :keymaps 'TeX-mode-map (led "c" 'compile-sagetex)
-(general-define-key :keymaps 'org-mode-map (led "r k") 'org-insert-link)
+(led-kbd "r k" 'org-insert-link :keymaps 'org-mode-map)
 ;; (general-define-key :keymaps 'org-mode-map (led "z"
 ;;                     (lambda ()
 ;;                       (interactive)
 ;;                       (if (not xenops-mode)
 ;;                           (xenops-mode)
 ;;                         (xenops-render))))
-(general-define-key :keymaps 'org-mode-map (led "z") 'org-latex-preview)
-(general-define-key :keymaps 'override (led "a i") #'org-timestamp)
-(general-define-key :keymaps 'override (led "a I")
-                    (lambda ()
-                      (interactive)
-                      (org-insert-time-stamp (current-time) t))) ;; timestamp with full time
+(led-kbd "z" 'org-latex-preview :keymaps 'org-mode-map)
+(led-kbd "a i" #'org-timestamp)
+(led-kbd "a I"
+         (lambda ()
+           (interactive)
+           (org-insert-time-stamp (current-time) t))) ;; timestamp with full time
 ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ;; (general-define-key :keymaps 'override (led "r t" 'org-roam-buffer-toggle)
-(general-define-key :keymaps 'override (led "r f")
-                    (lambda ()
-                      (interactive)
-                      (org-roam-node-find
-                       nil
-                       nil
-                       (lambda (my-roam-node)
-                         (and my-roam-node
-                              (not (equal (org-roam-node-title my-roam-node) "")))))))
-(general-define-key :keymaps 'override (led "r i") 'org-roam-node-insert)
-(general-define-key :keymaps 'override (led "r c") 'org-id-get-create)
-(general-define-key :keymaps 'org-mode-map (led "r o") 'org-open-at-point)
-(general-define-key :keymaps 'org-mode-map (led "r a") 'org-attach)
-(general-define-key :keymaps 'org-mode-map (led "r A") 'org-attach-open)
-(general-define-key :keymaps 'org-mode-map (led "r l") 'org-roam-alias-add)
-(general-define-key :keymaps 'override (led "r n") (lambda () (interactive) (org-roam-capture nil "n")))
-(general-define-key :keymaps 'org-mode-map (led "r w") 'org-roam-tag-add)
-(general-define-key :keymaps 'org-mode-map (led "r W") 'org-roam-tag-remove)
-(general-define-key :keymaps 'override (led "r q")
-                    (lambda ()
-                      (interactive)
-                      (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
+(led-kbd "r f"
+         (lambda ()
+           (interactive)
+           (org-roam-node-find
+            nil
+            nil
+            (lambda (my-roam-node)
+              (and my-roam-node
+                   (not (equal (org-roam-node-title my-roam-node) "")))))))
+(led-kbd "r i" 'org-roam-node-insert)
+(led-kbd "r c" 'org-id-get-create)
+(led-kbd "r o" 'org-open-at-point :keymaps 'org-mode-map)
+(led-kbd "r a" 'org-attach :keymaps 'org-mode-map)
+(led-kbd "r A" 'org-attach-open :keymaps 'org-mode-map)
+(led-kbd "r l" 'org-roam-alias-add :keymaps 'org-mode-map)
+(led-kbd "r n" (lambda () (interactive) (org-roam-capture nil "n")))
+(led-kbd "r w" 'org-roam-tag-add :keymaps 'org-mode-map)
+(led-kbd "r W" 'org-roam-tag-remove :keymaps 'org-mode-map)
+(led-kbd "r q"
+         (lambda ()
+           (interactive)
+           (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
 ;; (general-define-key :keymaps 'override "SPC r h"
 ;;                     (lambda ()
 ;;                       (interactive)
 ;;                       (org-roam-capture nil "t")))
-(general-define-key :keymaps 'org-mode-map (led "r x") #'export-current-buffer)
-(general-define-key :keymaps 'org-mode-map (led "r X") #'export-all-public)
-(general-define-key :keymaps 'org-mode-map (led "r u") #'org-latex-preview-clear-cache)
-(general-define-key :keymaps 'org-mode-map (led "r e") 'org-babel-tangle)
-(general-define-key :keymaps 'org-mode-map (led "r E") 'org-babel-tangle-file)
+(led-kbd "r x" #'export-current-buffer :keymaps 'org-mode-map)
+(led-kbd "r X" #'export-all-public :keymaps 'org-mode-map)
+(led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
+(led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
+(led-kbd "r E" 'org-babel-tangle-file :keymaps 'org-mode-map)
 ;; (general-define-key :keymaps 'org-mode-map "SPC r d" 'org-deadline)
 ;; (general-define-key :keymaps 'org-mode-map "SPC r s" 'org-schedule)
-(general-define-key :keymaps 'override (led "r g")
-                    (lambda ()
-                      (interactive)
-                      (find-file (concat brain-path "/bib.bib"))))
-(general-define-key :keymaps 'org-mode-map (led "r v") 'org-babel-execute-buffer)
-(general-define-key :keymaps 'org-mode-map (led "r r") 'org-redisplay-inline-images)
-(general-define-key :keymaps 'org-mode-map (led "r P") 'org-set-property)
-(general-define-key :keymaps 'org-mode-map (led "r z") 'org-add-note)
-(general-define-key :keymaps 'org-mode-map (led "r p") 'org-latex-preview-auto-mode)
+(led-kbd "r g"
+         (lambda ()
+           (interactive)
+           (find-file (concat brain-path "/bib.bib"))))
+(led-kbd "r v" 'org-babel-execute-buffer :keymaps 'org-mode-map)
+(led-kbd "r r" 'org-redisplay-inline-images :keymaps 'org-mode-map)
+(led-kbd "r P" 'org-set-property :keymaps 'org-mode-map)
+(led-kbd "r z" 'org-add-note :keymaps 'org-mode-map)
+(led-kbd "r p" 'org-latex-preview-auto-mode :keymaps 'org-mode-map)
 ;; (general-define-key :keymaps 'override "/" 'swiper)
-(general-define-key :keymaps 'org-mode-map (led "c") "C-c C-c")
-(general-define-key :keymaps 'override (led "a N") #'today-entry-text-simple)
+(led-kbd "c" "C-c C-c" :keymaps 'org-mode-map)
+(led-kbd "a N" #'today-entry-text-simple)
 
 ;; keys to search for files
-(general-define-key :keymaps 'override (led "f b")
-                    (lambda () (interactive) (search-open-file brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
-(general-define-key :keymaps 'override (led "F b")
-                    (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
-(general-define-key :keymaps 'override (led "f h") (lambda () (interactive) (search-open-file "./" ".*")))
-(general-define-key :keymaps 'override (led "f m")
-                    (lambda () (interactive)
-                      (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
-                                                                                      (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
-                                                                                    (directory-files-recursively *music-dir* "")))))
+(led-kbd "f b"
+         (lambda () (interactive) (search-open-file brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+(led-kbd "F b"
+         (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+(led-kbd "f h" (lambda () (interactive) (search-open-file "./" ".*")))
+(led-kbd "f m"
+         (lambda () (interactive)
+           (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
+                                                                           (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
+                                                                         (directory-files-recursively *music-dir* "")))))
                         (browse-url (expand-file-name my-file)))))
 
-(general-define-key :keymaps 'override (led "f n")
-                    (lambda () (interactive) (find-file "~/workspace/nixos/configuration.nix")))
+(led-kbd "f n"
+         (lambda () (interactive) (find-file "~/workspace/nixos/configuration.nix")))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
@@ -699,36 +718,36 @@ space rather than before."
 
 ;; music keys
 ;; play artist
-(general-define-key :keymaps 'override (led "m a")
-                    (lambda ()
-                      (interactive)
-                      (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
-                        (let ((chosen-artist (completing-read "pick artist: " artist-names)))
-                          (dired (format "%s/%s" *music-dir* chosen-artist))))))
+(led-kbd "m a"
+         (lambda ()
+           (interactive)
+           (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+             (let ((chosen-artist (completing-read "pick artist: " artist-names)))
+               (dired (format "%s/%s" *music-dir* chosen-artist))))))
 ;; play album by artist name + album name
-(general-define-key :keymaps 'override (led "m b")
-                    (lambda ()
-                      (interactive)
-                      (let ((album-titles
-                             (apply
-                              #'cl-concatenate
-                              (list*
-                               'list
-                               (mapcar
-                                (lambda (dir)
-                                  (mapcar (lambda (album-title)
-                                            (concat (file-name-nondirectory dir) "/" album-title))
-                                          (directory-files dir)))
-                                (cl-remove-if-not
-                                 #'file-directory-p
-                                 (directory-files *music-dir* t "^[^.].*$")))))))
-                        (let ((chosen-album (completing-read "pick album: " album-titles)))
-                          (message (concat *music-dir* chosen-album))
-                          (call-process "play_dir_as_album.sh" nil 0 nil
-                                        (concat *music-dir* chosen-album))
-                          (message "playing album %s" chosen-album)))))
+(led-kbd "m b"
+         (lambda ()
+           (interactive)
+           (let ((album-titles
+                  (apply
+                   #'cl-concatenate
+                   (list*
+                    'list
+                    (mapcar
+                     (lambda (dir)
+                       (mapcar (lambda (album-title)
+                                 (concat (file-name-nondirectory dir) "/" album-title))
+                               (directory-files dir)))
+                     (cl-remove-if-not
+                      #'file-directory-p
+                      (directory-files *music-dir* t "^[^.].*$")))))))
+             (let ((chosen-album (completing-read "pick album: " album-titles)))
+               (message (concat *music-dir* chosen-album))
+               (call-process "play_dir_as_album.sh" nil 0 nil
+                             (concat *music-dir* chosen-album))
+               (message "playing album %s" chosen-album)))))
 ;; play album
-(general-define-key :keymaps 'override (led "m B")
+(led-kbd "m B"
                     (lambda ()
                       (interactive)
                       (let ((album-titles
@@ -747,12 +766,12 @@ space rather than before."
                                         (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
                           (message "playing album %s" chosen-album)))))
 ;; open music table file
-(general-define-key :keymaps 'override (led "m f")
-                    (lambda ()
-                      (interactive)
-                      (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
+(led-kbd "m f"
+         (lambda ()
+           (interactive)
+           (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
 ;; open artist's last.fm page
-(general-define-key :keymaps 'override (led "m l")
+(led-kbd "m l"
                     (lambda ()
                       (interactive)
                       (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
@@ -775,49 +794,50 @@ space rather than before."
 
 ;; general keys
 ;; (general-define-key :states 'normal :keymaps 'override "SPC m" 'man)
-(general-define-key :keymaps 'override (led "'") (general-simulate-key "C-c '"))
-(general-define-key :keymaps 'override (led "w m")
-                    (lambda () (interactive)
-                      (when window-system (set-frame-size (selected-frame) 180 50))))
-(general-define-key :keymaps 'override (led "s d") 'switch-to-dark-theme)
-(general-define-key :keymaps 'override (led "s l") 'switch-to-light-theme)
-(general-define-key :keymaps 'override (led "s e") 'eshell)
+(led-kbd "'" (general-simulate-key "C-c '"))
+(led-kbd "w m"
+         (lambda () (interactive)
+           (when window-system (set-frame-size (selected-frame) 180 50))))
+(led-kbd "s d" 'switch-to-dark-theme)
+(led-kbd "s l" 'switch-to-light-theme)
+(led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
-(general-define-key :keymaps 'override (led "s i")
+(led-kbd "s i"
                     (lambda ()
                       (interactive)
                       (let ((current-prefix-arg '-)) (call-interactively 'sly))))
-(general-define-key :keymaps 'override (led "s r") #'eat);;'vterm)
-(general-define-key :keymaps 'override (led "u") (general-simulate-key "C-u"))
-(general-define-key :keymaps 'override (led "o l") 'avy-goto-line)
-(general-define-key :keymaps 'override (led "o c") 'avy-goto-char)
-(general-define-key :keymaps 'override (led "s s") 'spotify-lyrics)
-(general-define-key :keymaps 'override (led "s w") 'open-spotify-lyrics-file)
-(general-define-key :keymaps 'override (led "s t") #'consult-theme)
-(general-define-key :keymaps 'override (led "s k") 'open-kitty-here)
-(general-define-key :keymaps 'override (led "s q") 'calc)
-(general-define-key :keymaps 'override (led "s u") 'copy-file-path)
+(led-kbd "s r" #'eat);;'vterm)
+(led-kbd "u" (general-simulate-key "C-u"))
+(led-kbd "o l" 'avy-goto-line)
+(led-kbd "o c" 'avy-goto-char)
+(led-kbd "s s" 'spotify-lyrics)
+(led-kbd "s w" 'open-spotify-lyrics-file)
+(led-kbd "s t" #'consult-theme)
+(led-kbd "s k" 'open-kitty-here)
+(led-kbd "s q" 'calc)
+(led-kbd "s u" 'copy-file-path)
 
 ;; agenda keys
-(general-define-key :keymaps 'override (led "a a") (lambda () (interactive) (org-agenda nil "n")))
-(general-define-key :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
-(general-define-key :keymaps 'override (led "a s") 'org-schedule)
-(general-define-key :keymaps 'override (led "a d") 'org-deadline)
-(general-define-key :keymaps 'org-mode-map (led "a j") 'org-clock-in)
-(general-define-key :keymaps 'override (led "a J") 'org-clock-in-last)
-(general-define-key :keymaps 'override (led "a k") 'org-clock-out)
-(general-define-key :keymaps 'override (led "a b") 'org-clock-cancel)
-(general-define-key :keymaps 'org-mode-map (led "a p") 'org-clock-display)
-(general-define-key :keymaps 'override (led "a t") (lambda () (interactive) (org-roam-capture nil "t")))
-(general-define-key :keymaps 'org-mode-map (led "a c") #'org-todo)
-(general-define-key :keymaps 'org-agenda-mode-map (led "a c") #'org-agenda-todo)
-(general-define-key :keymaps 'override (led "a n") 'today-entry)
-(general-define-key :keymaps 'override (led "a o") 'open-todays-file)
-(general-define-key :keymaps 'override (led "s n") 'yas-new-snippet)
-(general-define-key :keymaps 'override (led "s v") 'yas-visit-snippet-file)
-(general-define-key :keymaps 'override (led "s h") 'yas-insert-snippet)
-(general-define-key :keymaps 'override (led "s a") 'dictionary-search)
-(general-define-key :keymaps 'org-mode-map (led "r s") 'org-cite-insert)
+(led-kbd "a a" (lambda () (interactive) (org-agenda nil "n")))
+(general-define-key :states 'normal :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
+(led-kbd "a s" 'org-schedule)
+(led-kbd "a d" 'org-deadline)
+(led-kbd "a j" 'org-clock-in :keymaps 'org-mode-map)
+(led-kbd "a J" 'org-clock-in-last)
+(led-kbd "a k" 'org-clock-out)
+(led-kbd "a b" 'org-clock-cancel)
+(led-kbd "a p" 'org-clock-display :keymaps 'org-mode-map)
+(led-kbd "a t" (lambda () (interactive) (org-roam-capture nil "t")))
+(led-kbd "a c" #'org-todo :keymaps 'org-mode-map)
+(led-kbd "" (make-sparse-keymap) :keymaps 'org-agenda-mode-map) ;; needed for the next one
+(led-kbd "a c" #'org-agenda-todo :keymaps 'org-agenda-mode-map)
+(led-kbd "a n" 'today-entry)
+(led-kbd "a o" 'open-todays-file)
+(led-kbd "s n" 'yas-new-snippet)
+(led-kbd "s v" 'yas-visit-snippet-file)
+(led-kbd "s h" 'yas-insert-snippet)
+(led-kbd "s a" 'dictionary-search)
+(led-kbd "r s" 'org-cite-insert :keymaps 'org-mode-map)
 ;; key to clear the screen in eshell
 (defun run-this-in-eshell (cmd)
   "Runs the command 'cmd' in eshell."
@@ -832,68 +852,69 @@ space rather than before."
     (yank)))
 (add-hook 'eshell-mode-hook
           (lambda ()
-            (general-define-key :keymaps 'local (led "c") (lambda () (interactive) (run-this-in-eshell "clear 1")))))
-(general-define-key :keymaps 'eshell-mode-map (led "x") 'eshell-interrupt-process)
-(general-define-key :keymaps 'lisp-mode-map (led "x") 'sly-compile-defun)
-(general-define-key :keymaps 'lisp-mode-map (led "c") 'sly-eval-buffer)
-(general-define-key :keymaps 'lisp-mode-map (led "z")
-                    (lambda ()
-                      (interactive)
-                      (sly-end-of-defun)
-                      (call-interactively 'sly-eval-last-expression-in-repl)))
-(general-define-key :keymaps 'override (led "s e") 'eshell)
-(general-define-key :keymaps 'override (led "s m") 'man)
+            (led-kbd "c" (lambda () (interactive) (run-this-in-eshell "clear 1")) :keymaps 'local)))
+(led-kbd "x" 'eshell-interrupt-process :keymaps 'eshell-mode-map)
+(led-kbd "x" 'sly-compile-defun :keymaps 'lisp-mode-map)
+(led-kbd "c" 'sly-eval-buffer :keymaps 'lisp-mode-map)
+(led-kbd "z"
+         (lambda ()
+           (interactive)
+           (sly-end-of-defun)
+           (call-interactively 'sly-eval-last-expression-in-repl))
+         :keymaps 'lisp-mode-map)
+(led-kbd "s e" 'eshell)
+(led-kbd "s m" 'man)
 
 ;; language-specific keybindings
-(general-define-key :keymaps 'lisp-mode-map (led "l i") 'sly-repl-inspect)
-(general-define-key :keymaps 'sly-repl-mode-map (led "l i") 'sly-repl-inspect)
-(general-define-key :keymaps 'sly-repl-mode-map (led "l s") 'sly-inspect-presentation-at-point)
-(general-define-key :keymaps 'emacs-lisp-mode-map (led "c") 'eval-buffer)
+(led-kbd "l i" 'sly-repl-inspect :keymaps 'lisp-mode-map)
+(led-kbd "l i" 'sly-repl-inspect :keymaps 'sly-repl-mode-map)
+(led-kbd "l s" 'sly-inspect-presentation-at-point :keymaps 'sly-repl-mode-map)
+(led-kbd "c" 'eval-buffer :keymaps 'emacs-lisp-mode-map)
 
 ;; common lisp/sly
-(general-define-key :keymaps '(lisp-mode-map sly-mrepl-mode-map) (led "l d") 'sly-documentation-lookup)
+(led-kbd "l d" 'sly-documentation-lookup :keymaps '(lisp-mode-map sly-mrepl-mode-map))
 
 ;; julia
-(general-define-key :keymaps 'override (led "s j") 'julia-snail)
+(led-kbd "s j" 'julia-snail)
 
 ;; python
-(general-define-key :keymaps 'override (led "s p") 'run-python)
-(general-define-key :keymaps 'python-ts-mode-map (led "x") 'python-shell-send-defun)
-(general-define-key :keymaps 'python-ts-mode-map (led "l x") 'python-shell-send-defun)
-(general-define-key :keymaps 'python-ts-mode-map (led "l t") 'python-shell-send-statement)
-(general-define-key :keymaps 'python-ts-mode-map (led "c") 'python-shell-send-buffer)
-(general-define-key :keymaps 'python-ts-mode-map (led "l b") 'python-shell-send-buffer)
+(led-kbd "s p" 'run-python)
+(led-kbd "x" 'python-shell-send-defun :keymaps 'python-ts-mode-map)
+(led-kbd "l x" 'python-shell-send-defun :keymaps 'python-ts-mode-map)
+(led-kbd "l t" 'python-shell-send-statement :keymaps 'python-ts-mode-map)
+(led-kbd "c" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
+(led-kbd "l b" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
 
 ;;sagemath
-(general-define-key :keymaps 'sage-shell-mode-map (led "b k") 'comint-quit-subjob)
+(led-kbd "b k" 'comint-quit-subjob :keymaps 'sage-shell-mode-map)
 
 ;; elisp
-(general-define-key :keymaps 'emacs-lisp-mode-map (led "c") 'eval-buffer)
+(led-kbd "c" 'eval-buffer :keymaps 'emacs-lisp-mode-map)
 
 ;; other keybinds
-(general-define-key :keymaps 'override "C-S-k" 'kill-whole-line)
+(general-define-key :states 'normal :keymaps 'override "C-S-k" 'kill-whole-line)
 ;; (general-define-key :keymaps 'override "M-RET"
 ;;                     (lambda ()
 ;;                       (interactive)
 ;;                       (end-of-line)
 ;;                       (call-interactively 'newline))) ;; call newline interactively for proper indentation in code
-(general-define-key :keymaps 'override (led "w v") #'split-window-right)
-(general-define-key :keymaps 'override (led "w s") #'split-window-below)
-(general-define-key :keymaps 'override (led "w o") #'other-window)
-(general-define-key :keymaps 'override (led "w c") #'delete-window)
-(general-define-key :keymaps 'override (led "w t") #'recenter)
-(general-define-key :keymaps 'override (led "w f") #'windmove-right)
-(general-define-key :keymaps 'override (led "w b") #'windmove-left)
-(general-define-key :keymaps 'override (led "w n") #'windmove-down)
-(general-define-key :keymaps 'override (led "w p") #'windmove-up)
-(general-define-key :keymaps '(org-mode-map TeX-mode-map latex-mode-map) (led "v") #'open-current-document-this-window)
-(general-define-key :keymaps 'override
+(led-kbd "w v" #'split-window-right)
+(led-kbd "w s" #'split-window-below)
+(led-kbd "w o" #'other-window)
+(led-kbd "w c" #'delete-window)
+(led-kbd "w t" #'recenter)
+(led-kbd "w f" #'windmove-right)
+(led-kbd "w b" #'windmove-left)
+(led-kbd "w n" #'windmove-down)
+(led-kbd "w p" #'windmove-up)
+(led-kbd "v" #'open-current-document-this-window :keymaps '(org-mode-mapTeX-mode-map latex-mode-map))
+(general-define-key :states 'normal :keymaps 'override
                     "M-o" ;; new line without breaking current line
                     (lambda ()
                       (interactive)
                       (end-of-line)
                       (newline-and-indent)))
-(general-define-key :keymaps 'override
+(general-define-key :states 'normal :keymaps 'override
                     "M-O" ;;"M-S-o" ;; new line above current line without breaking it
                     (lambda ()
                       (interactive)
@@ -902,7 +923,7 @@ space rather than before."
                       (forward-line -1)
                       (indent-according-to-mode)))
 ;; (global-set-key (kbd "M-S-o"))
-(general-define-key :keymaps 'override "M-z" #'zap-up-to-char)
+(general-define-key :states 'normal :keymaps 'override "M-z" #'zap-up-to-char)
 
 ;; i hate backspace and return
 (define-key input-decode-map [?\C-m] [C-m]) ;; so that C-m wouldnt be attached to <return> anymore
@@ -920,7 +941,7 @@ space rather than before."
 ;; C-j in repl's to emulate RETURN
 (define-key comint-mode-map (kbd "C-j") #'comint-send-input)
 ;; SPC g to cancel like C-g
-(define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
+;; (define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
 
 ;; evaluate and insert without truncating output
 (general-define-key
@@ -930,30 +951,30 @@ space rather than before."
    (let ((current-prefix-arg (list 0)))
      (call-interactively 'eros-eval-last-sexp))))
 
-(keymap-global-set (led "t") #'treemacs)
+(led-kbd "t" #'treemacs)
 ;; (keymap-global-set "C-a" #'back-to-indentation)
 ;; (keymap-global-set "M-m" #'beginning-of-line)
 
 ;; multiple cursors keys
-(keymap-global-set (led ", e") #'mc/edit-lines)
-(keymap-global-set (led ", n") #'mc/mark-next-like-this)
-(keymap-global-set (led ", p") #'mc/mark-previous-like-this)
+;; (keymap-global-set (led ", e") #'mc/edit-lines)
+;; (keymap-global-set (led ", n") #'mc/mark-next-like-this)
+;; (keymap-global-set (led ", p") #'mc/mark-previous-like-this)
 
 (define-key org-mode-map (kbd "M-N") #'org-metadown)
 (define-key org-mode-map (kbd "M-P") #'org-metaup)
 
 ;; remap the help map, use C-h for something else
-(keymap-global-set (led "h") help-map)
+(led-kbd "h" help-map)
 
 (keymap-global-set "C-h" #'indent-according-to-mode)
 
 ;; perspective keys
-(general-define-key :keymaps 'override (led "s 1") (lambda () (interactive) (persp-switch "main")))
-(general-define-key :keymaps 'override (led "s 2") (lambda () (interactive) (persp-switch "college")))
-(general-define-key :keymaps 'override (led "s 3") (lambda () (interactive) (persp-switch "agenda")))
+(led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
+(led-kbd "s 2" (lambda () (interactive) (persp-switch "college")))
+(led-kbd "s 3" (lambda () (interactive) (persp-switch "agenda")))
 
-(general-define-key :keymaps 'override (led "s z") #'zeal-at-point)
-(general-define-key :keymaps 'override (led "s f") #'devdocs-lookup)
+(led-kbd "s z" #'zeal-at-point)
+(led-kbd "s f" #'devdocs-lookup)
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -1897,7 +1918,7 @@ space rather than before."
   :config
   (consult-customize consult--source-buffer :hidden t :default nil)
   (add-to-list 'consult-buffer-sources persp-consult-source)
-  (general-define-key :keymaps 'override (led "s c") 'persp-switch)
+  (led-kbd "s c" 'persp-switch)
   ;; (add-hook 'kill-emacs-hook #'persp-state-save)
   (setq persp-state-default-file (concat brain-path "/emacs_persp")))
 ;; (use-package dired-rsync)
@@ -2374,10 +2395,11 @@ space rather than before."
               (persp-switch "main"))
             ;; (switch-to-light-theme)
             ;; (switch-to-theme 'minimal-light)
-            ;; (switch-to-theme 'darktooth-darker)
+            (switch-to-theme 'darktooth-darker)
             ;; (switch-to-theme 'acme)
-            (switch-to-theme 'doom-gruvbox-light)
-            (switch-to-theme 'tango)
+            ;;(switch-to-theme 'doom-gruvbox-light)
+            ;;(switch-to-theme 'tango)
+            ;; (set-face-background hl-line-face "PeachPuff3")
             ;; (switch-to-theme 'doom-sourcerer)
             (add-hook 'kill-emacs-hook #'persp-state-save)
             ;;(switch-to-darktooth-theme)
@@ -3682,3 +3704,13 @@ INFO is a plist containing export properties."
 ;; (add-to-list 'mc/cmds-to-run-once 'multiple-cursors-mode)
 ;;(global-set-key (kbd "C-S-SPC") 'mc/toggle-cursor-at-point)
 ;;(global-set-key (kbd "<C-S-return>") 'multiple-cursors-mode)
+
+;; from https://emacs.stackexchange.com/questions/58073/how-to-find-inheritance-of-modes
+(defun derived-modes (mode)
+  "Return a list of the ancestor modes that MODE is derived from."
+  (let ((modes   ())
+        (parent  nil))
+    (while (setq parent (get mode 'derived-mode-parent))
+      (push parent modes)
+      (setq mode parent))
+    (setq modes  (nreverse modes))))
