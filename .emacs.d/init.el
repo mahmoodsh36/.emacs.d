@@ -115,7 +115,7 @@
 (set-face-background 'glyphless-char "red")
 ;; change newline character
 ;;(setf (elt (car (cdr (cdr (assoc 'newline-mark whitespace-display-mappings)))) 0) ?⤸)
-;; (global-whitespace-mode)
+(global-whitespace-mode)
 ;; relative line numbers
 ;; (add-hook 'prog-mode-hook
 ;;           (lambda ()
@@ -165,17 +165,25 @@
 ;; (defun mykbd ()
 ;;   "to be written"
 ;;     )
+;; backup/alternative for leader key in cases where it doesnt work like evil-state=emacs
 (defun led-kbd (binding function &rest args)
   "define a keybinding prefixed by `*leader-key*'"
   (interactive)
   (let ((mykeymaps (plist-get args :keymaps)))
     (if mykeymaps
-        (general-define-key :states '(normal visual motion operator)
-                            :keymaps mykeymaps
-                            (led binding) function)
-      (general-define-key :states '(normal visual motion operator)
-                          :keymaps 'override
-                          (led binding) function))))
+        (progn
+          (general-define-key :states '(normal visual motion operator)
+                              :keymaps mykeymaps
+                              (led binding) function)
+          (general-define-key :states '(normal visual motion operator emacs)
+                              :keymaps mykeymaps
+                              (concat "C-' " binding) function))
+      (progn (general-define-key :states '(normal visual motion operator)
+                                 :keymaps 'override
+                                 (led binding) function)
+             (general-define-key :states '(insert normal motion visual emacs)
+                                 :keymaps 'override
+                                 (concat "C-' " binding) function)))))
 (defun my-kbd (binding function &rest args)
   )
 
@@ -293,6 +301,7 @@
     (define-key evil-normal-state-map "r" 'undo-fu-only-redo)
     ;; make ESC cancel all
     (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
+    ;; (define-key key-translation-map (kbd "<escape>") (kbd "C-g")))
   ;;dont copy the overwritten text when overwriting text by pasting
   ;;(setq-default evil-kill-on-visual-paste nil))
 
@@ -390,10 +399,12 @@
   ;; disable evil mode in deadgrep, they dont work well together
   (evil-set-initial-state 'deadgrep-mode 'emacs)
   (evil-set-initial-state 'calc-mode 'emacs)
+  (evil-set-initial-state 'eat-mode 'emacs)
   ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
   (evil-set-initial-state 'sly-db-mode 'emacs)
   ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
   (evil-set-initial-state 'vterm-mode 'emacs)
+  (evil-set-initial-state 'org-agenda-mode 'emacs)
 
   (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
   (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
@@ -440,8 +451,8 @@
 
   (general-evil-setup)
 
- (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map) "s" 'save-buffer) ;; restore it, not sure why evil disables it
- (general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
+  (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map) "s" 'save-buffer)
+  (general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
   ;; rebind s to sort in dired
 
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
@@ -457,10 +468,10 @@
   ;; some sly keys
   ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
 
-  (general-define-key :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
-  (general-define-key :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
-  (general-define-key :keymaps 'org-mode-map "]o" 'org-next-block)
-  (general-define-key :keymaps 'org-mode-map "[o" 'org-previous-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
+  (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
 
 
   ;; general keys for programming
@@ -628,8 +639,7 @@ space rather than before."
 (led-kbd "x" 'eval-defun  :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map))
 (led-kbd "s g" 'deadgrep)
 (led-kbd "x" 'org-ctrl-c-ctrl-c :keymaps 'org-mode-map) ;;'space-x-with-latex-header-hack)
-;; (general-define-key :keymaps 'TeX-mode-map (led "x") 'compile-current-document)
-(led-kbd "x" 'compile-current-document :keymaps 'latex-mode-map)
+(led-kbd "x" 'compile-current-document :keymaps '(TeX-mode-map tex-mode-map latex-mode-map) )
 (led-kbd "e" (lambda () (interactive) (find-file user-init-file)))
 (led-kbd "p" 'projectile-command-map)
 ;; (general-define-key :keymaps 'TeX-mode-map (led "c" 'compile-sagetex)
@@ -705,7 +715,7 @@ space rather than before."
            (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
                                                                            (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
                                                                          (directory-files-recursively *music-dir* "")))))
-                        (browse-url (expand-file-name my-file)))))
+             (browse-url (expand-file-name my-file)))))
 
 (led-kbd "f n"
          (lambda () (interactive) (find-file "~/workspace/nixos/configuration.nix")))
@@ -898,16 +908,16 @@ space rather than before."
 ;;                       (interactive)
 ;;                       (end-of-line)
 ;;                       (call-interactively 'newline))) ;; call newline interactively for proper indentation in code
-(led-kbd "w v" #'split-window-right)
-(led-kbd "w s" #'split-window-below)
-(led-kbd "w o" #'other-window)
-(led-kbd "w c" #'delete-window)
-(led-kbd "w t" #'recenter)
-(led-kbd "w f" #'windmove-right)
-(led-kbd "w b" #'windmove-left)
-(led-kbd "w n" #'windmove-down)
-(led-kbd "w p" #'windmove-up)
-(led-kbd "v" #'open-current-document-this-window :keymaps '(org-mode-mapTeX-mode-map latex-mode-map))
+;; (led-kbd "w v" #'split-window-right)
+;; (led-kbd "w s" #'split-window-below)
+;; (led-kbd "w o" #'other-window)
+;; (led-kbd "w c" #'delete-window)
+;; (led-kbd "w t" #'recenter)
+;; (led-kbd "w f" #'windmove-right)
+;; (led-kbd "w b" #'windmove-left)
+;; (led-kbd "w n" #'windmove-down)
+;; (led-kbd "w p" #'windmove-up)
+(led-kbd "v" #'open-current-document-this-window :keymaps '(org-mode-map TeX-mode-map latex-mode-map))
 (general-define-key :states 'normal :keymaps 'override
                     "M-o" ;; new line without breaking current line
                     (lambda ()
@@ -935,13 +945,12 @@ space rather than before."
 (keymap-global-set "M-D" #'backward-kill-word)
 (keymap-global-set "C-M-S-k" #'backward-kill-sexp)
 (keymap-global-set "C-c c" #'recenter)
-;; (keymap-global-set "C-'" #'save-buffer)
-(general-define-key :keymaps 'override "C-'" #'save-buffer)
+;; (general-define-key :keymaps 'override "C-'" #'save-buffer)
 
 ;; C-j in repl's to emulate RETURN
 (define-key comint-mode-map (kbd "C-j") #'comint-send-input)
 ;; SPC g to cancel like C-g
-;; (define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
+; (define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
 
 ;; evaluate and insert without truncating output
 (general-define-key
@@ -972,9 +981,14 @@ space rather than before."
 (led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
 (led-kbd "s 2" (lambda () (interactive) (persp-switch "college")))
 (led-kbd "s 3" (lambda () (interactive) (persp-switch "agenda")))
+(led-kbd "s c" #'persp-switch)
 
 (led-kbd "s z" #'zeal-at-point)
 (led-kbd "s f" #'devdocs-lookup)
+
+;; bind esc to c-g to make it cancel stuff
+;; (general-define-key :states 'override :keymaps 'override "ESC" (general-simulate-key "C-g"))
+;; (general-define-key :states 'override :keymaps 'override "<escape>" (general-simulate-key "C-g"))
 
 (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
   (interactive "P")
@@ -1051,8 +1065,12 @@ space rather than before."
   (progn ;; corfu autocompletion
     (use-package corfu
       ;; :quelpa (:files (:defaults "extensions/*"))
-      :init
-      (global-corfu-mode)
+      ;; :init
+      ;; (global-corfu-mode)
+      :hook ((prog-mode . corfu-mode)
+             (latex-mode . corfu-mode)
+             (shell-mode . corfu-mode)
+             (eshell-mode . corfu-mode))
       :custom
       (corfu-cycle t)
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
@@ -1145,11 +1163,11 @@ space rather than before."
 (use-package anti-zenburn-theme)
 (use-package zenburn-theme)
 (use-package poet-theme)
-;; (use-package gruvbox-theme)
+(use-package gruvbox-theme)
 (use-package doom-themes)
 (use-package inkpot-theme)
-(use-package minimal-theme
-  :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
+;; (use-package minimal-theme
+;;   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 (use-package soothe-theme)
 (use-package stimmung-themes)
 (use-package acme-theme)
@@ -1323,9 +1341,9 @@ space rather than before."
   (lsp-treemacs-sync-mode 1))
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :config
+;;   (exec-path-from-shell-initialize))
 
 ;; display available keybindings
 (use-package which-key
@@ -1395,6 +1413,8 @@ space rather than before."
   (defconst *org-static-dir* (file-truename "~/workspace/blog/static/"))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html"))
+
+(use-package dap-mode)
 
 ;; best latex preview functionality
 ;; actually i dont use this anymore since org-mode devs implemented a better method
@@ -1482,7 +1502,6 @@ space rather than before."
 ;;         org-appear-autosubmarkers t)
 ;;   (add-hook 'org-mode-hook 'org-appear-mode))
 
-;; (use-package dap-mode)
 ;; (use-package dape)
 
 ;; (use-package elfeed-tube
@@ -1652,20 +1671,20 @@ space rather than before."
 ;;   :hook
 ;;   (org-mode . valign-mode))
 
-(use-package hydra
-  :config
-  (defhydra hydra-agenda (global-map "C-c a")
-    "hydra-agenda"
-    ("a" org-agenda-list "list")
-    ("n" today-entry "entry for today")
-    ("o" open-todays-file "open today's file")
-    ("d" org-deadline "deadline")
-    ("s" org-schedule "schedule"))
-  (defhydra hydra-roam (global-map "C-c r")
-    "hydra-roam"
-    ("f" org-roam-node-find "find roam node")
-    ("n" (lambda () (interactive) (org-roam-capture nil "n")) "create roam node")
-    ))
+;; (use-package hydra
+;;   :config
+;;   (defhydra hydra-agenda (global-map "C-c a")
+;;     "hydra-agenda"
+;;     ("a" org-agenda-list "list")
+;;     ("n" today-entry "entry for today")
+;;     ("o" open-todays-file "open today's file")
+;;     ("d" org-deadline "deadline")
+;;     ("s" org-schedule "schedule"))
+;;   (defhydra hydra-roam (global-map "C-c r")
+;;     "hydra-roam"
+;;     ("f" org-roam-node-find "find roam node")
+;;     ("n" (lambda () (interactive) (org-roam-capture nil "n")) "create roam node")
+;;     ))
 
 (use-package vimrc-mode)
 
@@ -1880,7 +1899,7 @@ space rather than before."
 ;; virtual env integration for python
 (use-package pyvenv)
 
-(use-package multiple-cursors)
+;; (use-package multiple-cursors)
 ;;  :config
 ;;  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 ;;  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -1916,16 +1935,18 @@ space rather than before."
   :init
   (persp-mode)
   :config
+  ;; make consult buffer switcher see only current perspective's buffers
   (consult-customize consult--source-buffer :hidden t :default nil)
   (add-to-list 'consult-buffer-sources persp-consult-source)
-  (led-kbd "s c" 'persp-switch)
   ;; (add-hook 'kill-emacs-hook #'persp-state-save)
-  (setq persp-state-default-file (concat brain-path "/emacs_persp")))
+  (setq persp-state-default-file (concat brain-path "/emacs_persp"))
+  (add-hook 'kill-emacs-hook #'persp-state-save))
 ;; (use-package dired-rsync)
 
 (use-package org-src-context
-  :straight
-  (org-src-context :type git :host github :repo "karthink/org-src-context"))
+  :straight (org-src-context :type git :host github :repo "karthink/org-src-context")
+  :config
+  (add-hook 'org-mode-hook #'org-src-context-mode))
 
 ;; (use-package wolfram)
 ;; (use-package wolfram-mode)
@@ -1942,10 +1963,14 @@ space rather than before."
 ;; emacs-ipython-notebook
 (use-package ein)
 
+;; zeal docs
 (use-package zeal-at-point)
 
 ;; devdocs seems to have more docs than zeal?
 (use-package devdocs)
+  ;; :config
+  ;; (add-hook 'python-mode-hook
+  ;;         (lambda () (setq-local devdocs-current-docs '("python~3.9")))))
 
 ;; (use-package ob-julia-vterm
 ;;   :config
@@ -2106,9 +2131,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-(setq org-latex-preview-persist nil)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-latex-preview-persist nil)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -2283,9 +2308,9 @@ space rather than before."
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; decrease image size in latex exports
-;; (setq org-latex-image-default-scale "0.6")
+(setq org-latex-image-default-scale "1.0")
 ;; disable images from being scaled/their dimensions being changed
-;; (setq org-latex-image-default-width "")
+(setq org-latex-image-default-width "1.0")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -2395,13 +2420,16 @@ space rather than before."
               (persp-switch "main"))
             ;; (switch-to-light-theme)
             ;; (switch-to-theme 'minimal-light)
-            (switch-to-theme 'darktooth-darker)
+            ;; (switch-to-theme 'darktooth-darker)
+            ;; (switch-to-theme 'ample-flat)
+            ;; (switch-to-theme 'ample-light)
+            ;; (switch-to-theme 'ample)
             ;; (switch-to-theme 'acme)
-            ;;(switch-to-theme 'doom-gruvbox-light)
-            ;;(switch-to-theme 'tango)
+            ;; (switch-to-theme 'doom-gruvbox-light)
+            (switch-to-theme 'gruvbox-light-soft)
+            ;; (switch-to-tango-theme)
             ;; (set-face-background hl-line-face "PeachPuff3")
             ;; (switch-to-theme 'doom-sourcerer)
-            (add-hook 'kill-emacs-hook #'persp-state-save)
             ;;(switch-to-darktooth-theme)
             ))
 ;; disable multiplication precedence over division in calc
@@ -2442,6 +2470,13 @@ space rather than before."
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+  (set-themed-pdf 1))
+
+(defun switch-to-tango-theme ()
+  "switch to dark theme"
+  (interactive)
+  (switch-to-theme 'tango)
+  (set-face-background hl-line-face "PeachPuff3")
   (set-themed-pdf 1))
 
 (defun switch-to-gruvbox-light-theme ()
@@ -2648,7 +2683,8 @@ space rather than before."
 ;; also number equations
 (setq org-latex-preview-numbered t)
 ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-;; (setq pdf-latex-compiler "lualatex")
+;; (setq org-latex-compiler "lualatex")
+;; (setq org-latex-compiler "pdflatex")
 ;; ;; make dvisvgm preview use lualatex
 ;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
 ;;   (plist-put (cdr pos) :programs '("lualatex" "dvisvgm")))
@@ -3272,8 +3308,9 @@ INFO is a plist containing export properties."
   (let ((org-startup-with-latex-preview nil)
         (file (org-roam-node-file node)))
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      ;; (org-to-pdf)
-      (org-hugo-export-to-md))))
+      (org-to-pdf)
+      ;; (org-hugo-export-to-md)
+      )))
 
 (defun export-current-buffer ()
   "gets the node associated with the current buffer, exports it"
@@ -3344,21 +3381,19 @@ INFO is a plist containing export properties."
   "get file creation timestamp, only works on ext4 (and other fs's that support 'crtime'),"
   (string-to-number
    (shell-command-to-string (format "stat --format='%%W' '%s'" filepath))))
-(defun file-creation-time-using-git (gitdir filepath)
+(defun file-creation-time-using-git (filepath)
   "get the most distant timestamp in the git repo for the file modification/creation"
-  (let ((default-directory gitdir))
-    (string-to-number
-     (shell-command-to-string
-      (format ;;"git log --format=%%ad --date=unix -- %s | tail -1"
-       "git log --follow --name-status --format=%%ad --date=unix -- '%s' | egrep -i 'm\\s+%s' -A1 | tail -1"
-       (file-relative-name filepath gitdir) (file-relative-name filepath gitdir))))))
+  (string-to-number
+   (shell-command-to-string
+    (format
+     "~/workspace/scripts/git_creation_date.sh \"%s\""
+     filepath))))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
     ;; (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
     ;;(format-time-string "<%Y-%m-%d>" (file-creation-time myfile))))
-    (format-time-string "<%Y-%m-%d>" (file-creation-time-using-git
-                                      brain-path
-                                      myfile))))
+    (format-time-string "<%Y-%m-%d>"
+                        (file-creation-time-using-git myfile))))
 (advice-add #'org-export-get-date :around #'my-org-date-advice)
 
 (defun export-all-public ()
@@ -3642,7 +3677,7 @@ INFO is a plist containing export properties."
   (let ((args (org-babel-parse-header-arguments
                (org-element-property :parameters
                                      special-block))))
-    
+
     (if args
         (progn
           (let ((mytitle (alist-get :title args)))
