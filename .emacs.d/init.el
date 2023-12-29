@@ -32,6 +32,8 @@
    :fetcher git
    :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
+;; make sure it works with use-package-always-ensure set to t
+(quelpa-use-package-activate-advice)
 
 ;; path where all my notes etc go
 (setq brain-path (file-truename "~/brain/"))
@@ -451,7 +453,7 @@
 
   (general-evil-setup)
 
-  (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map) "s" 'save-buffer)
+  (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map) "s" 'save-buffer)
   (general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
   ;; rebind s to sort in dired
 
@@ -473,11 +475,9 @@
   (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
   (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
 
-
   ;; general keys for programming
   (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
   (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)
-
 
   ;; evil mode multiple cursors
   (use-package evil-mc
@@ -495,36 +495,37 @@
 
   (use-package evil-extra-operator)
 
-  ;; (use-package evil-textobj-tree-sitter
-  ;;   :config
-  ;;   ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-  ;;   (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-  ;;   ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-  ;;   (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
-  ;;   ;; You can also bind multiple items and we will match the first one we can find
-  ;;   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
-  ;;   (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
-  ;;   ;; Goto start of next function
-  ;;   (define-key evil-normal-state-map (kbd "]f")
-  ;;               (lambda ()
-  ;;                 (interactive)
-  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer")))
-  ;;   ;; Goto start of previous function
-  ;;   (define-key evil-normal-state-map (kbd "[f")
-  ;;               (lambda ()
-  ;;                 (interactive)
-  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
-  ;;   ;; Goto end of next function
-  ;;   (define-key evil-normal-state-map (kbd "]F")
-  ;;               (lambda ()
-  ;;                 (interactive)
-  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
-  ;;   ;; Goto end of previous function
-  ;;   (define-key evil-normal-state-map (kbd "[F")
-  ;;               (lambda ()
-  ;;                 (interactive)
-  ;;                 (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
-  ;;   )
+  (use-package evil-textobj-tree-sitter
+    :straight t
+    :config
+    ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
+    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+    ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+    ;; You can also bind multiple items and we will match the first one we can find
+    (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
+    (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
+    ;; Goto start of next function
+    (define-key evil-normal-state-map (kbd "]f")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer")))
+    ;; Goto start of previous function
+    (define-key evil-normal-state-map (kbd "[f")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
+    ;; Goto end of next function
+    (define-key evil-normal-state-map (kbd "]F")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
+    ;; Goto end of previous function
+    (define-key evil-normal-state-map (kbd "[F")
+                (lambda ()
+                  (interactive)
+                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
+    )
 
   ;; make org roam insert link after cursor in evil mode
   (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
@@ -626,8 +627,9 @@ space rather than before."
 (led-kbd "f s" 'sudo-find-file)
 (led-kbd *leader-key* #'execute-extended-command)
 (led-kbd "b k" 'kill-this-buffer)
-(led-kbd "b k" (lambda () (interactive) (run-this-in-eshell "exit")) :keymaps 'eshell-mode-map) ;; if we manually kill the buffer it doesnt save eshell command history
-(led-kbd "b k" 'sly-quit-lisp :keymaps 'sly-repl-mode) ;; if we manually kill the buffer it doesnt save eshell command history
+ ;; if we manually kill the buffer it doesnt save eshell command history
+(led-kbd "b k" (lambda () (interactive) (run-this-in-eshell "exit")) :keymaps 'eshell-mode-map)
+(led-kbd "b k" 'sly-quit-lisp :keymaps 'sly-repl-mode)
 (led-kbd "b K" 'kill-buffer-and-window)
 ;; (general-define-key :keymaps 'override (led "b a")
 ;;                     (lambda ()
@@ -817,11 +819,13 @@ space rather than before."
                       (interactive)
                       (let ((current-prefix-arg '-)) (call-interactively 'sly))))
 (led-kbd "s r" #'eat);;'vterm)
+(led-kbd "s s" #'shell)
+(led-kbd "s w" #'term)
 (led-kbd "u" (general-simulate-key "C-u"))
 (led-kbd "o l" 'avy-goto-line)
 (led-kbd "o c" 'avy-goto-char)
-(led-kbd "s s" 'spotify-lyrics)
-(led-kbd "s w" 'open-spotify-lyrics-file)
+;; (led-kbd "s s" 'spotify-lyrics)
+;; (led-kbd "s w" 'open-spotify-lyrics-file)
 (led-kbd "s t" #'consult-theme)
 (led-kbd "s k" 'open-kitty-here)
 (led-kbd "s q" 'calc)
@@ -1070,6 +1074,7 @@ space rather than before."
       :hook ((prog-mode . corfu-mode)
              (latex-mode . corfu-mode)
              (shell-mode . corfu-mode)
+             (comint-mode . corfu-mode)
              (eshell-mode . corfu-mode))
       :custom
       (corfu-cycle t)
@@ -1138,11 +1143,11 @@ space rather than before."
 
 ;; icons for dired
 (use-package all-the-icons
-  :after vertico
+  :after (vertico)
   :custom
   (all-the-icons-dired-monochrome nil))
 (use-package all-the-icons-dired
-  :after vertico
+  :after (vertico)
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
@@ -1941,7 +1946,6 @@ space rather than before."
   ;; (add-hook 'kill-emacs-hook #'persp-state-save)
   (setq persp-state-default-file (concat brain-path "/emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
-;; (use-package dired-rsync)
 
 (use-package org-src-context
   :straight (org-src-context :type git :host github :repo "karthink/org-src-context")
@@ -2131,9 +2135,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-;; (setq org-latex-preview-persist nil)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+(setq org-latex-preview-persist nil)
+(setq org-element-cache-persistent nil)
+(setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -2426,7 +2430,8 @@ space rather than before."
             ;; (switch-to-theme 'ample)
             ;; (switch-to-theme 'acme)
             ;; (switch-to-theme 'doom-gruvbox-light)
-            (switch-to-theme 'gruvbox-light-soft)
+            ;; (switch-to-theme 'gruvbox-light-soft)
+            (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-tango-theme)
             ;; (set-face-background hl-line-face "PeachPuff3")
             ;; (switch-to-theme 'doom-sourcerer)
@@ -2458,7 +2463,8 @@ space rather than before."
 (defun switch-to-theme (theme)
   "remove current theme, switch to another"
   (disable-theme (car custom-enabled-themes))
-  (load-theme theme t))
+  (load-theme theme t)
+  (set-face-attribute 'org-block nil :background nil))
 
 (defun switch-to-darktooth-theme ()
   "switch to dark theme"
@@ -3033,7 +3039,8 @@ prompt the user for a coding system."
   (org-insert-heading-respect-content)
   (org-clock-in)
   (org-up-heading-safe)
-  (end-of-line))
+  (end-of-line)
+  (evil-insert 0))
 
 (defun today-entry-text-simple ()
   "insert a heading with a timestamp for simple journalling"
@@ -3041,7 +3048,8 @@ prompt the user for a coding system."
   (open-todays-file)
   (org-insert-heading-respect-content)
   (org-insert-time-stamp (current-time) t)
-  (insert " "))
+  (insert " ")
+  (evil-insert 0))
 
 (defun check-svg-duplicates ()
   "check for code blocks with same svg files, TODO needs to be implemented"
@@ -3629,6 +3637,7 @@ INFO is a plist containing export properties."
                             #'comint-write-history-on-exit))))
 (add-hook 'inferior-haskell-mode-hook 'turn-on-comint-history)
 (add-hook 'inferior-python-mode-hook 'turn-on-comint-history)
+(add-hook 'shell-mode-hook 'turn-on-comint-history)
 (add-hook 'kill-buffer-hook 'comint-write-input-ring)
 (defun mapc-buffers (fn)
   (mapc (lambda (buffer)
@@ -3671,13 +3680,12 @@ INFO is a plist containing export properties."
    (put cmd 'repeat-map 'combobulate-edit-map))
  combobulate-edit-map)
 
-;; org html title of blocks
+;; org html title of blocks, unfinished
 (defun my-org-block-advice (fn special-block contents info)
   "i use properties like :title <block title>, make those available in html output too"
   (let ((args (org-babel-parse-header-arguments
                (org-element-property :parameters
                                      special-block))))
-
     (if args
         (progn
           (let ((mytitle (alist-get :title args)))
@@ -3749,3 +3757,52 @@ INFO is a plist containing export properties."
       (push parent modes)
       (setq mode parent))
     (setq modes  (nreverse modes))))
+
+;; default shell for M-x term
+(setq explicit-shell-file-name "zsh")
+
+;; disable some modes for large files (otherwise emacs will hang..)
+(defun conditional-disable-modes ()
+  (when (> (buffer-size) (* 1024 1024))
+    (flycheck-mode -1)
+    (font-lock-mode -1)
+    (fundamental-mode)
+    (which-function-mode -1)
+    (linum-mode 0)
+    (lsp-mode 0)
+    )
+  )
+(add-hook 'find-file-hook 'conditional-disable-modes)
+
+;; from https://stackoverflow.com/questions/18316665/how-to-improve-emacs-performance-when-view-large-file
+;; (defun my-find-file-check-make-large-file-read-only-hook ()
+;;   "If a file is over a given size, make the buffer read only."
+;;   (when (> (buffer-size) (* 1024 1024))
+;;     (setq buffer-read-only t)
+;;     (buffer-disable-undo)
+;;     (fundamental-mode)))
+
+;; (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
+;; there's also find-file-literally i guess
+
+;; (use-package dired+
+;;   :quelpa (dired+ :fetcher url :url "https://www.emacswiki.org/emacs/download/dired+.el")
+;;   :defer 1
+;;   :init
+;;   (setq diredp-hide-details-initially-flag nil)
+;;   (setq diredp-hide-details-propagate-flag nil)
+;;   :config
+;;   (diredp-toggle-find-file-reuse-dir 1))
+
+(use-package dired-hacks-utils)
+(use-package dired-avfs)
+(use-package dired-rainbow)
+(use-package dired-filter)
+(use-package dired-open)
+(use-package dired-subtree)
+(use-package dired-ranger)
+(use-package dired-narrow)
+(use-package dired-list)
+(use-package dired-collapse)
+(use-package dired-rsync)
+;; (use-package diredfl)
