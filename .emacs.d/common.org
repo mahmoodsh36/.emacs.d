@@ -138,9 +138,3 @@ this document and others can be found on my website\\
 \end{note}
 #+end_export
 #+end_comment
-
-#+begin_export latex
-\begin{tcolorbox}[enhanced]
-note for college instructor: my name is \textbf{mahmood sheikh}, my id number is 212835466, this document was written by me and only me, using (mainly) emacs and \LaTeX. i put immense effort into my studies (atleast in the courses i like, anyway), hence this (relatively) well-written homework. you can find other documents at my website, \url{https://mahmoodsheikh36.github.io/}, thank you for taking the time to read this.
-\end{tcolorbox}
-#+end_export

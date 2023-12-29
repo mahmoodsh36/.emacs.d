@@ -7,3 +7,4 @@
 #+macro: if-latex (eval (if (org-export-derived-backend-p org-export-current-backend 'latex) $1))
 #+macro: newline src_emacs-lisp[:results raw]{"\n"}
 #+macro: comment
+#+macro: college_note #+latex: \begin{tcolorbox}[enhanced] a note for college instructor: my name is \textbf{mahmood sheikh}, my id number is 212835466, this document was written by me and only me, using (mainly) emacs and \LaTeX. i put immense effort into my studies (atleast in the courses i like, anyway), hence this (relatively) well-written homework. you can find other documents at my website, \url{https://mahmoodsheikh36.github.io/}, thank you for taking the time to read this. \end{tcolorbox}

@@ -1,11 +1,11 @@
 {
-    "alt-speed-down": 10000000,
+    "alt-speed-down": 1874919,
     "alt-speed-enabled": true,
     "alt-speed-time-begin": 540,
     "alt-speed-time-day": 127,
     "alt-speed-time-enabled": false,
     "alt-speed-time-end": 1020,
-    "alt-speed-up": 1,
+    "alt-speed-up": 1316134,
     "announce-ip": "",
     "announce-ip-enabled": false,
     "anti-brute-force-enabled": false,
@@ -74,7 +74,7 @@
     "tcp-enabled": true,
     "torrent-added-verify-mode": "fast",
     "trash-original-torrent-files": false,
-    "umask": "022",
+    "umask": "000",
     "upload-slots-per-torrent": 14,
     "utp-enabled": true
 }

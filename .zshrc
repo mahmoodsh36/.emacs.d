@@ -164,3 +164,6 @@ export EDITOR=nvim
 if [ -x /usr/libexec/path_helper ]; then
     eval `/usr/libexec/path_helper -s`
 fi
+
+# stop zsh from creating ~/.zcompdump (by changing the location)
+export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
