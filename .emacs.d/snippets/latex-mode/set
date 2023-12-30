@@ -2,4 +2,4 @@
 # name: set
 # key: se
 # --
-\\{$1\\}$0
+\\Set{$1 \given $2}$0
