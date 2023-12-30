@@ -443,7 +443,7 @@
   (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
   (define-and-bind-quoted-text-object "slash" "/" "/" "/")
   (define-and-bind-quoted-text-object "space" " " " " " ")
-  (define-and-bind-quoted-text-object "tilda" "~" "~" "~")
+  (define-and-bind-quoted-text-object "tilde" "~" "~" "~")
   (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
 
   ;; create "il"/"al" (inside/around) line text objects:
@@ -454,8 +454,6 @@
   (general-evil-setup)
 
   (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map) "s" 'save-buffer)
-  (general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
-  ;; rebind s to sort in dired
 
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
@@ -721,6 +719,8 @@ space rather than before."
 
 (led-kbd "f n"
          (lambda () (interactive) (find-file "~/workspace/nixos/configuration.nix")))
+(led-kbd "f c"
+         (lambda () (interactive) (find-file "~/workspace/dotfiles/.emacs.d/common.sty")))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
@@ -1163,7 +1163,7 @@ space rather than before."
 ;; this font makes hebrew text unreadable, gotta disable it
 (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
 (use-package darktooth-theme)
-;; (use-package modus-themes)
+(use-package modus-themes)
 (use-package ample-theme)
 (use-package anti-zenburn-theme)
 (use-package zenburn-theme)
@@ -2039,8 +2039,9 @@ space rather than before."
 ;;(use-package org-html-themes)
 ;;(use-package org-ioslide)
 ;;(use-package google-this)
-;;(use-package google-translate)
 ;;(use-package google-maps)
+
+(use-package google-translate)
 
 (defun spotify-lyrics ()
   (interactive)
@@ -2431,7 +2432,9 @@ space rather than before."
             ;; (switch-to-theme 'acme)
             ;; (switch-to-theme 'doom-gruvbox-light)
             ;; (switch-to-theme 'gruvbox-light-soft)
-            (switch-to-theme 'gruvbox-dark-hard)
+            ;; (switch-to-theme 'gruvbox-dark-hard)
+            ;; (switch-to-theme 'modus-operandi)
+            (switch-to-theme 'vivendi)
             ;; (switch-to-tango-theme)
             ;; (set-face-background hl-line-face "PeachPuff3")
             ;; (switch-to-theme 'doom-sourcerer)
@@ -2464,7 +2467,8 @@ space rather than before."
   "remove current theme, switch to another"
   (disable-theme (car custom-enabled-themes))
   (load-theme theme t)
-  (set-face-attribute 'org-block nil :background nil))
+  (set-face-attribute 'org-block nil :background nil)
+  (set-themed-pdf 1))
 
 (defun switch-to-darktooth-theme ()
   "switch to dark theme"
@@ -3763,14 +3767,15 @@ INFO is a plist containing export properties."
 
 ;; disable some modes for large files (otherwise emacs will hang..)
 (defun conditional-disable-modes ()
-  (when (> (buffer-size) (* 1024 1024))
-    (flycheck-mode -1)
-    (font-lock-mode -1)
-    (fundamental-mode)
-    (which-function-mode -1)
-    (linum-mode 0)
-    (lsp-mode 0)
-    )
+  (unless (eq major-mode 'pdf-view-mode)
+    (when (> (buffer-size) (* 1024 1024))
+      (flycheck-mode -1)
+      (font-lock-mode -1)
+      (fundamental-mode)
+      (which-function-mode -1)
+      (linum-mode 0)
+      (lsp-mode 0)
+      ))
   )
 (add-hook 'find-file-hook 'conditional-disable-modes)
 
@@ -3806,3 +3811,10 @@ INFO is a plist containing export properties."
 (use-package dired-collapse)
 (use-package dired-rsync)
 ;; (use-package diredfl)
+;; rebind s to sort in dired
+(general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
+
+(use-package nov)
+
+;; (formerly om.el) A functional library for org-mode
+(use-package org-ml)
