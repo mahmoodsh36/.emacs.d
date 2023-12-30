@@ -221,3 +221,13 @@
   $\m@th\smash-\mkern-7mu%
   \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
   \mkern-7mu\raisebox{-3.81pt}[\p@][\p@]{$\mathord\mathchar"017E$}$}
+
+% from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
+\providecommand\given{} % ensure it exists
+\newcommand\givensymbol[1]{%
+  \nonscript\;\delimsize#1\allowbreak\nonscript\;\mathopen{}%
+}
+\DeclarePairedDelimiterX\Set[1]\{\}{%
+  \renewcommand\given{\givensymbol{\vert}}%
+  #1%
+}
