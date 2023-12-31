@@ -453,7 +453,8 @@
 
   (general-evil-setup)
 
-  (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map) "s" 'save-buffer)
+  ;; (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map fundamental-mode-map) "s" 'save-buffer)
+  (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
 
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
   (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
@@ -706,9 +707,9 @@ space rather than before."
 
 ;; keys to search for files
 (led-kbd "f b"
-         (lambda () (interactive) (search-open-file brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
-(led-kbd "F b"
-         (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+         (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+;; (led-kbd "F b"
+;;          (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (led-kbd "f h" (lambda () (interactive) (search-open-file "./" ".*")))
 (led-kbd "f m"
          (lambda () (interactive)
@@ -810,8 +811,8 @@ space rather than before."
 (led-kbd "w m"
          (lambda () (interactive)
            (when window-system (set-frame-size (selected-frame) 180 50))))
-(led-kbd "s d" 'switch-to-dark-theme)
-(led-kbd "s l" 'switch-to-light-theme)
+(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'modus-vivendi)))
+(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'modus-operandi)))
 (led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
 (led-kbd "s i"
@@ -1670,11 +1671,18 @@ space rather than before."
 ;; like org-krita, crashes, unusable...
 ;; (quelpa '(org-xournalpp :fetcher gitlab :repo "vherrmann/org-xournalpp" :files ("*.el" "resources")))
 ;; (add-hook 'org-mode-hook 'org-xournalpp-mode)
+;; (use-package org-xournalpp
+;;   :ensure t
+;;   :quelpa (org-xournalpp :fetcher gitlab :repo "vherrmann/org-xournalpp" :files ("*.el" "resources"))
+;;   :config
+;;   (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
 ;; perfectly aligned org mode tables
-;; (use-package valign
-;;   :hook
-;;   (org-mode . valign-mode))
+(use-package valign
+  :hook
+  (org-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar t))
 
 ;; (use-package hydra
 ;;   :config
@@ -1766,7 +1774,7 @@ space rather than before."
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
 (use-package julia-snail
-  :quelpa (julia-snail :fetcher github :repo "https://github.com/gcv/julia-snail")
+  :quelpa (julia-snail :fetcher github :repo "gcv/julia-snail")
   :hook (julia-mode . julia-snail-mode)
   :config
   (setq julia-snail-terminal-type :eat)
@@ -2434,7 +2442,7 @@ space rather than before."
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-theme 'modus-operandi)
-            (switch-to-theme 'vivendi)
+            (switch-to-theme 'modus-vivendi)
             ;; (switch-to-tango-theme)
             ;; (set-face-background hl-line-face "PeachPuff3")
             ;; (switch-to-theme 'doom-sourcerer)
@@ -2465,9 +2473,10 @@ space rather than before."
 
 (defun switch-to-theme (theme)
   "remove current theme, switch to another"
-  (disable-theme (car custom-enabled-themes))
+  (when (car custom-enabled-themes)
+    (disable-theme (car custom-enabled-themes)))
   (load-theme theme t)
-  (set-face-attribute 'org-block nil :background nil)
+  ;; (set-face-attribute 'org-block nil :background nil)
   (set-themed-pdf 1))
 
 (defun switch-to-darktooth-theme ()
@@ -3811,10 +3820,42 @@ INFO is a plist containing export properties."
 (use-package dired-collapse)
 (use-package dired-rsync)
 ;; (use-package diredfl)
+
 ;; rebind s to sort in dired
-(general-define-key :states 'normal :keymaps 'dired-mode-map "s" 'dired-sort-toggle-or-edit)
+;; not sure how to override 'override
+;; (add-hook 'dired-mode-hook (lambda ()
+;;                              (interactive)
+;;                              (general-define-key :states 'normal :keymaps 'local "s" 'dired-sort-toggle-or-edit)
+;;                              (evil-define-key 'normal 'local (kbd "s") 'dired-sort-toggle-or-edit)
+;;                              (general-override-local-mode)
+;;                              ))
 
 (use-package nov)
 
 ;; (formerly om.el) A functional library for org-mode
 (use-package org-ml)
+
+;; simple storage
+;; https://stackoverflow.com/questions/2321904/elisp-how-to-save-data-in-a-file
+(defun dump-vars-to-file (varlist filename)
+  "simplistic dumping of variables in VARLIST to a file FILENAME"
+  (save-excursion
+    (let ((buf (find-file-noselect filename)))
+      (set-buffer buf)
+      (erase-buffer)
+      (dump varlist buf)
+      (save-buffer)
+      (kill-buffer))))
+(defun dump (varlist buffer)
+  "insert into buffer the setq statement to recreate the variables in VARLIST"
+  (loop for var in varlist do
+        (print (list 'setq var (list 'quote (symbol-value var)))
+               buffer)))
+(defun checkit ()
+  (let ((a '(1 2 3 (4 5)))
+        (b '(a b c))
+        (c (make-vector 3 'a)))
+    (dump-vars-to-file '(a b c) "/some/path/to/file.el")))
+;; (setq a (quote (1 2 3 (4 5))))
+;; (setq b (quote (a b c)))
+;; (setq c (quote [a a a]))
