@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: matrix derivative
+# key: md
+# --
+\matderiv{$1}$0
