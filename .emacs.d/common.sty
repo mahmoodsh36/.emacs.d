@@ -39,6 +39,9 @@
 \usepackage{iftex}
 \usepackage{turnstile}
 \usepackage[normalem]{ulem}
+\usepackage{ifthen}
+\usepackage{xifthen}
+\usepackage{xparse}
 \ifLuaTeX
 % graphdrawing library is only available to luatex
 \usetikzlibrary{graphdrawing}
@@ -53,6 +56,13 @@
 % a dummy environment to group together "stuff"
 \newenvironment*{dummyenv}{}{}
 \newenvironment*{dummy}{}{}
+
+% matrix derivative notation for vector calculus
+\newcommand{\matderiv}[2][]{%
+  \ifthenelse{\equal{#1}{}}
+    {\ensuremath{\left[\brm{D}#2\right]}}% if #1 is empty
+    {\ensuremath{\left[\brm{D}_{#1}#2\right]}}% if #2,#1 not empty
+}
 
 % no space before paragraph (is this desired?)
 % \setlength{\parindent}{0pt}
@@ -147,6 +157,7 @@
 \newtheorem{subproblem}{subproblem}[problem]
 \newtheorem{thought}{thought}
 \newtheorem{task}{task}
+\newtheorem{theorem}{theorem}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
