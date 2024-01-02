@@ -95,7 +95,7 @@
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab complete current word
 (setq dabbrev-case-replace nil)
-(global-set-key "\t" 'dabbrev-completion)
+;; (global-set-key "\t" 'dabbrev-completion)
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
 ;; save minibuffer history
@@ -980,7 +980,7 @@ space rather than before."
 ;; remap the help map, use C-h for something else
 (led-kbd "h" help-map)
 
-(keymap-global-set "C-h" #'indent-according-to-mode)
+;; (keymap-global-set "C-h" #'indent-according-to-mode)
 
 ;; perspective keys
 (led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
@@ -1033,8 +1033,8 @@ space rather than before."
               company-format-margin-function #'company-text-icons-margin)
         (eval-after-load 'company
           '(progn
-             (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-             (define-key company-active-map [tab] 'company-complete-selection)
+             ;; (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+             ;; (define-key company-active-map [tab] 'company-complete-selection)
              (unbind-key "RET" company-active-map)
              (unbind-key "<return>" company-active-map))))
 
@@ -1070,13 +1070,13 @@ space rather than before."
   (progn ;; corfu autocompletion
     (use-package corfu
       ;; :quelpa (:files (:defaults "extensions/*"))
-      ;; :init
-      ;; (global-corfu-mode)
-      :hook ((prog-mode . corfu-mode)
-             (latex-mode . corfu-mode)
-             (shell-mode . corfu-mode)
-             (comint-mode . corfu-mode)
-             (eshell-mode . corfu-mode))
+      :init
+      (global-corfu-mode)
+      ;; :hook ((prog-mode . corfu-mode)
+      ;;        (latex-mode . corfu-mode)
+      ;;        (shell-mode . corfu-mode)
+      ;;        (comint-mode . corfu-mode)
+      ;;        (eshell-mode . corfu-mode))
       :custom
       (corfu-cycle t)
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
@@ -1093,6 +1093,10 @@ space rather than before."
       (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
       :config
       (unbind-key "RET" corfu-map)
+      (unbind-key "TAB" corfu-map)
+      (define-key corfu-map [tab] nil)
+      (define-key corfu-map "\t" nil)
+      (bind-key "M-TAB" #'corfu-complete corfu-map)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)
       )
@@ -1773,14 +1777,14 @@ space rather than before."
   (setq org-inline-anim-loop t)
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
-(use-package julia-snail
-  :quelpa (julia-snail :fetcher github :repo "gcv/julia-snail")
-  :hook (julia-mode . julia-snail-mode)
-  :config
-  (setq julia-snail-terminal-type :eat)
-  (setq julia-snail-extensions '(repl-history formatter ob-julia))
-  ;;(setq julia-snail-extensions '(repl-history formatter))
-  (setq julia-snail/ob-julia-mirror-output-in-repl t))
+(quelpa '(julia-snail :fetcher github
+                      :repo "gcv/julia-snail"
+                      :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
+(add-hook 'julia-mode-hook 'julia-snail-mode)
+(setq julia-snail-terminal-type :eat)
+(setq julia-snail-extensions '(repl-history formatter ob-julia))
+;;(setq julia-snail-extensions '(repl-history formatter))
+(setq julia-snail/ob-julia-mirror-output-in-repl t)
 
 ;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
 ;; (use-package ob-julia
@@ -2144,9 +2148,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-(setq org-latex-preview-persist nil)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-latex-preview-persist nil)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -3848,7 +3852,7 @@ INFO is a plist containing export properties."
       (kill-buffer))))
 (defun dump (varlist buffer)
   "insert into buffer the setq statement to recreate the variables in VARLIST"
-  (loop for var in varlist do
+  (cl-loop for var in varlist do
         (print (list 'setq var (list 'quote (symbol-value var)))
                buffer)))
 (defun checkit ()
