@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cos
+# key: co
+# --
+\cos$0

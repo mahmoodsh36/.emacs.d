@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inner product
+# key: nr
+# --
+\inpr{$1}{$2}$0
