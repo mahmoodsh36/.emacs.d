@@ -33,6 +33,7 @@
    :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
 ;; make sure it works with use-package-always-ensure set to t
+(setq use-package-ensure-function 'quelpa)
 (quelpa-use-package-activate-advice)
 
 ;; path where all my notes etc go
@@ -239,6 +240,8 @@
 
 ;; the key to building a second brain in org mode, requires pre-isntallation of gcc/clang
 (use-package org-roam
+  :ensure nil
+  :straight (org-roam :type git :repo "mahmoodsheikh36/org-roam")
   :custom
   (org-roam-directory brain-path)
   (org-roam-completion-everywhere t)
@@ -379,7 +382,12 @@
   ;; jump to matching tags
   (use-package evil-matchit
     :config
-    (global-evil-matchit-mode 1))
+    (global-evil-matchit-mode 1)
+    ;; override the default to make it work with custom blocks in org mode
+    (defvar evilmi-org-match-tags
+      '((("begin_[a-z]+") () ("end_[a-z]+") "monogamy")
+        (("results") () ("end") "monogamy"))
+      "match tags in org file."))
 
   ;; text evil objects for latex
   (use-package evil-tex
@@ -501,25 +509,25 @@
     (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
     ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
     (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
-    ;; You can also bind multiple items and we will match the first one we can find
+    ;; you can also bind multiple items and we will match the first one we can find
     (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
     (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
-    ;; Goto start of next function
+    ;; goto start of next function
     (define-key evil-normal-state-map (kbd "]f")
                 (lambda ()
                   (interactive)
                   (evil-textobj-tree-sitter-goto-textobj "function.outer")))
-    ;; Goto start of previous function
+    ;; goto start of previous function
     (define-key evil-normal-state-map (kbd "[f")
                 (lambda ()
                   (interactive)
                   (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
-    ;; Goto end of next function
+    ;; goto end of next function
     (define-key evil-normal-state-map (kbd "]F")
                 (lambda ()
                   (interactive)
                   (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
-    ;; Goto end of previous function
+    ;; goto end of previous function
     (define-key evil-normal-state-map (kbd "[F")
                 (lambda ()
                   (interactive)
@@ -527,9 +535,9 @@
     )
 
   ;; make org roam insert link after cursor in evil mode
-  (defadvice org-roam-node-insert (around append-if-in-evil-normal-mode activate compile)
-    "If in evil normal mode and cursor is on a whitespace character, then go into
-append mode first before inserting the link. This is to put the link after the
+  (defun my-org-roam-node-insert-advice-append-if-in-normal-mode (activate compile)
+    "if in evil normal mode and cursor is on a whitespace character, then go into
+append mode first before inserting the link. this is to put the link after the
 space rather than before."
     (let ((is-in-evil-normal-mode (and (bound-and-true-p evil-mode)
                                        (not (bound-and-true-p evil-insert-state-minor-mode))
@@ -539,13 +547,14 @@ space rather than before."
         (evil-append 0)
         ad-do-it
         (evil-normal-state))))
+  (advice-add 'org-roam-node-insert :around #'my-org-roam-node-insert-advice-append-if-in-normal-mode)
 
   ;; (use-package evil-snipe
   ;;   :config
   ;;   (evil-snipe-override-mode 1)
   ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
-  ;; so that forward-sexp works at end of line, see https://github.com/Fuco1/smartparens/issues/1037
+  ;; so that forward-sexp works at end of line, see https://github.com/fuco1/smartparens/issues/1037
   ;; (setq evil-move-beyond-eol t)
 
   (when enable-god
@@ -559,7 +568,7 @@ space rather than before."
       (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
     (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
     ;; (use-package ryo-modal
-    ;;   :quelpa (ryo-modal :fetcher github :repo "Kungsgeten/ryo-modal")
+    ;;   :quelpa (ryo-modal :fetcher github :repo "kungsgeten/ryo-modal")
     ;;   :commands ryo-modal-mode
     ;;   :bind ("C-c SPC" . ryo-modal-mode)
     ;;   :config
@@ -572,8 +581,8 @@ space rather than before."
     ;;    ("l" forward-char))
 
     ;;   (ryo-modal-keys
-    ;;    ;; First argument to ryo-modal-keys may be a list of keywords.
-    ;;    ;; These keywords will be applied to all keybindings.
+    ;;    ;; first argument to ryo-modal-keys may be a list of keywords.
+    ;;    ;; these keywords will be applied to all keybindings.
     ;;    (:norepeat t)
     ;;    ("0" "M-0")
     ;;    ("1" "M-1")
@@ -619,7 +628,7 @@ space rather than before."
 (led-kbd "d d" 'dired)
 (led-kbd "d c" (lambda () (interactive) (dired default-directory)))
 (led-kbd "d o" (lambda () (interactive) (dired "~/brain/out/")))
-(led-kbd "d g" (lambda () (interactive) (dired "~/workspace/blog/")))
+(led-kbd "d g" (lambda () (interactive) (dired "~/work/blog/")))
 (led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
 (led-kbd "f f" 'find-file)
 (led-kbd "f v" 'find-alternate-file)
@@ -680,7 +689,7 @@ space rather than before."
 (led-kbd "r q"
          (lambda ()
            (interactive)
-           (org-roam-capture-no-title-prompt nil "k"))) ;; spc r q - quick note
+           (org-roam-capture-no-title-prompt nil "k"))) ;; SPC r q - quick note
 ;; (general-define-key :keymaps 'override "SPC r h"
 ;;                     (lambda ()
 ;;                       (interactive)
@@ -719,9 +728,9 @@ space rather than before."
              (browse-url (expand-file-name my-file)))))
 
 (led-kbd "f n"
-         (lambda () (interactive) (find-file "~/workspace/nixos/configuration.nix")))
+         (lambda () (interactive) (find-file "~/work/nixos/configuration.nix")))
 (led-kbd "f c"
-         (lambda () (interactive) (find-file "~/workspace/dotfiles/.emacs.d/common.sty")))
+         (lambda () (interactive) (find-file "~/work/dotfiles/.emacs.d/common.sty")))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
@@ -811,8 +820,8 @@ space rather than before."
 (led-kbd "w m"
          (lambda () (interactive)
            (when window-system (set-frame-size (selected-frame) 180 50))))
-(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'modus-vivendi)))
-(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'modus-operandi)))
+(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'modus-vivendi) (set-themed-pdf t)))
+(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'modus-operandi) (set-themed-pdf nil)))
 (led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
 (led-kbd "s i"
@@ -855,11 +864,11 @@ space rather than before."
 (led-kbd "r s" 'org-cite-insert :keymaps 'org-mode-map)
 ;; key to clear the screen in eshell
 (defun run-this-in-eshell (cmd)
-  "Runs the command 'cmd' in eshell."
+  "runs the command 'cmd' in eshell."
   (with-current-buffer "*eshell*"
     (end-of-buffer)
     (eshell-kill-input)
-    (message (concat "Running in Eshell: " cmd))
+    (message (concat "running in eshell: " cmd))
     (insert cmd)
     (eshell-send-input)
     (end-of-buffer)
@@ -908,7 +917,7 @@ space rather than before."
 
 ;; other keybinds
 (general-define-key :states 'normal :keymaps 'override "C-S-k" 'kill-whole-line)
-;; (general-define-key :keymaps 'override "M-RET"
+;; (general-define-key :keymaps 'override "m-ret"
 ;;                     (lambda ()
 ;;                       (interactive)
 ;;                       (end-of-line)
@@ -941,7 +950,7 @@ space rather than before."
 (general-define-key :states 'normal :keymaps 'override "M-z" #'zap-up-to-char)
 
 ;; i hate backspace and return
-(define-key input-decode-map [?\C-m] [C-m]) ;; so that C-m wouldnt be attached to <return> anymore
+(define-key input-decode-map [?\C-m] [C-m]) ;; so that c-m wouldnt be attached to <return> anymore
 (global-set-key (kbd "<C-m>") #'newline)
 ;; (keymap-global-set (kbd "<C-m>") #'newline) ;; not sure why this doesnt work like above
 (keymap-global-unset "<RET>")
@@ -952,9 +961,9 @@ space rather than before."
 (keymap-global-set "C-c c" #'recenter)
 ;; (general-define-key :keymaps 'override "C-'" #'save-buffer)
 
-;; C-j in repl's to emulate RETURN
+;; c-j in repl's to emulate return
 (define-key comint-mode-map (kbd "C-j") #'comint-send-input)
-;; SPC g to cancel like C-g
+;; spc g to cancel like C-g
 ; (define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
 
 ;; evaluate and insert without truncating output
@@ -977,7 +986,7 @@ space rather than before."
 (define-key org-mode-map (kbd "M-N") #'org-metadown)
 (define-key org-mode-map (kbd "M-P") #'org-metaup)
 
-;; remap the help map, use C-h for something else
+;; remap the help map, use c-h for something else
 (led-kbd "h" help-map)
 
 ;; (keymap-global-set "C-h" #'indent-according-to-mode)
@@ -1082,8 +1091,8 @@ space rather than before."
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
       (corfu-quit-no-match t)
       (corfu-auto-delay 0)
-      ;; (corfu-separator ?_) ;; Set to orderless separator, if not using space
-      ;; (corfu-separator " ") ;; Set to orderless separator, if not using space
+      ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
+      ;; (corfu-separator " ") ;; set to orderless separator, if not using space
       (corfu-count 10)
       (corfu-indexed-mode t)
       (corfu-echo-mode t) ;; display brief documentation in echo area
@@ -1112,9 +1121,15 @@ space rather than before."
 
     (use-package cape)
 
+    ;; for some reason ispell completion is enabled in org mode
+    (defun remove-ispell-cap ()
+      (interactive)
+      (setq-local completion-at-point-functions (delete 'ispell-completion-at-point completion-at-point-functions)))
+    (add-hook 'org-mode-hook #'remove-ispell-cap)
+
     ;; (use-package orderless
     ;;   :init
-    ;;   ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;;   ;; configure a custom style dispatcher (see the consult wiki)
     ;;   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
     ;;   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
     ;;   (setq completion-styles '(orderless partial-completion basic);; '(orderless basic)
@@ -1131,9 +1146,9 @@ space rather than before."
 
     ;; corfu completion in the minibuffer
     (defun corfu-enable-in-minibuffer ()
-      "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+      "enable corfu in the minibuffer if `completion-at-point' is bound."
       (when (where-is-internal #'completion-at-point (list (current-local-map)))
-        ;; (setq-local corfu-auto nil) Enable/disable auto completion
+        ;; (setq-local corfu-auto nil) enable/disable auto completion
         (corfu-mode 1)))
     (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
 
@@ -1156,14 +1171,14 @@ space rather than before."
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-;; (set-face-attribute 'default nil :family "Comic Sans MS" :height 120)
+;; (set-face-attribute 'default nil :family "Comic Sans ms" :height 120)
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Iosevka" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
 (ignore-errors
   (set-face-attribute 'default nil :font "Fira Code" :weight 'light :height 100)
   (set-face-attribute 'fixed-pitch nil :font "Fira Code" :weight 'light :height 100)
-  (set-face-attribute 'variable-pitch nil :font "Fira Code":weight 'light :height 1.0)
+  (set-face-attribute 'variable-pitch nil :font "Fira Code" :weight 'light :height 1.0)
   )
 ;; this font makes hebrew text unreadable, gotta disable it
 (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
@@ -1416,11 +1431,11 @@ space rather than before."
 ;; static website generation for org mode
 (use-package ox-hugo
   :config
-  (setq org-hugo-base-dir (file-truename "~/workspace/blog/"))
+  (setq org-hugo-base-dir (file-truename "~/work/blog/"))
   (setq org-hugo-section "blog")
-  ;; (setq org-more-dir (expand-file-name "~/workspace/blog/static/more/"))
+  ;; (setq org-more-dir (expand-file-name "~/work/blog/static/more/"))
   ;; (ignore-errors (make-directory org-more-dir))
-  (defconst *org-static-dir* (file-truename "~/workspace/blog/static/"))
+  (defconst *org-static-dir* (file-truename "~/work/blog/static/"))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html"))
 
@@ -1532,7 +1547,7 @@ space rather than before."
 ;; (use-package dumb-jump)
 ;; (use-package ob-async)
 (use-package format-all)
-(use-package org-roam-ui)
+;; (use-package org-roam-ui)
 ;; (use-package jupyter)
 ;; (use-package plantuml-mode)
 ;; (use-package org-ref
@@ -2148,9 +2163,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-;; (setq org-latex-preview-persist nil)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+(setq org-latex-preview-persist nil)
+(setq org-element-cache-persistent nil)
+(setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -2395,8 +2410,8 @@ space rather than before."
 ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
 (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
 ;; latex syntax highlighting in org mode (and more)
-;; (setq org-highlight-latex-and-related '(latex))
-(setq org-highlight-latex-and-related '(native latex script entities))
+(setq org-highlight-latex-and-related '(latex))
+;; (setq org-highlight-latex-and-related '(native latex script entities))
 ;; disable org-mode's mathjax because my blog's code uses another version
 (setq org-html-mathjax-template "")
 (setq org-html-mathjax-options '())
@@ -2481,7 +2496,7 @@ space rather than before."
     (disable-theme (car custom-enabled-themes)))
   (load-theme theme t)
   ;; (set-face-attribute 'org-block nil :background nil)
-  (set-themed-pdf 1))
+  (set-themed-pdf t))
 
 (defun switch-to-darktooth-theme ()
   "switch to dark theme"
@@ -2493,14 +2508,14 @@ space rather than before."
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-themed-pdf 1))
+  (set-themed-pdf t))
 
 (defun switch-to-tango-theme ()
   "switch to dark theme"
   (interactive)
   (switch-to-theme 'tango)
   (set-face-background hl-line-face "PeachPuff3")
-  (set-themed-pdf 1))
+  (set-themed-pdf t))
 
 (defun switch-to-gruvbox-light-theme ()
   "switch to light theme"
@@ -2515,16 +2530,23 @@ space rather than before."
   ;; (global-org-modern-mode)
   ;; (set-face-background hl-line-face "PeachPuff3")
   ;; (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-themed-pdf 1))
+  (set-themed-pdf t))
 
 (defun set-themed-pdf (should-be-themed)
   "if 1 is passed the buffers with pdf files open will be themed using pdf-tools, unthemed if 0"
+  (if should-be-themed
+      (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
+    (remove-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
   (dolist (buffer (buffer-list))
     (if (buffer-name buffer)
         (if (string-match ".*.pdf$" (buffer-name buffer))
             (with-current-buffer (buffer-name buffer)
-              (pdf-view-themed-minor-mode should-be-themed)
-              (pdf-view-refresh-themed-buffer t))))))
+              (message "%s" (buffer-name buffer) should-be-themed)
+              (if should-be-themed
+                  (progn
+                    (pdf-view-themed-minor-mode 1)
+                    (pdf-view-refresh-themed-buffer t))
+                (pdf-view-themed-minor-mode -1)))))))
 
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
@@ -3411,7 +3433,7 @@ INFO is a plist containing export properties."
   (string-to-number
    (shell-command-to-string
     (format
-     "~/workspace/scripts/git_creation_date.sh \"%s\""
+     "~/work/scripts/git_creation_date.sh \"%s\""
      filepath))))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
@@ -3714,6 +3736,14 @@ INFO is a plist containing export properties."
 (advice-add #'org-html-special-block :around #'my-org-block-advice)
 (advice-add #'org-hugo-special-block :around #'my-org-block-advice)
 
+(defun org-block-at-point ()
+  (let ((blk (org-element-at-point)))
+    (if (not (org-element-property :name blk)) ;; a block must have a :name
+        (setq blk (org-element-parent blk)))
+    (if (org-element-property :name blk)
+        blk
+      nil)))
+
 ;; (defun execute-src-block-with-dependencies (&optional arg info params executor-type)
 ;;   (save-excursion
 ;;     (let ((src-block-location (nth 5 info)))
@@ -3863,3 +3893,5 @@ INFO is a plist containing export properties."
 ;; (setq a (quote (1 2 3 (4 5))))
 ;; (setq b (quote (a b c)))
 ;; (setq c (quote [a a a]))
+
+;; https://github.com/vicrdguez/dendroam interesting?
