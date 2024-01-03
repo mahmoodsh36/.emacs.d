@@ -535,7 +535,7 @@
     )
 
   ;; make org roam insert link after cursor in evil mode
-  (defun my-org-roam-node-insert-advice-append-if-in-normal-mode (activate compile)
+  (defun my-org-roam-node-insert-advice-append-if-in-normal-mode (fn)
     "if in evil normal mode and cursor is on a whitespace character, then go into
 append mode first before inserting the link. this is to put the link after the
 space rather than before."
@@ -543,9 +543,9 @@ space rather than before."
                                        (not (bound-and-true-p evil-insert-state-minor-mode))
                                        (looking-at "[[:blank:]]"))))
       (if (not is-in-evil-normal-mode)
-          ad-do-it
+          (funcall fn)
         (evil-append 0)
-        ad-do-it
+        (funcall fn)
         (evil-normal-state))))
   (advice-add 'org-roam-node-insert :around #'my-org-roam-node-insert-advice-append-if-in-normal-mode)
 
@@ -1800,6 +1800,7 @@ space rather than before."
 (setq julia-snail-extensions '(repl-history formatter ob-julia))
 ;;(setq julia-snail-extensions '(repl-history formatter))
 (setq julia-snail/ob-julia-mirror-output-in-repl t)
+(setq julia-snail/ob-julia-capture-io nil)
 
 ;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
 ;; (use-package ob-julia
@@ -3736,13 +3737,13 @@ INFO is a plist containing export properties."
 (advice-add #'org-html-special-block :around #'my-org-block-advice)
 (advice-add #'org-hugo-special-block :around #'my-org-block-advice)
 
-(defun org-block-at-point ()
-  (let ((blk (org-element-at-point)))
-    (if (not (org-element-property :name blk)) ;; a block must have a :name
-        (setq blk (org-element-parent blk)))
-    (if (org-element-property :name blk)
-        blk
-      nil)))
+;; (defun org-block-at-point ()
+;;   (let ((blk (org-element-at-point)))
+;;     (if (not (org-element-property :name blk)) ;; a block must have a :name
+;;         (setq blk (org-element-parent blk)))
+;;     (if (org-element-property :name blk)
+;;         blk
+;;       nil)))
 
 ;; (defun execute-src-block-with-dependencies (&optional arg info params executor-type)
 ;;   (save-excursion
