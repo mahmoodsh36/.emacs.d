@@ -6,7 +6,7 @@ super + x ; {e,w,s,j,k,f,p}
      firefox & notify-send "launched firefox", \
      notify-send "launched Spotify 🎶🎵" && spotify || flatpak run com.spotify.Client, \
      rofi_select_emoji.sh, \
-     ~/workspace/scripts/kill_process.sh, \
+     ~/work/scripts/kill_process.sh, \
      notify-send 'launched vifm' && terminal_with_cmd.sh 'vifm; exit',\
      kitty -e zsh -i -c pulsemixer & notify-send 'launched pulsemixer'}
 
@@ -35,7 +35,7 @@ super + x ; {n,a,x}
 
 super + ctrl + p ; {i, u}
     {install_program.sh,\
-     ~/workspace/scripts/terminal_with_cmd.sh "sudo pacman -Syu"; notify-send -t 30000 'updated system'}
+     ~/work/scripts/terminal_with_cmd.sh "sudo pacman -Syu"; notify-send -t 30000 'updated system'}
 
 super + r
     sh -c "$(echo $PATH | tr ':' '\n' | while read the_dir; do ls --color=no "$the_dir"; done | sort -u | rofi -dmenu -i -p command)"
@@ -80,7 +80,7 @@ super + s; {w, W, q, f, a}
      rm "/home/mahmooz/brain/lyrics/$(current_spotify_song.sh)" && notify-send "removed lyrics for $(current_spotify_song.sh)" || notify-send "lyrics dont exist for $(current_spotify_song.sh)",\
      choice=$(awk '\{print FILENAME ":" $0\}' ~/brain/lyrics/* | rofi -dmenu -i -p lyrics); notify-send "$(echo $choice | cut -d ':' -f1 | rev | cut -d '/' -f1 | rev)" "$(cat "$(echo $choice | cut -d ':' -f1)")"}
 super + s; {d, x, c}
-     {~/workspace/spotify_scripts/rofi_play_track.sh,\
+     {~/work/spotify_scripts/rofi_play_track.sh,\
      google-chrome-stable "https://www.last.fm/music/$(current_spotify_song.sh | rev | cut -d '-' -f1 | rev | cut -c2-)",\
      google-chrome-stable "https://www.metal-archives.com/albums/$(current_spotify_song.sh | rev | cut -d '-' -f1 | rev | cut -c2-)"}
 
