@@ -8,7 +8,7 @@ sxhkd &
 #dunst &
 # parcellite unbinds C-M-x from emacs :(
 #parcellite &
-pulseaudio & # pulseaudio is bugged on startup dunno why
+# pulseaudio & # pulseaudio is bugged on startup dunno why
 # backgrounder.sh ~/pictures 200 0 & disown
 # nm-applet &
 
@@ -46,3 +46,4 @@ exec awesome
 #exec qtile
 # exec bspwm
 #exec emacs
+# exec gnome-session
