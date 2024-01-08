@@ -10,7 +10,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1.
 # export XDG_RUNTIME_DIR="$HOME/.runtime"
 # export XDG_CONFIG_HOME="$HOME/.config"
 
-#source /etc/profile
+source /etc/profile # for guix
 export GUILE_LOAD_PATH="$HOME/workspace/guix/"
 export QT_SCALE_FACTOR=2
 
