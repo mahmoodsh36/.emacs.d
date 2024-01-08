@@ -55,7 +55,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 ;; always follow symlinks
@@ -85,13 +85,13 @@
 (set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
-(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
+;; (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
 ;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
-(add-hook 'pdf-view-mode-hook
-          (lambda ()
-            (interactive)
-            (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
+;; (add-hook 'pdf-view-mode-hook
+;;           (lambda ()
+;;             (interactive)
+;;             (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab complete current word
@@ -348,7 +348,7 @@
   (use-package evil-org
     :config
     (add-hook 'org-mode-hook 'evil-org-mode)
-    (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading return calendar))
+    (evil-org-set-key-theme '(textobjects navigation additional shift todo heading return calendar))
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys)
     ;; the package annoyingly binds O to another function so here im just restoring it
@@ -384,10 +384,9 @@
     :config
     (global-evil-matchit-mode 1)
     ;; override the default to make it work with custom blocks in org mode
-    (defvar evilmi-org-match-tags
-      '((("begin_[a-z]+") () ("end_[a-z]+") "monogamy")
-        (("results") () ("end") "monogamy"))
-      "match tags in org file."))
+    (setq evilmi-org-match-tags
+      '((("begin_[a-z_]+") () ("end_[a-z_]+") "monogamy")
+        (("results") () ("end") "monogamy"))))
 
   ;; text evil objects for latex
   (use-package evil-tex
@@ -414,7 +413,7 @@
   (evil-set-initial-state 'sly-db-mode 'emacs)
   ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
   (evil-set-initial-state 'vterm-mode 'emacs)
-  (evil-set-initial-state 'org-agenda-mode 'emacs)
+  ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
   (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
   (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
@@ -632,6 +631,7 @@ space rather than before."
 (led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
 (led-kbd "f f" 'find-file)
 (led-kbd "f v" 'find-alternate-file)
+(led-kbd "d j" 'dired-jump)
 (led-kbd "f s" 'sudo-find-file)
 (led-kbd *leader-key* #'execute-extended-command)
 (led-kbd "b k" 'kill-this-buffer)
@@ -995,6 +995,9 @@ space rather than before."
 (led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
 (led-kbd "s 2" (lambda () (interactive) (persp-switch "college")))
 (led-kbd "s 3" (lambda () (interactive) (persp-switch "agenda")))
+(led-kbd "1" (lambda () (interactive) (persp-switch "main")))
+(led-kbd "2" (lambda () (interactive) (persp-switch "college")))
+(led-kbd "3" (lambda () (interactive) (persp-switch "agenda")))
 (led-kbd "s c" #'persp-switch)
 
 (led-kbd "s z" #'zeal-at-point)
@@ -1090,7 +1093,7 @@ space rather than before."
       (corfu-cycle t)
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
       (corfu-quit-no-match t)
-      (corfu-auto-delay 0)
+      (corfu-auto-delay 0.1) ;; never set it to 0, makes emacs very laggy and hogs cpu
       ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
       ;; (corfu-separator " ") ;; set to orderless separator, if not using space
       (corfu-count 10)
@@ -1823,7 +1826,7 @@ space rather than before."
 ;;     (setq ess-eval-visibly 'nowait)
 ;;     (defun org-babel-julia-initiate-session (&optional session params)
 ;;       "Create or switch to an ESS Julia session.
-;; 
+;;
 ;; Return the initialized session, if any."
 ;;       (unless (string= session "none")
 ;;         (let ((session (or session "*julia*")))
@@ -2159,12 +2162,12 @@ space rather than before."
 (setq org-table-convert-region-max-lines 10000)
 ;; to increase depth of the imenu in treemacs
 (setq org-imenu-depth 4)
-;; who cares about annoying broken link errors..
+;; annoying broken links..
 (setq org-export-with-broken-links 'mark)
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-(setq org-latex-preview-persist nil)
+(setq org-latex-preview-cache 'temp)
 (setq org-element-cache-persistent nil)
 (setq org-element-use-cache nil)
 
@@ -2411,6 +2414,7 @@ space rather than before."
 ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
 (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
 ;; latex syntax highlighting in org mode (and more)
+;; (setq org-highlight-latex-and-related nil)
 (setq org-highlight-latex-and-related '(latex))
 ;; (setq org-highlight-latex-and-related '(native latex script entities))
 ;; disable org-mode's mathjax because my blog's code uses another version
@@ -3760,24 +3764,24 @@ INFO is a plist containing export properties."
 (setq shift-select-mode 'permanent)
 
 ;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
-(defun my/org-latex-preview-center (ov)
-  (save-excursion
-    (goto-char (overlay-start ov))
-    (when-let* ((elem (org-element-context))
-                ((or (eq (org-element-type elem) 'latex-environment)
-                     (string-match-p
-                      "^\\\\\\[" (org-element-property :value elem))))
-                (img (overlay-get ov 'display))
-                (width (car-safe (image-display-size img)))
-                (offset (floor (- (window-max-chars-per-line) width) 2))
-                ((> offset 0)))
-      (overlay-put ov 'before-string
-                   (propertize
-                    (make-string offset ?\ )
-                    'face (org-latex-preview--face-around
-                           (overlay-start ov) (overlay-end ov)))))))
-(add-hook 'org-latex-preview-update-overlay-functions
-         #'my/org-latex-preview-center)
+;; (defun my/org-latex-preview-center (ov)
+;;   (save-excursion
+;;     (goto-char (overlay-start ov))
+;;     (when-let* ((elem (org-element-context))
+;;                 ((or (eq (org-element-type elem) 'latex-environment)
+;;                      (string-match-p
+;;                       "^\\\\\\[" (org-element-property :value elem))))
+;;                 (img (overlay-get ov 'display))
+;;                 (width (car-safe (image-display-size img)))
+;;                 (offset (floor (- (window-max-chars-per-line) width) 2))
+;;                 ((> offset 0)))
+;;       (overlay-put ov 'before-string
+;;                    (propertize
+;;                     (make-string offset ?\ )
+;;                     'face (org-latex-preview--face-around
+;;                            (overlay-start ov) (overlay-end ov)))))))
+;; (add-hook 'org-latex-preview-update-overlay-functions
+;;          #'my/org-latex-preview-center)
 
 ;; https://stackoverflow.com/questions/39882624/setting-arbitrary-cursor-positions-with-multiple-cursors-in-emacs
 ;; insert cursor at point
@@ -3870,29 +3874,38 @@ INFO is a plist containing export properties."
 ;; (formerly om.el) A functional library for org-mode
 (use-package org-ml)
 
-;; simple storage
-;; https://stackoverflow.com/questions/2321904/elisp-how-to-save-data-in-a-file
-(defun dump-vars-to-file (varlist filename)
-  "simplistic dumping of variables in VARLIST to a file FILENAME"
-  (save-excursion
-    (let ((buf (find-file-noselect filename)))
-      (set-buffer buf)
-      (erase-buffer)
-      (dump varlist buf)
-      (save-buffer)
-      (kill-buffer))))
-(defun dump (varlist buffer)
-  "insert into buffer the setq statement to recreate the variables in VARLIST"
-  (cl-loop for var in varlist do
-        (print (list 'setq var (list 'quote (symbol-value var)))
-               buffer)))
-(defun checkit ()
-  (let ((a '(1 2 3 (4 5)))
-        (b '(a b c))
-        (c (make-vector 3 'a)))
-    (dump-vars-to-file '(a b c) "/some/path/to/file.el")))
-;; (setq a (quote (1 2 3 (4 5))))
-;; (setq b (quote (a b c)))
-;; (setq c (quote [a a a]))
+;; add ~/.emacs.d to load-path
+(push user-emacs-directory load-path)
+;; (require 'setup-keys) ;; setup-keys.el
+;; (require 'setup-packages) ;; setup-packages.el
+;; (require 'setup-org) ;; setup-org.el
 
-;; https://github.com/vicrdguez/dendroam interesting?
+;; from https://emacs.stackexchange.com/questions/16688/how-can-i-escape-the-in-org-mode-to-prevent-bold-fontification
+;; (defun my-bold (contents backend info)
+;;   (when (org-export-derived-backend-p backend 'latex)
+;;     (replace-regexp-in-string "\\`\\\\textbf{\\(.+\\)}"
+;;                               "\\\\ast{}\\1\\\\ast{}" contents)))
+;; (add-to-list 'org-export-filter-bold-functions 'my-bold)
+
+(setq python-shell-interpreter "python3.10")
+(setq python-interpreter "python3.10")
+
+;; typescript setup
+(use-package typescript-mode)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+;; formats the buffer before saving
+;; (add-hook 'before-save-hook 'tide-format-before-save)
+;; if you use typescript-mode
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; if you use treesitter based typescript-ts-mode (emacs 29+)
+(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
