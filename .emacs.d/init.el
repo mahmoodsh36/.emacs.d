@@ -1117,10 +1117,12 @@ space rather than before."
       :ensure t
       :after corfu
       :custom
-      (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
-      (kind-icon-use-icons nil) ;; use text-based icons
+      ;; (kind-icon-blend-background t) ;; to compute blended backgrounds correctly
+      ;; (kind-icon-default-face 'corfu-default) ;; only needed with blend-background
+      (kind-icon-use-icons nil) ;; only needed with blend-background
       :config
-      (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+      (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+      )
 
     (use-package cape)
 
@@ -1156,6 +1158,8 @@ space rather than before."
     (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
 
     (use-package pcmpl-args)
+
+    ;; (use-package corfu-doc)
     )
   )
 
@@ -1166,11 +1170,11 @@ space rather than before."
 
 ;; icons for dired
 (use-package all-the-icons
-  :after (vertico)
+  ;; :after (vertico)
   :custom
   (all-the-icons-dired-monochrome nil))
 (use-package all-the-icons-dired
-  :after (vertico)
+  ;; :after (vertico)
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
@@ -1903,10 +1907,6 @@ space rather than before."
 ;;   :config
 ;;   (vertico-grid-mode))
 ;; is similar to ivy-rich
-(use-package marginalia
-  :ensure t
-  :config
-  (marginalia-mode))
 (use-package consult)
 ;; corfu with orderless
 (defun orderless-fast-dispatch (word index total)
@@ -1917,10 +1917,15 @@ space rather than before."
   (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
 (setq completion-styles '(substring orderless-fast basic))
 
-(use-package all-the-icons-completion
-  :after all-the-icons
+(use-package marginalia
   :config
-  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
+  (marginalia-mode))
+(use-package all-the-icons-completion
+  :after (all-the-icons marginalia)
+  :config
+  ;; (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
+  ;; (all-the-icons-completion-mode)
+  (all-the-icons-completion-marginalia-setup))
 
 ;; prescient history location
 ;; (use-package prescient
@@ -2374,12 +2379,12 @@ space rather than before."
       org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>") ;; timestamp with seconds
       org-latex-src-block-backend 'listings)
 ;; give svg's a proper width when exporting with dvisvgm
-(with-eval-after-load 'ox-html
-  (setq org-html-head
-        (replace-regexp-in-string
-         ".org-svg { width: 90%; }"
-         ".org-svg { width: auto; }"
-         org-html-style-default)))
+;; (with-eval-after-load 'ox-html
+;;   (setq org-html-head
+;;         (replace-regexp-in-string
+;;          ".org-svg { width: 90%; }"
+;;          ".org-svg { width: auto; }"
+;;          org-html-style-default)))
 ;; enable <s code block snippet
 ;; (require 'org-src)
 ;; make org-babel java act like other langs
@@ -2399,9 +2404,9 @@ space rather than before."
 (setq org-src-window-setup 'current-window
       org-src-strip-leading-and-trailing-blank-lines t)
 ;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
-(setq org-babel-latex-preamble
-      (lambda (_)
-        "\\documentclass[preview]{standalone}"))
+;; (setq org-babel-latex-preamble
+;;       (lambda (_)
+;;         "\\documentclass[preview]{standalone}"))
 ;; to make gifs work
 ;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
 ;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
@@ -3161,52 +3166,53 @@ note that this doesnt work for exports"
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
 ;; temporary fix for ox-hugo exporting issues with org 9.7-pre
-(defun org-html-format-latex (latex-frag processing-type info)
-  "Format a LaTeX fragment LATEX-FRAG into HTML.
-PROCESSING-TYPE designates the tool used for conversion.  It can
-be `mathjax', `verbatim', `html', nil, t or symbols in
-`org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
-`imagemagick'.  See `org-html-with-latex' for more information.
-INFO is a plist containing export properties."
-  (let ((cache-relpath "") (cache-dir ""))
-    (unless (or (eq processing-type 'mathjax)
-                (eq processing-type 'html))
-      (let ((bfn (or (buffer-file-name)
-                     (make-temp-name
-                      (expand-file-name "latex" temporary-file-directory))))
-            (latex-header
-             (let ((header (plist-get info :latex-header)))
-               (and header
-                    (concat (mapconcat
-                             (lambda (line) (concat "#+LATEX_HEADER: " line))
-                             (org-split-string header "\n")
-                             "\n")
-                            "\n")))))
-        (setq cache-relpath
-              (concat (file-name-as-directory org-preview-latex-image-directory)
-                      (file-name-sans-extension
-                       (file-name-nondirectory bfn)))
-              cache-dir (file-name-directory bfn))
-        ;; Re-create LaTeX environment from original buffer in
-        ;; temporary buffer so that dvipng/imagemagick can properly
-        ;; turn the fragment into an image.
-        (setq latex-frag (concat latex-header latex-frag))))
-    (with-temp-buffer
-      (insert latex-frag)
-      (org-format-latex cache-relpath nil nil cache-dir nil
-                        "Creating LaTeX Image..." nil processing-type)
-      (buffer-string))))
+;; (defun org-html-format-latex (latex-frag processing-type info)
+;;   "Format a LaTeX fragment LATEX-FRAG into HTML.
+;; PROCESSING-TYPE designates the tool used for conversion.  It can
+;; be `mathjax', `verbatim', `html', nil, t or symbols in
+;; `org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
+;; `imagemagick'.  See `org-html-with-latex' for more information.
+;; INFO is a plist containing export properties."
+;;   (let ((cache-relpath "") (cache-dir ""))
+;;     (unless (or (eq processing-type 'mathjax)
+;;                 (eq processing-type 'html))
+;;       (let ((bfn (or (buffer-file-name)
+;;                      (make-temp-name
+;;                       (expand-file-name "latex" temporary-file-directory))))
+;;             (latex-header
+;;              (let ((header (plist-get info :latex-header)))
+;;                (and header
+;;                     (concat (mapconcat
+;;                              (lambda (line) (concat "#+LATEX_HEADER: " line))
+;;                              (org-split-string header "\n")
+;;                              "\n")
+;;                             "\n")))))
+;;         (setq cache-relpath
+;;               (concat (file-name-as-directory org-preview-latex-image-directory)
+;;                       (file-name-sans-extension
+;;                        (file-name-nondirectory bfn)))
+;;               cache-dir (file-name-directory bfn))
+;;         ;; Re-create LaTeX environment from original buffer in
+;;         ;; temporary buffer so that dvipng/imagemagick can properly
+;;         ;; turn the fragment into an image.
+;;         (setq latex-frag (concat latex-header latex-frag))))
+;;     (with-temp-buffer
+;;       (insert latex-frag)
+;;       (org-format-latex cache-relpath nil nil cache-dir nil
+;;                         "Creating LaTeX Image..." nil processing-type)
+;;       (buffer-string))))
 
 ;; temporary fix for latex preview exports in html
 (plist-put org-html-latex-image-options :inline "svg")
 ;; temporary fix for ox-hugo with new org latex preview system
-(advice-add 'org-blackfriday--update-ltximg-path
-            :around
-            (lambda (orig-fn html-string)
-              (if (plist-get org-html-latex-image-options :inline)
-                  html-string
-                (funcall orig-fn html-string)))
-            '((name . inline-image-workaround)))
+;; (advice-add 'org-blackfriday--update-ltximg-path
+;;             :around
+;;             (lambda (orig-fn html-string)
+;;               (if (plist-get org-html-latex-image-options :inline)
+;;                   html-string
+;;                 (funcall orig-fn html-string)))
+;;             '((name . inline-image-workaround)))
+
 ;; make org not evaluate code blocks on exporting
 (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
 (add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
@@ -3357,7 +3363,7 @@ INFO is a plist containing export properties."
 
 (defun export-node (node)
   "export a node's file to both hugo md and pdf"
-  (let ((org-startup-with-latex-preview nil)
+  (let (;;(org-startup-with-latex-preview nil)
         (file (org-roam-node-file node)))
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
       (org-to-pdf)
