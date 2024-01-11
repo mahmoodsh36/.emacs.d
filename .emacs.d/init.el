@@ -1,3 +1,4 @@
+;; (toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -118,7 +119,7 @@
 (set-face-background 'glyphless-char "red")
 ;; change newline character
 ;;(setf (elt (car (cdr (cdr (assoc 'newline-mark whitespace-display-mappings)))) 0) ?⤸)
-(global-whitespace-mode)
+;; (global-whitespace-mode)
 ;; relative line numbers
 ;; (add-hook 'prog-mode-hook
 ;;           (lambda ()
@@ -770,23 +771,23 @@ space rather than before."
                (message "playing album %s" chosen-album)))))
 ;; play album
 (led-kbd "m B"
-                    (lambda ()
-                      (interactive)
-                      (let ((album-titles
-                             (apply
-                              #'cl-concatenate
-                              (list*
-                               'list
-                               (mapcar
-                                (lambda (dir)
-                                  (directory-files dir nil "^[^.].*$"))
-                                (cl-remove-if-not
-                                 #'file-directory-p
-                                 (directory-files *music-dir* t "^[^.].*$")))))))
-                        (let ((chosen-album (completing-read "pick album: " album-titles)))
-                          (call-process "play_dir_as_album.sh" nil 0 nil
-                                        (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
-                          (message "playing album %s" chosen-album)))))
+         (lambda ()
+           (interactive)
+           (let ((album-titles
+                  (apply
+                   #'cl-concatenate
+                   (list*
+                    'list
+                    (mapcar
+                     (lambda (dir)
+                       (directory-files dir nil "^[^.].*$"))
+                     (cl-remove-if-not
+                      #'file-directory-p
+                      (directory-files *music-dir* t "^[^.].*$")))))))
+             (let ((chosen-album (completing-read "pick album: " album-titles)))
+               (call-process "play_dir_as_album.sh" nil 0 nil
+                             (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
+               (message "playing album %s" chosen-album)))))
 ;; open music table file
 (led-kbd "m f"
          (lambda ()
@@ -794,15 +795,15 @@ space rather than before."
            (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
 ;; open artist's last.fm page
 (led-kbd "m l"
-                    (lambda ()
-                      (interactive)
-                      (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
-                        (let ((chosen-artist (completing-read "pick artist: "
-                                                              artist-names
-                                                              nil
-                                                              nil
-                                                              (current-mpv-artist))))
-                          (browse-url (format "https://www.last.fm/music/%s" chosen-artist))))))
+         (lambda ()
+           (interactive)
+           (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
+             (let ((chosen-artist (completing-read "pick artist: "
+                                                   artist-names
+                                                   nil
+                                                   nil
+                                                   (current-mpv-artist))))
+               (browse-url (format "https://www.last.fm/music/%s" chosen-artist))))))
 
 ;; keybinding to evaluate math expressions
 ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
@@ -820,8 +821,8 @@ space rather than before."
 (led-kbd "w m"
          (lambda () (interactive)
            (when window-system (set-frame-size (selected-frame) 180 50))))
-(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'modus-vivendi) (set-themed-pdf t)))
-(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'modus-operandi) (set-themed-pdf nil)))
+(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'stimmung-themes-dark) (set-themed-pdf t)))
+(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'stimmung-themes-light) (set-themed-pdf nil)))
 (led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
 (led-kbd "s i"
@@ -1182,11 +1183,9 @@ space rather than before."
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Iosevka" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(ignore-errors
-  (set-face-attribute 'default nil :font "Fira Code" :weight 'light :height 100)
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code" :weight 'light :height 100)
-  (set-face-attribute 'variable-pitch nil :font "Fira Code" :weight 'light :height 1.0)
-  )
+(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 100)
+(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 100)
+(set-face-attribute 'variable-pitch nil :font "Fira Code" :weight 'normal :height 1.0)
 ;; this font makes hebrew text unreadable, gotta disable it
 (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
 (use-package darktooth-theme)
@@ -1201,7 +1200,9 @@ space rather than before."
 ;; (use-package minimal-theme
 ;;   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))
 (use-package soothe-theme)
-(use-package stimmung-themes)
+(use-package stimmung-themes
+  :config
+  (setq stimmung-themes-comment 'foreground))
 (use-package acme-theme)
 ;; (switch-to-dark-theme)
 ;; (switch-to-light-theme)
@@ -2172,9 +2173,9 @@ space rather than before."
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-(setq org-latex-preview-cache 'temp)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-latex-preview-cache 'temp)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 (defun run-command-show-output (cmd)
   "run shell command and show continuous output in new buffer"
@@ -2468,10 +2469,12 @@ space rather than before."
             ;; (switch-to-theme 'ample)
             ;; (switch-to-theme 'acme)
             ;; (switch-to-theme 'doom-gruvbox-light)
+            ;; (switch-to-theme 'stimmung-themes-light)
+            (switch-to-theme 'stimmung-themes-dark)
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-theme 'modus-operandi)
-            (switch-to-theme 'modus-vivendi)
+            ;; (switch-to-theme 'modus-vivendi)
             ;; (switch-to-tango-theme)
             ;; (set-face-background hl-line-face "PeachPuff3")
             ;; (switch-to-theme 'doom-sourcerer)
@@ -3366,8 +3369,8 @@ note that this doesnt work for exports"
   (let (;;(org-startup-with-latex-preview nil)
         (file (org-roam-node-file node)))
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      (org-to-pdf)
-      ;; (org-hugo-export-to-md)
+      ;; (org-to-pdf)
+      (org-hugo-export-to-md)
       )))
 
 (defun export-current-buffer ()
