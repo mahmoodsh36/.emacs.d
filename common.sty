@@ -44,6 +44,7 @@
 \usepackage{xifthen}
 \usepackage{xparse}
 \usepackage{pdfpages}
+\usepackage{relsize} % for \mathsmaller, \mathlarger
 % \usepackage{breqn}
 \ifLuaTeX
 % graphdrawing library is only available to luatex
@@ -134,7 +135,7 @@
   breakatwhitespace=false,                % Automatic breaks only at whitespace?
   showspaces=false,                       % Dont make spaces visible
   showtabs=false,                         % Dont make tabls visible
-  columns=flexible,                       % Column format
+  % columns=flexible,                       % Column format
   morekeywords={__global__, __device__},   % CUDA specific keywords
   showstringspaces=false,                 % dont show spaces in strings
   frame=shadowbox,

@@ -1,7 +1,0 @@
-{
-    "music_directory": "/home/mahmooz/music",
-    "database_path": "/home/mahmooz/music/music.db",
-    "port": 5150,
-    "host": "localhost",
-    "on_play_script": "/home/mahmooz/workspace/pmus/scripts/on_play.sh"
-}
