@@ -27,6 +27,10 @@
                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
                    "(provide 'org-version)\n")))
               :pin nil))
+
+;; bibliography file (i use one global one for everything)
+(setq org-cite-global-bibliography '("~/brain/bib.bib"))
+
 ;; (use-package org-contrib
 ;;   :straight (:host github :repo "emacsmirror/org-contrib")
 ;;   :config
@@ -35,7 +39,6 @@
 ;; the all-powerful org mode
 ;; (use-package org)
 ;; (use-package org-contrib)
-
 
 ;; cache for orgmode links, requires pre-isntallation of gcc/clang
 (use-package org-roam
@@ -416,7 +419,7 @@
 ;; most/all of my code files are lisp, load them with sly/slime
 (add-hook 'sly-connected-hook (lambda () (execute-files "lisp-code")))
 ;; run some python code from my org notes on shell startup
-(add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
+;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
 ;; i need those in library of babel on startup too
 ;; (lob-reload)
 

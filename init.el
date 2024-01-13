@@ -110,7 +110,7 @@
 ;; break long lines into multiple
 ;;(global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
-(setq warning-minimum-level :emergency)
+;; (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
@@ -137,9 +137,6 @@
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
-
-;; bibliography file (i use one global one for everything)
-(setq org-cite-global-bibliography '("~/brain/bib.bib"))
 
 (defun kill-all-buffers ()
   "kill all buffers excluding internal buffers (buffers starting with a space)"
@@ -186,7 +183,7 @@
 (defun my-kbd (binding function &rest args)
   )
 
-;; need straight for tecosaur's org version, for now, so install both
+;; setup straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -866,9 +863,9 @@ prompt the user for a coding system."
 (setq python-interpreter "python3.10")
 
 ;; add ~/.emacs.d to load-path
-(push user-emacs-directory load-path)
-(require 'setup-packages) ;; load setup-packages.el
+(push (concat user-emacs-directory "/lisp") load-path)
 (require 'setup-org) ;; load setup-org.el
+(require 'setup-packages) ;; load setup-packages.el
 (require 'setup-evil) ;; load setup-evil.el
 (require 'setup-keys) ;; load setup-keys.el
 (require 'setup-theme) ;; load setup-theme.el
