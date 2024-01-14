@@ -81,7 +81,7 @@
 ;;                       (interactive)
 ;;                       (org-roam-capture nil "t")))
 (led-kbd "r x" #'export-current-buffer :keymaps 'org-mode-map)
-(led-kbd "r X" #'export-all-public :keymaps 'org-mode-map)
+(led-kbd "r X" #'export-all-public)
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
 (led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
 (led-kbd "r E" 'org-babel-tangle-file :keymaps 'org-mode-map)
@@ -403,5 +403,7 @@
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer-volatile)
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
+
+(led-kbd "s b" #'ein:run)
 
 (provide 'setup-keys)

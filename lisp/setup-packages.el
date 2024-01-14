@@ -429,10 +429,9 @@
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir (file-truename "~/work/blog/"))
-  (setq org-hugo-section "blog")
+  ;; (setq org-hugo-section "blog")
   ;; (setq org-more-dir (expand-file-name "~/work/blog/static/more/"))
   ;; (ignore-errors (make-directory org-more-dir))
-  (defconst *org-static-dir* (file-truename "~/work/blog/static/"))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html"))
 

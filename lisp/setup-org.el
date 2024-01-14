@@ -260,7 +260,7 @@
 ;; use html5 for org exports
 (setq org-html-html5-fancy t)
 
-;; disable stupid ox-hugo relative path exports
+;; disable ox-hugo relative path exports
 ;; (defun non-relative-path (obj)
 ;;   "return non-relative path for hugo"
 ;;   (interactive)
@@ -825,8 +825,8 @@ note that this doesnt work for exports"
         (file (org-roam-node-file node)))
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
       (org-to-pdf)
-      ;; (org-hugo-export-to-md)
-      )))
+      (let ((org-hugo-section (node-hugo-section node)))
+        (org-hugo-export-to-md)))))
 
 (defun export-current-buffer ()
   "gets the node associated with the current buffer, exports it"
@@ -856,11 +856,21 @@ note that this doesnt work for exports"
           (dolist (other-node nodes)
             (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
             (setf exceptions (export-node-recursively other-node exceptions))))
-        (when (and node (member "public" (org-roam-node-tags node)))
+        (when (and node (should-export-node node))
           (message (format "exporting: %s" (org-roam-node-file node)))
           (export-node node))
         exceptions)
     exceptions))
+
+(defun should-export-node (node)
+  "whether an org note should be exported"
+  (or (member "public" (org-roam-node-tags node))
+      (member "public-archive" (org-roam-node-tags node))))
+
+(defun node-hugo-section (node)
+  "the section the file should be placed into on hugo export, see HUGO_SECTION or whatever"
+  (cond ((member "public" (org-roam-node-tags node)) "blog")
+        ((member "public-archive" (org-roam-node-tags node)) "index")))
 
 (defun my-org-link-advice (fn link desc info)
   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
@@ -871,7 +881,7 @@ note that this doesnt work for exports"
         (condition-case err ;; handle error when org-roam cannot find link in database
             (let* ((node (org-roam-node-from-id link-path))
                    (tags (org-roam-node-tags node)))
-              (if (and (member "public" tags) ;; if note is public export as usual, otherwise dont export it as link but just as text
+              (if (and (should-export-node node) ;; if note is public export as usual, otherwise dont export it as link but just as text
                        (not (string-match-p "::" link-path))) ;; if link isnt of form [[id::block]], dont export it as link, we cant handle those yet
                   (funcall fn link desc info)
                 (format "<b>%s</b>" desc)))
@@ -912,12 +922,14 @@ note that this doesnt work for exports"
   "export nodes with tag 'public'"
   (interactive)
   (let ((exceptions))
-    (go-through-roam-files-with-tag
-     "public"
-     (lambda ()
-       ;; (message "%s" exceptions)
-       (setf exceptions
-             (export-node-recursively (org-roam-node-from-id (org-id-get)) exceptions))))))
+    (go-through-roam-files-with-tag "public" #'export-all-public-helper)
+    (go-through-roam-files-with-tag "public-archive" #'export-all-public-helper)))
+
+(defun export-all-public-helper ()
+  "a helper for `export-all-public', the variable `exceptions' is dynamically bound"
+  ;; (message "%s" exceptions)
+  (setf exceptions
+        (export-node-recursively (org-roam-node-from-id (org-id-get)) exceptions)))
 
 ;; org-special-edit with lsp?, laggy af
 ;; (defun org-babel-edit-prep:python (babel-info)
