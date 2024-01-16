@@ -116,7 +116,7 @@
 (led-kbd "f n"
          (lambda () (interactive) (find-file "~/work/nixos/configuration.nix")))
 (led-kbd "f c"
-         (lambda () (interactive) (find-file "~/work/dotfiles/.emacs.d/common.sty")))
+         (lambda () (interactive) (find-file "~/work/dotfiles/common.sty")))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))

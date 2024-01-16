@@ -45,6 +45,7 @@
 \usepackage{xparse}
 \usepackage{pdfpages}
 \usepackage{relsize} % for \mathsmaller, \mathlarger
+\usepackage{fonttable}
 % \usepackage{breqn}
 \ifLuaTeX
 % graphdrawing library is only available to luatex
@@ -55,7 +56,8 @@
 \else
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
-\usepackage{kpfonts} % better looking fonts
+% \usepackage{kpfonts} % better looking fonts
+\usepackage{txfonts} % im using \varv from here
 
 % a dummy environment to group together "stuff"
 \newenvironment*{dummyenv}{}{}

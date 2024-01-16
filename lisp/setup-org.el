@@ -1,5 +1,7 @@
 ;; org mode configuration and setup
 
+;; write with-file, for use for lob-load or whatever
+
 ;; tecosaur's org-mode version
 (use-package org
   :defer
@@ -145,14 +147,12 @@
     (org-export-to-file 'latex outfile
       nil nil nil nil nil nil)
     (compile-latex-file outfile)))
-;; make latex preview bigger
-;; (plist-put org-format-latex-options :scale 1.5)
 ;; allow usage of #+BIND in latex exports
 (setq org-export-allow-bind-keywords t)
 ;; decrease image size in latex exports
-(setq org-latex-image-default-scale "1.0")
+;; (setq org-latex-image-default-scale "2.0")
 ;; disable images from being scaled/their dimensions being changed
-(setq org-latex-image-default-width "1.0")
+(setq org-latex-image-default-width "2.0")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -339,6 +339,8 @@
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 ;; render latex in org-mode using builtin function
 (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+;; enable it everywhere possible
+(setq org-latex-preview-line '(block inline edit-special))
 ;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
 (setq org-startup-with-latex-preview t)
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
@@ -371,8 +373,13 @@
 ;; dont number headers on exports
 (setq org-export-with-section-numbers nil)
 (setq org-use-property-inheritance t)
-;; dont set a default width for latex previews
-(setq org-latex-preview-width 1.0)
+;; dont override my labels, silly org
+(setq org-latex-prefer-user-labels t)
+;; dont let org handle subscripts lol
+(setq org-export-with-sub-superscripts nil)
+;; increase preview width
+;; (plist-put org-latex-preview-appearance-options :scale 1.5)
+(plist-put org-latex-preview-appearance-options :zoom 1.5)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -388,7 +395,7 @@
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
       (when (is-buffer-roam-note)
         (funcall callback)
-        ;; (kill-this-buffer)
+        (kill-this-buffer)
         ))))
 
 (defun execute-code-files ()
@@ -421,7 +428,7 @@
 ;; run some python code from my org notes on shell startup
 ;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
 ;; i need those in library of babel on startup too
-;; (lob-reload)
+(lob-reload)
 
 ;; (defun xenops-prerender ()
 ;;   "prerender latex blocks in roam files"
@@ -935,11 +942,6 @@ note that this doesnt work for exports"
 ;; (defun org-babel-edit-prep:python (babel-info)
 ;;   (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
 ;;   (lsp))
-
-;; dont override my labels, silly org
-(setq org-latex-prefer-user-labels t)
-;; dont let org handle subscripts lol
-(setq org-export-with-sub-superscripts nil)
 
 ;; org html title of blocks, unfinished
 (defun my-org-block-advice (fn special-block contents info)

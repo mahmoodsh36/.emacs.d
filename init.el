@@ -110,7 +110,7 @@
 ;; break long lines into multiple
 ;;(global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
-;; (setq warning-minimum-level :emergency)
+(setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
@@ -869,6 +869,7 @@ prompt the user for a coding system."
 (require 'setup-evil) ;; load setup-evil.el
 (require 'setup-keys) ;; load setup-keys.el
 (require 'setup-theme) ;; load setup-theme.el
+(require 'setup-dired) ;; load setup-dired.el
 
 ;; open agenda on startup
 (add-hook 'after-init-hook
