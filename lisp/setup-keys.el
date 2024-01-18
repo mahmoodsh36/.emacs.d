@@ -405,5 +405,6 @@
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
 (led-kbd "s b" #'ein:run)
+(led-kbd "s o" #'insert-random-string)
 
 (provide 'setup-keys)

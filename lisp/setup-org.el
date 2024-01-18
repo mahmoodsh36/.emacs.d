@@ -1,7 +1,5 @@
 ;; org mode configuration and setup
 
-;; write with-file, for use for lob-load or whatever
-
 ;; tecosaur's org-mode version
 (use-package org
   :defer
@@ -58,7 +56,7 @@
   (global-set-key (kbd "C-c r g") 'org-roam-graph)
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
-           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
+           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org") ;; "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
            :kill-buffer t :unnarrowed t :empty-lines-after 0)
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
@@ -131,7 +129,7 @@
 ;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
-(setq org-latex-preview-cache 'temp)
+;; (setq org-latex-preview-cache 'temp)
 (setq org-element-cache-persistent nil)
 (setq org-element-use-cache nil)
 
@@ -152,7 +150,7 @@
 ;; decrease image size in latex exports
 ;; (setq org-latex-image-default-scale "2.0")
 ;; disable images from being scaled/their dimensions being changed
-(setq org-latex-image-default-width "2.0")
+;; (setq org-latex-image-default-width "2.0")
 ;; enable latex snippets in org mode
 (defun my-org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -662,43 +660,6 @@ note that this doesnt work for exports"
 ;;  t
 ;;  LaTeX--arguments-completion-at-point)
 
-;; temporary fix for ox-hugo exporting issues with org 9.7-pre
-;; (defun org-html-format-latex (latex-frag processing-type info)
-;;   "Format a LaTeX fragment LATEX-FRAG into HTML.
-;; PROCESSING-TYPE designates the tool used for conversion.  It can
-;; be `mathjax', `verbatim', `html', nil, t or symbols in
-;; `org-preview-latex-process-alist', e.g., `dvipng', `dvisvgm' or
-;; `imagemagick'.  See `org-html-with-latex' for more information.
-;; INFO is a plist containing export properties."
-;;   (let ((cache-relpath "") (cache-dir ""))
-;;     (unless (or (eq processing-type 'mathjax)
-;;                 (eq processing-type 'html))
-;;       (let ((bfn (or (buffer-file-name)
-;;                      (make-temp-name
-;;                       (expand-file-name "latex" temporary-file-directory))))
-;;             (latex-header
-;;              (let ((header (plist-get info :latex-header)))
-;;                (and header
-;;                     (concat (mapconcat
-;;                              (lambda (line) (concat "#+LATEX_HEADER: " line))
-;;                              (org-split-string header "\n")
-;;                              "\n")
-;;                             "\n")))))
-;;         (setq cache-relpath
-;;               (concat (file-name-as-directory org-preview-latex-image-directory)
-;;                       (file-name-sans-extension
-;;                        (file-name-nondirectory bfn)))
-;;               cache-dir (file-name-directory bfn))
-;;         ;; Re-create LaTeX environment from original buffer in
-;;         ;; temporary buffer so that dvipng/imagemagick can properly
-;;         ;; turn the fragment into an image.
-;;         (setq latex-frag (concat latex-header latex-frag))))
-;;     (with-temp-buffer
-;;       (insert latex-frag)
-;;       (org-format-latex cache-relpath nil nil cache-dir nil
-;;                         "Creating LaTeX Image..." nil processing-type)
-;;       (buffer-string))))
-
 ;; temporary fix for latex preview exports in html
 ;; (plist-put org-html-latex-image-options :inline "svg")
 ;; temporary fix for ox-hugo with new org latex preview system
@@ -1001,5 +962,12 @@ note that this doesnt work for exports"
 (dolist (mapping major-mode-remap-alist)
   (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
     (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
+
+;; when exporting automatically use setup.org
+(defun insert-setupfile (_)
+  (goto-char 0)
+  (insert "#+setupfile: ~/.emacs.d/setup.org\n"))
+;; (add-to-list 'org-export-before-parsing-functions #'insert-setupfile)
+(add-to-list 'org-export-before-processing-functions #'insert-setupfile)
 
 (provide 'setup-org)

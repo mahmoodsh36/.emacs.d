@@ -337,9 +337,13 @@
       (setq random-str (concat random-str
                                (char-to-string (elt charset (random baseCount))))))
     random-str))
+(defun insert-random-string (&optional num)
+  (interactive)
+  (or num (setq num 7))
+  (insert (generate-random-string num)))
 (defun temp-file (EXT)
   (format "%stmp_%s.%s" (concat brain-path "out/") (generate-random-string 7) EXT))
-(global-set-key (kbd "C-c R") (lambda () (interactive) (insert (generate-random-string 7))))
+(global-set-key (kbd "C-c R") #'insert-random-string)
 
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
@@ -859,8 +863,8 @@ prompt the user for a coding system."
 ;; (add-to-list 'org-export-filter-bold-functions 'my-bold)
 
 ;; for now, this is the one with the packages on my system
-(setq python-shell-interpreter "python3.10")
-(setq python-interpreter "python3.10")
+;; (setq python-shell-interpreter "python3.10")
+;; (setq python-interpreter "python3.10")
 
 ;; add ~/.emacs.d to load-path
 (push (concat user-emacs-directory "/lisp") load-path)
@@ -899,3 +903,7 @@ prompt the user for a coding system."
             ;; (switch-to-theme 'doom-sourcerer)
             ;;(switch-to-darktooth-theme)
             ))
+
+(defun replace-dollar-signs ()
+  (interactive)
+  (replace-regexp "\\$\\(.*?\\)\\$" "\\\\(\\1\\\\)"))
