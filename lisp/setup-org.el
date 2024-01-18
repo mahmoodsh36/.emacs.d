@@ -130,8 +130,8 @@
 ;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
 ;; (setq org-latex-preview-cache 'temp)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 ;; compile org docs to pdfs and put them in cache dir
 (defun latex-out-file ()
@@ -378,6 +378,7 @@
 ;; increase preview width
 ;; (plist-put org-latex-preview-appearance-options :scale 1.5)
 (plist-put org-latex-preview-appearance-options :zoom 1.5)
+(plist-put org-latex-preview-appearance-options :page-width nil)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -787,21 +788,22 @@ note that this doesnt work for exports"
 ;;      ;; (export-node node)
 ;;      )))
 
-(defun export-node (node)
-  "export a node's file to both hugo md and pdf"
-  (let (;;(org-startup-with-latex-preview nil)
-        (file (org-roam-node-file node)))
+(defun export-node (node &rest kw)
+  "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
+  (let ((file (org-roam-node-file node)))
     (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      (org-to-pdf)
-      (let ((org-hugo-section (node-hugo-section node)))
-        (org-hugo-export-to-md)))))
+      (when (plist-get kw :pdf-p)
+        (org-to-pdf))
+      (when (plist-get kw :html-p)
+        (let ((org-hugo-section (or (node-hugo-section node) "index")))
+          (org-hugo-export-to-md))))))
 
-(defun export-current-buffer ()
+(defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
   (interactive)
   (let ((node (this-buffer-roam-node)))
     (when node
-      (export-node node))))
+      (apply #'export-node node kw))))
 
 (defun export-current-buffer-recursively ()
   "gets the node associated with the current buffer, exports it with export-node-recursively, see its docstring"
@@ -826,7 +828,7 @@ note that this doesnt work for exports"
             (setf exceptions (export-node-recursively other-node exceptions))))
         (when (and node (should-export-node node))
           (message (format "exporting: %s" (org-roam-node-file node)))
-          (export-node node))
+          (export-node node :html-p t))
         exceptions)
     exceptions))
 
@@ -965,8 +967,8 @@ note that this doesnt work for exports"
 
 ;; when exporting automatically use setup.org
 (defun insert-setupfile (_)
-  (goto-char 0)
-  (insert "#+setupfile: ~/.emacs.d/setup.org\n"))
+  (goto-line 6)
+  (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n"))
 ;; (add-to-list 'org-export-before-parsing-functions #'insert-setupfile)
 (add-to-list 'org-export-before-processing-functions #'insert-setupfile)
 
