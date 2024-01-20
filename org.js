@@ -57,16 +57,14 @@ function wrap(toWrap, wrapper) {
 }
 
 function getTextBlocks() {
-  let elts = document.getElementsByClassName('example');
-  return elts;
-  /*
+  // let elts = document.getElementsByClassName('example');
+  // return elts;
   let elts = document.getElementsByClassName('language-text');
   let textBlocks = [];
   for (let elt of elts) {
     textBlocks.push(elt.parentElement.parentElement);
   }
   return textBlocks;
-  */
 }
 
 function getCodeBlocks() {

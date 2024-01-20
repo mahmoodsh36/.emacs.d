@@ -544,7 +544,7 @@
 ;; (use-package dumb-jump)
 ;; (use-package ob-async)
 (use-package format-all)
-;; (use-package org-roam-ui)
+(use-package org-roam-ui)
 ;; (use-package jupyter)
 ;; (use-package plantuml-mode)
 ;; for latex references, i think it can do those (not sure)

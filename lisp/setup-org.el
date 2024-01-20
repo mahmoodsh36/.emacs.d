@@ -28,6 +28,8 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 
+(defconst *enable-latex-previews* t)
+
 ;; bibliography file (i use one global one for everything)
 (setq org-cite-global-bibliography '("~/brain/bib.bib"))
 
@@ -56,7 +58,7 @@
   (global-set-key (kbd "C-c r g") 'org-roam-graph)
   (setq org-roam-capture-templates
         '(("n" "note" plain "%?"
-           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org") ;; "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
+           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
            :kill-buffer t :unnarrowed t :empty-lines-after 0)
           ("k" "quick note" plain "%?"
            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
@@ -336,18 +338,18 @@
 ;; make org-open-at-point open link in the same buffer
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
 ;; render latex in org-mode using builtin function
-(add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+(when *enable-latex-previews*
+  (add-hook 'org-mode-hook 'org-latex-preview-auto-mode))
 ;; enable it everywhere possible
-(setq org-latex-preview-line '(block inline edit-special))
+(setq org-latex-preview-live '(block inline edit-special))
 ;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
-(setq org-startup-with-latex-preview t)
+(when *enable-latex-previews*
+  (setq org-startup-with-latex-preview t))
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
 ;; export to html using dvisvgm/mathjax/whatever
 (setq org-html-with-latex 'dvisvgm)
 ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
 (add-hook 'org-mode-hook 'visual-line-mode)
-;; for live previews below envs
-(setq org-latex-preview-auto-generate 'live)
 ;; use dvisvgm instead of dvipng
 ;; (setq org-latex-preview-process-default 'dvisvgm)
 ;; dont export headlines with tags
@@ -357,7 +359,7 @@
 ;; also number equations
 (setq org-latex-preview-numbered t)
 ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-;; (setq org-latex-compiler "lualatex")
+(setq org-latex-compiler "lualatex")
 ;; (setq org-latex-compiler "pdflatex")
 ;; ;; make dvisvgm preview use lualatex
 ;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
@@ -377,8 +379,12 @@
 (setq org-export-with-sub-superscripts nil)
 ;; increase preview width
 ;; (plist-put org-latex-preview-appearance-options :scale 1.5)
-(plist-put org-latex-preview-appearance-options :zoom 1.5)
-(plist-put org-latex-preview-appearance-options :page-width nil)
+;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
+;; (plist-put org-latex-preview-appearance-options :page-width nil)
+(plist-put org-html-latex-image-options :page-width nil)
+(plist-put org-html-latex-image-options :image-dir (file-truename (concat user-emacs-directory "html_ltximg")))
+;; lower the debounce value
+(setq org-latex-preview-live-debounce 0.25)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -406,6 +412,7 @@
      (condition-case err
          (org-babel-execute-buffer)
        (error (message "got error %s while executing %s" err (buffer-file-name)))))))
+
 (defun execute-files (tag)
   "execute files tagged with 'code'"
   (interactive)
@@ -415,6 +422,7 @@
      (condition-case err
          (org-babel-execute-buffer)
        (error (message "got error %s while executing %s" err (buffer-file-name)))))))
+
 (defun lob-reload ()
   "load files tagged with 'code' into the org babel library (lob - library of babel)"
   (interactive)
@@ -422,6 +430,7 @@
    "code"
    (lambda ()
      (org-babel-lob-ingest (buffer-file-name)))))
+
 ;; most/all of my code files are lisp, load them with sly/slime
 (add-hook 'sly-connected-hook (lambda () (execute-files "lisp-code")))
 ;; run some python code from my org notes on shell startup

@@ -323,7 +323,6 @@
 (setq eshell-history-file-name (concat brain-path "/eshell_history")) ;; save history to filesystem
 (setq eshell-history-size 100000000)
 
-
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
 

@@ -56,8 +56,11 @@
 \else
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
-% \usepackage{kpfonts} % better looking fonts
-\usepackage{txfonts} % im using \varv from here
+\usepackage{kpfonts} % better(?) looking fonts
+
+% get \varv from the txfonts package
+\DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts
+\DeclareMathSymbol{\varv}{\mathord}{matha}{118}
 
 % a dummy environment to group together "stuff"
 \newenvironment*{dummyenv}{}{}
