@@ -28,7 +28,44 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 
-(defconst *enable-latex-previews* t)
+(defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
+
+(defun enable-latex-previews ()
+  "enable org mode latex previews for current emacs session"
+  (interactive)
+  (setq *enable-latex-previews* t)
+  (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+  (setq org-startup-with-latex-preview t))
+
+(defun disable-latex-previews ()
+  "disable org mode latex previews for current emacs session"
+  (interactive)
+  (setq *latex-previews-enabled-p* nil)
+  (remove-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+  (setq org-startup-with-latex-preview nil))
+
+(defun toggle-latex-previews ()
+  "toggle org mode latex previews for current emacs session"
+  (interactive)
+  (if *latex-previews-enabled-p*
+      (disable-latex-previews)
+    (enable-latex-previews)))
+
+(defun toggle-latex-previews-and-render-current-buffer ()
+  "toggle org mode latex previews for current emacs session and render previews in current buffer (if the request is to enable them)"
+  (interactive)
+  (if *latex-previews-enabled-p*
+      (progn
+        (org-latex-preview-clear-overlays)
+        (org-latex-preview-auto-mode -1)
+        (disable-latex-previews))
+    (progn
+      (org-latex-preview)
+      (org-latex-preview-auto-mode 1)
+      (enable-latex-previews))))
+
+(when *latex-previews-enabled-p*
+  (enable-latex-previews))
 
 ;; bibliography file (i use one global one for everything)
 (setq org-cite-global-bibliography '("~/brain/bib.bib"))
@@ -337,14 +374,8 @@
 (setq org-agenda-show-future-repeats 'next)
 ;; make org-open-at-point open link in the same buffer
 (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
-;; render latex in org-mode using builtin function
-(when *enable-latex-previews*
-  (add-hook 'org-mode-hook 'org-latex-preview-auto-mode))
 ;; enable it everywhere possible
 (setq org-latex-preview-live '(block inline edit-special))
-;; starting up with latex previews tremendously slows things down... (not really after disabling cache)
-(when *enable-latex-previews*
-  (setq org-startup-with-latex-preview t))
 (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
 ;; export to html using dvisvgm/mathjax/whatever
 (setq org-html-with-latex 'dvisvgm)

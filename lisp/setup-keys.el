@@ -96,7 +96,7 @@
 (led-kbd "r r" 'org-redisplay-inline-images :keymaps 'org-mode-map)
 (led-kbd "r P" 'org-set-property :keymaps 'org-mode-map)
 (led-kbd "r z" 'org-add-note :keymaps 'org-mode-map)
-(led-kbd "r p" 'org-latex-preview-auto-mode :keymaps 'org-mode-map)
+(led-kbd "r p" #'toggle-latex-previews-and-render-current-buffer :keymaps 'org-mode-map)
 ;; (general-define-key :keymaps 'override "/" 'swiper)
 (led-kbd "c" "C-c C-c" :keymaps 'org-mode-map)
 (led-kbd "a N" #'today-entry-text-simple)
