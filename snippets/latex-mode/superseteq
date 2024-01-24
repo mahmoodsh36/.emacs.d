@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: supseteq
+# key: sp
+# --
+\supseteq$0
