@@ -28,7 +28,7 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 
-(defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
+(defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
@@ -132,10 +132,7 @@
 (add-hook 'org-babel-after-execute-hook (lambda ()
                                           (interactive)
                                           (clear-image-cache)
-                                          ;; (org-latex-preview) ;; this makes everything super slow and even buggy
                                           (org-display-inline-images)))
-;; render latex preview after evaluating code blocks, not needed anymore org detects changes by itself now
-;; (add-hook 'org-babel-after-execute-hook 'org-latex-preview)
 ;; disable prompt when executing code block in org mode
 (setq org-confirm-babel-evaluate nil)
 (setq org-link-elisp-confirm-function nil)
@@ -165,8 +162,6 @@
 (setq org-imenu-depth 4)
 ;; annoying broken links..
 (setq org-export-with-broken-links 'mark)
-;; thought org caching was the bottleneck for ox-hugo exports but it isnt, (wait, it apparently is.. but it isnt, as its just that a more recent version is the main cause)
-;; these cause a delay when killing org buffers, disabling for now, disabling this also made rendering way faster
 ;; dont cache latex preview images
 ;; (setq org-latex-preview-cache 'temp)
 ;; (setq org-element-cache-persistent nil)
@@ -231,7 +226,7 @@
       '((:dir . nil)
         (:results . "value")))
 ;; use unique id's to identify headers, better than using names cuz names could change
-(setq org-id-link-to-org-use-id t)
+(setq org-id-link-to-org-use-id 'use-existing)
 ;; creation dates for TODOs
 ;; (defun my/log-todo-creation-date (&rest ignore)
 ;;   "Log TODO creation time in the property drawer under the key 'CREATED'."
@@ -645,6 +640,8 @@
   (interactive)
   (open-todays-file)
   (org-insert-heading-respect-content)
+  (org-insert-time-stamp (current-time) t)
+  (insert " ")
   (org-clock-in)
   (org-up-heading-safe)
   (end-of-line)

@@ -575,7 +575,7 @@
 ;; (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
-;; (use-package avy)
+(use-package avy)
 ;; (use-package auto-yasnippet)
 
 (use-package embark
@@ -974,10 +974,11 @@
   (setq persp-state-default-file (concat brain-path "/emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
-(use-package org-src-context
-  :straight (org-src-context :type git :host github :repo "karthink/org-src-context")
-  :config
-  (add-hook 'org-mode-hook #'org-src-context-mode))
+;; very buggy
+;; (use-package org-src-context
+;;   :straight (org-src-context :type git :host github :repo "karthink/org-src-context")
+;;   :config
+;;   (add-hook 'org-mode-hook #'org-src-context-mode))
 
 ;; (use-package wolfram)
 ;; (use-package wolfram-mode)
@@ -1069,5 +1070,31 @@
 ;;(use-package google-maps)
 
 (use-package google-translate)
+(use-package biblio)
+
+;(use-package jinx
+  ;:init (global-jinx-mode)
+  ;:custom
+  ;(jinx-languages "en_US")
+  ;(jinx-include-modes '(text-mode prog-mode))
+  ;(jinx-include-faces
+   ;'((prog-mode font-lock-doc-face)
+     ;(conf-mode font-lock-comment-face)))
+  ;(jinx-exclude-regexps
+   ;'((t "[A-Z]+\\>"
+        ;"\\<[[:upper:]][[:lower:]]+\\>"
+        ;"\\w*?[0-9\.'\"-]\\w*"
+        ;"[a-z]+://\\S-+"
+        ;"<?[-+_.~a-zA-Z][-+_.~:a-zA-Z0-9]*@[-.a-zA-Z0-9]+>?"))))
+             ;;; :bind
+              ;; (("M-$" . jinx-correct)))
+
+;; links to specific pdf pages from org mode
+(use-package org-pdftools)
+
+(use-package hyperbole
+  :straight (hyperbole :fetcher github :repo "rswgnu/hyperbole")
+  :config
+  (hyperbole-mode 1))
 
 (provide 'setup-packages)

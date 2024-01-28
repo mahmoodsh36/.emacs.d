@@ -133,8 +133,8 @@
   (evil-set-initial-state 'vterm-mode 'emacs)
   ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
-  (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
-  (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
+  ;; (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
+  ;; (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
 
   (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
 

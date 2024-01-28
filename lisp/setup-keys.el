@@ -86,8 +86,6 @@
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
 (led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
 (led-kbd "r E" 'org-babel-tangle-file :keymaps 'org-mode-map)
-;; (general-define-key :keymaps 'org-mode-map "SPC r d" 'org-deadline)
-;; (general-define-key :keymaps 'org-mode-map "SPC r s" 'org-schedule)
 (led-kbd "r g"
          (lambda ()
            (interactive)
@@ -340,8 +338,8 @@
 (define-key input-decode-map [?\C-m] [C-m]) ;; so that c-m wouldnt be attached to <return> anymore
 (global-set-key (kbd "<C-m>") #'newline)
 ;; (keymap-global-set (kbd "<C-m>") #'newline) ;; not sure why this doesnt work like above
-(keymap-global-unset "<RET>")
-(keymap-global-unset "<backspace>")
+;; (keymap-global-unset "<RET>")
+;; (keymap-global-unset "<backspace>")
 (keymap-global-set "C-S-d" #'backward-delete-char-untabify)
 (keymap-global-set "M-D" #'backward-kill-word)
 (keymap-global-set "C-M-S-k" #'backward-kill-sexp)
@@ -407,5 +405,7 @@
 
 (led-kbd "s b" #'ein:run)
 (led-kbd "s o" #'insert-random-string)
+
+(led-kbd "s y" #'avy-goto-char)
 
 (provide 'setup-keys)
