@@ -434,7 +434,9 @@
   (setq *org-static-dir* (format "%s/static" org-hugo-base-dir))
   ;; (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
-  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html"))
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html")
+  ;; (plist-put org-html-latex-image-options :image-dir (file-truename (concat user-emacs-directory "html_ltximg")))
+(plist-put org-html-latex-image-options :image-dir (file-truename (concat *org-static-dir* "/ltximg/"))))
 
 (use-package dap-mode)
 
@@ -1095,6 +1097,9 @@
 (use-package hyperbole
   :straight (hyperbole :fetcher github :repo "rswgnu/hyperbole")
   :config
-  (hyperbole-mode 1))
+  (hyperbole-mode 1)
+  ;; it overrides the M-return key for vertico :/
+  (unbind-key "M-<return>" hyperbole-mode-map)
+  (unbind-key "M-RET" hyperbole-mode-map))
 
 (provide 'setup-packages)

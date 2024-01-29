@@ -163,9 +163,9 @@
 ;; annoying broken links..
 (setq org-export-with-broken-links 'mark)
 ;; dont cache latex preview images
-;; (setq org-latex-preview-cache 'temp)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+(setq org-latex-preview-cache 'temp)
+(setq org-element-cache-persistent nil)
+(setq org-element-use-cache nil)
 
 ;; compile org docs to pdfs and put them in cache dir
 (defun latex-out-file ()
@@ -408,7 +408,6 @@
 ;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
 ;; (plist-put org-latex-preview-appearance-options :page-width nil)
 (plist-put org-html-latex-image-options :page-width nil)
-(plist-put org-html-latex-image-options :image-dir (file-truename (concat user-emacs-directory "html_ltximg")))
 ;; lower the debounce value
 (setq org-latex-preview-live-debounce 0.25)
 
