@@ -894,6 +894,8 @@ prompt the user for a coding system."
             ;; (switch-to-theme 'stimmung-themes-light)
             ;; (switch-to-theme 'stimmung-themes-dark)
             (switch-to-theme 'ef-melissa-light)
+            ;; (switch-to-theme 'ef-tritanopia-dark)
+            ;(switch-to-theme 'ef-melissa-dark)
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-theme 'modus-operandi)
@@ -903,7 +905,33 @@ prompt the user for a coding system."
             ;; (switch-to-theme 'doom-sourcerer)
             ;;(switch-to-darktooth-theme)
             ))
+;; enable flyspell (spell checking)
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+;; flyspell buffer when its opened
+(add-hook 'flyspell-mode-hook #'flyspell-buffer)
 
+(use-package flyspell-correct
+  :bind ("C-;" . flyspell-correct-wrapper))
+
+;; sometimes useful for refactoring old tex notes
 (defun replace-dollar-signs ()
   (interactive)
   (replace-regexp "\\$\\(.*?\\)\\$" "\\\\(\\1\\\\)"))
+
+;; disable some modes for large files (otherwise emacs will hang..)
+;; (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
+;; there's also find-file-literally i guess
+(defun conditional-disable-modes ()
+  (unless (eq major-mode 'pdf-view-mode)
+    (when (> (buffer-size) (* 1024 1024))
+      (flycheck-mode -1)
+      (flyspell-mode -1)
+      (font-lock-mode -1)
+      (fundamental-mode)
+      (which-function-mode -1)
+      (linum-mode 0)
+      (lsp-mode 0)
+      ))
+  )
+(add-hook 'find-file-hook 'conditional-disable-modes)

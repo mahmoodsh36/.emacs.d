@@ -1,28 +1,3 @@
-;; disable some modes for large files (otherwise emacs will hang..)
-(defun conditional-disable-modes ()
-  (unless (eq major-mode 'pdf-view-mode)
-    (when (> (buffer-size) (* 1024 1024))
-      (flycheck-mode -1)
-      (font-lock-mode -1)
-      (fundamental-mode)
-      (which-function-mode -1)
-      (linum-mode 0)
-      (lsp-mode 0)
-      ))
-  )
-(add-hook 'find-file-hook 'conditional-disable-modes)
-
-;; from https://stackoverflow.com/questions/18316665/how-to-improve-emacs-performance-when-view-large-file
-;; (defun my-find-file-check-make-large-file-read-only-hook ()
-;;   "If a file is over a given size, make the buffer read only."
-;;   (when (> (buffer-size) (* 1024 1024))
-;;     (setq buffer-read-only t)
-;;     (buffer-disable-undo)
-;;     (fundamental-mode)))
-
-;; (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
-;; there's also find-file-literally i guess
-
 ;; (use-package dired+
 ;;   :quelpa (dired+ :fetcher url :url "https://www.emacswiki.org/emacs/download/dired+.el")
 ;;   :defer 1

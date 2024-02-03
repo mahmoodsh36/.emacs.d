@@ -37,6 +37,7 @@
 % \tikzstyle{every picture}+=[remember picture]
 \usepackage{enumitem}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{iftex}
 \usepackage{turnstile}
 \usepackage[normalem]{ulem}
@@ -260,3 +261,6 @@
   \renewcommand\given{\givensymbol{\vert}}%
   #1%
 }
+
+% for karnaughmap package
+\define@cmdkey{karnaughmap}{dontcare}[\phi]{} % change default dontcare symbol, doesnt work?

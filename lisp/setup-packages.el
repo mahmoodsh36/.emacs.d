@@ -697,11 +697,11 @@
 ;;   (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
 ;; perfectly aligned org mode tables
-(use-package valign
-  :hook
-  (org-mode . valign-mode)
-  :config
-  (setq valign-fancy-bar t))
+;; (use-package valign
+;;   :hook
+;;   (org-mode . valign-mode)
+;;   :config
+;;   (setq valign-fancy-bar t))
 
 ;; (use-package hydra
 ;;   :config
@@ -1074,22 +1074,23 @@
 (use-package google-translate)
 (use-package biblio)
 
-;(use-package jinx
-  ;:init (global-jinx-mode)
-  ;:custom
-  ;(jinx-languages "en_US")
-  ;(jinx-include-modes '(text-mode prog-mode))
-  ;(jinx-include-faces
-   ;'((prog-mode font-lock-doc-face)
-     ;(conf-mode font-lock-comment-face)))
-  ;(jinx-exclude-regexps
-   ;'((t "[A-Z]+\\>"
-        ;"\\<[[:upper:]][[:lower:]]+\\>"
-        ;"\\w*?[0-9\.'\"-]\\w*"
-        ;"[a-z]+://\\S-+"
-        ;"<?[-+_.~a-zA-Z][-+_.~:a-zA-Z0-9]*@[-.a-zA-Z0-9]+>?"))))
-             ;;; :bind
-              ;; (("M-$" . jinx-correct)))
+;; i think its buggy..
+;; (use-package jinx
+;;   :init (global-jinx-mode)
+;;   ;; :custom
+;;   ;; (jinx-languages "en_US")
+;;   ;; (global-jinx-modes '(text-mode prog-mode))
+;;   ;; (jinx-include-faces
+;;   ;;  '((prog-mode font-lock-doc-face)
+;;   ;;    (conf-mode font-lock-comment-face)))
+;;   ;; (jinx-exclude-regexps
+;;   ;;  '((t "[A-Z]+\\>"
+;;   ;;       "\\<[[:upper:]][[:lower:]]+\\>"
+;;   ;;       "\\w*?[0-9\.'\"-]\\w*"
+;;   ;;       "[a-z]+://\\S-+"
+;;   ;;       "<?[-+_.~a-zA-Z][-+_.~:a-zA-Z0-9]*@[-.a-zA-Z0-9]+>?")))
+;;   :bind
+;;   (("M-$" . jinx-correct)))
 
 ;; links to specific pdf pages from org mode
 (use-package org-pdftools)
@@ -1101,5 +1102,10 @@
   ;; it overrides the M-return key for vertico :/
   (unbind-key "M-<return>" hyperbole-mode-map)
   (unbind-key "M-RET" hyperbole-mode-map))
+
+(use-package denote
+  :straight (denote :fetcher github :repo "protesilaos/denote"))
+(use-package denote-menu
+  :straight (denote-menu :fetcher github :repo "namilus/denote-menu"))
 
 (provide 'setup-packages)

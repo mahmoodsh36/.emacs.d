@@ -205,8 +205,10 @@
 (led-kbd "w m"
          (lambda () (interactive)
            (when window-system (set-frame-size (selected-frame) 180 50))))
-(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'stimmung-themes-dark) (set-themed-pdf t)))
-(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'stimmung-themes-light) (set-themed-pdf nil)))
+;; (led-kbd "s d" (lambda () (interactive) (switch-to-theme 'stimmung-themes-dark) (set-themed-pdf t)))
+;; (led-kbd "s l" (lambda () (interactive) (switch-to-theme 'stimmung-themes-light) (set-themed-pdf nil)))
+(led-kbd "s d" (lambda () (interactive) (switch-to-theme 'ef-melissa-dark) (set-themed-pdf t)))
+(led-kbd "s l" (lambda () (interactive) (switch-to-theme 'ef-melissa-light) (set-themed-pdf nil)))
 (led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
 (led-kbd "s i"
@@ -227,7 +229,7 @@
 (led-kbd "s u" 'copy-file-path)
 
 ;; agenda keys
-(led-kbd "a a" (lambda () (interactive) (org-agenda nil "n")))
+(led-kbd "a a" (lambda () (interactive) (org-agenda nil "A")))
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
 (led-kbd "a s" #'org-schedule)
 (led-kbd "a d" #'org-deadline)
