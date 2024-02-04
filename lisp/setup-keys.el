@@ -54,22 +54,22 @@
            (org-insert-time-stamp (current-time) t))) ;; timestamp with full time
 ;;(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
 ;; (general-define-key :keymaps 'override (led "r t" 'org-roam-buffer-toggle)
-(led-kbd "r f"
-         (lambda ()
-           (interactive)
-           (org-roam-node-find
-            nil
-            nil
-            (lambda (my-roam-node)
-              (and my-roam-node
-                   (not (equal (org-roam-node-title my-roam-node) "")))))))
-(led-kbd "r i" 'org-roam-node-insert)
+;; (led-kbd "r f"
+;;          (lambda ()
+;;            (interactive)
+;;            (org-roam-node-find
+;;             nil
+;;             nil
+;;             (lambda (my-roam-node)
+;;               (and my-roam-node
+;;                    (not (equal (org-roam-node-title my-roam-node) "")))))))
+;; (led-kbd "r n" (lambda () (interactive) (org-roam-capture nil "n")))
+;; (led-kbd "r i" 'org-roam-node-insert)
 (led-kbd "r c" 'org-id-get-create)
 (led-kbd "r o" 'org-open-at-point :keymaps 'org-mode-map)
 (led-kbd "r a" 'org-attach :keymaps 'org-mode-map)
 (led-kbd "r A" 'org-attach-open :keymaps 'org-mode-map)
 (led-kbd "r l" 'org-roam-alias-add :keymaps 'org-mode-map)
-(led-kbd "r n" (lambda () (interactive) (org-roam-capture nil "n")))
 (led-kbd "r w" 'org-roam-tag-add :keymaps 'org-mode-map)
 (led-kbd "r W" 'org-roam-tag-remove :keymaps 'org-mode-map)
 (led-kbd "r q"
@@ -414,6 +414,6 @@
 (setq denote-templates
       '((note . "#+title: ")
         (memo . "* Some heading")))
-(led-kbd "r d n" #'denote-open-or-create)
+(led-kbd "r n" #'denote-open-or-create)
 
 (provide 'setup-keys)

@@ -1,4 +1,4 @@
-(toggle-debug-on-error)
+;; (toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -869,8 +869,8 @@ prompt the user for a coding system."
 
 ;; add ~/.emacs.d to load-path
 (push (concat user-emacs-directory "/lisp") load-path)
-(require 'setup-org) ;; load setup-org.el
 (require 'setup-packages) ;; load setup-packages.el
+(require 'setup-org) ;; load setup-org.el
 (require 'setup-evil) ;; load setup-evil.el
 (require 'setup-keys) ;; load setup-keys.el
 (require 'setup-theme) ;; load setup-theme.el
@@ -908,12 +908,12 @@ prompt the user for a coding system."
             ;;(switch-to-darktooth-theme)
             ))
 ;; enable flyspell (spell checking)
-(dolist (hook '(text-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
-;; flyspell buffer when its opened
-(add-hook 'flyspell-mode-hook #'flyspell-buffer)
-(use-package flyspell-correct
-  :bind ("C-;" . flyspell-correct-wrapper))
+;; (dolist (hook '(text-mode-hook))
+;;   (add-hook hook (lambda () (flyspell-mode 1))))
+;; ;; flyspell buffer when its opened
+;; (add-hook 'flyspell-mode-hook #'flyspell-buffer)
+;; (use-package flyspell-correct
+;;   :bind ("C-;" . flyspell-correct-wrapper))
 
 ;; sometimes useful for refactoring old tex notes
 (defun replace-dollar-signs ()
