@@ -1,6 +1,8 @@
 (use-package nix-mode
   :mode "\\.nix\\'")
 
+(use-package general)
+
 ;; epub reader
 (use-package nov)
 
@@ -35,11 +37,11 @@
   (treemacs-follow-mode -1))
 
 ;; projectile, for project browsing/management
-(use-package projectile
-  :quelpa (:host github :repo "bbatsov/projectile")
-  :config
-  ;; (setq projectile-completion-system 'ivy)
-  (projectile-mode +1))
+;; (use-package projectile
+;;   :straight (:host github :repo "bbatsov/projectile")
+;;   :config
+;;   ;; (setq projectile-completion-system 'ivy)
+;;   (projectile-mode +1))
 
 ;; auto completion
 ;; im sticking with company for now as corfu keeps crashing with org mode, plus slime doesnt work with corfu (for now)
@@ -48,7 +50,7 @@
 (if enable-company
     (progn
       (use-package company
-        :quelpa (:host github :repo "company-mode/company-mode")
+        :straight (:host github :repo "company-mode/company-mode")
         :config
         (add-hook 'after-init-hook 'global-company-mode)
         (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
@@ -436,7 +438,8 @@
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html")
   ;; (plist-put org-html-latex-image-options :image-dir (file-truename (concat user-emacs-directory "html_ltximg")))
-(plist-put org-html-latex-image-options :image-dir (file-truename (concat *org-static-dir* "/ltximg/"))))
+  ;;(plist-put org-html-latex-image-options :image-dir (file-truename (concat *org-static-dir* "/ltximg/"))))
+  )
 
 (use-package dap-mode)
 
@@ -658,13 +661,13 @@
   :config
   (add-hook 'org-mode-hook #'org-transclusion-mode))
 
-(quelpa '(eat :fetcher git
-              :url "https://codeberg.org/akib/emacs-eat"
-              :files ("*.el" ("term" "term/*.el") "*.texi"
-                      "*.ti" ("terminfo/e" "terminfo/e/*")
-                      ("terminfo/65" "terminfo/65/*")
-                      ("integration" "integration/*")
-                      (:exclude ".dir-locals.el" "*-tests.el"))))
+;; (quelpa '(eat :fetcher git
+;;               :url "https://codeberg.org/akib/emacs-eat"
+;;               :files ("*.el" ("term" "term/*.el") "*.texi"
+;;                       "*.ti" ("terminfo/e" "terminfo/e/*")
+;;                       ("terminfo/65" "terminfo/65/*")
+;;                       ("integration" "integration/*")
+;;                       (:exclude ".dir-locals.el" "*-tests.el"))))
 
 ;; (use-package org-bullets
 ;;   :config
@@ -684,7 +687,7 @@
 (use-package org-super-agenda)
 
 ;; krita-supported manual drawing with org mode
-(quelpa '(org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources")))
+;; (quelpa '(org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources")))
 ;; (add-hook 'org-mode-hook 'org-krita-mode)
 
 ;; like org-krita, crashes, unusable...
@@ -721,7 +724,7 @@
 (use-package vimrc-mode)
 
 (use-package sly
-  :quelpa (:host github :repo "joaotavora/sly")
+  :straight (:host github :repo "joaotavora/sly")
   :config
   (setq inferior-lisp-program "")
   (setq sly-lisp-implementations
@@ -782,7 +785,7 @@
 
 ;; depth-dependent coloring of code
 (use-package prism
-  :quelpa (prism :fetcher github :repo "alphapapa/prism.el"))
+  :straight (prism :fetcher github :repo "alphapapa/prism.el"))
 
 ;; its great but it uses alot of cpu especially when the gif has a fast timer
 (use-package org-inline-anim
@@ -792,15 +795,15 @@
   (setq org-inline-anim-loop t)
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
-(quelpa '(julia-snail :fetcher github
-                      :repo "gcv/julia-snail"
-                      :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
-(add-hook 'julia-mode-hook 'julia-snail-mode)
-(setq julia-snail-terminal-type :eat)
-(setq julia-snail-extensions '(repl-history formatter ob-julia))
-;;(setq julia-snail-extensions '(repl-history formatter))
-(setq julia-snail/ob-julia-mirror-output-in-repl t)
-(setq julia-snail/ob-julia-capture-io nil)
+;; (quelpa '(julia-snail :fetcher github
+;;                       :repo "gcv/julia-snail"
+;;                       :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
+;; (add-hook 'julia-mode-hook 'julia-snail-mode)
+;; (setq julia-snail-terminal-type :eat)
+;; (setq julia-snail-extensions '(repl-history formatter ob-julia))
+;; ;;(setq julia-snail-extensions '(repl-history formatter))
+;; (setq julia-snail/ob-julia-mirror-output-in-repl t)
+;; (setq julia-snail/ob-julia-capture-io nil)
 
 ;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
 ;; (use-package ob-julia
@@ -884,6 +887,7 @@
 ;; Commands for Ido-like directory navigation.
 ;; Configure directory extension.
 (use-package vertico-directory
+  :straight nil
   :after vertico
   :ensure nil
   ;; More convenient directory navigation commands

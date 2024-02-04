@@ -1,8 +1,8 @@
 ;; org mode configuration and setup
 
+;; (use-package org)
 ;; tecosaur's org-mode version
 (use-package org
-  :defer
   :straight `(org
               :fork (:host nil
                            :repo "https://git.tecosaur.net/tec/org-mode.git"

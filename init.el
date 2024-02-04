@@ -1,4 +1,4 @@
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -7,35 +7,51 @@
 (setq inhibit-startup-screen t)
 
 ;; setup use-package, it provides stable packages unlike straight.el so i use it as the default package manager
-(require 'package)
-(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(unless package-archive-contents
-  (package-refresh-contents))
-(eval-and-compile
-  (setq use-package-always-ensure t
-        use-package-expand-minimally t))
-(require 'use-package)
+;; (require 'package)
+;; (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; (package-initialize)
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
+;; (unless package-archive-contents
+;;   (package-refresh-contents))
+;; (eval-and-compile
+;;   (setq use-package-always-ensure t
+;;         use-package-expand-minimally t))
+;; (require 'use-package)
 
 ;; setup quelpa
-(setq quelpa-update-melpa-p nil)
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-;; make sure it works with use-package-always-ensure set to t
-(setq use-package-ensure-function 'quelpa)
-(quelpa-use-package-activate-advice)
+;; (setq quelpa-update-melpa-p nil)
+;; (unless (package-installed-p 'quelpa)
+;;   (with-temp-buffer
+;;     (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+;;     (eval-buffer)
+;;     (quelpa-self-upgrade)))
+;; (quelpa
+;;  '(quelpa-use-package
+;;    :fetcher git
+;;    :url "https://github.com/quelpa/quelpa-use-package.git"))
+;; (require 'quelpa-use-package)
+;; ;; make sure it works with use-package-always-ensure set to t
+;; (setq use-package-ensure-function 'quelpa)
+;; (quelpa-use-package-activate-advice)
+
+;; setup straight
+(setq package-enable-at-startup nil) ;; disable package.el, needed for straight.el to work properly with use-package
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(setq straight-use-package-by-default t)
 
 ;; path where all my notes etc go
 (setq *brain-dir* (file-truename "~/brain/"))
@@ -182,20 +198,6 @@
                                  (concat "C-' " binding) function)))))
 (defun my-kbd (binding function &rest args)
   )
-
-;; setup straight
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
 
 ;; (defun spotify-lyrics ()
 ;;   (interactive)
@@ -877,7 +879,7 @@ prompt the user for a coding system."
 ;; open agenda on startup
 (add-hook 'after-init-hook
           (lambda ()
-            (org-roam-db-sync)
+;;            (org-roam-db-sync)
             ;; (org-agenda-list)
             ;; (delete-other-windows)
             (when (file-exists-p persp-state-default-file)

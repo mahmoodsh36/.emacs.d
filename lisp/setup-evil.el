@@ -133,6 +133,8 @@
   (evil-set-initial-state 'vterm-mode 'emacs)
   ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
+  (general-evil-setup)
+
   ;; (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
   ;; (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
 
@@ -175,8 +177,6 @@
   ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
   ;; create "ia"/"aa" (inside/around) entire buffer text objects:
   (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
-
-  (general-evil-setup)
 
   ;; (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map fundamental-mode-map) "s" 'save-buffer)
   (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
