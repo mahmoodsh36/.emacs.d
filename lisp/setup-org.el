@@ -1,8 +1,8 @@
 ;; org mode configuration and setup
 
-;; (use-package org)
 ;; tecosaur's org-mode version
 ;; (use-package org
+;; :defer
 ;;   :straight `(org
 ;;               :fork (:host nil
 ;;                            :repo "https://git.tecosaur.net/tec/org-mode.git"
@@ -28,7 +28,7 @@
 ;;                    "(provide 'org-version)\n")))
 ;;               :pin nil))
 
-(defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
+(defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
