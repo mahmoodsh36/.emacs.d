@@ -38,11 +38,11 @@
 (quelpa-use-package-activate-advice)
 
 ;; path where all my notes etc go
-(setq brain-path (file-truename "~/brain/"))
+(setq *brain-dir* (file-truename "~/brain/"))
 (defconst *music-dir* (file-truename "~/music/"))
 (defun brain-file (filename)
   "return `filename', prefixed by the path to the brain dir"
-  (concat brain-path filename))
+  (concat *brain-dir* filename))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default tab-width 2
@@ -101,7 +101,7 @@
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
 ;; save minibuffer history
-(setq savehist-file (expand-file-name (concat brain-path "/emacs_savehist")))
+(setq savehist-file (expand-file-name (concat *brain-dir* "/emacs_savehist")))
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'search-ring)
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
@@ -201,7 +201,7 @@
 ;;   (interactive)
 ;;   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
 ;;          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-;;          (song-file (format "%s/lyrics/%s - %s" brain-path song artist)))
+;;          (song-file (format "%s/lyrics/%s - %s" *brain-dir* song artist)))
 ;;     (if (not (file-exists-p song-file))
 ;;         (progn
 ;;           (message "lyrics file doesnt exist")
@@ -219,14 +219,14 @@
 ;;   (interactive)
 ;;   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
 ;;          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-;;          (song-file (format "%s/lyrics/%s - %s" brain-path song artist)))
+;;          (song-file (format "%s/lyrics/%s - %s" *brain-dir* song artist)))
 ;;     (delete-file song-file)))
 
 ;; (defun open-spotify-lyrics-file ()
 ;;   (interactive)
 ;;   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
 ;;          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-;;          (song-file (format "%s/lyrics/%s - %s" brain-path song artist)))
+;;          (song-file (format "%s/lyrics/%s - %s" *brain-dir* song artist)))
 ;;     (find-file song-file)))
 
 ;; start server
@@ -248,7 +248,7 @@
 (defun get-latex-cache-dir-path ()
   "return the path for the directory that contains the compiled pdf latex documents"
   (interactive)
-  (concat brain-path "/out/"))
+  (concat *brain-dir* "/out/"))
 
 (defun compile-latex-file (path)
   (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (file-truename (get-latex-cache-dir-path)) path)))
@@ -312,7 +312,7 @@
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
-(setq eshell-aliases-file (concat brain-path "/eshell_aliases"))
+(setq eshell-aliases-file (concat *brain-dir* "/eshell_aliases"))
 (defun eshell-cd-and-ls (&rest args)           ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
@@ -320,7 +320,7 @@
     (cd path)
     (eshell/ls)))
 ;; eshell history file location
-(setq eshell-history-file-name (concat brain-path "/eshell_history")) ;; save history to filesystem
+(setq eshell-history-file-name (concat *brain-dir* "/eshell_history")) ;; save history to filesystem
 (setq eshell-history-size 100000000)
 
 ;; disable multiplication precedence over division in calc
@@ -341,7 +341,7 @@
   (or num (setq num 7))
   (insert (generate-random-string num)))
 (defun temp-file (EXT)
-  (format "%stmp_%s.%s" (concat brain-path "out/") (generate-random-string 7) EXT))
+  (format "%stmp_%s.%s" (concat *brain-dir* "out/") (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c R") #'insert-random-string)
 
 (defun kill-all-dired-buffers ()
@@ -380,7 +380,7 @@
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
-(setq bookmark-file (concat brain-path "emacs_bookmarks"))
+(setq bookmark-file (concat *brain-dir* "emacs_bookmarks"))
 
 (defun yas-delete-if-empty ()
   "function to remove _{} or ^{} fields, used by some of my latex yasnippets"
@@ -480,7 +480,7 @@ Version 2018-06-18 2021-09-30"
 
 (defun cached-file (filename)
   "return 'filename' prefixed with cache dir path"
-  (concat brain-path "out/" filename))
+  (concat *brain-dir* "out/" filename))
 
 ;; disable stupid beep sounds on macos
 (setq ring-bell-function #'ignore)
@@ -789,7 +789,7 @@ prompt the user for a coding system."
     (when process
       (setq comint-input-ring-file-name
             (format "%s/inferior-%s-history"
-                    brain-path (process-name process)))
+                    *brain-dir* (process-name process)))
       (comint-read-input-ring)
       (set-process-sentinel process
                             #'comint-write-history-on-exit))))
@@ -910,7 +910,6 @@ prompt the user for a coding system."
   (add-hook hook (lambda () (flyspell-mode 1))))
 ;; flyspell buffer when its opened
 (add-hook 'flyspell-mode-hook #'flyspell-buffer)
-
 (use-package flyspell-correct
   :bind ("C-;" . flyspell-correct-wrapper))
 

@@ -28,7 +28,7 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 
-(defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
+(defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
@@ -80,44 +80,44 @@
 ;; (use-package org-contrib)
 
 ;; cache for orgmode links, requires pre-isntallation of gcc/clang
-(use-package org-roam
-  :ensure nil
-  :straight (org-roam :type git :repo "mahmoodsheikh36/org-roam")
-  :custom
-  (org-roam-directory brain-path)
-  (org-roam-completion-everywhere t)
-  :config
-  ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
-  (org-roam-db-autosync-mode 1)
-  (require 'org-roam-export)
-  (require 'org-roam-protocol)
-  (global-set-key (kbd "C-c r f") 'org-roam-node-find)
-  (global-set-key (kbd "C-c r g") 'org-roam-graph)
-  (setq org-roam-capture-templates
-        '(("n" "note" plain "%?"
-           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
-           :kill-buffer t :unnarrowed t :empty-lines-after 0)
-          ("k" "quick note" plain "%?"
-           :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
-           :kill-buffer t :unnarrowed t :empty-lines-after 0)
-          ;;("d" "daily" plain "%?" ;;"* %T %?"
-          ;;("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
-          ("d" "daily" plain "* %T %?"
-           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
-           :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
-          ("t" "todo" plain "* TODO ${title}"
-           :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
+;; (use-package org-roam
+;;   :ensure nil
+;;   :straight (org-roam :type git :repo "mahmoodsheikh36/org-roam")
+;;   :custom
+;;   (org-roam-directory *brain-dir*)
+;;   (org-roam-completion-everywhere t)
+;;   :config
+;;   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
+;;   (org-roam-db-autosync-mode 1)
+;;   (require 'org-roam-export)
+;;   (require 'org-roam-protocol)
+;;   (global-set-key (kbd "C-c r f") 'org-roam-node-find)
+;;   (global-set-key (kbd "C-c r g") 'org-roam-graph)
+;;   (setq org-roam-capture-templates
+;;         '(("n" "note" plain "%?"
+;;            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
+;;            :kill-buffer t :unnarrowed t :empty-lines-after 0)
+;;           ("k" "quick note" plain "%?"
+;;            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
+;;            :kill-buffer t :unnarrowed t :empty-lines-after 0)
+;;           ;;("d" "daily" plain "%?" ;;"* %T %?"
+;;           ;;("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
+;;           ("d" "daily" plain "* %T %?"
+;;            :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
+;;            :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
+;;           ("t" "todo" plain "* TODO ${title}"
+;;            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
 ;; go to insert mode after for org-capture cursor
 ;; (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
-(defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
-  (interactive "P")
-  (org-roam-capture- :goto goto
-                     :info info
-                     :keys keys
-                     :templates templates
-                     :node (org-roam-node-create :title "")
-                     :props '(:immediate-finish nil)))
+;; (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
+;;   (interactive "P")
+;;   (org-roam-capture- :goto goto
+;;                      :info info
+;;                      :keys keys
+;;                      :templates templates
+;;                      :node (org-roam-node-create :title "")
+;;                      :props '(:immediate-finish nil)))
 
 ;; save the clock history across sessions
 (setq org-clock-persist 'history)
@@ -325,40 +325,40 @@
                :where (like tag ,tag-name))))))
 
 ;; dynamic org-agenda
-(add-to-list 'org-tags-exclude-from-inheritance "todo")
-(add-to-list 'org-tags-exclude-from-inheritance "band")
-(defun buffer-contains-todo ()
-  "check if the buffer contains a TODO entry"
-  (org-element-map
-      (org-element-parse-buffer 'headline)
-      'headline
-    (lambda (h)
-      (eq (org-element-property :todo-type h) 'todo))
-    nil 'first-match))
-(add-hook 'before-save-hook #'update-todo-tag)
-(defun update-todo-tag ()
-  "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
-  (let ((kill-ring)) ;; keep kill ring, dont modify it
-    (when (and (not (active-minibuffer-window))
-               (is-buffer-roam-note))
-      (save-excursion
-        (goto-char (point-min))
-        (if (buffer-contains-todo)
-            (org-roam-tag-add '("todo"))
-          (ignore-errors (org-roam-tag-remove '("todo")))))))
-  (agenda-files-update))
-(defun is-buffer-roam-note ()
-  "return non-nil if the currently visited buffer is a note."
-  (and buffer-file-name
-       (string-prefix-p
-        (expand-file-name (file-name-as-directory org-roam-directory))
-        (file-name-directory buffer-file-name))))
-(setq org-agenda-files (roam-files-with-tag "todo"))
-(defun agenda-files-update (&rest _)
-  "Update the value of `org-agenda-files'."
-  (setq org-agenda-files (roam-files-with-tag "todo")))
-(advice-add 'org-agenda :before #'agenda-files-update)
-(advice-add 'org-todo-list :before #'agenda-files-update)
+;; (add-to-list 'org-tags-exclude-from-inheritance "todo")
+;; (add-to-list 'org-tags-exclude-from-inheritance "band")
+;; (defun buffer-contains-todo ()
+;;   "check if the buffer contains a TODO entry"
+;;   (org-element-map
+;;       (org-element-parse-buffer 'headline)
+;;       'headline
+;;     (lambda (h)
+;;       (eq (org-element-property :todo-type h) 'todo))
+;;     nil 'first-match))
+;; (add-hook 'before-save-hook #'update-todo-tag)
+;; (defun update-todo-tag ()
+;;   "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
+;;   (let ((kill-ring)) ;; keep kill ring, dont modify it
+;;     (when (and (not (active-minibuffer-window))
+;;                (is-buffer-roam-note))
+;;       (save-excursion
+;;         (goto-char (point-min))
+;;         (if (buffer-contains-todo)
+;;             (org-roam-tag-add '("todo"))
+;;           (ignore-errors (org-roam-tag-remove '("todo")))))))
+;;   (agenda-files-update))
+;; (defun is-buffer-roam-note ()
+;;   "return non-nil if the currently visited buffer is a note."
+;;   (and buffer-file-name
+;;        (string-prefix-p
+;;         (expand-file-name (file-name-as-directory org-roam-directory))
+;;         (file-name-directory buffer-file-name))))
+;; (setq org-agenda-files (roam-files-with-tag "todo"))
+;; (defun agenda-files-update (&rest _)
+;;   "Update the value of `org-agenda-files'."
+;;   (setq org-agenda-files (roam-files-with-tag "todo")))
+;; (advice-add 'org-agenda :before #'agenda-files-update)
+;; (advice-add 'org-todo-list :before #'agenda-files-update)
 ;; stop showing deadlines in today
 (setq org-deadline-warning-days 0)
 ;; remove done items
@@ -408,8 +408,8 @@
 ;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
 ;; dont limit the width of previews
 ;; (plist-put org-latex-preview-appearance-options :page-width nil)
-(plist-put org-latex-preview-appearance-options :page-width "1.0")
-(plist-put org-html-latex-image-options :page-width nil)
+;; (plist-put org-latex-preview-appearance-options :page-width "1.0")
+;; (plist-put org-html-latex-image-options :page-width nil)
 ;; lower the debounce value
 (setq org-latex-preview-live-debounce 0.25)
 
@@ -463,7 +463,7 @@
 ;; run some python code from my org notes on shell startup
 ;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
 ;; i need those in library of babel on startup too
-(lob-reload)
+;; (lob-reload)
 
 ;; (defun xenops-prerender ()
 ;;   "prerender latex blocks in roam files"
@@ -523,7 +523,7 @@
         (if (buffer-contains-math)
             (org-roam-tag-add '("math"))
           (ignore-errors (org-roam-tag-remove '("math"))))))))
-(add-hook 'before-save-hook #'update-math-file)
+;; (add-hook 'before-save-hook #'update-math-file)
 
 (defun find-math-files (basedir)
   "find all org files in a directory that are math files and tag them with 'math' tag"
@@ -627,7 +627,7 @@
 (defun open-todays-file ()
   "open todays org file"
   (interactive)
-  (let ((todays-file (format-time-string (concat brain-path "/daily/%Y-%m-%d.org"))))
+  (let ((todays-file (format-time-string (concat *brain-dir* "/daily/%Y-%m-%d.org"))))
     (if (not (file-exists-p todays-file))
         (progn
           (find-file todays-file)
@@ -657,41 +657,33 @@
   (insert " ")
   (evil-insert 0))
 
-(defun check-svg-duplicates ()
-  "check for code blocks with same svg files, TODO needs to be implemented"
-  (interactive)
-  (go-through-all-roam-files
-   (lambda ()
-     (interactive)
-     (message (current-filename)))))
-
 (defun push-blog-github ()
   (interactive)
   (execute-kbd-macro (read-kbd-macro "SPC d g SPC s e M-r reexport RET RET")))
 
 ;; make links like [[id::blockname]] work, need to rebuild database after defining the advice using org-roam-db-clear-all and then org-roam-db-sync
-(defun +org--follow-search-string-a (fn link &optional arg)
-  "Support ::SEARCH syntax for id::name links.
-note that this doesnt work for exports"
-  (save-match-data
-    (cl-destructuring-bind (id &optional search)
-        (split-string link "::")
-      (prog1 (funcall fn id arg)
-        (cond ((null search))
-              ((string-match-p "\\`[0-9]+\\'" search)
-               ;; Move N lines after the ID (in case it's a heading), instead
-               ;; of the start of the buffer.
-               (forward-line (string-to-number option)))
-              ((string-match "^/\\([^/]+\\)/$" search)
-               (let ((match (match-string 1 search)))
-                 (save-excursion (org-link-search search))
-                 ;; `org-link-search' only reveals matches. Moving the point
-                 ;; to the first match after point is a sensible change.
-                 (when (re-search-forward match)
-                   (goto-char (match-beginning 0)))))
-              ((org-link-search search)))))))
-(advice-add 'org-id-open :around #'+org--follow-search-string-a)
-(advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
+;; (defun +org--follow-search-string-a (fn link &optional arg)
+;;   "Support ::SEARCH syntax for id::name links.
+;; note that this doesnt work for exports"
+;;   (save-match-data
+;;     (cl-destructuring-bind (id &optional search)
+;;         (split-string link "::")
+;;       (prog1 (funcall fn id arg)
+;;         (cond ((null search))
+;;               ((string-match-p "\\`[0-9]+\\'" search)
+;;                ;; Move N lines after the ID (in case it's a heading), instead
+;;                ;; of the start of the buffer.
+;;                (forward-line (string-to-number option)))
+;;               ((string-match "^/\\([^/]+\\)/$" search)
+;;                (let ((match (match-string 1 search)))
+;;                  (save-excursion (org-link-search search))
+;;                  ;; `org-link-search' only reveals matches. Moving the point
+;;                  ;; to the first match after point is a sensible change.
+;;                  (when (re-search-forward match)
+;;                    (goto-char (match-beginning 0)))))
+;;               ((org-link-search search)))))))
+;; (advice-add 'org-id-open :around #'+org--follow-search-string-a)
+;; (advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
 
 ;; TODO: add latex auto-completion to org-mode, requires auctex
 ;; (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
@@ -1008,7 +1000,7 @@ note that this doesnt work for exports"
   (goto-line 6)
   (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n"))
 ;; (add-to-list 'org-export-before-parsing-functions #'insert-setupfile)
-(add-to-list 'org-export-before-processing-functions #'insert-setupfile)
+;; (add-to-list 'org-export-before-processing-functions #'insert-setupfile)
 
 (defun timestamp-midnight (timestamp)
   (let ((decoded (decode-time timestamp)))
@@ -1029,92 +1021,92 @@ should be continued."
            (>= scheduled-seconds now)
            subtree-end))))
 
-(setq org-agenda-custom-commands
-      `(("A" "Daily agenda and top priority tasks"
-         ((tags-todo "*"
-                     ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
-                      (org-agenda-skip-function
-                       `(org-agenda-skip-entry-if
-                         'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
-                      (org-agenda-block-separator nil)
-                      (org-agenda-overriding-header "important tasks without a date\n")))
-          (agenda "" ((org-agenda-span 1)
-                      (org-deadline-warning-days 0)
-                      (org-agenda-block-separator nil)
-                      (org-scheduled-past-days 0)
-                      ;; we don't need the `org-agenda-date-today'
-                      ;; highlight because that only has a practical
-                      ;; utility in multi-day views.
-                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
-                      (org-agenda-format-date "%A %-e %B %Y")
-                      (org-agenda-overriding-header "\ntoday's agenda\n")))
-          (agenda "" ((org-agenda-start-on-weekday nil)
-                      (org-agenda-start-day "+1d")
-                      (org-agenda-span 3)
-                      (org-deadline-warning-days 0)
-                      (org-agenda-block-separator nil)
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "\nnext three days\n")))
-          (agenda "" ((org-agenda-overriding-header "overdue")
-                      ;; (org-agenda-entry-types '(:deadline :scheduled))
-                      (org-scheduled-past-days 10000)
-                      (org-deadline-past-days 10000)
-                      (org-agenda-span 1)
-                      (org-agenda-start-on-weekday nil)
-                      (org-agenda-show-all-dates nil)
-                      (org-agenda-skip-function 'org-agenda-skip-if-scheduled-earlier)))
-          (agenda "" ((org-agenda-time-grid nil)
-                      (org-agenda-start-on-weekday nil)
-                      ;; We don't want to replicate the previous section's
-                      ;; three days, so we start counting from the day after.
-                      (org-agenda-start-day "+4d")
-                      (org-agenda-span 14)
-                      (org-agenda-show-all-dates nil)
-                      (org-deadline-warning-days 0)
-                      (org-agenda-block-separator nil)
-                      (org-agenda-entry-types '(:deadline))
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "\nupcoming deadlines (+14d)\n")))))
-        ("P" "Plain text daily agenda and top priorities"
-         ((tags-todo "*"
-                     ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
-                      (org-agenda-skip-function
-                       `(org-agenda-skip-entry-if
-                         'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
-                      (org-agenda-block-separator nil)
-                      (org-agenda-overriding-header "important tasks without a date\n")))
-          (agenda "" ((org-agenda-span 1)
-                      (org-deadline-warning-days 0)
-                      (org-agenda-block-separator nil)
-                      (org-scheduled-past-days 0)
-                      (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
-                      (org-agenda-format-date "%A %-e %B %Y")
-                      (org-agenda-overriding-header "\ntoday's agenda\n")))
-          (agenda "" ((org-agenda-start-on-weekday nil)
-                      (org-agenda-start-day "+1d")
-                      (org-agenda-span 3)
-                      (org-deadline-warning-days 0)
-                      (org-agenda-block-separator nil)
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "\nnext three days\n")))
-          (agenda "" ((org-agenda-time-grid nil)
-                      (org-agenda-start-on-weekday nil)
-                      ;; We don't want to replicate the previous section's
-                      ;; three days, so we start counting from the day after.
-                      (org-agenda-start-day "+4d")
-                      (org-agenda-span 14)
-                      (org-agenda-show-all-dates nil)
-                      (org-deadline-warning-days 0)
-                      (org-agenda-block-separator nil)
-                      (org-agenda-entry-types '(:deadline))
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "\nupcoming deadlines (+14d)\n"))))
-         ((org-agenda-with-colors nil)
-          (org-agenda-prefix-format "%t %s")
-          (org-agenda-current-time-string ,(car (last org-agenda-time-grid)))
-          (org-agenda-fontify-priorities nil)
-          (org-agenda-remove-tags t))
-         ("agenda.txt"))))
+;; (setq org-agenda-custom-commands
+;;       `(("A" "Daily agenda and top priority tasks"
+;;          ((tags-todo "*"
+;;                      ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+;;                       (org-agenda-skip-function
+;;                        `(org-agenda-skip-entry-if
+;;                          'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
+;;                       (org-agenda-block-separator nil)
+;;                       (org-agenda-overriding-header "important tasks without a date")))
+;;           (agenda "" ((org-agenda-span 1)
+;;                       (org-deadline-warning-days 0)
+;;                       (org-agenda-block-separator nil)
+;;                       (org-scheduled-past-days 0)
+;;                       ;; we don't need the `org-agenda-date-today'
+;;                       ;; highlight because that only has a practical
+;;                       ;; utility in multi-day views.
+;;                       (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+;;                       (org-agenda-format-date "%A %-e %B %Y")
+;;                       (org-agenda-overriding-header "\ntoday's agenda")))
+;;           (agenda "" ((org-agenda-start-on-weekday nil)
+;;                       (org-agenda-start-day "+1d")
+;;                       (org-agenda-span 3)
+;;                       (org-deadline-warning-days 0)
+;;                       (org-agenda-block-separator nil)
+;;                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+;;                       (org-agenda-overriding-header "\nnext three days")))
+;;           (agenda "" ((org-agenda-overriding-header "\noverdue")
+;;                       ;; (org-agenda-entry-types '(:deadline :scheduled))
+;;                       (org-scheduled-past-days 10000)
+;;                       (org-deadline-past-days 10000)
+;;                       (org-agenda-span 1)
+;;                       (org-agenda-start-on-weekday nil)
+;;                       (org-agenda-show-all-dates nil)
+;;                       (org-agenda-skip-function 'org-agenda-skip-if-scheduled-earlier)))
+;;           (agenda "" ((org-agenda-time-grid nil)
+;;                       (org-agenda-start-on-weekday nil)
+;;                       ;; We don't want to replicate the previous section's
+;;                       ;; three days, so we start counting from the day after.
+;;                       (org-agenda-start-day "+4d")
+;;                       (org-agenda-span 14)
+;;                       (org-agenda-show-all-dates nil)
+;;                       (org-deadline-warning-days 0)
+;;                       (org-agenda-block-separator nil)
+;;                       (org-agenda-entry-types '(:deadline))
+;;                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+;;                       (org-agenda-overriding-header "\nupcoming deadlines (+14d)")))))
+;;         ("P" "Plain text daily agenda and top priorities"
+;;          ((tags-todo "*"
+;;                      ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+;;                       (org-agenda-skip-function
+;;                        `(org-agenda-skip-entry-if
+;;                          'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
+;;                       (org-agenda-block-separator nil)
+;;                       (org-agenda-overriding-header "important tasks without a date\n")))
+;;           (agenda "" ((org-agenda-span 1)
+;;                       (org-deadline-warning-days 0)
+;;                       (org-agenda-block-separator nil)
+;;                       (org-scheduled-past-days 0)
+;;                       (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+;;                       (org-agenda-format-date "%A %-e %B %Y")
+;;                       (org-agenda-overriding-header "\ntoday's agenda\n")))
+;;           (agenda "" ((org-agenda-start-on-weekday nil)
+;;                       (org-agenda-start-day "+1d")
+;;                       (org-agenda-span 3)
+;;                       (org-deadline-warning-days 0)
+;;                       (org-agenda-block-separator nil)
+;;                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+;;                       (org-agenda-overriding-header "\nnext three days\n")))
+;;           (agenda "" ((org-agenda-time-grid nil)
+;;                       (org-agenda-start-on-weekday nil)
+;;                       ;; We don't want to replicate the previous section's
+;;                       ;; three days, so we start counting from the day after.
+;;                       (org-agenda-start-day "+4d")
+;;                       (org-agenda-span 14)
+;;                       (org-agenda-show-all-dates nil)
+;;                       (org-deadline-warning-days 0)
+;;                       (org-agenda-block-separator nil)
+;;                       (org-agenda-entry-types '(:deadline))
+;;                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+;;                       (org-agenda-overriding-header "\nupcoming deadlines (+14d)\n"))))
+;;          ((org-agenda-with-colors nil)
+;;           (org-agenda-prefix-format "%t %s")
+;;           (org-agenda-current-time-string ,(car (last org-agenda-time-grid)))
+;;           (org-agenda-fontify-priorities nil)
+;;           (org-agenda-remove-tags t))
+;;          ("agenda.txt"))))
 
 (defvar prot-org-custom-daily-agenda
   ;; NOTE 2021-12-08: Specifying a match like the following does not
@@ -1125,12 +1117,13 @@ should be continued."
   ;; So we match everything and then skip entries with
   ;; `org-agenda-skip-function'.
   `((tags-todo "*"
-               ((org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
+               (
+               ;; (org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
                 (org-agenda-skip-function
                  `(org-agenda-skip-entry-if
                    'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
                 (org-agenda-block-separator nil)
-                (org-agenda-overriding-header "Important tasks without a date\n")))
+                (org-agenda-overriding-header "important tasks without a date")))
     (agenda "" ((org-agenda-span 1)
                 (org-deadline-warning-days 0)
                 (org-agenda-block-separator nil)
@@ -1140,17 +1133,25 @@ should be continued."
                 ;; utility in multi-day views.
                 (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
                 (org-agenda-format-date "%A %-e %B %Y")
-                (org-agenda-overriding-header "\nToday's agenda\n")))
+                (org-agenda-overriding-header "\ntoday's agenda")))
     (agenda "" ((org-agenda-start-on-weekday nil)
                 (org-agenda-start-day "+1d")
                 (org-agenda-span 3)
                 (org-deadline-warning-days 0)
                 (org-agenda-block-separator nil)
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                (org-agenda-overriding-header "\nNext three days\n")))
+                (org-agenda-overriding-header "\nnext three days")))
+    (agenda "" ((org-agenda-overriding-header "\noverdue")
+                ;; (org-agenda-entry-types '(:deadline :scheduled))
+                (org-scheduled-past-days 10000)
+                (org-deadline-past-days 10000)
+                (org-agenda-span 1)
+                (org-agenda-start-on-weekday nil)
+                (org-agenda-show-all-dates nil)
+                (org-agenda-skip-function 'org-agenda-skip-if-scheduled-earlier)))
     (agenda "" ((org-agenda-time-grid nil)
                 (org-agenda-start-on-weekday nil)
-                ;; We don't want to replicate the previous section's
+                ;; we don't want to replicate the previous section's
                 ;; three days, so we start counting from the day after.
                 (org-agenda-start-day "+4d")
                 (org-agenda-span 14)
@@ -1159,7 +1160,7 @@ should be continued."
                 (org-agenda-block-separator nil)
                 (org-agenda-entry-types '(:deadline))
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                (org-agenda-overriding-header "\nUpcoming deadlines (+14d)\n"))))
+                (org-agenda-overriding-header "\nupcoming deadlines (+14d)"))))
   "Custom agenda for use in `org-agenda-custom-commands'.")
 
 (setq org-agenda-custom-commands
@@ -1173,5 +1174,165 @@ should be continued."
           (org-agenda-fontify-priorities nil)
           (org-agenda-remove-tags t))
          ("agenda.txt"))))
+
+(setq denote-directory (concat *brain-dir* "notes/")
+      denote-date-prompt-use-org-read-date t)
+(add-hook 'dired-mode-hook #'denote-dired-mode)
+;; (defun spook--denote-split-org-subtree (&optional prefix)
+;;   "create new denote note as an org file using current org subtree."
+;;   (interactive "P")
+;;   (let ((text (org-get-entry))
+;;         (heading (org-get-heading :no-tags :no-todo :no-priority :no-comment))
+;;         (tags (org-get-tags))
+;;         (subdir (when prefix (denote-subdirectory-prompt))))
+;;     (delete-region (org-entry-beginning-position) (org-entry-end-position))
+;;     (denote heading tags 'org subdir)
+;;     (insert text)))
+;; (defun spook--denote-ff-tab ()
+;;   "Create a new denote for current Firefox tab."
+;;   (interactive)
+;;   (let* ((tab (spookfox-request-active-tab))
+;;          (url (plist-get tab :url))
+;;          (yt-p (string-match-p "youtube.com" url))
+;;          (tags '("reading"))
+;;          (existing-denote (spook--find-denote-for-ff-tab url "reading")))
+;;     (if existing-denote
+;;         (find-file existing-denote)
+;;       (when yt-p
+;;         (push "video" tags))
+;;       (denote (denote-title-prompt (plist-get tab :title))
+;;               tags "org" (expand-file-name "reading" denote-directory))
+;;       (when yt-p (spook-notes-mode))
+;;       (delete-region (point) (line-beginning-position 0))
+;;       (insert (concat "#+source: " url "\n\n")))))
+;; (defun spook--micro-post ()
+;;   "Quickly create a micro-post."
+;;   (interactive)
+;;   (let* ((body (read-from-minibuffer "Micro-Post body: ")) 
+;;          (title (denote-title-prompt (concat (string-trim (substring body 0 (min (length body) 40)))
+;;                                              (when (> (length body) 40) "...")))))
+;;     (denote title '("micro" "blog-post"))
+;;     (delete-region (point) (line-beginning-position 0))
+;;     (insert "#+published-on: ((mastodon . \"\"))\n\n")
+;;     (insert body)))
+;; (spook--defkeymap
+;;  "spook-notes" "C-c n"
+;;  '("n" . denote-open-or-create)
+;;  '("N" . denote-link-or-create)
+;;  '("b" . denote-link-backlinks)
+;;  '("d" . spook--diary-today)
+;;  '("r" . spook--denote-ff-tab)
+;;  '("p" . spook-crm--open-or-create)
+;;  '("P" . spook-crm--link-or-create)
+;;  '("m" . spook--micro-post))
+;; (defun spook--find-habit (title)
+;;   "Find the habit with TITLE in current buffer."
+;;   (cl-block 'spook--find-habit
+;;     (org-map-entries
+;;      (lambda ()
+;;        (let ((el (org-element-at-point-no-context)))
+;;          (when (and (seq-contains-p (org-get-tags el) "habit" #'equal)
+;;                     (equal (downcase (org-element-property :raw-value el))
+;;                            (downcase title)))
+;;            (cl-return-from 'spook--find-habit el)))))))
+;; (defun spook--mark-habit-as-done (habit)
+;;   "Mark HABIT as done."
+;;   (with-current-buffer (find-file-noselect (expand-file-name "TODOs.org" org-directory))
+;;     (org-mode)
+;;     (let ((el (cl-case habit
+;;                 (diary (spook--find-habit "write diary entry")))))
+;;       (goto-char (org-element-property :begin el))
+;;       (org-todo 'done))))
+;; (defun spook--diary-today ()
+;;   "Go to today's diary entry."
+;;   (interactive)
+;;   (let ((denote-directory (expand-file-name "diary" denote-directory))
+;;         (title (format-time-string "%Y-%m-%d")))
+;;     (if-let ((file (seq-find
+;;                     (lambda (f) (string-match-p title f))
+;;                     (directory-files denote-directory))))
+;;         (progn
+;;           (find-file (expand-file-name file denote-directory))
+;;           (goto-char (point-max)))
+;;       (spook--mark-habit-as-done 'diary)
+;;       (denote title '("diary")))))
+;; (defun spook--workday-notes (prefix)
+;;   "Go to work notes for today plus PREFIX days."
+;;   (interactive "P")
+;;   (let* ((days (if prefix (prefix-numeric-value prefix) 0))
+;;          (denote-directory (expand-file-name "work" denote-directory))
+;;          (date (time-add (current-time) (days-to-time days)))
+;;          (title (format-time-string "%Y-%m-%d" date)))
+;;     (if-let ((file (seq-find
+;;                     (lambda (f) (string-match-p title f))
+;;                     (directory-files denote-directory)))
+;;              (file (expand-file-name file denote-directory)))
+;;         (progn
+;;           (find-file file)
+;;           ;; Remove any other denotes/work file from agenda
+;;           ;; Assuming that this will always remove older workday files
+;;           (setf org-agenda-files
+;;                 (seq-filter
+;;                  (lambda (file)
+;;                    (not (string-match-p "denotes/work" file)))
+;;                  org-agenda-files))
+
+;;           (org-agenda-file-to-front file)
+
+;;           (goto-char (point-max)))
+;;       (denote title '("work") "org" nil title))))
+;; (spook--defkeymap
+;;  "workday" "C-c n w"
+;;  '("w" . spook--workday-notes)
+;;  '("i" . on-issue-note-open-or-create)
+;;  '("I" . on-issue-note-link-or-create))
+(setq org-capture-templates (list))
+        ;; ("n" "note" plain "%?"
+        ;;  :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
+        ;;  :kill-buffer t
+        ;;  :unnarrowed t
+        ;;  :empty-lines-after 0
+        ;;  :jump-to-captured t
+        ;;  :immediate-finish nil
+        ;;  :no-save t)
+        ;; ("d" "daily" plain "* %T %?"
+        ;;  :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
+        ;;  :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
+        ;; ("t" "todo" plain "* TODO ${title}"
+        ;;  :if-new (file+head "notes/agenda.org" "#+title: ${title}\n"))))
+;; this prompts for TITLE, KEYWORDS, and SUBDIRECTORY
+(add-to-list 'org-capture-templates
+             '("n" "new note with prompts (with denote.el)" plain
+               (file denote-last-path)
+               (function
+                (lambda ()
+                  (denote-org-capture-with-prompts :title :keywords)))
+               :no-save t
+               :immediate-finish nil
+               :kill-buffer t
+               :jump-to-captured t))
+;; ;; This prompts only for SUBDIRECTORY
+;; (add-to-list 'org-capture-templates
+;;              '("N" "New note with prompts (with denote.el)" plain
+;;                (file denote-last-path)
+;;                (function
+;;                 (lambda ()
+;;                   (denote-org-capture-with-prompts nil nil :subdirectory)))
+;;                :no-save t
+;;                :immediate-finish nil
+;;                :kill-buffer t
+;;                :jump-to-captured t))
+
+;; ;; This prompts for TITLE and SUBDIRECTORY
+;; (add-to-list 'org-capture-templates
+;;              '("N" "New note with prompts (with denote.el)" plain
+;;                (file denote-last-path)
+;;                (function
+;;                 (lambda ()
+;;                   (denote-org-capture-with-prompts :title nil :subdirectory)))
+;;                :no-save t
+;;                :immediate-finish nil
+;;                :kill-buffer t
+;;                :jump-to-captured t))
 
 (provide 'setup-org)

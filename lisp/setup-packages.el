@@ -546,7 +546,7 @@
 ;; (use-package dumb-jump)
 ;; (use-package ob-async)
 (use-package format-all)
-(use-package org-roam-ui)
+;; (use-package org-roam-ui)
 ;; (use-package jupyter)
 ;; (use-package plantuml-mode)
 ;; for latex references, i think it can do those (not sure)
@@ -563,7 +563,7 @@
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-file (concat brain-path "emacs_keyfreq")))
+  (setq keyfreq-file (concat *brain-dir* "emacs_keyfreq")))
 
 (use-package magit)
 
@@ -733,7 +733,7 @@
           (maxima ("rmaxima" "-r" "to_lisp();"))))
   ;; make org babel use sly instead of slime
   (setq org-babel-lisp-eval-fn #'sly-eval)
-  (setq sly-mrepl-history-file-name (concat brain-path "/sly_history"))
+  (setq sly-mrepl-history-file-name (concat *brain-dir* "/sly_history"))
   ;; i think this increases history file size
   (setq comint-input-ring-size 1000000))
 ;; (use-package slime
@@ -757,7 +757,7 @@
 ;;           (ccl ("ccl"))
 ;;           (maxima ("rmaxima" "-r" "to_lisp();"))))
 ;;   ;; disable evil-mode 
-;;   (setq slime-repl-history-file (concat brain-path "/slime_history"))
+;;   (setq slime-repl-history-file (concat *brain-dir* "/slime_history"))
 ;;   (setq slime-repl-history-size 1000000))
 
 ;; flash cursor when jumping around
@@ -925,7 +925,7 @@
 ;;   :config
 ;;   (prescient-persist-mode 1)
 ;;   (setq prescient-history-length 100000)
-;;   (setq prescient-save-file (file-truename (concat brain-path "emacs_prescient")))) ;; save history to filesystem
+;;   (setq prescient-save-file (file-truename (concat *brain-dir* "emacs_prescient")))) ;; save history to filesystem
 ;; (use-package vertico-prescient
 ;;   :config
 ;;   (vertico-prescient-mode))
@@ -973,7 +973,7 @@
   (consult-customize consult--source-buffer :hidden t :default nil)
   (add-to-list 'consult-buffer-sources persp-consult-source)
   ;; (add-hook 'kill-emacs-hook #'persp-state-save)
-  (setq persp-state-default-file (concat brain-path "/emacs_persp"))
+  (setq persp-state-default-file (concat *brain-dir* "/emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
 ;; very buggy
@@ -1027,7 +1027,7 @@
 ;; (use-package roam-block
 ;;   :quelpa (roam-block :fetcher github :repo "Kinneyzhang/roam-block")
 ;;   :config
-;;   (setq roam-block-home (list brain-path)
+;;   (setq roam-block-home (list *brain-dir*)
 ;;         roam-block-ref-highlight t
 ;;         roam-block-embed-highlight t))
 
@@ -1107,5 +1107,10 @@
   :straight (denote :fetcher github :repo "protesilaos/denote"))
 (use-package denote-menu
   :straight (denote-menu :fetcher github :repo "namilus/denote-menu"))
+;; (use-package consult-notes)
+;; (use-package citar-denote)
+;; (use-package consult-explore)
+  ;; :straight (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
+;; (use-package deft)
 
 (provide 'setup-packages)

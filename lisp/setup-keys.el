@@ -6,8 +6,8 @@
 (led-kbd "d w" (lambda () (interactive) (dired "~/dl/")))
 (led-kbd "d a" (lambda () (interactive) (dired "~/data/")))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
-(led-kbd "d b" (lambda () (interactive) (dired brain-path)))
-(led-kbd "d r" (lambda () (interactive) (dired (concat brain-path "/resources"))))
+(led-kbd "d b" (lambda () (interactive) (dired *brain-dir*)))
+(led-kbd "d r" (lambda () (interactive) (dired (concat *brain-dir* "/resources"))))
 (led-kbd "d h" (lambda () (interactive) (dired "~/")))
 (led-kbd "d p" (lambda () (interactive) (dired "~/p/")))
 (led-kbd "d d" 'dired)
@@ -89,7 +89,7 @@
 (led-kbd "r g"
          (lambda ()
            (interactive)
-           (find-file (concat brain-path "/bib.bib"))))
+           (find-file (concat *brain-dir* "/bib.bib"))))
 (led-kbd "r v" 'org-babel-execute-buffer :keymaps 'org-mode-map)
 (led-kbd "r r" 'org-redisplay-inline-images :keymaps 'org-mode-map)
 (led-kbd "r P" 'org-set-property :keymaps 'org-mode-map)
@@ -101,9 +101,9 @@
 
 ;; keys to search for files
 (led-kbd "f b"
-         (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
+         (lambda () (interactive) (search-open-file-in-emacs *brain-dir* ".*\\(pdf\\|tex\\|doc\\|mp4\\|png\\|org\\)")))
 ;; (led-kbd "F b"
-;;          (lambda () (interactive) (search-open-file-in-emacs brain-path ".*\\(pdf\\|tex\\|doc\\|org\\)")))
+;;          (lambda () (interactive) (search-open-file-in-emacs *brain-dir* ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (led-kbd "f h" (lambda () (interactive) (search-open-file "./" ".*")))
 (led-kbd "f m"
          (lambda () (interactive)
@@ -409,5 +409,11 @@
 (led-kbd "s o" #'insert-random-string)
 
 (led-kbd "s y" #'avy-goto-char)
+
+;; denote
+(setq denote-templates
+      '((note . "#+title: ")
+        (memo . "* Some heading")))
+(led-kbd "r d n" #'denote-open-or-create)
 
 (provide 'setup-keys)
