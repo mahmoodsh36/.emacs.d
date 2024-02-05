@@ -1341,4 +1341,48 @@ should be continued."
       (apply orig-func args))))
 (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
+;;; ol-man.el - support for links to man pages in org mode
+(org-link-set-parameters "blk"
+                         :follow #'org-blk-open
+                         :export #'org-blk-export)
+                         ;; :store #'org-blk-store-link)
+
+(defun grep-brain (rgx)
+  "grep `*brain-dir*' for the regex `rgx'"
+  (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading" rgx *brain-dir*))
+         (output (shell-command-to-string cmd))
+         (files (mapcar (lambda (line) (car (split-string line ":"))) (split-string output "\n"))))
+    (car files)
+    ))
+
+(defun org-blk-open (path _)
+  "open the file containing a block with the name `path'"
+  (find-file (grep-brain (regexp-quote path))))
+  ;; (shell-command-to-string "find . -name \"*.org\" -exec grep '^#+name: blk' {} \;"))
+
+(defun org-blk-export (path _)
+  (message "got: %s" path))
+
+;; (defun org-man-store-link ()
+;;   (when (memq major-mode '(Man-mode woman-mode))
+;;     ;; This is a man page, we do make this link.
+;;     (let* ((page (org-man-get-page-name))
+;;            (link (concat "man:" page))
+;;            (description (format "Man page for %s" page)))
+;;       (org-link-store-props
+;;        :type "man"
+;;        :link link
+;;        :description description))))
+
+;; (defun org-man-export (link description format _)
+;;   "Export a man page link from Org files."
+;;   (let ((path (format "http://man.he.net/?topic=%s&section=all" link))
+;;         (desc (or description link)))
+;;     (pcase format
+;;       (`html (format "<a target=\"_blank\" href=\"%s\">%s</a>" path desc))
+;;       (`latex (format "\\href{%s}{%s}" path desc))
+;;       (`texinfo (format "@uref{%s,%s}" path desc))
+;;       (`ascii (format "%s (%s)" desc path))
+;;       (t path))))
+
 (provide 'setup-org)

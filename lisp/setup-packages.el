@@ -661,6 +661,7 @@
   :config
   (add-hook 'org-mode-hook #'org-transclusion-mode))
 
+(use-package eat)
 ;; (quelpa '(eat :fetcher git
 ;;               :url "https://codeberg.org/akib/emacs-eat"
 ;;               :files ("*.el" ("term" "term/*.el") "*.texi"
@@ -1125,5 +1126,7 @@
 ;; (use-package consult-explore)
   ;; :straight (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
+
+(use-package rg)
 
 (provide 'setup-packages)
