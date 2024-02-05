@@ -81,10 +81,10 @@
 
 ;; cache for orgmode links, requires pre-isntallation of gcc/clang
 ;; (use-package org-roam
-;;   :ensure nil
 ;;   :straight (org-roam :type git :repo "mahmoodsheikh36/org-roam")
 ;;   :custom
-;;   (org-roam-directory *brain-dir*)
+;;   ;; (org-roam-directory *brain-dir*)
+;;   (org-roam-directory (file-truename "~/brain2/notes/"))
 ;;   (org-roam-completion-everywhere t)
 ;;   :config
 ;;   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
@@ -163,9 +163,9 @@
 ;; annoying broken links..
 (setq org-export-with-broken-links 'mark)
 ;; dont cache latex preview images
-(setq org-latex-preview-cache 'temp)
-(setq org-element-cache-persistent nil)
-(setq org-element-use-cache nil)
+;; (setq org-latex-preview-cache 'temp)
+;; (setq org-element-cache-persistent nil)
+;; (setq org-element-use-cache nil)
 
 ;; compile org docs to pdfs and put them in cache dir
 (defun latex-out-file ()
@@ -631,7 +631,7 @@
     (if (not (file-exists-p todays-file))
         (progn
           (find-file todays-file)
-          (org-id-get-create)
+          ;; (org-id-get-create)
           (end-of-buffer)
           (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d"))))
     (find-file todays-file)))
@@ -996,9 +996,9 @@
     (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
 
 ;; when exporting automatically use setup.org
-(defun insert-setupfile (_)
-  (goto-line 6)
-  (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n"))
+;; (defun insert-setupfile (_)
+;;   (goto-line 6)
+;;   (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n"))
 ;; (add-to-list 'org-export-before-parsing-functions #'insert-setupfile)
 ;; (add-to-list 'org-export-before-processing-functions #'insert-setupfile)
 
@@ -1175,9 +1175,6 @@ should be continued."
           (org-agenda-remove-tags t))
          ("agenda.txt"))))
 
-(setq denote-directory (concat *brain-dir* "notes/")
-      denote-date-prompt-use-org-read-date t)
-(add-hook 'dired-mode-hook #'denote-dired-mode)
 ;; (defun spook--denote-split-org-subtree (&optional prefix)
 ;;   "create new denote note as an org file using current org subtree."
 ;;   (interactive "P")
@@ -1334,5 +1331,14 @@ should be continued."
 ;;                :immediate-finish nil
 ;;                :kill-buffer t
 ;;                :jump-to-captured t))
+
+;; enforce some default keywords for all org buffers (in a hacky way)
+(defun my-org-collect-keywords-advice (orig-func &rest args)
+  (let ((old-buffer (current-buffer)))
+    (with-temp-buffer
+      (insert-buffer-substring old-buffer)
+      (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n#+setupfile: ~/brain/private.org\n")
+      (apply orig-func args))))
+(advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
 (provide 'setup-org)

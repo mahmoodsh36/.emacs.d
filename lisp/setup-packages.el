@@ -1108,7 +1108,16 @@
   (unbind-key "M-RET" hyperbole-mode-map))
 
 (use-package denote
-  :straight (denote :fetcher github :repo "protesilaos/denote"))
+  :straight (denote :fetcher github :repo "protesilaos/denote")
+  :config
+  (setq denote-directory (concat *brain-dir* "notes/")
+        denote-date-prompt-use-org-read-date t))
+(add-hook 'dired-mode-hook #'denote-dired-mode)
+(defun denote-files-with-keyword (keyword)
+  (cl-remove-if-not (lambda (filepath) (member keyword (denote-extract-keywords-from-path filepath)))
+                    (denote-directory-files)))
+;; (setq org-agenda-files (denote-directory-files ".*todo.*"))
+(setq org-agenda-files (denote-files-with-keyword "todo"))
 (use-package denote-menu
   :straight (denote-menu :fetcher github :repo "namilus/denote-menu"))
 ;; (use-package consult-notes)
