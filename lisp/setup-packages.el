@@ -657,9 +657,9 @@
   (add-hook 'web-mode-hook 'emmet-mode))
 
 ;; transclusions (including text from other documents) for org mode
-(use-package org-transclusion
-  :config
-  (add-hook 'org-mode-hook #'org-transclusion-mode))
+;; (use-package org-transclusion
+;;   :config
+;;   (add-hook 'org-mode-hook #'org-transclusion-mode))
 
 (use-package eat)
 ;; (quelpa '(eat :fetcher git

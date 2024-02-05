@@ -1141,7 +1141,7 @@ should be continued."
                 (org-agenda-block-separator nil)
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                 (org-agenda-overriding-header "\nnext three days")))
-    (agenda "" ((org-agenda-overriding-header "\noverdue")
+    (agenda "" ((org-agenda-overriding-header "overdue")
                 ;; (org-agenda-entry-types '(:deadline :scheduled))
                 (org-scheduled-past-days 10000)
                 (org-deadline-past-days 10000)
@@ -1341,7 +1341,7 @@ should be continued."
       (apply orig-func args))))
 (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
-;;; ol-man.el - support for links to man pages in org mode
+;; link to arbitrary blocks in org
 (org-link-set-parameters "blk"
                          :follow #'org-blk-open
                          :export #'org-blk-export)
@@ -1352,12 +1352,11 @@ should be continued."
   (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading" rgx *brain-dir*))
          (output (shell-command-to-string cmd))
          (files (mapcar (lambda (line) (car (split-string line ":"))) (split-string output "\n"))))
-    (car files)
-    ))
+    (car files)))
 
-(defun org-blk-open (path _)
-  "open the file containing a block with the name `path'"
-  (find-file (grep-brain (regexp-quote path))))
+(defun org-blk-open (link _)
+  "open the file containing a block with the name `link'"
+  (find-file (grep-brain (regexp-quote (format "#+name: %s" link)))))
   ;; (shell-command-to-string "find . -name \"*.org\" -exec grep '^#+name: blk' {} \;"))
 
 (defun org-blk-export (path _)
