@@ -64,7 +64,8 @@
 ;;               (and my-roam-node
 ;;                    (not (equal (org-roam-node-title my-roam-node) "")))))))
 ;; (led-kbd "r n" (lambda () (interactive) (org-roam-capture nil "n")))
-;; (led-kbd "r i" 'org-roam-node-insert)
+(led-kbd "r i" 'denote-insert-link)
+(led-kbd "r m" 'denote-rename-file)
 (led-kbd "r c" 'org-id-get-create)
 (led-kbd "r o" 'org-open-at-point :keymaps 'org-mode-map)
 (led-kbd "r a" 'org-attach :keymaps 'org-mode-map)
@@ -72,17 +73,18 @@
 (led-kbd "r l" 'org-roam-alias-add :keymaps 'org-mode-map)
 (led-kbd "r w" 'org-roam-tag-add :keymaps 'org-mode-map)
 (led-kbd "r W" 'org-roam-tag-remove :keymaps 'org-mode-map)
-(led-kbd "r q"
-         (lambda ()
-           (interactive)
-           (org-roam-capture-no-title-prompt nil "k"))) ;; SPC r q - quick note
+;; (led-kbd "r q"
+;;          (lambda ()
+;;            (interactive)
+;;            (org-roam-capture-no-title-prompt nil "k"))) ;; SPC r q - quick note
 ;; (general-define-key :keymaps 'override "SPC r h"
 ;;                     (lambda ()
 ;;                       (interactive)
 ;;                       (org-roam-capture nil "t")))
-(led-kbd "r x" (lambda () (interactive) (export-current-buffer :html-p t)) :keymaps 'org-mode-map)
-(led-kbd "r X" #'export-all-public)
-(led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
+;; (led-kbd "r x" (lambda () (interactive) (export-current-buffer :html-p t)) :keymaps 'org-mode-map)
+;; (led-kbd "r X" #'export-all-public)
+;; (led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
+(led-kbd "r d" #'org-to-pdf :keymaps 'org-mode-map)
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
 (led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
 (led-kbd "r E" 'org-babel-tangle-file :keymaps 'org-mode-map)
@@ -94,6 +96,7 @@
 (led-kbd "r r" 'org-redisplay-inline-images :keymaps 'org-mode-map)
 (led-kbd "r P" 'org-set-property :keymaps 'org-mode-map)
 (led-kbd "r z" 'org-add-note :keymaps 'org-mode-map)
+(led-kbd "r p" #'toggle-latex-previews-and-render-current-buffer)
 (led-kbd "r p" #'toggle-latex-previews-and-render-current-buffer :keymaps 'org-mode-map)
 ;; (general-define-key :keymaps 'override "/" 'swiper)
 (led-kbd "c" "C-c C-c" :keymaps 'org-mode-map)
@@ -238,7 +241,7 @@
 (led-kbd "a k" #'org-clock-out)
 (led-kbd "a b" #'org-clock-cancel)
 (led-kbd "a p" #'org-clock-display :keymaps 'org-mode-map)
-(led-kbd "a t" (lambda () (interactive) (org-roam-capture nil "t")))
+(led-kbd "a t" (lambda () (interactive) (org-capture nil "t")))
 (led-kbd "a c" #'org-todo :keymaps 'org-mode-map)
 (led-kbd "" (make-sparse-keymap) :keymaps 'org-agenda-mode-map) ;; needed for the next one
 (led-kbd "a c" #'org-agenda-todo :keymaps 'org-agenda-mode-map)
@@ -407,8 +410,8 @@
 
 (led-kbd "s b" #'ein:run)
 (led-kbd "s o" #'insert-random-string)
-
 (led-kbd "s y" #'avy-goto-char)
+(led-kbd "s x" #'save-buffers-kill-terminal)
 
 ;; denote
 (setq denote-templates

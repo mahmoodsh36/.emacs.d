@@ -27,6 +27,7 @@
 ;;                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
 ;;                    "(provide 'org-version)\n")))
 ;;               :pin nil))
+(use-package org-contrib)
 
 (defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
 
@@ -872,24 +873,24 @@
   (cond ((member "public" (org-roam-node-tags node)) "blog")
         ((member "public-archive" (org-roam-node-tags node)) "index")))
 
-(defun my-org-link-advice (fn link desc info)
-  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-  (let* ((link-type (org-element-property :type link))
-         (link-path (org-element-property :path link))
-         (is-id-link (string= link-type "id")))
-    (if is-id-link
-        (condition-case err ;; handle error when org-roam cannot find link in database
-            (let* ((node (org-roam-node-from-id link-path))
-                   (tags (org-roam-node-tags node)))
-              (if (and (should-export-node node) ;; if note is public export as usual, otherwise dont export it as link but just as text
-                       (not (string-match-p "::" link-path))) ;; if link isnt of form [[id::block]], dont export it as link, we cant handle those yet
-                  (funcall fn link desc info)
-                (format "<b>%s</b>" desc)))
-          (error (message "org-roam couldnt find link %s, error was: %s" link-path err)
-                 (format "<b>%s</b>" desc))) ;; even when we cant find it in the database we still render it
-      (funcall fn link desc info))))
-(advice-add #'org-html-link :around #'my-org-link-advice)
-(advice-add #'org-hugo-link :around #'my-org-link-advice)
+;; (defun my-org-link-advice (fn link desc info)
+;;   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
+;;   (let* ((link-type (org-element-property :type link))
+;;          (link-path (org-element-property :path link))
+;;          (is-id-link (string= link-type "id")))
+;;     (if is-id-link
+;;         (condition-case err ;; handle error when org-roam cannot find link in database
+;;             (let* ((node (org-roam-node-from-id link-path))
+;;                    (tags (org-roam-node-tags node)))
+;;               (if (and (should-export-node node) ;; if note is public export as usual, otherwise dont export it as link but just as text
+;;                        (not (string-match-p "::" link-path))) ;; if link isnt of form [[id::block]], dont export it as link, we cant handle those yet
+;;                   (funcall fn link desc info)
+;;                 (format "<b>%s</b>" desc)))
+;;           (error (message "org-roam couldnt find link %s, error was: %s" link-path err)
+;;                  (format "<b>%s</b>" desc))) ;; even when we cant find it in the database we still render it
+;;       (funcall fn link desc info))))
+;; (advice-add #'org-html-link :around #'my-org-link-advice)
+;; (advice-add #'org-hugo-link :around #'my-org-link-advice)
 
 ;; set org-mode date's export according to file creation date
 (defun file-modif-time (filepath)
@@ -1116,17 +1117,16 @@ should be continued."
   ;;
   ;; So we match everything and then skip entries with
   ;; `org-agenda-skip-function'.
-  `((tags-todo "*"
-               (
+  `(;;tags-todo ;; "*"
+               ;; (
                ;; (org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))
-                (org-agenda-skip-function
-                 `(org-agenda-skip-entry-if
-                   'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
-                (org-agenda-block-separator nil)
-                (org-agenda-overriding-header "important tasks without a date")))
+                ;; (org-agenda-skip-function
+                ;;  `(org-agenda-skip-entry-if
+                ;;    'notregexp ,(format "\\[#%s\\]" (char-to-string org-priority-highest))))
+                ;; (org-agenda-block-separator nil)
+                ;; (org-agenda-overriding-header "important tasks without a date")))
     (agenda "" ((org-agenda-span 1)
                 (org-deadline-warning-days 0)
-                (org-agenda-block-separator nil)
                 (org-scheduled-past-days 0)
                 ;; We don't need the `org-agenda-date-today'
                 ;; highlight because that only has a practical
@@ -1136,11 +1136,11 @@ should be continued."
                 (org-agenda-overriding-header "\ntoday's agenda")))
     (agenda "" ((org-agenda-start-on-weekday nil)
                 (org-agenda-start-day "+1d")
-                (org-agenda-span 3)
+                (org-agenda-span 14)
+                (org-agenda-show-all-dates nil)
                 (org-deadline-warning-days 0)
-                (org-agenda-block-separator nil)
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                (org-agenda-overriding-header "\nnext three days")))
+                (org-agenda-overriding-header "\nnext 2 weeks")))
     (agenda "" ((org-agenda-overriding-header "overdue")
                 ;; (org-agenda-entry-types '(:deadline :scheduled))
                 (org-scheduled-past-days 10000)
@@ -1154,10 +1154,9 @@ should be continued."
                 ;; we don't want to replicate the previous section's
                 ;; three days, so we start counting from the day after.
                 (org-agenda-start-day "+4d")
-                (org-agenda-span 14)
+                (org-agenda-span 30)
                 (org-agenda-show-all-dates nil)
                 (org-deadline-warning-days 0)
-                (org-agenda-block-separator nil)
                 (org-agenda-entry-types '(:deadline))
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                 (org-agenda-overriding-header "\nupcoming deadlines (+14d)"))))
@@ -1299,7 +1298,9 @@ should be continued."
         ;;  :if-new (file+head "notes/agenda.org" "#+title: ${title}\n"))))
 ;; this prompts for TITLE, KEYWORDS, and SUBDIRECTORY
 (add-to-list 'org-capture-templates
-             '("n" "new note with prompts (with denote.el)" plain
+             '("n"
+               "new note with prompts (with denote.el)"
+               plain
                (file denote-last-path)
                (function
                 (lambda ()
@@ -1308,6 +1309,12 @@ should be continued."
                :immediate-finish nil
                :kill-buffer t
                :jump-to-captured t))
+(add-to-list 'org-capture-templates
+             '("t"
+               "todo"
+               entry
+               (file "/home/mahmooz/brain/notes/20240204T153230--agenda__todo.org")
+               "* TODO %?\nentered on %U\n %i\n %a"))
 ;; ;; This prompts only for SUBDIRECTORY
 ;; (add-to-list 'org-capture-templates
 ;;              '("N" "New note with prompts (with denote.el)" plain

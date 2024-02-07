@@ -144,7 +144,15 @@
       (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
       )
 
-    (use-package cape)
+    (use-package cape
+      :init
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+      (add-to-list 'completion-at-point-functions #'cape-file)
+      (add-to-list 'completion-at-point-functions #'cape-tex)
+      (add-to-list 'completion-at-point-functions #'cape-line)
+      (add-to-list 'completion-at-point-functions #'cape-keyword)
+      ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+      )
 
     ;; for some reason ispell completion is enabled in org mode
     (defun remove-ispell-cap ()
@@ -796,15 +804,25 @@
   (setq org-inline-anim-loop t)
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
-;; (quelpa '(julia-snail :fetcher github
-;;                       :repo "gcv/julia-snail"
-;;                       :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
-;; (add-hook 'julia-mode-hook 'julia-snail-mode)
-;; (setq julia-snail-terminal-type :eat)
-;; (setq julia-snail-extensions '(repl-history formatter ob-julia))
-;; ;;(setq julia-snail-extensions '(repl-history formatter))
-;; (setq julia-snail/ob-julia-mirror-output-in-repl t)
-;; (setq julia-snail/ob-julia-capture-io nil)
+;; (use-package julia-snail
+;;   :straight '(julia-snail :fetcher github
+;;                           :repo "gcv/julia-snail"
+;;                           :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*"))
+;;   :config
+;;   (setq julia-snail-terminal-type :eat)
+;;   (setq julia-snail-extensions '(repl-history formatter ob-julia))
+;;   ;; (setq julia-snail-extensions '(repl-history formatter))
+;;   (setq julia-snail/ob-julia-mirror-output-in-repl t)
+;;   (setq julia-snail/ob-julia-capture-io nil))
+;; ;; (quelpa '(julia-snail :fetcher github
+;; ;;                       :repo "gcv/julia-snail"
+;; ;;                       :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
+;; ;; (add-hook 'julia-mode-hook 'julia-snail-mode)
+;; ;; (setq julia-snail-terminal-type :eat)
+;; ;; (setq julia-snail-extensions '(repl-history formatter ob-julia))
+;; ;; ;;(setq julia-snail-extensions '(repl-history formatter))
+;; ;; (setq julia-snail/ob-julia-mirror-output-in-repl t)
+;; ;; (setq julia-snail/ob-julia-capture-io nil)
 
 ;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
 ;; (use-package ob-julia
@@ -1011,11 +1029,14 @@
   ;; (add-hook 'python-mode-hook
   ;;         (lambda () (setq-local devdocs-current-docs '("python~3.9")))))
 
-;; (use-package ob-julia-vterm
-;;   :config
-;;   (add-to-list 'org-babel-load-languages '(julia-vterm . t))
-;;   (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-;;   (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
+(use-package ob-julia-vterm
+  :config
+  (add-to-list 'org-babel-load-languages '(julia-vterm . t))
+  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+  (add-to-list 'org-babel-load-languages '(julia-vterm . t))
+  (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+  (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+  (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
 ;;  :straight

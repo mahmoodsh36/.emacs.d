@@ -124,7 +124,7 @@
     (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
 
   ;; disable evil mode in deadgrep, they dont work well together
-  (evil-set-initial-state 'deadgrep-mode 'emacs)
+  ;; (evil-set-initial-state 'deadgrep-mode 'emacs)
   (evil-set-initial-state 'calc-mode 'emacs)
   (evil-set-initial-state 'eat-mode 'emacs)
   ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime

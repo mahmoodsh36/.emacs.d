@@ -226,38 +226,6 @@
 (defun my-kbd (binding function &rest args)
   )
 
-;; (defun spotify-lyrics ()
-;;   (interactive)
-;;   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
-;;          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-;;          (song-file (format "%s/lyrics/%s - %s" *brain-dir* song artist)))
-;;     (if (not (file-exists-p song-file))
-;;         (progn
-;;           (message "lyrics file doesnt exist")
-;;           (let ((lyrics (shell-command-to-string (format "~/scripts/get_genius_lyrics.py '%s' '%s' 2>/dev/null" song artist))))
-;;             (if (> (length lyrics) 0)
-;;                 (progn
-;;                   (f-write-text lyrics 'utf-8 song-file)
-;;                   (message "fetched lyrics for: %s - %s" song artist)
-;;                   (find-file song-file))
-;;               (message "couldnt fetch lyrics :("))))
-;;       (find-file song-file))))
-
-;; these spotify functions are old af, they were for when i had a mac
-;; (defun delete-spotify-lyrics-file ()
-;;   (interactive)
-;;   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
-;;          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-;;          (song-file (format "%s/lyrics/%s - %s" *brain-dir* song artist)))
-;;     (delete-file song-file)))
-
-;; (defun open-spotify-lyrics-file ()
-;;   (interactive)
-;;   (let* ((song (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to name of current track as string'")))
-;;          (artist (string-trim (shell-command-to-string "osascript -e 'tell application \"Spotify\" to artist of current track as string'")))
-;;          (song-file (format "%s/lyrics/%s - %s" *brain-dir* song artist)))
-;;     (find-file song-file)))
-
 ;; start server
 (server-start)
 
@@ -286,17 +254,6 @@
   "compile the current latex document being edited"
   (interactive)
   (compile-latex-file (buffer-file-name)))
-
-;; someone needed this so i whipped it up for them
-;; (defun compile-this-latex-file (outfile)
-;;   "compile the current latex document being edited"
-;;   (interactive "sEnter output file: ")
-;;   (message "outfile %s" outfile)
-;;   (start-process-shell-command
-;;    "latex"
-;;    "latex"
-;;    (format "pdflatex -shell-escape -jobname=%s %s"
-;;            outfile (buffer-file-name))))
 
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
@@ -701,22 +658,6 @@ prompt the user for a coding system."
                    (yaml-mode . yaml-ts-mode)))
   (add-to-list 'major-mode-remap-alist mapping))
 
-;; change cursor color when repeat-map is active, buggy
-;; (setq my-repeat-p nil)
-;; (add-hook 'post-command-hook
-;;           (defalias 'my/repeat-change-cursor ; change cursor to bar during repeat
-;;             (let (my-repeat-p my-ccol)
-;;               (lambda ()
-;;                 (unless (eq my-repeat-p repeat-in-progress)
-;;                   (if repeat-in-progress ; turning on
-;; 		                  (setq my-ccol (face-background 'cursor)))
-;;                   (setq my-repeat-p repeat-in-progress)
-;;                   (set-cursor-color
-;; 		               (if repeat-in-progress
-;; 		                   (face-foreground 'error)
-;; 		                 ccol))))))
-;;           90)
-
 ;; FIRST: git clone https://github.com/casouri/tree-sitter-module
 ;;        bash batch.sh
 ;; THEN : sudo cp dist/* /usr/local/lib
@@ -935,8 +876,8 @@ prompt the user for a coding system."
             ;;(switch-to-darktooth-theme)
             ))
 ;; enable flyspell (spell checking)
-;; (dolist (hook '(text-mode-hook))
-;;   (add-hook hook (lambda () (flyspell-mode 1))))
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
 ;; ;; flyspell buffer when its opened
 ;; (add-hook 'flyspell-mode-hook #'flyspell-buffer)
 ;; (use-package flyspell-correct
@@ -952,7 +893,7 @@ prompt the user for a coding system."
 ;; there's also find-file-literally i guess
 (defun conditional-disable-modes ()
   (unless (eq major-mode 'pdf-view-mode)
-    (when (> (buffer-size) (* 1024 1024))
+    (when (> (buffer-size) (* 1024 512))
       (flycheck-mode -1)
       (flyspell-mode -1)
       (font-lock-mode -1)
@@ -960,6 +901,5 @@ prompt the user for a coding system."
       (which-function-mode -1)
       (linum-mode 0)
       (lsp-mode 0)
-      ))
-  )
+      )))
 (add-hook 'find-file-hook 'conditional-disable-modes)
