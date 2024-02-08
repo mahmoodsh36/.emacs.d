@@ -880,8 +880,6 @@ prompt the user for a coding system."
   (add-hook hook (lambda () (flyspell-mode 1))))
 ;; ;; flyspell buffer when its opened
 ;; (add-hook 'flyspell-mode-hook #'flyspell-buffer)
-;; (use-package flyspell-correct
-;;   :bind ("C-;" . flyspell-correct-wrapper))
 
 ;; sometimes useful for refactoring old tex notes
 (defun replace-dollar-signs ()

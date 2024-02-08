@@ -417,6 +417,7 @@
 (setq denote-templates
       '((note . "#+title: ")
         (memo . "* Some heading")))
-(led-kbd "r n" #'denote-open-or-create)
+(led-kbd "r n" #'denote-create-note)
+(led-kbd "r f" #'denote-open-or-create)
 
 (provide 'setup-keys)

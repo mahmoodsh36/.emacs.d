@@ -1133,12 +1133,15 @@
   :straight (denote :fetcher github :repo "protesilaos/denote")
   :config
   (setq denote-directory (concat *brain-dir* "notes/")
-        denote-date-prompt-use-org-read-date t))
+        denote-date-prompt-use-org-read-date t
+        denote-file-type 'org))
 (add-hook 'dired-mode-hook #'denote-dired-mode)
 (defun denote-files-with-keyword (keyword)
   (cl-remove-if-not (lambda (filepath) (member keyword (denote-extract-keywords-from-path filepath)))
                     (denote-directory-files)))
 ;; (setq org-agenda-files (denote-directory-files ".*todo.*"))
+(add-to-list 'denote-file-types
+             '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
 (setq org-agenda-files (denote-files-with-keyword "todo"))
 (use-package denote-menu
   :straight (denote-menu :fetcher github :repo "namilus/denote-menu"))
@@ -1149,5 +1152,8 @@
 ;; (use-package deft)
 
 (use-package rg)
+
+(use-package flyspell-correct
+  :bind ("C-;" . flyspell-correct-wrapper))
 
 (provide 'setup-packages)
