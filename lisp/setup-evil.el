@@ -128,10 +128,10 @@
   (use-package evil-anzu)
 
   ;; extend evil-surround functionality
-  (use-package evil-embrace
-    :config
-    (evil-embrace-enable-evil-surround-integration)
-    (add-hook 'org-mode-hook 'embrace-org-mode-hook))
+  ;(use-package evil-embrace
+    ;:config
+    ;(evil-embrace-enable-evil-surround-integration)
+    ;(add-hook 'org-mode-hook 'embrace-org-mode-hook))
 
   ;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
   (defmacro define-and-bind-quoted-text-object (name key start-regex end-regex)

@@ -1,16 +1,17 @@
+;; needed because they dont work with elpaca by default
 (use-package seq)
 (use-package transient)
 (use-package auctex
-             :elpaca `(auctex
-                       :pre-build (("./autogen.sh")
-                                   ("./configure"
-                                    "--without-texmf-dir"
-                                    "--with-packagelispdir=./"
-                                    "--with-packagedatadir=./")
-                                   ("make"))
-                       :build (:not elpaca--compile-info) ;; Make will take care of this step
-                       :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
-                       :version (lambda (_) (require 'tex-site) AUCTeX-version)))
+  :elpaca '(auctex
+            :pre-build (("./autogen.sh")
+                        ("./configure"
+                         "--without-texmf-dir"
+                         "--with-packagelispdir=./"
+                         "--with-packagedatadir=./")
+                        ("make"))
+            :build (:not elpaca--compile-info) ;; Make will take care of this step
+            :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
+            :version (lambda (_) (require 'tex-site) AUCTeX-version)))
 
 ;; set of org-contrib packages
 (use-package org-contrib)
@@ -1000,12 +1001,12 @@
   :config
   (setq combobulate-key-prefix "C-c o"))
 
-(use-package embrace
-  :config
-  (global-set-key (kbd "C-,") #'embrace-commander)
-  ;; org-mode has a default binding for C-, override it
-  (define-key org-mode-map (kbd "C-,") #'embrace-commander)
-  (add-hook 'org-mode-hook #'embrace-org-mode-hook))
+;(use-package embrace
+  ;:config
+  ;(global-set-key (kbd "C-,") #'embrace-commander)
+  ;;; org-mode has a default binding for C-, override it
+  ;(define-key org-mode-map (kbd "C-,") #'embrace-commander)
+  ;(add-hook 'org-mode-hook #'embrace-org-mode-hook))
 
 (use-package easy-kill)
 
