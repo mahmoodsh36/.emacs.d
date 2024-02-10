@@ -1,8 +1,5 @@
 ;; configure/setup some keybindings
 
-;; makes binding keys less painful
-(use-package general)
-
 (led-kbd "d w" (lambda () (interactive) (dired "~/dl/")))
 (led-kbd "d a" (lambda () (interactive) (dired "~/data/")))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))

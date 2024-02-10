@@ -1,3 +1,12 @@
+(use-package transient)
+(use-package seq)
+
+;; set of org-contrib packages
+(use-package org-contrib)
+
+;; makes binding keys less painful
+(use-package general)
+
 (use-package nix-mode
   :mode "\\.nix\\'")
 
@@ -868,7 +877,10 @@
 ;; vertico config
 (use-package vertico
   :init
-  (vertico-mode))
+  (vertico-mode)
+  ;; display vertico in different buffer
+  (require 'vertico-buffer)
+  (vertico-buffer-mode))
 (defun crm-indicator (args)
   (cons (format "[CRM%s] %s"
                 (replace-regexp-in-string
@@ -895,12 +907,17 @@
         orderless-component-separator "\s+"
         corfu-separator orderless-component-separator)
   (setq completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-overrides '((file (styles partial-completion))))
+  (defun orderless-fast-dispatch (word index total)
+    (and (= index 0) (= total 1) (length< word 4)
+         `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
+  (orderless-define-completion-style orderless-fast
+                                     (orderless-style-dispatchers '(orderless-fast-dispatch))
+                                     (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
+  (setq completion-styles '(substring orderless-fast basic))
+  )
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
-;; display vertico in different buffer
-(require 'vertico-buffer)
-(vertico-buffer-mode)
 ;; use selected window
 (setq vertico-buffer-display-action '(display-buffer-same-window))
 ;; Commands for Ido-like directory navigation.
@@ -925,13 +942,6 @@
 ;; is similar to ivy-rich
 (use-package consult)
 ;; corfu with orderless
-(defun orderless-fast-dispatch (word index total)
-  (and (= index 0) (= total 1) (length< word 4)
-       `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
-(orderless-define-completion-style orderless-fast
-  (orderless-style-dispatchers '(orderless-fast-dispatch))
-  (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
-(setq completion-styles '(substring orderless-fast basic))
 
 (use-package marginalia
   :config
@@ -1134,15 +1144,16 @@
   :config
   (setq denote-directory (concat *brain-dir* "notes/")
         denote-date-prompt-use-org-read-date t
-        denote-file-type 'org))
-(add-hook 'dired-mode-hook #'denote-dired-mode)
+        denote-file-type 'org)
+  (add-hook 'dired-mode-hook #'denote-dired-mode)
+  (add-to-list 'denote-file-types
+               '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
+  (setq org-agenda-files (denote-files-with-keyword "todo")))
 (defun denote-files-with-keyword (keyword)
   (cl-remove-if-not (lambda (filepath) (member keyword (denote-extract-keywords-from-path filepath)))
                     (denote-directory-files)))
 ;; (setq org-agenda-files (denote-directory-files ".*todo.*"))
-(add-to-list 'denote-file-types
-             '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
-(setq org-agenda-files (denote-files-with-keyword "todo"))
+
 (use-package denote-menu
   :elpaca (denote-menu :fetcher github :repo "namilus/denote-menu"))
 ;; (use-package consult-notes)

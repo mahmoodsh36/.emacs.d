@@ -24,7 +24,7 @@
     (define-key evil-normal-state-map "r" 'undo-fu-only-redo)
     ;; make ESC cancel all
     (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
-    ;; (define-key key-translation-map (kbd "<escape>") (kbd "C-g")))
+  ;; (define-key key-translation-map (kbd "<escape>") (kbd "C-g")))
   ;;dont copy the overwritten text when overwriting text by pasting
   ;;(setq-default evil-kill-on-visual-paste nil))
 
@@ -103,8 +103,8 @@
     (global-evil-matchit-mode 1)
     ;; override the default to make it work with custom blocks in org mode
     (setq evilmi-org-match-tags
-      '((("begin_[a-z_]+") () ("end_[a-z_]+") "monogamy")
-        (("results") () ("end") "monogamy"))))
+          '((("begin_[a-z_]+") () ("end_[a-z_]+") "monogamy")
+            (("results") () ("end") "monogamy"))))
 
   ;; text evil objects for latex
   (use-package evil-tex
@@ -122,28 +122,6 @@
     :config
     (define-key evil-inner-text-objects-map "c" 'evil-textobj-column-word)
     (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD))
-
-  ;; disable evil mode in deadgrep, they dont work well together
-  ;; (evil-set-initial-state 'deadgrep-mode 'emacs)
-  (evil-set-initial-state 'calc-mode 'emacs)
-  (evil-set-initial-state 'eat-mode 'emacs)
-  ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
-  (evil-set-initial-state 'sly-db-mode 'emacs)
-  ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
-  (evil-set-initial-state 'vterm-mode 'emacs)
-  ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
-
-  (general-evil-setup)
-
-  ;; (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
-  ;; (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
-
-  (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
-
-  (general-define-key :states 'normal :keymaps 'override ")" 'evil-scroll-page-down)
-  (general-define-key :states 'normal :keymaps 'override "(" 'evil-scroll-page-up)
-
-  (led-kbd "w" 'evil-window-map)
 
   ;; display number of matches when searching
   ;; (use-package anzu)
@@ -166,42 +144,67 @@
                                   (evil-select-paren ,start-regex ,end-regex beg end type count t))
          (define-key evil-inner-text-objects-map ,key #',inner-name)
          (define-key evil-outer-text-objects-map ,key #',outer-name))))
-  (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
-  (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
-  (define-and-bind-quoted-text-object "slash" "/" "/" "/")
-  (define-and-bind-quoted-text-object "space" " " " " " ")
-  (define-and-bind-quoted-text-object "tilde" "~" "~" "~")
-  (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
+  (with-eval-after-load 'evil
+    (with-eval-after-load 'general
+    
+  ;; disable evil mode in deadgrep, they dont work well together
+  ;; (evil-set-initial-state 'deadgrep-mode 'emacs)
+  (evil-set-initial-state 'calc-mode 'emacs)
+  (evil-set-initial-state 'eat-mode 'emacs)
+  ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
+  (evil-set-initial-state 'sly-db-mode 'emacs)
+  ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
+  (evil-set-initial-state 'vterm-mode 'emacs)
+  ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
-  ;; create "il"/"al" (inside/around) line text objects:
-  ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
-  ;; create "ia"/"aa" (inside/around) entire buffer text objects:
-  (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
+  (general-evil-setup)
 
-  ;; (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map fundamental-mode-map) "s" 'save-buffer)
-  (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
+  ;; (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
+  ;; (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
 
-  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
-  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
-  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
-  (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
-  ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
-  ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+  (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
 
-  ;; dired
-  (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
+  (general-define-key :states 'normal :keymaps 'override ")" 'evil-scroll-page-down)
+  (general-define-key :states 'normal :keymaps 'override "(" 'evil-scroll-page-up)
 
-  ;; some sly keys
-  ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
+  (led-kbd "w" 'evil-window-map)
 
-  (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
-  (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
+    (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
+    (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
+    (define-and-bind-quoted-text-object "slash" "/" "/" "/")
+    (define-and-bind-quoted-text-object "space" " " " " " ")
+    (define-and-bind-quoted-text-object "tilde" "~" "~" "~")
+    (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
 
-  ;; general keys for programming
-  (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
-  (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)
+    ;; create "il"/"al" (inside/around) line text objects:
+    ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
+    ;; create "ia"/"aa" (inside/around) entire buffer text objects:
+    (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
+
+    ;; (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map fundamental-mode-map) "s" 'save-buffer)
+    (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
+
+    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
+    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
+    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
+    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
+    ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
+    ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+
+    ;; dired
+    (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
+
+    ;; some sly keys
+    ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
+
+    (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
+    (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+    (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
+    (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
+
+    ;; general keys for programming
+    (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
+    (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)))
 
   ;; evil mode multiple cursors
   (use-package evil-mc

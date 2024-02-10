@@ -28,9 +28,6 @@
 ;;                    "(provide 'org-version)\n")))
 ;;               :pin nil))
 
-;; set of org-contrib packages
-(use-package org-contrib)
-
 (defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
 
 (defun enable-latex-previews ()

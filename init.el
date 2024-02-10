@@ -880,17 +880,32 @@ prompt the user for a coding system."
 ;; (setq python-shell-interpreter "python3.10")
 ;; (setq python-interpreter "python3.10")
 
+(defun eval-after-load-all (my-features form)
+  "Run FORM after all MY-FEATURES are loaded.
+See `eval-after-load' for the possible formats of FORM."
+  (if (null my-features)
+      (if (functionp form)
+      (funcall form)
+    (eval form))
+    (eval-after-load (car my-features)
+      `(lambda ()
+     (eval-after-load-all
+      (quote ,(cdr my-features))
+      (quote ,form))))))
+
 ;; add ~/.emacs.d to load-path
 (push (concat user-emacs-directory "/lisp") load-path)
 (require 'setup-packages) ;; load setup-packages.el
-(require 'setup-org) ;; load setup-org.el
+(with-eval-after-load 'org
+                      (require 'setup-org)) ;; load setup-org.el
 (require 'setup-evil) ;; load setup-evil.el
-(require 'setup-keys) ;; load setup-keys.el
+(all-eval-after-load '(general evil)
+                     (require 'setup-keys)) ;; load setup-keys.el
 (require 'setup-theme) ;; load setup-theme.el
 (require 'setup-dired) ;; load setup-dired.el
 
 ;; open agenda on startup
-(add-hook 'after-init-hook
+(add-hook 'elpaca-after-init-hook
           (lambda ()
 ;;            (org-roam-db-sync)
             ;; (org-agenda-list)
