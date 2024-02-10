@@ -899,8 +899,11 @@ See `eval-after-load' for the possible formats of FORM."
 (with-eval-after-load 'org
                       (require 'setup-org)) ;; load setup-org.el
 (require 'setup-evil) ;; load setup-evil.el
-(eval-after-load-all '(general evil)
-                     (require 'setup-keys)) ;; load setup-keys.el
+;; (eval-after-load-all '(general evil)
+;;                      (require 'setup-keys)) ;; load setup-keys.el
+(with-eval-after-load 'evil
+  (with-eval-after-load 'general
+    (require 'setup-org))) ;; load setup-org.el
 (require 'setup-theme) ;; load setup-theme.el
 (require 'setup-dired) ;; load setup-dired.el
 
