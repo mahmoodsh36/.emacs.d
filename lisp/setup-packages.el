@@ -1,5 +1,16 @@
-(use-package transient)
 (use-package seq)
+(use-package transient)
+(use-package auctex
+             :elpaca `(auctex
+                       :pre-build (("./autogen.sh")
+                                   ("./configure"
+                                    "--without-texmf-dir"
+                                    "--with-packagelispdir=./"
+                                    "--with-packagedatadir=./")
+                                   ("make"))
+                       :build (:not elpaca--compile-info) ;; Make will take care of this step
+                       :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
+                       :version (lambda (_) (require 'tex-site) AUCTeX-version)))
 
 ;; set of org-contrib packages
 (use-package org-contrib)
@@ -576,7 +587,9 @@
   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
 ;; (use-package code-compass)
 
-;; (use-package vterm)
+;(use-package vterm
+             ;:custom
+             ;(vterm-always-compile-module t))
 
 ;; check which keys i press most
 (use-package keyfreq
@@ -1039,14 +1052,14 @@
   ;; (add-hook 'python-mode-hook
   ;;         (lambda () (setq-local devdocs-current-docs '("python~3.9")))))
 
-(use-package ob-julia-vterm
-  :config
-  (add-to-list 'org-babel-load-languages '(julia-vterm . t))
-  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
-  (add-to-list 'org-babel-load-languages '(julia-vterm . t))
-  (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-  (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-  (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
+;(use-package ob-julia-vterm
+  ;:config
+  ;(setq vterm-always-compile-module t)
+  ;(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+  ;(add-to-list 'org-babel-load-languages '(julia-vterm . t))
+  ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+  ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+  ;(defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
 ;;  :elpaca
