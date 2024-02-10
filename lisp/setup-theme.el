@@ -17,7 +17,7 @@
 (use-package doom-themes)
 (use-package inkpot-theme)
 (use-package ef-themes
-  :straight
+  :elpaca
   (ef-themes :type git :host github :repo "protesilaos/ef-themes"))
 ;; (use-package minimal-theme
 ;;   :quelpa (:host github :repo "mahmoodsheikh36/minimal-theme"))

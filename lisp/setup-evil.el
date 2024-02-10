@@ -220,7 +220,7 @@
   (use-package evil-extra-operator)
 
   (use-package evil-textobj-tree-sitter
-    :straight t
+    :elpaca t
     :config
     ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
     (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))

@@ -24,7 +24,6 @@
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 (setq dired-listing-switches "-Al") ;; default is ls -al
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
-(add-hook 'dired-mode-hook 'auto-revert-mode) ;; hook to make dired auto refresh files when they get edited/changed/created/whatever
 
 ;; function to get size of files in dired
 (defun dired-get-size ()

@@ -3,7 +3,7 @@
 ;; tecosaur's org-mode version
 ;; (use-package org
 ;; :defer
-;;   :straight `(org
+;;   :elpaca `(org
 ;;               :fork (:host nil
 ;;                            :repo "https://git.tecosaur.net/tec/org-mode.git"
 ;;                            :branch "dev"
@@ -27,6 +27,8 @@
 ;;                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
 ;;                    "(provide 'org-version)\n")))
 ;;               :pin nil))
+
+;; set of org-contrib packages
 (use-package org-contrib)
 
 (defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
@@ -71,18 +73,9 @@
 ;; bibliography file (i use one global one for everything)
 (setq org-cite-global-bibliography '("~/brain/bib.bib"))
 
-;; (use-package org-contrib
-;;   :straight (:host github :repo "emacsmirror/org-contrib")
-;;   :config
-;;   (load-library "org-contrib"))
-
-;; the all-powerful org mode
-;; (use-package org)
-;; (use-package org-contrib)
-
 ;; cache for orgmode links, requires pre-isntallation of gcc/clang
 ;; (use-package org-roam
-;;   :straight (org-roam :type git :repo "mahmoodsheikh36/org-roam")
+;;   :elpaca (org-roam :type git :repo "mahmoodsheikh36/org-roam")
 ;;   :custom
 ;;   ;; (org-roam-directory *brain-dir*)
 ;;   (org-roam-directory (file-truename "~/brain2/notes/"))
@@ -109,7 +102,8 @@
 ;;           ("t" "todo" plain "* TODO ${title}"
 ;;            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
 ;; go to insert mode after for org-capture cursor
-;; (add-hook 'org-capture-mode-hook 'evil-insert-state)
+;; enter insert state after invoking org-capture
+(add-hook 'org-capture-mode-hook 'evil-insert-state)
 
 ;; (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
 ;;   (interactive "P")
@@ -1390,5 +1384,49 @@ should be continued."
 ;;       (`texinfo (format "@uref{%s,%s}" path desc))
 ;;       (`ascii (format "%s (%s)" desc path))
 ;;       (t path))))
+
+(defun get-headings-with-links ()
+  (let ((tid (org-id-get)))
+    (org-element-map (org-element-parse-buffer) 'link
+      (lambda (link)
+    (when (and (string= (org-element-property :type link) "id")
+           (string= (org-element-property :path link) tid))
+      (save-excursion
+        (goto-char (org-element-property :begin link))
+        (org-get-heading)))))))
+(defun org-map-links (fns)
+  "Run FNS over all links in the current buffer."
+  (org-with-point-at 1
+    (while (re-search-forward org-link-any-re nil :no-error)
+      ;; `re-search-forward' let the cursor one character after the link, we need to go backward one char to
+      ;; make the point be on the link.
+      (backward-char)
+      (let* ((begin (match-beginning 0))
+             (element (org-element-context))
+             (type (org-element-type element))
+             link bounds)
+        (when (eq type 'link)
+          (setq link element))
+        (when link
+          (dolist (fn fns)
+            (funcall fn link)))))))
+(defun org-check-links ()
+  (interactive)
+  (save-window-excursion
+    (org-map-links
+      (lambda (elem)
+        (message "hi")
+        (message "%s" elem)
+        (or (org-link-open elem)
+            (message "broken link: %s" (org-element-property :path link)))))))
+;; (defun org-check-links ()
+;;   (interactive)
+;;   (save-window-excursion
+;;     (org-element-map (org-element-parse-buffer) 'link
+;;       (lambda (elem)
+;;         (message "hi")
+;;         (message "%s" elem)
+;;         (or (org-link-open elem)
+;;             (message "broken link: %s" (org-element-property :path link)))))))
 
 (provide 'setup-org)

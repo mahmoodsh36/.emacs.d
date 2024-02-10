@@ -38,7 +38,7 @@
 
 ;; projectile, for project browsing/management
 ;; (use-package projectile
-;;   :straight (:host github :repo "bbatsov/projectile")
+;;   :elpaca (:host github :repo "bbatsov/projectile")
 ;;   :config
 ;;   ;; (setq projectile-completion-system 'ivy)
 ;;   (projectile-mode +1))
@@ -50,7 +50,7 @@
 (if enable-company
     (progn
       (use-package company
-        :straight (:host github :repo "company-mode/company-mode")
+        :elpaca (:host github :repo "company-mode/company-mode")
         :config
         (add-hook 'after-init-hook 'global-company-mode)
         (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
@@ -149,9 +149,9 @@
       (add-to-list 'completion-at-point-functions #'cape-dabbrev)
       (add-to-list 'completion-at-point-functions #'cape-file)
       (add-to-list 'completion-at-point-functions #'cape-tex)
-      (add-to-list 'completion-at-point-functions #'cape-line)
+      ;; (add-to-list 'completion-at-point-functions #'cape-line)
       (add-to-list 'completion-at-point-functions #'cape-keyword)
-      ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+      (add-to-list 'completion-at-point-functions #'cape-elisp-block)
       )
 
     ;; for some reason ispell completion is enabled in org mode
@@ -733,7 +733,7 @@
 (use-package vimrc-mode)
 
 (use-package sly
-  :straight (:host github :repo "joaotavora/sly")
+  :elpaca (:host github :repo "joaotavora/sly")
   :config
   (setq inferior-lisp-program "")
   (setq sly-lisp-implementations
@@ -794,7 +794,7 @@
 
 ;; depth-dependent coloring of code
 (use-package prism
-  :straight (prism :fetcher github :repo "alphapapa/prism.el"))
+  :elpaca (prism :fetcher github :repo "alphapapa/prism.el"))
 
 ;; its great but it uses alot of cpu especially when the gif has a fast timer
 (use-package org-inline-anim
@@ -805,7 +805,7 @@
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
 ;; (use-package julia-snail
-;;   :straight '(julia-snail :fetcher github
+;;   :elpaca '(julia-snail :fetcher github
 ;;                           :repo "gcv/julia-snail"
 ;;                           :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*"))
 ;;   :config
@@ -826,7 +826,7 @@
 
 ;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
 ;; (use-package ob-julia
-;;   :straight (ob-julia :host github :repo "nico202/ob-julia"
+;;   :elpaca (ob-julia :host github :repo "nico202/ob-julia"
 ;;                       :files ("*.el" "julia")
 ;;                       :fork (:host github
 ;;                              :repo "karthink/ob-julia"
@@ -906,7 +906,7 @@
 ;; Commands for Ido-like directory navigation.
 ;; Configure directory extension.
 (use-package vertico-directory
-  :straight nil
+  :elpaca nil
   :after vertico
   :ensure nil
   ;; More convenient directory navigation commands
@@ -964,7 +964,7 @@
 ;;  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
 
 (use-package combobulate
-  :straight
+  :elpaca
   (combobulate :type git :host github :repo "mickeynp/combobulate")
   :hook
   ((python-ts-mode . combobulate-mode)
@@ -1001,14 +1001,14 @@
 
 ;; very buggy
 ;; (use-package org-src-context
-;;   :straight (org-src-context :type git :host github :repo "karthink/org-src-context")
+;;   :elpaca (org-src-context :type git :host github :repo "karthink/org-src-context")
 ;;   :config
 ;;   (add-hook 'org-mode-hook #'org-src-context-mode))
 
 ;; (use-package wolfram)
 ;; (use-package wolfram-mode)
 (use-package wolfram-mode
-  :straight (wolfram-mode :fetcher github :repo "dalanicolai/wolfram-mode" :files ("*.el"))
+  :elpaca (wolfram-mode :fetcher github :repo "dalanicolai/wolfram-mode" :files ("*.el"))
   :config
   (load-library "ob-wolfram")
   (setq org-babel-wolfram-command "wolfram -script")
@@ -1039,13 +1039,13 @@
   (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
-;;  :straight
+;;  :elpaca
 ;;  (el-easydraw :type git :host github :repo "misohena/el-easydraw"))
 
 ;; (use-package org-timeblock)
 
 ;; (use-package org-modern-indent
-;;   :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+;;   :elpaca (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
 ;;   :config ; add late to hook
 ;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
@@ -1122,7 +1122,7 @@
 (use-package org-pdftools)
 
 (use-package hyperbole
-  :straight (hyperbole :fetcher github :repo "rswgnu/hyperbole")
+  :elpaca (hyperbole :fetcher github :repo "rswgnu/hyperbole")
   :config
   (hyperbole-mode 1)
   ;; it overrides the M-return key for vertico :/
@@ -1130,7 +1130,7 @@
   (unbind-key "M-RET" hyperbole-mode-map))
 
 (use-package denote
-  :straight (denote :fetcher github :repo "protesilaos/denote")
+  :elpaca (denote :fetcher github :repo "protesilaos/denote")
   :config
   (setq denote-directory (concat *brain-dir* "notes/")
         denote-date-prompt-use-org-read-date t
@@ -1144,12 +1144,14 @@
              '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
 (setq org-agenda-files (denote-files-with-keyword "todo"))
 (use-package denote-menu
-  :straight (denote-menu :fetcher github :repo "namilus/denote-menu"))
+  :elpaca (denote-menu :fetcher github :repo "namilus/denote-menu"))
 ;; (use-package consult-notes)
 ;; (use-package citar-denote)
 ;; (use-package consult-explore)
-  ;; :straight (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
+;; (use-package denote-explore)
+  ;; :elpaca (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
+;; (use-package citar)
 
 (use-package rg)
 
