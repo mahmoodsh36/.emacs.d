@@ -5,14 +5,8 @@
 (setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
 (setq enable-god nil)
-
-;; needed for evil mode
-(use-package undo-fu
-  :config
-  ;;(global-unset-key (kbd "C-z"))
-  ;;(global-set-key (kbd "C-z") 'undo-fu-only-undo)
-  ;;(global-set-key (kbd "C-S-z") 'undo-fu-only-redo)
-  )
+;; use builtin undo system, may not be needed because i bind the keys below
+;; (setq evil-undo-system nil)
 
 (when enable-evil
   (use-package evil
@@ -20,8 +14,8 @@
     (evil-mode 1)
     (evil-set-initial-state 'image-dired-thumbnail-mode 'emacs)
     ;; undo/redo keys
-    (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-    (define-key evil-normal-state-map "r" 'undo-fu-only-redo)
+    (define-key evil-normal-state-map "u" 'undo)
+    (define-key evil-normal-state-map "r" 'undo-redo)
     ;; make ESC cancel all
     (define-key key-translation-map (kbd "ESC") (kbd "C-g")))
   ;; (define-key key-translation-map (kbd "<escape>") (kbd "C-g")))

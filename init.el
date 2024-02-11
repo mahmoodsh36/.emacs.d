@@ -53,16 +53,16 @@
 ;; block until current queue processed.
 (elpaca-wait)
 
-(setq lexical-binding t)
-(elpaca-test
-  :early-init (setq elpaca-menu-functions '(elpaca-menu-org))
-  :init (elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git"
-                               :branch "dev")
-                     :files
-                     (:defaults "etc")))
-  (elpaca-wait)
-  (with-current-buffer (elpaca-info 'org)
-    (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
+;; (setq lexical-binding t)
+;; (elpaca-test
+;;   :early-init (setq elpaca-menu-functions '(elpaca-menu-org))
+;;   :init (elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git"
+;;                                :branch "dev")
+;;                      :files
+;;                      (:defaults "etc")))
+;;   (elpaca-wait)
+;;   (with-current-buffer (elpaca-info 'org)
+;;     (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
 
 ;; path where all my notes etc go
 (setq *brain-dir* (file-truename "~/brain/"))
@@ -837,18 +837,15 @@ See `eval-after-load' for the possible formats of FORM."
 (require 'setup-packages) ;; load setup-packages.el
 (require 'setup-org) ;; load setup-org.el
 (require 'setup-evil) ;; load setup-evil.el
-(with-eval-after-load 'evil
-  (with-eval-after-load 'general
-    (require 'setup-keys))) ;; load setup-org.el
 (require 'setup-theme) ;; load setup-theme.el
 (require 'setup-dired) ;; load setup-dired.el
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
           (lambda ()
-;;            (org-roam-db-sync)
-            ;; (org-agenda-list)
-            ;; (delete-other-windows)
+            (with-eval-after-load 'evil
+              (with-eval-after-load 'general
+                (require 'setup-keys))) ;; load setup-org.el
             (when (file-exists-p persp-state-default-file)
               (persp-state-load persp-state-default-file)
               (persp-switch "main"))

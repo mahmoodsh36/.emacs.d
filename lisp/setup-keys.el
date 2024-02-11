@@ -31,6 +31,7 @@
 (led-kbd "b b" 'bookmark-jump)
 (led-kbd "x" 'eval-defun  :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map))
 (led-kbd "s g" 'deadgrep)
+(led-kbd "s G" 'consult-ripgrep)
 (led-kbd "x" 'org-ctrl-c-ctrl-c :keymaps 'org-mode-map) ;;'space-x-with-latex-header-hack)
 (led-kbd "x" 'compile-current-document :keymaps '(TeX-mode-map tex-mode-map latex-mode-map) )
 (led-kbd "e" (lambda () (interactive) (find-file user-init-file)))
