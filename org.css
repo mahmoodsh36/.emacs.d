@@ -90,16 +90,6 @@ table th {
     margin: 10px;
 }
 
-/* code blocks
-.code-output:before {
-    content: "[code output]";
-}
-.code:before {
-    content: "[code]";
-}/*
-
-/* new style for custom blocks */
-/* .lemma, .proof, .entailment, .definition, .note, .my_example, .characteristic, .assumption, .question, .subquestion, .answer, .step, .code-output, .code { */
 .custom-block {
     margin: 10px 0 0 0;
     position: relative;
@@ -108,7 +98,6 @@ table th {
     padding: 10px 3px 3px 3px;
     overflow: visible;
 }
-/* .lemma:before, .proof:before, .entailment:before, .definition:before, .note:before, .my_example:before, .characteristic:before, .assumption:before, .question:before, .subquestion:before, .answer:before, .step:before, .code-output:before, .code:before { */
 .custom-block:before {
     content: '';
     position: absolute;

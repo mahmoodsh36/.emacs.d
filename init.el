@@ -1,4 +1,4 @@
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -98,6 +98,17 @@
 ;; block until current queue processed.
 (elpaca-wait)
 
+;; (setq lexical-binding t)
+;; (elpaca-test
+;;   :early-init (setq elpaca-menu-functions '(elpaca-menu-org))
+;;   :init (elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git"
+;;                                :branch "dev")
+;;                      :files
+;;                      (:defaults "etc")))
+;;   (elpaca-wait)
+;;   (with-current-buffer (elpaca-info 'org)
+;;     (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
+
 ;; path where all my notes etc go
 (setq *brain-dir* (file-truename "~/brain/"))
 (defconst *music-dir* (file-truename "~/music/"))
@@ -148,12 +159,12 @@
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
 ;; (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
-;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
-;; (add-hook 'pdf-view-mode-hook
-;;           (lambda ()
-;;             (interactive)
-;;             (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
+(add-hook 'pdf-view-mode-hook
+          (lambda ()
+            (interactive)
+            (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab complete current word
@@ -180,7 +191,7 @@
 (set-face-background 'glyphless-char "red")
 ;; change newline character
 ;;(setf (elt (car (cdr (cdr (assoc 'newline-mark whitespace-display-mappings)))) 0) ?⤸)
-;; (global-whitespace-mode)
+(global-whitespace-mode)
 ;; relative line numbers
 ;; (add-hook 'prog-mode-hook
 ;;           (lambda ()
@@ -869,11 +880,8 @@ See `eval-after-load' for the possible formats of FORM."
 ;; add ~/.emacs.d to load-path
 (push (concat user-emacs-directory "/lisp") load-path)
 (require 'setup-packages) ;; load setup-packages.el
-(with-eval-after-load 'org
-                      (require 'setup-org)) ;; load setup-org.el
+(require 'setup-org) ;; load setup-org.el
 (require 'setup-evil) ;; load setup-evil.el
-;; (eval-after-load-all '(general evil)
-;;                      (require 'setup-keys)) ;; load setup-keys.el
 (with-eval-after-load 'evil
   (with-eval-after-load 'general
     (require 'setup-keys))) ;; load setup-org.el

@@ -1,34 +1,9 @@
 ;; org mode configuration and setup
 
-;; (use-package org)
-
 ;; tecosaur's org-mode version
-;; (use-package org
-;; :defer
-;;   :elpaca `(org
-;;               :fork (:host nil
-;;                            :repo "https://git.tecosaur.net/tec/org-mode.git"
-;;                            :branch "dev"
-;;                            :remote "tecosaur")
-;;               :files (:defaults "etc")
-;;               :build t
-;;               :pre-build
-;;               (with-temp-file "org-version.el"
-;;                 (require 'lisp-mnt)
-;;                 (let ((version
-;;                        (with-temp-buffer
-;;                          (insert-file-contents "lisp/org.el")
-;;                          (lm-header "version")))
-;;                       (git-version
-;;                        (string-trim
-;;                         (with-temp-buffer
-;;                           (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-;;                           (buffer-string)))))
-;;                   (insert
-;;                    (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-;;                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-;;                    "(provide 'org-version)\n")))
-;;               :pin nil))
+;;(use-package org
+  ;;:elpaca '(org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
+               ;;:files (:defaults "etc")))
 
 (defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
 
@@ -100,9 +75,6 @@
 ;;            :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
 ;;           ("t" "todo" plain "* TODO ${title}"
 ;;            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
-;; go to insert mode after for org-capture cursor
-;; enter insert state after invoking org-capture
-(add-hook 'org-capture-mode-hook 'evil-insert-state)
 
 ;; (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
 ;;   (interactive "P")
@@ -113,179 +85,302 @@
 ;;                      :node (org-roam-node-create :title "")
 ;;                      :props '(:immediate-finish nil)))
 
-;; save the clock history across sessions
-(setq org-clock-persist 'history)
 (with-eval-after-load 'org
-  (org-clock-persistence-insinuate))
-;; log state/schedule/deadline changes
-(setq org-log-done 'time)
-(setq org-log-reschedule 'time)
-(setq org-log-redeadline 'time)
-;; show images when opening a file.
-(setq org-startup-with-inline-images nil)
-;; show images after evaluating code blocks.
-(add-hook 'org-babel-after-execute-hook (lambda ()
-                                          (interactive)
-                                          (clear-image-cache)
-                                          (org-display-inline-images)))
-;; disable prompt when executing code block in org mode
-(setq org-confirm-babel-evaluate nil)
-(setq org-link-elisp-confirm-function nil)
-;; enable more code block languages for org mode
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python . t)
-   (js . t)
-   (lisp . t)
-   (java . t)
-   (latex . t)
-   (C . t)
-   (shell . t)
-   (sql . t)
-   (julia . t)
-   ;; (mathematica . t)
-   ;; (wolfram . t)
-   (lua . t)))
-;; make g++ compile with std=c++17 flag
-(setq org-babel-C++-compiler "g++ -std=c++17")
-;; make org babel default to python3
-(setq org-babel-python-command "python3")
-;; increase org table max lines
-(setq org-table-convert-region-max-lines 10000)
-;; to increase depth of the imenu in treemacs
-(setq org-imenu-depth 4)
-;; annoying broken links..
-(setq org-export-with-broken-links 'mark)
-;; dont cache latex preview images
-;; (setq org-latex-preview-cache 'temp)
-;; (setq org-element-cache-persistent nil)
-;; (setq org-element-use-cache nil)
+  ;; save the clock history across sessions
+  (setq org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
+  ;; log state/schedule/deadline changes
+  (setq org-log-done 'time)
+  (setq org-log-reschedule 'time)
+  (setq org-log-redeadline 'time)
+  ;; show images when opening a file.
+  (setq org-startup-with-inline-images nil)
+  ;; show images after evaluating code blocks.
+  (add-hook 'org-babel-after-execute-hook (lambda ()
+                                            (interactive)
+                                            (clear-image-cache)
+                                            (org-display-inline-images)))
+  ;; disable prompt when executing code block in org mode
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-link-elisp-confirm-function nil)
+  ;; enable more code block languages for org mode
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (js . t)
+     (lisp . t)
+     (java . t)
+     (latex . t)
+     (C . t)
+     (shell . t)
+     (sql . t)
+     (julia . t)
+     ;; (mathematica . t)
+     ;; (wolfram . t)
+     (lua . t)))
+  ;; make g++ compile with std=c++17 flag
+  (setq org-babel-C++-compiler "g++ -std=c++17")
+  ;; make org babel default to python3
+  (setq org-babel-python-command "python3")
+  ;; increase org table max lines
+  (setq org-table-convert-region-max-lines 10000)
+  ;; to increase depth of the imenu in treemacs
+  (setq org-imenu-depth 4)
+  ;; annoying broken links..
+  (setq org-export-with-broken-links 'mark)
+  ;; dont cache latex preview images
+  (setq org-latex-preview-cache 'temp)
+  (setq org-element-cache-persistent nil)
+  (setq org-element-use-cache nil)
 
-;; compile org docs to pdfs and put them in cache dir
-(defun latex-out-file ()
-  (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex"))
-(defun pdf-out-file ()
-  (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".pdf"))
-(defun org-to-pdf ()
-  (interactive)
-  (let ((outfile (latex-out-file)))
-    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
-    (org-export-to-file 'latex outfile
-      nil nil nil nil nil nil)
-    (compile-latex-file outfile)))
-;; allow usage of #+BIND in latex exports
-(setq org-export-allow-bind-keywords t)
-;; decrease image size in latex exports
-;; (setq org-latex-image-default-scale "2.0")
-;; disable images from being scaled/their dimensions being changed
-;; (setq org-latex-image-default-width "2.0")
-;; enable latex snippets in org mode
-(defun my-org-latex-yas ()
-  "Activate org and LaTeX yas expansion in org-mode buffers."
-  (yas-minor-mode)
-  (yas-activate-extra-mode 'latex-mode))
-(add-hook 'org-mode-hook #'my-org-latex-yas)
-;; preserve all line breaks when exporting
-(setq org-export-preserve-breaks t)
-;; indent headings properly
-;; (add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-todo-keywords
-      '("TODO(t!)"
-        "GO(g@)";
-        "WAIT(w@)"
-        "REVIEW(r!)"
-        "|" ; remaining entries close tasks
-        "DONE(d@)"
-        "CANCELED(c@)"
-        "CANCELLED(C@)" ;; for backward compatibility
-        ))
-;; filter out entries with tag "ignore"
-(setq org-agenda-tag-filter-preset '("-ignore"))
- ;; use listings package for latex code blocks
-(setq org-latex-src-block-backend 'listings)
-;; timestamp with seconds
-(setq org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>"))
+  ;; enter insert state after invoking org-capture
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
-;; give svg's a proper width when exporting with dvisvgm
-;; (with-eval-after-load 'ox-html
-;;   (setq org-html-head
-;;         (replace-regexp-in-string
-;;          ".org-svg { width: 90%; }"
-;;          ".org-svg { width: auto; }"
-;;          org-html-style-default)))
-;; enable <s code block snippet
-;; (require 'org-src)
-;; make org-babel java act like other langs
-(setq org-babel-default-header-args:java
-      '((:dir . nil)
-        (:results . "value")))
-;; use unique id's to identify headers, better than using names cuz names could change
-(setq org-id-link-to-org-use-id 'use-existing)
-;; creation dates for TODOs
-;; (defun my/log-todo-creation-date (&rest ignore)
-;;   "Log TODO creation time in the property drawer under the key 'CREATED'."
-;;   (when (and (org-get-todo-state)
-;;              (not (org-entry-get nil "CREATED")))
-;;     (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
-;; (add-hook 'org-after-todo-state-change-hook #'my/log-todo-creation-date)
-;; src block indentation / editing / syntax highlighting
-(setq org-src-window-setup 'current-window
-      org-src-strip-leading-and-trailing-blank-lines t)
-;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
-;; (setq org-babel-latex-preamble
-;;       (lambda (_)
-;;         "\\documentclass[preview]{standalone}"))
-;; to make gifs work
-;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
-;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
-;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
-;; i think this is irrelevant at this point
-(defun space-x-with-latex-header-hack ()
-  (interactive)
-  (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
-    (org-ctrl-c-ctrl-c)))
-;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
-(setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
-;; latex syntax highlighting in org mode (and more)
-;; (setq org-highlight-latex-and-related nil)
-(setq org-highlight-latex-and-related '(latex))
-;; (setq org-highlight-latex-and-related '(native latex script entities))
-;; disable org-mode's mathjax because my blog's code uses another version
-(setq org-html-mathjax-template "")
-(setq org-html-mathjax-options '())
-(setq org-babel-default-header-args:latex
-      '((:results . "file graphics")
-        ;; (:exports . "results")
-        ;; (:fit . t)
-        ;; (:imagemagick . t)
-        ;; (:eval . "no-export")
-        ;; (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
-        ))
-;; make org export deeply nested headlines as headlines still
-(setq org-export-headline-levels 20)
-;; workaround to make yasnippet expand after dollar sign in org mode
-(add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
-;; also treat ' as a separator or whatever
-(add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?' "_" org-mode-syntax-table)))
-;; startup with headlines and blocks folded or not
-(setq org-startup-folded 'showall)
-;; org-hide-block-startup t)
-;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
-(setq org-image-actual-width nil)
-;; dont center images/tables in latex
-(setq org-latex-images-centered nil)
-(setq org-latex-tables-centered nil)
-;; get rid of background colors of block lines bleeding all over folded headlines
-(setq org-fontify-whole-block-delimiter-line nil)
-(setq org-fold-catch-invisible-edits 'smart
-      org-agenda-span 20)
-;; stop org mode from moving tags far after headers
-(setq org-tags-column 0)
-;; inherit attach folders
-(setq org-attach-use-inheritance t)
-;; use html5 for org exports
-(setq org-html-html5-fancy t)
+  ;; compile org docs to pdfs and put them in cache dir
+  (defun latex-out-file ()
+    (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex"))
+  (defun pdf-out-file ()
+    (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".pdf"))
+  (defun org-to-pdf ()
+    (interactive)
+    (let ((outfile (latex-out-file)))
+      (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
+      (org-export-to-file 'latex outfile
+        nil nil nil nil nil nil)
+      (compile-latex-file outfile)))
+  ;; allow usage of #+BIND in latex exports
+  (setq org-export-allow-bind-keywords t)
+  ;; decrease image size in latex exports
+  ;; (setq org-latex-image-default-scale "2.0")
+  ;; disable images from being scaled/their dimensions being changed
+  ;; (setq org-latex-image-default-width "2.0")
+  ;; enable latex snippets in org mode
+  (defun my-org-latex-yas ()
+    "Activate org and LaTeX yas expansion in org-mode buffers."
+    (yas-minor-mode)
+    (yas-activate-extra-mode 'latex-mode))
+  (add-hook 'org-mode-hook #'my-org-latex-yas)
+  ;; preserve all line breaks when exporting
+  (setq org-export-preserve-breaks t)
+  ;; indent headings properly
+  ;; (add-hook 'org-mode-hook 'org-indent-mode)
+  (setq org-todo-keywords
+        '("TODO(t!)"
+          "GO(g@)";
+          "WAIT(w@)"
+          "REVIEW(r!)"
+          "|" ; remaining entries close tasks
+          "DONE(d@)"
+          "CANCELED(c@)"
+          "CANCELLED(C@)" ;; for backward compatibility
+          ))
+  ;; filter out entries with tag "ignore"
+  (setq org-agenda-tag-filter-preset '("-ignore"))
+  ;; use listings package for latex code blocks
+  (setq org-latex-src-block-backend 'listings)
+  ;; timestamp with seconds
+  (setq org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>"))
+
+  ;; give svg's a proper width when exporting with dvisvgm
+  ;; (with-eval-after-load 'ox-html
+  ;;   (setq org-html-head
+  ;;         (replace-regexp-in-string
+  ;;          ".org-svg { width: 90%; }"
+  ;;          ".org-svg { width: auto; }"
+  ;;          org-html-style-default)))
+  ;; enable <s code block snippet
+  ;; (require 'org-src)
+  ;; make org-babel java act like other langs
+  (setq org-babel-default-header-args:java
+        '((:dir . nil)
+          (:results . "value")))
+  ;; use unique id's to identify headers, better than using names cuz names could change
+  (setq org-id-link-to-org-use-id 'use-existing)
+  ;; creation dates for TODOs
+  ;; (defun my/log-todo-creation-date (&rest ignore)
+  ;;   "Log TODO creation time in the property drawer under the key 'CREATED'."
+  ;;   (when (and (org-get-todo-state)
+  ;;              (not (org-entry-get nil "CREATED")))
+  ;;     (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
+  ;; (add-hook 'org-after-todo-state-change-hook #'my/log-todo-creation-date)
+  ;; src block indentation / editing / syntax highlighting
+  (setq org-src-window-setup 'current-window
+        org-src-strip-leading-and-trailing-blank-lines t)
+  ;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
+  ;; (setq org-babel-latex-preamble
+  ;;       (lambda (_)
+  ;;         "\\documentclass[preview]{standalone}"))
+  ;; to make gifs work
+  ;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
+  ;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
+  ;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
+  ;; i think this is irrelevant at this point
+  (defun space-x-with-latex-header-hack ()
+    (interactive)
+    (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
+      (org-ctrl-c-ctrl-c)))
+  ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
+  (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
+  ;; latex syntax highlighting in org mode (and more)
+  ;; (setq org-highlight-latex-and-related nil)
+  (setq org-highlight-latex-and-related '(latex))
+  ;; (setq org-highlight-latex-and-related '(native latex script entities))
+  ;; disable org-mode's mathjax because my blog's code uses another version
+  (setq org-html-mathjax-template "")
+  (setq org-html-mathjax-options '())
+  (setq org-babel-default-header-args:latex
+        '((:results . "file graphics")
+          ;; (:exports . "results")
+          ;; (:fit . t)
+          ;; (:imagemagick . t)
+          ;; (:eval . "no-export")
+          ;; (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
+          ))
+  ;; make org export deeply nested headlines as headlines still
+  (setq org-export-headline-levels 20)
+  ;; workaround to make yasnippet expand after dollar sign in org mode
+  (add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?$ "_" org-mode-syntax-table)))
+  ;; also treat ' as a separator or whatever
+  (add-hook 'org-mode-hook (lambda () (modify-syntax-entry ?' "_" org-mode-syntax-table)))
+  ;; startup with headlines and blocks folded or not
+  (setq org-startup-folded 'showall)
+  ;; org-hide-block-startup t)
+  ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
+  (setq org-image-actual-width nil)
+  ;; dont center images/tables in latex
+  (setq org-latex-images-centered nil)
+  (setq org-latex-tables-centered nil)
+  ;; get rid of background colors of block lines bleeding all over folded headlines
+  (setq org-fontify-whole-block-delimiter-line nil)
+  (setq org-fold-catch-invisible-edits 'smart
+        org-agenda-span 20)
+  ;; stop org mode from moving tags far after headers
+  (setq org-tags-column 0)
+  ;; inherit attach folders
+  (setq org-attach-use-inheritance t)
+  ;; use html5 for org exports
+  (setq org-html-html5-fancy t)
+
+  ;; dynamic org-agenda
+  ;; (defun buffer-contains-todo ()
+  ;;   "check if the buffer contains a TODO entry"
+  ;;   (org-element-map
+  ;;       (org-element-parse-buffer 'headline)
+  ;;       'headline
+  ;;     (lambda (h)
+  ;;       (eq (org-element-property :todo-type h) 'todo))
+  ;;     nil 'first-match))
+  ;; (add-hook 'before-save-hook #'update-todo-tag)
+  ;; (defun update-todo-tag ()
+  ;;   "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
+  ;;   (let ((kill-ring)) ;; keep kill ring, dont modify it
+  ;;     (when (and (not (active-minibuffer-window))
+  ;;                (is-buffer-roam-note))
+  ;;       (save-excursion
+  ;;         (goto-char (point-min))
+  ;;         (if (buffer-contains-todo)
+  ;;             (org-roam-tag-add '("todo"))
+  ;;           (ignore-errors (org-roam-tag-remove '("todo")))))))
+  ;;   (agenda-files-update))
+  ;; (defun is-buffer-roam-note ()
+  ;;   "return non-nil if the currently visited buffer is a note."
+  ;;   (and buffer-file-name
+  ;;        (string-prefix-p
+  ;;         (expand-file-name (file-name-as-directory org-roam-directory))
+  ;;         (file-name-directory buffer-file-name))))
+  ;; (setq org-agenda-files (roam-files-with-tag "todo"))
+  ;; (defun agenda-files-update (&rest _)
+  ;;   "Update the value of `org-agenda-files'."
+  ;;   (setq org-agenda-files (roam-files-with-tag "todo")))
+  ;; (advice-add 'org-agenda :before #'agenda-files-update)
+  ;; (advice-add 'org-todo-list :before #'agenda-files-update)
+  ;; stop showing deadlines in today
+  (setq org-deadline-warning-days 0)
+  ;; remove done items
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-timestamp-if-done t)
+  ;; show only the first occurrence of a recurring task
+  (setq org-agenda-show-future-repeats 'next)
+  ;; make org-open-at-point open link in the same buffer
+  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
+  ;; enable it everywhere possible
+  (setq org-latex-preview-live '(block inline edit-special))
+  (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
+  ;; export to html using dvisvgm/mathjax/whatever
+  (setq org-html-with-latex 'dvisvgm)
+  ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
+  (add-hook 'org-mode-hook 'visual-line-mode)
+  ;; use dvisvgm instead of dvipng
+  ;; (setq org-latex-preview-process-default 'dvisvgm)
+  ;; dont export headlines with tags
+  (setq org-export-with-tags nil)
+  ;; allow characters as list modifiers in org mode
+  (setq org-list-allow-alphabetical t)
+  ;; also number equations
+  (setq org-latex-preview-numbered t)
+  ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
+  ;; (setq org-latex-compiler "lualatex")
+  ;; (setq org-latex-compiler "pdflatex")
+  ;; ;; make dvisvgm preview use lualatex
+  ;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
+  ;;   (plist-put (cdr pos) :programs '("lualatex" "dvisvgm")))
+  ;; make org-agenda open up in the current window
+  (setq org-agenda-window-setup 'current-window)
+  ;; dont prompt for downloading remote files on export
+  (setq org-resource-download-policy nil)
+  ;; enable eval: keyword in local variables
+  ;; (setq enable-local-eval t)
+  ;; dont number headers on exports
+  (setq org-export-with-section-numbers nil)
+  (setq org-use-property-inheritance t)
+  ;; dont override my labels, silly org
+  (setq org-latex-prefer-user-labels t)
+  ;; dont let org handle subscripts lol
+  (setq org-export-with-sub-superscripts nil)
+  ;; increase preview width
+  ;; (plist-put org-latex-preview-appearance-options :scale 1.5)
+  ;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
+  ;; dont limit the width of previews
+  ;; (plist-put org-latex-preview-appearance-options :page-width nil)
+  ;; (plist-put org-latex-preview-appearance-options :page-width "1.0")
+  ;; (plist-put org-html-latex-image-options :page-width nil)
+  ;; lower the debounce value
+  (setq org-latex-preview-live-debounce 0.25)
+
+  ;; make org not evaluate code blocks on exporting
+  (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
+  (add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
+
+  (setq org-publish-project-alist
+        '(("orgfiles"
+           :base-directory "~/brain/notes/"
+           :base-extension "org"
+           :publishing-directory "~/publish/"
+           :publishing-function org-html-publish-to-html
+           ;; :exclude "PrivatePage.org" ;; regexp
+           :headline-levels 3
+           :section-numbers nil
+           :with-toc nil
+           :recursive t
+           :html-preamble t)
+
+          ("images"
+           :base-directory "~/brain/"
+           :base-extension "jpg\\|gif\\|png\\|webp\\|jpeg\\|svg"
+           :publishing-directory "~/publish/"
+           :recursive t
+           :publishing-function org-publish-attachment)
+
+          ("website" :components ("orgfiles" "images"))))
+
+
+;; also make org-special-edit respect tree-sitter modes
+(dolist (mapping major-mode-remap-alist)
+  (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
+    (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
+  )
 
 ;; disable ox-hugo relative path exports
 ;; (defun non-relative-path (obj)
@@ -319,94 +414,6 @@
                :on (= tags:node-id nodes:id)
                :where (like tag ,tag-name))))))
 
-;; dynamic org-agenda
-;; (add-to-list 'org-tags-exclude-from-inheritance "todo")
-;; (add-to-list 'org-tags-exclude-from-inheritance "band")
-;; (defun buffer-contains-todo ()
-;;   "check if the buffer contains a TODO entry"
-;;   (org-element-map
-;;       (org-element-parse-buffer 'headline)
-;;       'headline
-;;     (lambda (h)
-;;       (eq (org-element-property :todo-type h) 'todo))
-;;     nil 'first-match))
-;; (add-hook 'before-save-hook #'update-todo-tag)
-;; (defun update-todo-tag ()
-;;   "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
-;;   (let ((kill-ring)) ;; keep kill ring, dont modify it
-;;     (when (and (not (active-minibuffer-window))
-;;                (is-buffer-roam-note))
-;;       (save-excursion
-;;         (goto-char (point-min))
-;;         (if (buffer-contains-todo)
-;;             (org-roam-tag-add '("todo"))
-;;           (ignore-errors (org-roam-tag-remove '("todo")))))))
-;;   (agenda-files-update))
-;; (defun is-buffer-roam-note ()
-;;   "return non-nil if the currently visited buffer is a note."
-;;   (and buffer-file-name
-;;        (string-prefix-p
-;;         (expand-file-name (file-name-as-directory org-roam-directory))
-;;         (file-name-directory buffer-file-name))))
-;; (setq org-agenda-files (roam-files-with-tag "todo"))
-;; (defun agenda-files-update (&rest _)
-;;   "Update the value of `org-agenda-files'."
-;;   (setq org-agenda-files (roam-files-with-tag "todo")))
-;; (advice-add 'org-agenda :before #'agenda-files-update)
-;; (advice-add 'org-todo-list :before #'agenda-files-update)
-;; stop showing deadlines in today
-(setq org-deadline-warning-days 0)
-;; remove done items
-(setq org-agenda-skip-scheduled-if-done t)
-(setq org-agenda-skip-deadline-if-done t)
-(setq org-agenda-skip-timestamp-if-done t)
-;; show only the first occurrence of a recurring task
-(setq org-agenda-show-future-repeats 'next)
-;; make org-open-at-point open link in the same buffer
-(setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
-;; enable it everywhere possible
-(setq org-latex-preview-live '(block inline edit-special))
-(setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
-;; export to html using dvisvgm/mathjax/whatever
-(setq org-html-with-latex 'dvisvgm)
-;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
-(add-hook 'org-mode-hook 'visual-line-mode)
-;; use dvisvgm instead of dvipng
-;; (setq org-latex-preview-process-default 'dvisvgm)
-;; dont export headlines with tags
-(setq org-export-with-tags nil)
-;; allow characters as list modifiers in org mode
-(setq org-list-allow-alphabetical t)
-;; also number equations
-(setq org-latex-preview-numbered t)
-;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-;; (setq org-latex-compiler "lualatex")
-;; (setq org-latex-compiler "pdflatex")
-;; ;; make dvisvgm preview use lualatex
-;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
-;;   (plist-put (cdr pos) :programs '("lualatex" "dvisvgm")))
-;; make org-agenda open up in the current window
-(setq org-agenda-window-setup 'current-window)
-;; dont prompt for downloading remote files on export
-(setq org-resource-download-policy nil)
-;; enable eval: keyword in local variables
-;; (setq enable-local-eval t)
-;; dont number headers on exports
-(setq org-export-with-section-numbers nil)
-(setq org-use-property-inheritance t)
-;; dont override my labels, silly org
-(setq org-latex-prefer-user-labels t)
-;; dont let org handle subscripts lol
-(setq org-export-with-sub-superscripts nil)
-;; increase preview width
-;; (plist-put org-latex-preview-appearance-options :scale 1.5)
-;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
-;; dont limit the width of previews
-;; (plist-put org-latex-preview-appearance-options :page-width nil)
-;; (plist-put org-latex-preview-appearance-options :page-width "1.0")
-;; (plist-put org-html-latex-image-options :page-width nil)
-;; lower the debounce value
-(setq org-latex-preview-live-debounce 0.25)
 
 ;; (defun go-through-all-roam-files (callback)
 ;;   "run a callback function on each file in the org-roam database"
@@ -697,32 +704,6 @@
 ;;                 (funcall orig-fn html-string)))
 ;;             '((name . inline-image-workaround)))
 
-;; make org not evaluate code blocks on exporting
-(add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
-(add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
-
-(setq org-publish-project-alist
-      '(("orgfiles"
-         :base-directory "~/brain/notes/"
-         :base-extension "org"
-         :publishing-directory "~/publish/"
-         :publishing-function org-html-publish-to-html
-         ;; :exclude "PrivatePage.org" ;; regexp
-         :headline-levels 3
-         :section-numbers nil
-         :with-toc nil
-         :recursive t
-         :html-preamble t)
-
-        ("images"
-         :base-directory "~/brain/"
-         :base-extension "jpg\\|gif\\|png\\|webp\\|jpeg\\|svg"
-         :publishing-directory "~/publish/"
-         :recursive t
-         :publishing-function org-publish-attachment)
-
-        ("website" :components ("orgfiles" "images"))))
-
 ;; org mode navigation map
 (defvar org-nav-map
   (let ((map (make-sparse-keymap)))
@@ -986,11 +967,6 @@
 ;; (add-hook 'org-latex-preview-update-overlay-functions
 ;;          #'my/org-latex-preview-center)
 
-;; also make org-special-edit respect tree-sitter modes
-(dolist (mapping major-mode-remap-alist)
-  (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
-    (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
-
 (defun timestamp-midnight (timestamp)
   (let ((decoded (decode-time timestamp)))
     (setf (nth 0 decoded) 0)
@@ -1010,7 +986,7 @@ should be continued."
            (>= scheduled-seconds now)
            subtree-end))))
 
-(with-eval-after-load 'org
+(with-eval-after-load 'org-agenda
   (defvar prot-org-custom-daily-agenda
     `((agenda "" ((org-agenda-span 1)
                   (org-deadline-warning-days 0)
