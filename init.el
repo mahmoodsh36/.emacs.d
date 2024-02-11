@@ -1,4 +1,4 @@
-(toggle-debug-on-error)
+;; (toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -6,52 +6,7 @@
 ;; disable stupid startup screen
 (setq inhibit-startup-screen t)
 
-;; setup use-package, it provides stable packages unlike straight.el so i use it as the default package manager
-;; (require 'package)
-;; (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;; (package-initialize)
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
-;; (unless package-archive-contents
-;;   (package-refresh-contents))
-;; (eval-and-compile
-;;   (setq use-package-always-ensure t
-;;         use-package-expand-minimally t))
-;; (require 'use-package)
-
-;; setup quelpa
-;; (setq quelpa-update-melpa-p nil)
-;; (unless (package-installed-p 'quelpa)
-;;   (with-temp-buffer
-;;     (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-;;     (eval-buffer)
-;;     (quelpa-self-upgrade)))
-;; (quelpa
-;;  '(quelpa-use-package
-;;    :fetcher git
-;;    :url "https://github.com/quelpa/quelpa-use-package.git"))
-;; (require 'quelpa-use-package)
-;; ;; make sure it works with use-package-always-ensure set to t
-;; (setq use-package-ensure-function 'quelpa)
-;; (quelpa-use-package-activate-advice)
-
 (setq package-enable-at-startup nil) ;; disable package.el, needed for straight.el or elpaca to work properly with use-package
-
-;; setup straight
-;; (defvar bootstrap-version)
-;; (let ((bootstrap-file
-;;        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-;;       (bootstrap-version 6))
-;;   (unless (file-exists-p bootstrap-file)
-;;     (with-current-buffer
-;;         (url-retrieve-synchronously
-;;          "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-;;          'silent 'inhibit-cookies)
-;;       (goto-char (point-max))
-;;       (eval-print-last-sexp)))
-;;   (load bootstrap-file nil 'nomessage))
 
 ;; setup elpaca package manager
 (defvar elpaca-installer-version 0.6)
@@ -98,16 +53,16 @@
 ;; block until current queue processed.
 (elpaca-wait)
 
-;; (setq lexical-binding t)
-;; (elpaca-test
-;;   :early-init (setq elpaca-menu-functions '(elpaca-menu-org))
-;;   :init (elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git"
-;;                                :branch "dev")
-;;                      :files
-;;                      (:defaults "etc")))
-;;   (elpaca-wait)
-;;   (with-current-buffer (elpaca-info 'org)
-;;     (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
+(setq lexical-binding t)
+(elpaca-test
+  :early-init (setq elpaca-menu-functions '(elpaca-menu-org))
+  :init (elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git"
+                               :branch "dev")
+                     :files
+                     (:defaults "etc")))
+  (elpaca-wait)
+  (with-current-buffer (elpaca-info 'org)
+    (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
 
 ;; path where all my notes etc go
 (setq *brain-dir* (file-truename "~/brain/"))
@@ -158,8 +113,8 @@
 (set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
-;; (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
-(setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
+;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
 (add-hook 'pdf-view-mode-hook
           (lambda ()

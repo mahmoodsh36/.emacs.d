@@ -1,9 +1,10 @@
 ;; org mode configuration and setup
 
 ;; tecosaur's org-mode version
-;;(use-package org
-  ;;:elpaca '(org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
-               ;;:files (:defaults "etc")))
+;; (use-package org)
+(use-package org
+  :elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
+            :files (:defaults "etc")))
 
 (defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
 
