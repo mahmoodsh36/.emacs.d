@@ -1,12 +1,11 @@
 ;; org mode configuration and setup
 
 ;; tecosaur's org-mode version
-;; (use-package org)
 (use-package org
   :elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
                :files (:defaults "etc")))
 
-(defvar *latex-previews-enabled-p* nil "whether latex previews for org mode are enabled for the current session")
+(defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
@@ -131,9 +130,9 @@
   ;; annoying broken links..
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images
-  (setq org-latex-preview-cache 'temp)
-  (setq org-element-cache-persistent nil)
-  (setq org-element-use-cache nil)
+  ;; (setq org-latex-preview-cache 'temp)
+  ;; (setq org-element-cache-persistent nil)
+  ;; (setq org-element-use-cache nil)
 
   ;; enter insert state after invoking org-capture
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
