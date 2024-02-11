@@ -90,40 +90,13 @@
     (load "./elpaca-autoloads")))
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
-;; install use-package support
 (elpaca elpaca-use-package
         ;; enable use-package :ensure support for elpaca.
         (elpaca-use-package-mode)
         (setq use-package-always-ensure t))
+
 ;; block until current queue processed.
 (elpaca-wait)
-
-(use-package org
-  :defer
-  :elpaca `(org
-              :fork (:host nil
-                           :repo "https://git.tecosaur.net/tec/org-mode.git"
-                           :branch "dev"
-                           :remote "tecosaur")
-              :files (:defaults "etc")
-              :build t
-              :pre-build
-              (with-temp-file "org-version.el"
-                (require 'lisp-mnt)
-                (let ((version
-                       (with-temp-buffer
-                         (insert-file-contents "lisp/org.el")
-                         (lm-header "version")))
-                      (git-version
-                       (string-trim
-                        (with-temp-buffer
-                          (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-                          (buffer-string)))))
-                  (insert
-                   (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-                   "(provide 'org-version)\n")))
-              :pin nil))
 
 ;; path where all my notes etc go
 (setq *brain-dir* (file-truename "~/brain/"))
@@ -903,7 +876,7 @@ See `eval-after-load' for the possible formats of FORM."
 ;;                      (require 'setup-keys)) ;; load setup-keys.el
 (with-eval-after-load 'evil
   (with-eval-after-load 'general
-    (require 'setup-org))) ;; load setup-org.el
+    (require 'setup-keys))) ;; load setup-org.el
 (require 'setup-theme) ;; load setup-theme.el
 (require 'setup-dired) ;; load setup-dired.el
 

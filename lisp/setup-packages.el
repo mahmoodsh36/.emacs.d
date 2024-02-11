@@ -915,7 +915,7 @@
 (setq enable-recursive-minibuffers t)
 ;; optionally use the `orderless' completion style.
 (use-package orderless
-  :init
+  :config
   ;; Configure a custom style dispatcher (see the Consult wiki)
   (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
         orderless-component-separator "\s+"

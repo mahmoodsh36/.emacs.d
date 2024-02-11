@@ -36,7 +36,8 @@
                  (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
 ;; (define-key dired-mode-map (kbd "?") 'dired-get-size)
-(general-define-key :states '(normal) :keymaps 'dired-mode-map "?" 'dired-get-size)
+(with-eval-after-load 'general
+  (general-define-key :states '(normal) :keymaps 'dired-mode-map "?" 'dired-get-size))
 
 ;; vim like keys for dired image viewer
 (setq image-dired-show-all-from-dir-max-files 100000000)
