@@ -270,3 +270,19 @@
 
 % for karnaughmap package
 \define@cmdkey{karnaughmap}{dontcare}[\phi]{} % change default dontcare symbol, doesnt work?
+
+% two-headed two-sided arrows
+% https://tex.stackexchange.com/questions/192709/does-twoheadleftrightarrow-exist-how-to-write-my-own
+\newcommand*{\twoheadleftrightarrow}{%
+  \twoheadleftarrow
+  \mathrel{\mkern-15mu}%
+  \twoheadrightarrow
+}
+\makeatletter
+\newcommand*{\xtwoheadleftrightarrow}[2][]{%
+  \ext@arrow 99{10}{10}\twoheadleftrightarrowfill@{#1}{#2}%
+}
+\newcommand*{\twoheadleftrightarrowfill@}{%
+  \arrowfill@\twoheadleftarrow\relbar\twoheadrightarrow
+}
+\makeatother

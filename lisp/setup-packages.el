@@ -122,21 +122,15 @@
       )
   (progn ;; corfu autocompletion
     (use-package corfu
-      ;; :quelpa (:files (:defaults "extensions/*"))
       :init
       (global-corfu-mode)
-      ;; :hook ((prog-mode . corfu-mode)
-      ;;        (latex-mode . corfu-mode)
-      ;;        (shell-mode . corfu-mode)
-      ;;        (comint-mode . corfu-mode)
-      ;;        (eshell-mode . corfu-mode))
       :custom
       (corfu-cycle t)
       (corfu-auto t) ;; i feel like this gets in the way so i wanna disable it
       (corfu-quit-no-match t)
       (corfu-auto-delay 0.1) ;; never set it to 0, makes emacs very laggy and hogs cpu
       ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
-      ;; (corfu-separator " ") ;; set to orderless separator, if not using space
+      (corfu-separator " ") ;; set to orderless separator, if not using space
       (corfu-count 10)
       (corfu-indexed-mode t)
       (corfu-echo-mode t) ;; display brief documentation in echo area
@@ -230,6 +224,7 @@
   ;; :after (vertico)
   :custom
   (all-the-icons-dired-monochrome nil))
+
 (use-package all-the-icons-dired
   ;; :after (vertico)
   :config
@@ -276,12 +271,6 @@
 ;; (use-package command-log-mode
 ;;   :config
 ;;   (global-command-log-mode))
-
-;; save undos/redos even when buffer is killed or emacs restarts, this package is really buggy so i disabled it
-;; (use-package undo-fu-session
-;;   :config
-;;   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-;;   (global-undo-fu-session-mode))
 
 ;; executing sage in org babel
 (use-package ob-sagemath
@@ -415,24 +404,25 @@
 (use-package flutter)
 (use-package lsp-dart)
 
-;; best pdf viewer
-;; main repo for pdf-tools, below another repo is used for continuous scroll
+;; pdf viewer
 (use-package pdf-tools
   :config
   (pdf-tools-install t)
   (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
 
-;; history for ivy completion, it sometimes makes ivy really slow, so maybe remove the cache file every once in a while
+;; history for ivy completion
 ;; (use-package ivy-prescient
 ;;   :config
 ;;   (ivy-prescient-mode)
 ;;   (prescient-persist-mode 1)
 ;;   (setq prescient-history-length 10000)
+
 ;; ;; more featureful ivy menus, it may cause some error when switching buffers
 ;; (use-package ivy-rich
 ;;   :config
 ;;   (ivy-rich-mode 1)
 ;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+
 ;; icons for ivy
 ;; (use-package all-the-icons-ivy-rich
 ;;   :config (all-the-icons-ivy-rich-mode 1))
@@ -472,59 +462,10 @@
 
 (use-package dap-mode)
 
-;; best latex preview functionality
-;; actually i dont use this anymore since org-mode devs implemented a better method
-;; (use-package xenops
-;;   :config
-;;   (setq xenops-reveal-on-entry t
-;;         xenops-math-latex-max-tasks-in-flight 3
-;;         xenops-math-latex-process 'dvisvgm)
-;;   ;; (add-hook 'LaTeX-mode-hook #'xenops-mode)
-;;   ;; (add-hook 'org-mode-hook #'xenops-mode)
-;;   (add-hook 'xenops-mode-hook 'xenops-render)
-;;   ;; (add-hook 'xenops-mode-hook 'xenops-xen-mode)
-;;   (add-hook 'org-babel-after-execute-hook (lambda ()
-;;                                             (interactive)
-;;                                             (ignore-errors (xenops-render))))
-;;   ;; (setq xenops-math-image-scale-factor 1.1)
-;;   ;; (setq xenops-math-image-current-scale-factor 1.1)
-;;   (setcar (cdr (car xenops-elements))
-;;           '(:delimiters
-;;             ("^[ 	]*\\\\begin{\\(align\\|equation\\|gather\\)\\*?}" "^[ 	]*\\\\end{\\(align\\|equation\\|gather\\)\\*?}")
-;;             ("^[ 	]*\\\\\\[" "^[ 	]*\\\\\\]")))
-;;   ;; for inline previews
-;;   (advice-add 'xenops-math-latex-get-colors :filter-return
-;;               (lambda (col)
-;;                 (interactive)
-;;                 (list (org-latex-color :foreground) (org-latex-color :background))))
-;;                 ;; (list (org-latex-color :foreground) (org-latex-color :background))))
-;;   ;; for code blocks i think, i make backgrounds transparent so dont gotta set a color
-;;   (plist-put org-format-latex-options :foreground "black")
-;;   ;; (add-to-list 'xenops-math-latex-process-alist
-;;   ;;              '(mymath :programs ("latex" "dvisvgm")
-;;   ;;                       :description "pdf > svg"
-;;   ;;                       :message "you need to install the programs: latex and dvisvgm (they come together in texlive distro)."
-;;   ;;                       :image-input-type "dvi"
-;;   ;;                       :image-output-type "svg"
-;;   ;;                       :image-size-adjust (1.7 . 1.5)
-;;   ;;                       :latex-compiler ("latex -output-directory %o %f")
-;;   ;;                       :image-converter ("dvisvgm %f -o %O")))
-;;   ;; this fixes issues with dvisvgm, phhhewww, took me a long time to figure out.
-;;   (defun preamble-advice (document)
-;;     (concat "\\def\\pgfsysdriver{pgfsys-tex4ht.def}" document))
-;;   (advice-add 'xenops-math-latex-make-latex-document :filter-return 'preamble-advice)
-;;   )
-
 ;; (use-package mixed-pitch
 ;;   :hook
 ;;   (text-mode . mixed-pitch-mode))
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
-
-;; add edition/creation timestamps to headers and files, this is absurd, git would be a bbetter option
-;; (use-package org-roam-timestamps
-;;   :config
-;;   (org-roam-timestamps-mode)
-;;   (setq org-roam-timestamps-remember-timestamps t))
 
 ;; ;; give org mode a better look
 ;; (use-package org-modern
@@ -578,14 +519,15 @@
 ;; (use-package dumb-jump)
 ;; (use-package ob-async)
 (use-package format-all)
-;; (use-package org-roam-ui)
 ;; (use-package jupyter)
 ;; (use-package plantuml-mode)
-;; for latex references, i think it can do those (not sure)
-(use-package org-ref
-  :config
-  (setq bibtex-completion-bibliography (list org-cite-global-bibliography))
-  (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
+
+;; for latex references
+;; (use-package org-ref
+;;   :config
+;;   (setq bibtex-completion-bibliography (list org-cite-global-bibliography))
+;;   (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link-hydra/body))
+
 ;; (use-package code-compass)
 
 ;(use-package vterm
@@ -611,8 +553,9 @@
 ;; (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
-(use-package avy)
 ;; (use-package auto-yasnippet)
+
+(use-package avy)
 
 (use-package embark
   :ensure t
@@ -622,10 +565,10 @@
    ;; ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
    )
   :init
-  ;; Optionally replace the key help with a completing-read interface
+  ;; optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
   :config
-  ;; Hide the mode line of the Embark live/completions buffers
+  ;; hide the mode line of the embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
@@ -636,6 +579,7 @@
     :parent embark-general-map
     "k" #'kill-this-buffer)
   )
+
 (use-package embark-consult
   :ensure t ; only need to install it, embark loads it after consult if found
   :hook
@@ -678,7 +622,7 @@
 ;;   :config
 ;;   (tree-sitter-langs-install-grammars t))
 
-                                        ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
+;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
 ;; (use-package lsp-java)
 
@@ -693,17 +637,11 @@
 ;;   (add-hook 'org-mode-hook #'org-transclusion-mode))
 
 (use-package eat)
-;; (quelpa '(eat :fetcher git
-;;               :url "https://codeberg.org/akib/emacs-eat"
-;;               :files ("*.el" ("term" "term/*.el") "*.texi"
-;;                       "*.ti" ("terminfo/e" "terminfo/e/*")
-;;                       ("terminfo/65" "terminfo/65/*")
-;;                       ("integration" "integration/*")
-;;                       (:exclude ".dir-locals.el" "*-tests.el"))))
 
 ;; (use-package org-bullets
 ;;   :config
 ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
 ;; better than org-bullets
 ;; (use-package org-superstar
 ;;   :config
@@ -809,9 +747,6 @@
   :config
   (global-set-key (kbd "C-;") 'er/expand-region))
 
-;; ;; change text inside delimiters
-;; (use-package change-inner)
-
 ;; center buffer
 (use-package olivetti)
 
@@ -847,46 +782,15 @@
 ;; ;; (setq julia-snail/ob-julia-mirror-output-in-repl t)
 ;; ;; (setq julia-snail/ob-julia-capture-io nil)
 
-;; from https://github.com/karthink/.emacs.d/blob/master/lisp/setup-org.el
-;; (use-package ob-julia
-;;   :elpaca (ob-julia :host github :repo "nico202/ob-julia"
-;;                       :files ("*.el" "julia")
-;;                       :fork (:host github
-;;                              :repo "karthink/ob-julia"
-;;                              :branch "main"))
-;;   :after ob
-;;   :hook (org-babel-julia-after-async-execute . my/org-redisplay-babel-result)
-;;   :init (setq ob-julia-insert-latex-environment-advice nil)
-;;   :config
-;;   (add-to-list 'org-structure-template-alist
-;;                '("j" . "src julia"))
-;;   (setq org-babel-default-header-args:julia
-;;         '((:session . nil)
-;;           (:async   . "yes")))
-;;   (setq org-babel-julia-backend 'julia-snail)
-;;   (when (featurep 'ess)
-;;     (setq ess-eval-visibly 'nowait)
-;;     (defun org-babel-julia-initiate-session (&optional session params)
-;;       "Create or switch to an ESS Julia session.
-;;
-;; Return the initialized session, if any."
-;;       (unless (string= session "none")
-;;         (let ((session (or session "*julia*")))
-;;           (if (org-babel-comint-buffer-livep session)
-;;               session
-;;             (save-window-excursion
-;;               (org-babel-prep-session:julia session params))))))))
-
-
 ;; for python, it doesnt work with corfu so i disabled it
 ;; (use-package elpy
 ;;   :init
 ;;   (elpy-enable))
 
 ;; mastodon fediverse
-(use-package mastodon
-  :ensure t)
-(use-package ement)
+;; (use-package mastodon
+;;   :ensure t)
+;; (use-package ement)
 
 ;; vertico config
 (use-package vertico
@@ -902,11 +806,15 @@
                  crm-separator)
                 (car args))
         (cdr args)))
-(advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-;; do not allow the cursor in the minibuffer prompt
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+(with-eval-after-load 'vertico
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  ;; do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  ;; use selected window
+  (setq vertico-buffer-display-action '(display-buffer-same-window))
+  )
 ;; emacs 28: Hide commands in M-x which do not work in the current mode.
 ;; vertico commands are hidden in normal buffers.
 ;; (setq read-extended-command-predicate
@@ -917,11 +825,11 @@
 (use-package orderless
   :config
   ;; Configure a custom style dispatcher (see the Consult wiki)
-  (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-        orderless-component-separator "\s+"
-        corfu-separator orderless-component-separator)
-  (setq completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion))))
+  (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+        ;; orderless-component-separator "\s+"
+        ;; corfu-separator orderless-component-separator)
+  ;; (setq completion-category-defaults nil
+  ;;       completion-category-overrides '((file (styles partial-completion))))
   (defun orderless-fast-dispatch (word index total)
     (and (= index 0) (= total 1) (length< word 4)
          `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
@@ -932,20 +840,17 @@
   )
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
-;; use selected window
-(setq vertico-buffer-display-action '(display-buffer-same-window))
-;; Commands for Ido-like directory navigation.
-;; Configure directory extension.
+;; commands for ido-like directory navigation.
 (use-package vertico-directory
   :elpaca nil
   :after vertico
   :ensure nil
-  ;; More convenient directory navigation commands
+  ;; more convenient directory navigation commands
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
               ("DEL" . vertico-directory-delete-char)
               ("M-DEL" . vertico-directory-delete-word))
-  ;; Tidy shadowed file names
+  ;; tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 ;; (use-package vertico-reverse)
 ;; (use-package vertico-grid
@@ -953,13 +858,13 @@
 ;;   :ensure nil
 ;;   :config
 ;;   (vertico-grid-mode))
-;; is similar to ivy-rich
+
 (use-package consult)
-;; corfu with orderless
 
 (use-package marginalia
   :config
   (marginalia-mode))
+
 (use-package all-the-icons-completion
   :after (all-the-icons marginalia)
   :config
@@ -979,13 +884,6 @@
 
 ;; virtual env integration for python
 (use-package pyvenv)
-
-;; (use-package multiple-cursors)
-;;  :config
-;;  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;;  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;;  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-;;  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines))
 
 (use-package combobulate
   :elpaca
@@ -1037,9 +935,6 @@
   (load-library "ob-wolfram")
   (setq org-babel-wolfram-command "wolfram -script")
   (setq wolfram-program "wolfram"))
-;; from https://github.com/tririver/ob-mathematica/
-;; (when (file-exists-p "~/.emacs.d/ob-mathematica.el")
-;;  (load-file "~/.emacs.d/ob-mathematica.el"))
 
 ;; emacs-ipython-notebook
 (use-package ein)
@@ -1073,14 +968,6 @@
 ;;   :config ; add late to hook
 ;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
-;; this just doesnt work...
-;; (use-package roam-block
-;;   :quelpa (roam-block :fetcher github :repo "Kinneyzhang/roam-block")
-;;   :config
-;;   (setq roam-block-home (list *brain-dir*)
-;;         roam-block-ref-highlight t
-;;         roam-block-embed-highlight t))
-
 ;; (use-package copilot
 ;;   :quelpa (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :config
@@ -1098,9 +985,7 @@
 ;;   :config
 ;;   (setq browse-url-browser-function 'browse-url-chrome))
 
-;; (use-package org-ml)
 ;; (use-package lispy)
-;; (use-package ein)
 
 ;; (use-package delve
 ;;   :quelpa (:repo "publicimageltd/delve" :host github))

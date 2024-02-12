@@ -1056,7 +1056,7 @@ should be continued."
                '("t"
                  "todo"
                  entry
-                 (file "/home/mahmooz/brain/notes/20240204T153230--agenda__todo.org")
+                 (file "/home/mahmooz/brain/notes/20240204T953231--agenda__todo.org")
                  "* TODO %?\nentered on %U\n %i\n %a")))
 
 ;; enforce some default keywords for all org buffers (in a hacky way)
