@@ -6,7 +6,8 @@
 ;; disable stupid startup screen
 (setq inhibit-startup-screen t)
 
-(setq package-enable-at-startup nil) ;; disable package.el, needed for straight.el or elpaca to work properly with use-package
+;; disable package.el, needed for straight.el or elpaca to work properly with use-package
+(setq package-enable-at-startup nil)
 
 ;; setup elpaca package manager
 (defvar elpaca-installer-version 0.6)
@@ -72,7 +73,7 @@
   (concat *brain-dir* filename))
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default ;; tab-width 2
+(setq-default ; tab-width 2
               js-indent-level 2
               c-basic-offset 2
               indent-tabs-mode nil

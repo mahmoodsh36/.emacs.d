@@ -140,11 +140,12 @@
          (define-key evil-outer-text-objects-map ,key #',outer-name))))
   (with-eval-after-load 'evil
     (with-eval-after-load 'general
-    
+
   ;; disable evil mode in deadgrep, they dont work well together
   ;; (evil-set-initial-state 'deadgrep-mode 'emacs)
   (evil-set-initial-state 'calc-mode 'emacs)
   (evil-set-initial-state 'eat-mode 'emacs)
+  (evil-set-initial-state 'nov-mode 'emacs)
   ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
   (evil-set-initial-state 'sly-db-mode 'emacs)
   ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)

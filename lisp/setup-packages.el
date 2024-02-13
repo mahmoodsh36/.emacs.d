@@ -25,7 +25,15 @@
 (use-package general)
 
 ;; epub reader
-(use-package nov)
+(use-package nov
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  ;; (defun my-nov-font-setup ()
+  ;;   (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
+  ;;                            :height 1.0))
+  ;; (add-hook 'nov-mode-hook 'my-nov-font-setup)
+  ;; (setq nov-text-width 80)
+  )
 
 ;; (formerly om.el) A functional library for org-mode
 (use-package org-ml)
@@ -130,7 +138,7 @@
       (corfu-quit-no-match t)
       (corfu-auto-delay 0.1) ;; never set it to 0, makes emacs very laggy and hogs cpu
       ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
-      (corfu-separator " ") ;; set to orderless separator, if not using space
+      ;; (corfu-separator " ") ;; set to orderless separator, if not using space
       (corfu-count 10)
       (corfu-indexed-mode t)
       (corfu-echo-mode t) ;; display brief documentation in echo area
@@ -183,14 +191,6 @@
     ;;   (setq completion-styles '(orderless partial-completion basic);; '(orderless basic)
     ;;         completion-category-defaults nil
     ;;         completion-category-overrides nil))
-
-    ;; (defun orderless-fast-dispatch (word index total)
-    ;;   (and (= index 0) (= total 1) (length< word 4)
-    ;;        `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
-
-    ;; (orderless-define-completion-style orderless-fast
-    ;;                                    (orderless-style-dispatchers '(orderless-fast-dispatch))
-    ;;                                    (orderless-matching-styles '(orderless-literal orderless-regexp)))
 
     ;; corfu completion in the minibuffer
     (defun corfu-enable-in-minibuffer ()
@@ -740,6 +740,7 @@
 
 ;; better alternative to counsel-ag, best i found for grepping
 (use-package deadgrep)
+(use-package wgrep)
 
 ;; some packages that i use are to replicate evil functionality
 ;; ;; highlight text inside common delimiters
@@ -821,22 +822,14 @@
 ;;       #'command-completion-default-include-p)
 ;; enable recursive minibuffers
 (setq enable-recursive-minibuffers t)
-;; optionally use the `orderless' completion style.
 (use-package orderless
   :config
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
-        ;; orderless-component-separator "\s+"
-        ;; corfu-separator orderless-component-separator)
-  ;; (setq completion-category-defaults nil
-  ;;       completion-category-overrides '((file (styles partial-completion))))
-  (defun orderless-fast-dispatch (word index total)
-    (and (= index 0) (= total 1) (length< word 4)
-         `(orderless-regexp . ,(concat "^" (regexp-quote word)))))
-  (orderless-define-completion-style orderless-fast
-                                     (orderless-style-dispatchers '(orderless-fast-dispatch))
-                                     (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex)))
-  (setq completion-styles '(substring orderless-fast basic))
+  (setq ;;orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+        orderless-component-separator #'orderless-escapable-split-on-space
+        completion-styles '(orderless partial-completion basic))
+  ;; completion-category-defaults nil
+  ;; completion-category-overrides nil))
+  ;; orderless-component-separator "\s+"
   )
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
