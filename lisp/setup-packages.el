@@ -278,7 +278,7 @@
   ;; ob-sagemath supports only evaluating with a session.
   (setq org-babel-default-header-args:sage '((:session . t)
                                              (:results . "drawer")))
-  (setq sage-shell:input-history-cache-file (brain-file "/sage_history"))
+  (setq sage-shell:input-history-cache-file (from-brain "/sage_history"))
   (add-hook 'sage-shell-after-prompt-hook #'sage-shell-view-mode))
 
 ;; better built-in help/documentation
@@ -539,7 +539,7 @@
   :config
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
-  (setq keyfreq-file (concat *brain-dir* "emacs_keyfreq")))
+  (setq keyfreq-file (from-brain "emacs_keyfreq")))
 
 (use-package magit)
 
@@ -706,7 +706,7 @@
           (maxima ("rmaxima" "-r" "to_lisp();"))))
   ;; make org babel use sly instead of slime
   (setq org-babel-lisp-eval-fn #'sly-eval)
-  (setq sly-mrepl-history-file-name (concat *brain-dir* "/sly_history"))
+  (setq sly-mrepl-history-file-name (from-brain "sly_history"))
   ;; i think this increases history file size
   (setq comint-input-ring-size 1000000))
 ;; (use-package slime
@@ -730,7 +730,7 @@
 ;;           (ccl ("ccl"))
 ;;           (maxima ("rmaxima" "-r" "to_lisp();"))))
 ;;   ;; disable evil-mode 
-;;   (setq slime-repl-history-file (concat *brain-dir* "/slime_history"))
+;;   (setq slime-repl-history-file (from-brain "slime_history"))
 ;;   (setq slime-repl-history-size 1000000))
 
 ;; flash cursor when jumping around
@@ -870,7 +870,7 @@
 ;;   :config
 ;;   (prescient-persist-mode 1)
 ;;   (setq prescient-history-length 100000)
-;;   (setq prescient-save-file (file-truename (concat *brain-dir* "emacs_prescient")))) ;; save history to filesystem
+;;   (setq prescient-save-file (file-truename (from-brain "emacs_prescient")))) ;; save history to filesystem
 ;; (use-package vertico-prescient
 ;;   :config
 ;;   (vertico-prescient-mode))
@@ -911,7 +911,7 @@
   (consult-customize consult--source-buffer :hidden t :default nil)
   (add-to-list 'consult-buffer-sources persp-consult-source)
   ;; (add-hook 'kill-emacs-hook #'persp-state-save)
-  (setq persp-state-default-file (concat *brain-dir* "/emacs_persp"))
+  (setq persp-state-default-file (from-brain "emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
 ;; very buggy
@@ -1034,7 +1034,7 @@
 (use-package denote
   :elpaca (denote :fetcher github :repo "protesilaos/denote")
   :config
-  (setq denote-directory (concat *brain-dir* "notes/")
+  (setq denote-directory (from-brain "notes/")
         denote-date-prompt-use-org-read-date t
         denote-file-type 'org)
   (add-hook 'dired-mode-hook #'denote-dired-mode)

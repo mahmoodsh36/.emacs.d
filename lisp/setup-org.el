@@ -629,7 +629,7 @@
 (defun open-todays-file ()
   "open todays org file"
   (interactive)
-  (let ((todays-file (format-time-string (concat *brain-dir* "/daily/%Y-%m-%d.org"))))
+  (let ((todays-file (format-time-string (from-brain "/daily/%Y-%m-%d.org"))))
     (if (not (file-exists-p todays-file))
         (progn
           (find-file todays-file)

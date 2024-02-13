@@ -66,11 +66,11 @@
 ;;     (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
 
 ;; path where all my notes etc go
-(setq *brain-dir* (file-truename "~/brain/"))
-(defconst *music-dir* (file-truename "~/music/"))
-(defun brain-file (filename)
+(defconst *brain-dir* (getenv "BRAIN_DIR") "/")
+(defconst *music-dir* (getenv "MUSIC_DIR") "/")
+(defun from-brain (filename)
   "return `filename', prefixed by the path to the brain dir"
-  (concat *brain-dir* filename))
+  (file-truename (concat *brain-dir* "/" filename)))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default ; tab-width 2
@@ -129,7 +129,7 @@
 ;; save open buffers on exit
 ;; (desktop-save-mode 1)
 ;; save minibuffer history
-(setq savehist-file (expand-file-name (concat *brain-dir* "/emacs_savehist")))
+(setq savehist-file (expand-file-name (from-brain "emacs_savehist")))
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'search-ring)
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
@@ -230,7 +230,7 @@
 (defun get-latex-cache-dir-path ()
   "return the path for the directory that contains the compiled pdf latex documents"
   (interactive)
-  (concat *brain-dir* "/out/"))
+  (from-brain "out/"))
 
 (defun compile-latex-file (path)
   (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (file-truename (get-latex-cache-dir-path)) path)))
@@ -283,7 +283,7 @@
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
-(setq eshell-aliases-file (concat *brain-dir* "/eshell_aliases"))
+(setq eshell-aliases-file (from-brain "eshell_aliases"))
 (defun eshell-cd-and-ls (&rest args)           ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
@@ -291,7 +291,7 @@
     (cd path)
     (eshell/ls)))
 ;; eshell history file location
-(setq eshell-history-file-name (concat *brain-dir* "/eshell_history")) ;; save history to filesystem
+(setq eshell-history-file-name (from-brain "eshell_history")) ;; save history to filesystem
 (setq eshell-history-size 100000000)
 
 ;; disable multiplication precedence over division in calc
@@ -312,7 +312,7 @@
   (or num (setq num 7))
   (insert (generate-random-string num)))
 (defun temp-file (EXT)
-  (format "%stmp_%s.%s" (concat *brain-dir* "out/") (generate-random-string 7) EXT))
+  (format "%stmp_%s.%s" (from-brain "out/") (generate-random-string 7) EXT))
 (global-set-key (kbd "C-c R") #'insert-random-string)
 
 (defun kill-all-dired-buffers ()
@@ -351,7 +351,7 @@
 (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
-(setq bookmark-file (concat *brain-dir* "emacs_bookmarks"))
+(setq bookmark-file (from-brain "emacs_bookmarks"))
 
 (defun yas-delete-if-empty ()
   "function to remove _{} or ^{} fields, used by some of my latex yasnippets"
@@ -451,7 +451,7 @@ Version 2018-06-18 2021-09-30"
 
 (defun cached-file (filename)
   "return 'filename' prefixed with cache dir path"
-  (concat *brain-dir* "out/" filename))
+  (from-brain (concat "out/" filename)))
 
 ;; disable stupid beep sounds on macos
 (setq ring-bell-function #'ignore)

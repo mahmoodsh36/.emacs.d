@@ -4,7 +4,7 @@
 (led-kbd "d a" (lambda () (interactive) (dired "~/data/")))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (led-kbd "d b" (lambda () (interactive) (dired *brain-dir*)))
-(led-kbd "d r" (lambda () (interactive) (dired (concat *brain-dir* "/resources"))))
+(led-kbd "d r" (lambda () (interactive) (dired (from-brain "/resources"))))
 (led-kbd "d h" (lambda () (interactive) (dired "~/")))
 (led-kbd "d p" (lambda () (interactive) (dired "~/p/")))
 (led-kbd "d d" 'dired)
@@ -89,7 +89,7 @@
 (led-kbd "r g"
          (lambda ()
            (interactive)
-           (find-file (concat *brain-dir* "/bib.bib"))))
+           (find-file (from-brain "/bib.bib"))))
 (led-kbd "r v" 'org-babel-execute-buffer :keymaps 'org-mode-map)
 (led-kbd "r r" 'org-redisplay-inline-images :keymaps 'org-mode-map)
 (led-kbd "r P" 'org-set-property :keymaps 'org-mode-map)
@@ -177,7 +177,7 @@
 (led-kbd "m f"
          (lambda ()
            (interactive)
-           (find-file "/home/mahmooz/brain/notes/20231010211129-music_table.org")))
+           (find-file "/home/mahmooz/brain/notes/20231010T211129--music-table__.org")))
 ;; open artist's last.fm page
 (led-kbd "m l"
          (lambda ()
