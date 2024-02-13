@@ -884,12 +884,18 @@ See `eval-after-load' for the possible formats of FORM."
   (interactive)
   (replace-regexp "\\$\\(.*?\\)\\$" "\\\\(\\1\\\\)"))
 
+(defun any (pred list)
+  "return `t' if `pred' returns `t' for any items in `list'"
+  (while (and list (not (funcall pred (car list))))
+    (pop list))
+  (car list))
+
 ;; disable some modes for large files (otherwise emacs will hang..)
-;; (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
 ;; there's also find-file-literally i guess
 (defun conditional-disable-modes ()
-  (unless (eq major-mode 'pdf-view-mode)
+  (unless (any #'derived-mode-p '(pdf-view-mode image-mode doc-view-mode))
     (when (> (buffer-size) (* 1024 512))
+      (message "entering fundamental-mode from %s" major-mode)
       (flycheck-mode -1)
       (flyspell-mode -1)
       (font-lock-mode -1)
@@ -898,4 +904,4 @@ See `eval-after-load' for the possible formats of FORM."
       (linum-mode 0)
       (lsp-mode 0)
       )))
-(add-hook 'find-file-hook 'conditional-disable-modes)
+(add-hook 'find-file-hook #'conditional-disable-modes)
