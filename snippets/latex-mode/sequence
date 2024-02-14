@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sequence
+# key: sn
+# --
+${1:A}_${2:1},$1_${2:$(+ 1 (or (ignore-errors (string-to-number (yas-field-value 2))) (yas-field-value 2) 1))},\dots,$1_${3:n}
