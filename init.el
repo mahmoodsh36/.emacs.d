@@ -66,11 +66,16 @@
 ;;     (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
 
 ;; path where all my notes etc go
-(defconst *brain-dir* (getenv "BRAIN_DIR") "/")
-(defconst *music-dir* (getenv "MUSIC_DIR") "/")
+(defconst *brain-dir* (getenv "BRAIN_DIR"))
+(defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
+(defun join-path (&rest paths)
+    (let ((mypath (car paths)))
+      (dolist (path (cdr paths))
+        (setq mypath (concat mypath "/" path)))
+      (file-truename mypath)))
 (defun from-brain (filename)
   "return `filename', prefixed by the path to the brain dir"
-  (file-truename (concat *brain-dir* "/" filename)))
+  (join-path *brain-dir* filename))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default ; tab-width 2

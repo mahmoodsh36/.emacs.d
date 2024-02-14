@@ -321,7 +321,7 @@
   ;; also number equations
   (setq org-latex-preview-numbered t)
   ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-  ;; (setq org-latex-compiler "lualatex")
+  (setq org-latex-compiler "lualatex")
   ;; (setq org-latex-compiler "pdflatex")
   ;; ;; make dvisvgm preview use lualatex
   ;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
@@ -347,7 +347,7 @@
   ;; (plist-put org-latex-preview-appearance-options :page-width "1.0")
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
-  (setq org-latex-preview-live-debounce 0.25)
+  ;; (setq org-latex-preview-live-debounce 0.25)
 
   ;; make org not evaluate code blocks on exporting
   (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))

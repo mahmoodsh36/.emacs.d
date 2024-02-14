@@ -131,7 +131,7 @@
            (interactive)
            (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
              (let ((chosen-artist (completing-read "pick artist: " artist-names)))
-               (dired (format "%s/%s" *music-dir* chosen-artist))))))
+               (dired (join-path *music-dir* chosen-artist))))))
 ;; play album by artist name + album name
 (led-kbd "m b"
          (lambda ()
@@ -150,9 +150,9 @@
                       #'file-directory-p
                       (directory-files *music-dir* t "^[^.].*$")))))))
              (let ((chosen-album (completing-read "pick album: " album-titles)))
-               (message (concat *music-dir* chosen-album))
+               (message (join-path *music-dir* chosen-album))
                (call-process "play_dir_as_album.sh" nil 0 nil
-                             (concat *music-dir* chosen-album))
+                             (join-path *music-dir* chosen-album))
                (message "playing album %s" chosen-album)))))
 ;; play album
 (led-kbd "m B"
