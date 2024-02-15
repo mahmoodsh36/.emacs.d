@@ -1061,4 +1061,6 @@
 (use-package flyspell-correct
   :bind ("C-;" . flyspell-correct-wrapper))
 
+;; (use-package hl-block-mode)
+
 (provide 'setup-packages)

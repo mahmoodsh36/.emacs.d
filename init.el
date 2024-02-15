@@ -231,31 +231,6 @@
   "current filename without extension"
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
-
-(defun get-latex-cache-dir-path ()
-  "return the path for the directory that contains the compiled pdf latex documents"
-  (interactive)
-  (from-brain "out/"))
-
-(defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "lualatex -shell-escape -output-directory=%s %s" (file-truename (get-latex-cache-dir-path)) path)))
-
-(defun compile-current-document ()
-  "compile the current latex document being edited"
-  (interactive)
-  (compile-latex-file (buffer-file-name)))
-
-(defun open-current-document ()
-  "open the pdf of the current latex document that was generated"
-  (interactive)
-  (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
-(defun open-current-document-this-window ()
-  (interactive)
-  (let ((pdf-file (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
-    (if (file-exists-p pdf-file)
-        (find-file pdf-file)
-      (message "pdf file hasnt been generated"))))
-
 ;; tex hook to auto compile on save
 ;; (add-hook
 ;;  'TeX-mode-hook

@@ -47,6 +47,30 @@
 ;; bibliography file (i use one global one for everything)
 (setq org-cite-global-bibliography '("~/brain/bib.bib"))
 
+(defun get-latex-cache-dir-path ()
+  "return the path for the directory that contains the compiled pdf latex documents"
+  (interactive)
+  (from-brain "out/"))
+
+(defun compile-latex-file (path)
+  (start-process-shell-command "latex" "latex" (format "%s -shell-escape -output-directory=%s %s" org-latex-compiler (file-truename (get-latex-cache-dir-path)) path)))
+
+(defun compile-current-document ()
+  "compile the current latex document being edited"
+  (interactive)
+  (compile-latex-file (buffer-file-name)))
+
+(defun open-current-document ()
+  "open the pdf of the current latex document that was generated"
+  (interactive)
+  (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
+(defun open-current-document-this-window ()
+  (interactive)
+  (let ((pdf-file (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
+    (if (file-exists-p pdf-file)
+        (find-file pdf-file)
+      (message "pdf file hasnt been generated"))))
+
 ;; cache for orgmode links, requires pre-isntallation of gcc/clang
 ;; (use-package org-roam
 ;;   :elpaca (org-roam :type git :repo "mahmoodsheikh36/org-roam")
@@ -321,7 +345,7 @@
   ;; also number equations
   (setq org-latex-preview-numbered t)
   ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-  (setq org-latex-compiler "lualatex")
+  ;; (setq org-latex-compiler "lualatex")
   ;; (setq org-latex-compiler "pdflatex")
   ;; ;; make dvisvgm preview use lualatex
   ;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
@@ -339,15 +363,15 @@
   (setq org-latex-prefer-user-labels t)
   ;; dont let org handle subscripts lol
   (setq org-export-with-sub-superscripts nil)
-  ;; increase preview width
+  ;; increase preview size
   ;; (plist-put org-latex-preview-appearance-options :scale 1.5)
   ;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
   ;; dont limit the width of previews
   ;; (plist-put org-latex-preview-appearance-options :page-width nil)
-  ;; (plist-put org-latex-preview-appearance-options :page-width "1.0")
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
+  (plist-put org-latex-preview-appearance-options :page-width 1.0)
 
   ;; make org not evaluate code blocks on exporting
   (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
