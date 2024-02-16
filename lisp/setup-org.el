@@ -1114,4 +1114,6 @@ should be continued."
 (defun org-blk-export (path _)
   (message "got: %s" path))
 
+(require 'org-attach)
+
 (provide 'setup-org)
