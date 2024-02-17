@@ -497,7 +497,8 @@
         org-appear-autokeywords t
         org-appear-autolinks t
         org-appear-autosubmarkers t
-        org-hide-emphasis-markers t)
+        ;; org-hide-emphasis-markers t
+        )
   (add-hook 'org-mode-hook 'org-appear-mode))
 
 ;; (use-package dape)
@@ -1056,6 +1057,7 @@
   ;; :elpaca (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
 ;; (use-package citar)
+;; (use-package reorg)
 
 (use-package rg)
 
@@ -1063,5 +1065,20 @@
   :bind ("C-;" . flyspell-correct-wrapper))
 
 ;; (use-package hl-block-mode)
+
+(use-package djvu)
+
+(setq enable-god nil)
+(when enable-god
+  (use-package god-mode
+    :config
+    (god-mode)
+    (global-set-key (kbd "<escape>") #'god-mode-all)
+    (setq god-exempt-major-modes nil)
+    (setq god-exempt-predicates nil))
+  (defun my-god-mode-update-cursor-type ()
+    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
+  )
 
 (provide 'setup-packages)

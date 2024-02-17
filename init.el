@@ -813,13 +813,14 @@ See `eval-after-load' for the possible formats of FORM."
       (quote ,(cdr my-features))
       (quote ,form))))))
 
-;; add ~/.emacs.d to load-path
+;; add ~/.emacs.d to load-path and load other elisp files
 (push (concat user-emacs-directory "/lisp") load-path)
-(require 'setup-packages) ;; load setup-packages.el
-(require 'setup-org) ;; load setup-org.el
-(require 'setup-evil) ;; load setup-evil.el
-(require 'setup-theme) ;; load setup-theme.el
-(require 'setup-dired) ;; load setup-dired.el
+(require 'setup-utils)
+(require 'setup-packages)
+(require 'setup-org)
+(require 'setup-evil)
+(require 'setup-theme)
+(require 'setup-dired)
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook

@@ -4,7 +4,6 @@
 ;; enable emacs keys in evil insert mode
 (setq evil-disable-insert-state-bindings t)
 (setq enable-evil t)
-(setq enable-god nil)
 ;; use builtin undo system, may not be needed because i bind the keys below
 ;; (setq evil-undo-system nil)
 
@@ -138,68 +137,69 @@
                                   (evil-select-paren ,start-regex ,end-regex beg end type count t))
          (define-key evil-inner-text-objects-map ,key #',inner-name)
          (define-key evil-outer-text-objects-map ,key #',outer-name))))
+
   (with-eval-after-load 'evil
     (with-eval-after-load 'general
 
-  ;; disable evil mode in deadgrep, they dont work well together
-  ;; (evil-set-initial-state 'deadgrep-mode 'emacs)
-  (evil-set-initial-state 'calc-mode 'emacs)
-  (evil-set-initial-state 'eat-mode 'emacs)
-  (evil-set-initial-state 'nov-mode 'emacs)
-  ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
-  (evil-set-initial-state 'sly-db-mode 'emacs)
-  ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
-  (evil-set-initial-state 'vterm-mode 'emacs)
-  ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
+      ;; disable evil mode in deadgrep, they dont work well together
+      ;; (evil-set-initial-state 'deadgrep-mode 'emacs)
+      (evil-set-initial-state 'calc-mode 'emacs)
+      (evil-set-initial-state 'eat-mode 'emacs)
+      (evil-set-initial-state 'nov-mode 'emacs)
+      ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
+      (evil-set-initial-state 'sly-db-mode 'emacs)
+      ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
+      (evil-set-initial-state 'vterm-mode 'emacs)
+      ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
-  (general-evil-setup)
+      (general-evil-setup)
 
-  ;; (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
-  ;; (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
+      ;; (general-define-key :states 'normal :keymaps 'override "{" 'evil-scroll-line-up)
+      ;; (general-define-key :states 'normal :keymaps 'override "}" 'evil-scroll-line-down)
 
-  (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
+      (general-define-key :states 'normal :keymaps 'prog-mode-map "K" 'evil-jump-to-tag)
 
-  (general-define-key :states 'normal :keymaps 'override ")" 'evil-scroll-page-down)
-  (general-define-key :states 'normal :keymaps 'override "(" 'evil-scroll-page-up)
+      (general-define-key :states 'normal :keymaps 'override ")" 'evil-scroll-page-down)
+      (general-define-key :states 'normal :keymaps 'override "(" 'evil-scroll-page-up)
 
-  (led-kbd "w" 'evil-window-map)
+      (led-kbd "w" 'evil-window-map)
 
-    (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
-    (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
-    (define-and-bind-quoted-text-object "slash" "/" "/" "/")
-    (define-and-bind-quoted-text-object "space" " " " " " ")
-    (define-and-bind-quoted-text-object "tilde" "~" "~" "~")
-    (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
+      (define-and-bind-quoted-text-object "dollar" "$" "\\$" "\\$")
+      (define-and-bind-quoted-text-object "pipe" "|" "|" "|")
+      (define-and-bind-quoted-text-object "slash" "/" "/" "/")
+      (define-and-bind-quoted-text-object "space" " " " " " ")
+      (define-and-bind-quoted-text-object "tilde" "~" "~" "~")
+      (define-and-bind-quoted-text-object "asterisk" "*" "*" "*")
 
-    ;; create "il"/"al" (inside/around) line text objects:
-    ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
-    ;; create "ia"/"aa" (inside/around) entire buffer text objects:
-    (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
+      ;; create "il"/"al" (inside/around) line text objects:
+      ;; (define-and-bind-text-object "l" "^\\s-*" "\\s-*$")
+      ;; create "ia"/"aa" (inside/around) entire buffer text objects:
+      (define-and-bind-quoted-text-object "buffer" "A" "\\`\\s-*" "\\s-*\\'")
 
-    ;; (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map fundamental-mode-map) "s" 'save-buffer)
-    (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
+      ;; (general-define-key :states 'normal :keymaps '(text-mode-map prog-mode-map latex-mode-map tex-mode-map bibtex-mode-map fundamental-mode-map) "s" 'save-buffer)
+      (general-define-key :states 'normal :keymaps 'override "s" 'save-buffer)
 
-    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
-    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
-    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
-    (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
-    ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
-    ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "d" 'pdf-view-scroll-up-or-next-page)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "u" 'pdf-view-scroll-down-or-previous-page)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "K" 'pdf-view-enlarge)
+      (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "J" 'pdf-view-shrink)
+      ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "l" 'dired-find-file)
+      ;; (general-define-key :states 'normal :keymaps 'dired-mode-map "h" 'dired-up-directory)
 
-    ;; dired
-    (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
+      ;; dired
+      (general-define-key :states 'normal :keymaps 'dired-mode-map "y" #'copy-file-path)
 
-    ;; some sly keys
-    ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
+      ;; some sly keys
+      ;; (general-define-key :states '(normal motion) :keymaps 'sly-repl-mode-map "K" 'sly-describe-symbol)
 
-    (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
-    (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
-    (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
-    (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "]k" 'org-babel-next-src-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
 
-    ;; general keys for programming
-    (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
-    (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)))
+      ;; general keys for programming
+      (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
+      (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)))
 
   ;; evil mode multiple cursors
   (use-package evil-mc
@@ -218,7 +218,6 @@
   (use-package evil-extra-operator)
 
   (use-package evil-textobj-tree-sitter
-    :elpaca t
     :config
     ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
     (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
@@ -250,7 +249,7 @@
     )
 
   ;; make org roam insert link after cursor in evil mode
-  (defun my-org-roam-node-insert-advice-append-if-in-normal-mode (fn)
+  (defun my-insert-advice-append-if-in-normal-mode (fn)
     "if in evil normal mode and cursor is on a whitespace character, then go into
 append mode first before inserting the link. this is to put the link after the
 space rather than before."
@@ -262,7 +261,7 @@ space rather than before."
         (evil-append 0)
         (funcall fn)
         (evil-normal-state))))
-  (advice-add 'org-roam-node-insert :around #'my-org-roam-node-insert-advice-append-if-in-normal-mode)
+  (advice-add 'denote-insert-link :around #'my-org-roam-node-insert-advice-append-if-in-normal-mode)
 
   ;; (use-package evil-snipe
   ;;   :config
@@ -271,65 +270,7 @@ space rather than before."
 
   ;; so that forward-sexp works at end of line, see https://github.com/fuco1/smartparens/issues/1037
   ;; (setq evil-move-beyond-eol t)
+  )
 
-  (when enable-god
-    (use-package god-mode
-      :config
-      (god-mode)
-      (global-set-key (kbd "<escape>") #'god-mode-all)
-      (setq god-exempt-major-modes nil)
-      (setq god-exempt-predicates nil))
-    (defun my-god-mode-update-cursor-type ()
-      (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-    (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-    ;; (use-package ryo-modal
-    ;;   :quelpa (ryo-modal :fetcher github :repo "kungsgeten/ryo-modal")
-    ;;   :commands ryo-modal-mode
-    ;;   :bind ("C-c SPC" . ryo-modal-mode)
-    ;;   :config
-    ;;   (ryo-modal-keys
-    ;;    ("," ryo-modal-repeat)
-    ;;    ("q" ryo-modal-mode)
-    ;;    ("h" backward-char)
-    ;;    ("j" next-line)
-    ;;    ("k" previous-line)
-    ;;    ("l" forward-char))
-
-    ;;   (ryo-modal-keys
-    ;;    ;; first argument to ryo-modal-keys may be a list of keywords.
-    ;;    ;; these keywords will be applied to all keybindings.
-    ;;    (:norepeat t)
-    ;;    ("0" "M-0")
-    ;;    ("1" "M-1")
-    ;;    ("2" "M-2")
-    ;;    ("3" "M-3")
-    ;;    ("4" "M-4")
-    ;;    ("5" "M-5")
-    ;;    ("6" "M-6")
-    ;;    ("7" "M-7")
-    ;;    ("8" "M-8")
-    ;;    ("9" "M-9"))
-
-    ;;   (defun mark-line ()
-    ;;     (interactive)
-    ;;     (beginning-of-line)
-    ;;     (set-mark-command nil)
-    ;;     (end-of-line))
-
-    ;;   (ryo-modal-key
-    ;;    "g" '(("s" save-buffer)
-    ;;          ("g" magit-status)
-    ;;          ("b" ibuffer-list-buffers)))
-
-    ;;   (let ((text-objects
-    ;;          '(("w" mark-word :name "Word")
-    ;;            ("l" mark-line :name "line")
-    ;;            )))
-    ;;     (eval `(ryo-modal-keys
-    ;;             ("v" ,text-objects)
-    ;;             ;;("k" ,text-objects :then '(kill-region))
-    ;;             ("c" ,text-objects :then '(kill-region)))))
-    ;;   )
-    ))
 
 (provide 'setup-evil)

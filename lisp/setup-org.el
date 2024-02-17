@@ -2,8 +2,8 @@
 
 ;; tecosaur's org-mode version
 (use-package org
-  :elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
-               :files (:defaults "etc")))
+  :ensure ( :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
+            :files (:defaults "etc")))
 
 (defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
 
@@ -110,6 +110,7 @@
 ;;                      :props '(:immediate-finish nil)))
 
 (with-eval-after-load 'org
+  (require 'org-attach)
   ;; save the clock history across sessions
   (setq org-clock-persist 'history)
   (org-clock-persistence-insinuate)
@@ -206,15 +207,6 @@
   ;; timestamp with seconds
   (setq org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>"))
 
-  ;; give svg's a proper width when exporting with dvisvgm
-  ;; (with-eval-after-load 'ox-html
-  ;;   (setq org-html-head
-  ;;         (replace-regexp-in-string
-  ;;          ".org-svg { width: 90%; }"
-  ;;          ".org-svg { width: auto; }"
-  ;;          org-html-style-default)))
-  ;; enable <s code block snippet
-  ;; (require 'org-src)
   ;; make org-babel java act like other langs
   (setq org-babel-default-header-args:java
         '((:dir . nil)
@@ -231,19 +223,10 @@
   ;; src block indentation / editing / syntax highlighting
   (setq org-src-window-setup 'current-window
         org-src-strip-leading-and-trailing-blank-lines t)
-  ;; dunno why \def\pgfsysdriver is needed (i think for htlatex)... gonna override the variable cuz that causes errors
-  ;; (setq org-babel-latex-preamble
-  ;;       (lambda (_)
-  ;;         "\\documentclass[preview]{standalone}"))
   ;; to make gifs work
   ;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
   ;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
   ;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
-  ;; i think this is irrelevant at this point
-  (defun space-x-with-latex-header-hack ()
-    (interactive)
-    (let ((org-format-latex-header "\\documentclass[tikz]{standalone}"))
-      (org-ctrl-c-ctrl-c)))
   ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
   (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
   ;; latex syntax highlighting in org mode (and more)
@@ -253,14 +236,14 @@
   ;; disable org-mode's mathjax because my blog's code uses another version
   (setq org-html-mathjax-template "")
   (setq org-html-mathjax-options '())
-  (setq org-babel-default-header-args:latex
-        '((:results . "file graphics")
-          ;; (:exports . "results")
-          ;; (:fit . t)
-          ;; (:imagemagick . t)
-          ;; (:eval . "no-export")
-          ;; (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
-          ))
+  ;; (setq org-babel-default-header-args:latex
+  ;;       '((:results . "file graphics")
+  ;;         ;; (:exports . "results")
+  ;;         ;; (:fit . t)
+  ;;         ;; (:imagemagick . t)
+  ;;         ;; (:eval . "no-export")
+  ;;         ;; (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
+  ;;         ))
   ;; make org export deeply nested headlines as headlines still
   (setq org-export-headline-levels 20)
   ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -307,16 +290,6 @@
   ;;             (org-roam-tag-add '("todo"))
   ;;           (ignore-errors (org-roam-tag-remove '("todo")))))))
   ;;   (agenda-files-update))
-  ;; (defun is-buffer-roam-note ()
-  ;;   "return non-nil if the currently visited buffer is a note."
-  ;;   (and buffer-file-name
-  ;;        (string-prefix-p
-  ;;         (expand-file-name (file-name-as-directory org-roam-directory))
-  ;;         (file-name-directory buffer-file-name))))
-  ;; (setq org-agenda-files (roam-files-with-tag "todo"))
-  ;; (defun agenda-files-update (&rest _)
-  ;;   "Update the value of `org-agenda-files'."
-  ;;   (setq org-agenda-files (roam-files-with-tag "todo")))
   ;; (advice-add 'org-agenda :before #'agenda-files-update)
   ;; (advice-add 'org-todo-list :before #'agenda-files-update)
   ;; stop showing deadlines in today
@@ -329,15 +302,13 @@
   (setq org-agenda-show-future-repeats 'next)
   ;; make org-open-at-point open link in the same buffer
   (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
-  ;; enable it everywhere possible
+  ;; enable latex previews everywhere possible and use a custom preamble
   (setq org-latex-preview-live '(block inline edit-special))
   (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
-  ;; export to html using dvisvgm/mathjax/whatever
+  ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
   (add-hook 'org-mode-hook 'visual-line-mode)
-  ;; use dvisvgm instead of dvipng
-  ;; (setq org-latex-preview-process-default 'dvisvgm)
   ;; dont export headlines with tags
   (setq org-export-with-tags nil)
   ;; allow characters as list modifiers in org mode
@@ -345,11 +316,7 @@
   ;; also number equations
   (setq org-latex-preview-numbered t)
   ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-  ;; (setq org-latex-compiler "lualatex")
-  ;; (setq org-latex-compiler "pdflatex")
-  ;; ;; make dvisvgm preview use lualatex
-  ;; (let ((pos (assoc 'dvisvgm org-latex-preview-process-alist)))
-  ;;   (plist-put (cdr pos) :programs '("lualatex" "dvisvgm")))
+  (setq org-latex-compiler "lualatex")
   ;; make org-agenda open up in the current window
   (setq org-agenda-window-setup 'current-window)
   ;; dont prompt for downloading remote files on export
@@ -359,7 +326,7 @@
   ;; dont number headers on exports
   (setq org-export-with-section-numbers nil)
   (setq org-use-property-inheritance t)
-  ;; dont override my labels, silly org
+  ;; dont override my labels
   (setq org-latex-prefer-user-labels t)
   ;; dont let org handle subscripts lol
   (setq org-export-with-sub-superscripts nil)
@@ -418,188 +385,10 @@
 ;;     obj))
 ;; (advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
 
-(defun all-roam-files ()
-  "return a list of all files in the org-roam database"
-  (seq-uniq
-   (seq-map
-    #'car
-    (org-roam-db-query
-     `(:select file :from nodes)))))
-
-(defun roam-files-with-tag (tag-name)
-  "Return a list of note files containing a specific tag.";
-  (seq-uniq
-   (seq-map
-    #'car
-    (org-roam-db-query
-     `(:select [nodes:file]
-               :from tags
-               :left-join nodes
-               :on (= tags:node-id nodes:id)
-               :where (like tag ,tag-name))))))
-
-
-;; (defun go-through-all-roam-files (callback)
-;;   "run a callback function on each file in the org-roam database"
-;;   (dolist (file (all-roam-files))
-;;     (if (not (eq callback nil))
-;;         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-;;           (if (is-buffer-roam-note)
-;;               (funcall callback))))))
-
-(defun go-through-roam-files-with-tag (tag-name callback)
-  "run a callback function on each file tagged with tag-name"
-  (dolist (file (roam-files-with-tag tag-name))
-    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      (when (is-buffer-roam-note)
-        (funcall callback)
-        (kill-this-buffer)
-        ))))
-
-(defun execute-code-files ()
-  "execute files tagged with 'code'"
-  (interactive)
-  (go-through-roam-files-with-tag
-   "code"
-   (lambda ()
-     (condition-case err
-         (org-babel-execute-buffer)
-       (error (message "got error %s while executing %s" err (buffer-file-name)))))))
-
-(defun execute-files (tag)
-  "execute files tagged with 'code'"
-  (interactive)
-  (go-through-roam-files-with-tag
-   tag
-   (lambda ()
-     (condition-case err
-         (org-babel-execute-buffer)
-       (error (message "got error %s while executing %s" err (buffer-file-name)))))))
-
-(defun lob-reload ()
-  "load files tagged with 'code' into the org babel library (lob - library of babel)"
-  (interactive)
-  (go-through-roam-files-with-tag
-   "code"
-   (lambda ()
-     (org-babel-lob-ingest (buffer-file-name)))))
-
-;; most/all of my code files are lisp, load them with sly/slime
-(add-hook 'sly-connected-hook (lambda () (execute-files "lisp-code")))
 ;; run some python code from my org notes on shell startup
 ;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
 ;; i need those in library of babel on startup too
 ;; (lob-reload)
-
-;; (defun xenops-prerender ()
-;;   "prerender latex blocks in roam files"
-;;   (interactive)
-;;   (go-through-roam-files-with-tag
-;;    "math"
-;;    (lambda ()
-;;      (message "processing math file %s" (buffer-file-name)))))
-
-;; (defun run-all-code-blocks ()
-;;   "run code blocks in all org-roam files"
-;;   (interactive)
-;;   (go-through-all-roam-files
-;;    (lambda ()
-;;      (message "processing file %s" (buffer-file-name))
-;;      (org-babel-execute-buffer))))
-
-;; (go-through-roam-files-with-tag "math" (lambda () (message buffer-file-name)))
-;; (defun publicize-files ()
-;;   (interactive)
-;;   (go-through-roam-files-with-tag
-;;    "computer-science"
-;;    (lambda ()
-;;      (org-roam-tag-add '("public"))
-;;      (save-buffer))))
-
-(defun buffer-contains-substring (string)
-  "check if the current buffer contains a specific string"
-  (save-excursion
-    (save-match-data
-      (goto-char (point-min))
-      (not (eq nil (search-forward string nil t))))))
-
-(defun buffer-contains-math ()
-  "check if the current buffer contains any math equations (latex blocks)"
-  (or
-   (buffer-contains-substring "$")
-   (buffer-contains-substring "\\(")
-   (buffer-contains-substring "\\[")))
-
-(defmacro save-buffer-modified-p (&rest body)
-  "Eval BODY without affected buffer modification status"
-  `(let ((buffer-modified (buffer-modified-p))
-         (buffer-undo-list t))
-     (unwind-protect
-         ,@body
-       (set-buffer-modified-p buffer-modified))))
-
-(defun update-math-file ()
-  "add/remove the math tag to the file"
-  (let ((kill-ring)  ;; keep kill ring, dont modify it
-        (buffer-undo-list)) ;; keep the undo "ring" too, doesnt work tho, hmmmm
-    (when (and (not (active-minibuffer-window))
-               (is-buffer-roam-note))
-      (save-excursion
-        (goto-char (point-min))
-        (if (buffer-contains-math)
-            (org-roam-tag-add '("math"))
-          (ignore-errors (org-roam-tag-remove '("math"))))))))
-;; (add-hook 'before-save-hook #'update-math-file)
-
-(defun find-math-files (basedir)
-  "find all org files in a directory that are math files and tag them with 'math' tag"
-  (interactive)
-  (dolist (file (directory-files-recursively basedir ".*\\.org$"))
-    (ignore-errors (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-                     (beginning-of-buffer)
-                     (org-id-get-create)
-                     (ignore-errors (update-math-file))
-                     (save-buffer)))))
-
-(defun update-math-files ()
-  "go through all roam files and check each for math formulas and update the math tag"
-  (dolist (file (all-roam-files))
-    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      (update-math-file)
-      (save-buffer))))
-
-;; (defun buffer-contains-code ()
-;;   "check if the buffer contains an org-babel source block"
-;;   (interactive)
-;;   (org-element-map
-;;       (org-element-parse-buffer 'element)
-;;       'src-block
-;;     (lambda (h) t)
-;;     ;; (or (eq (org-element-property :todo-type h)
-;;     ;;         'todo)
-;;     ;;     (eq (org-element-property :todo-type h)
-;;     ;;         'done)))
-;;     nil 'first-match))
-
-;; (defun update-code-file ()
-;;   "add/remove the code tag to the file"
-;;   (when (and (not (active-minibuffer-window))
-;;              (is-buffer-roam-note))
-;;     (save-excursion
-;;       (goto-char (point-min))
-;;       (if (buffer-contains-code)
-;;           (org-roam-tag-add '("math"))
-;;         (org-roam-tag-remove '("math"))))))
-;; (add-hook 'before-save-hook #'update-math-file)
-
-;; (defun find-code-files (basedir)
-;;   "find all org files in a directory that contain source blocks and tag them with 'code' tag"
-;;   (interactive)
-;;   (dolist (file (directory-files-recursively basedir ".*\\.org$"))
-;;     (ignore-errors (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-;;       (beginning-of-buffer)
-;;       (ignore-errors (update-code-file))
-;;       (save-buffer)))))
 
 (defun org-babel-fold-all-latex-src-blocks ()
   "toggle visibility of org-babel latex src blocks"
@@ -683,10 +472,6 @@
   (insert " ")
   (evil-insert 0))
 
-(defun push-blog-github ()
-  (interactive)
-  (execute-kbd-macro (read-kbd-macro "SPC d g SPC s e M-r reexport RET RET")))
-
 ;; make links like [[id::blockname]] work, need to rebuild database after defining the advice using org-roam-db-clear-all and then org-roam-db-sync
 ;; (defun +org--follow-search-string-a (fn link &optional arg)
 ;;   "Support ::SEARCH syntax for id::name links.
@@ -710,23 +495,6 @@
 ;;               ((org-link-search search)))))))
 ;; (advice-add 'org-id-open :around #'+org--follow-search-string-a)
 ;; (advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
-
-;; TODO: add latex auto-completion to org-mode, requires auctex
-;; (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
-;; (TeX--completion-at-point
-;;  t
-;;  LaTeX--arguments-completion-at-point)
-
-;; temporary fix for latex preview exports in html
-;; (plist-put org-html-latex-image-options :inline "svg")
-;; temporary fix for ox-hugo with new org latex preview system
-;; (advice-add 'org-blackfriday--update-ltximg-path
-;;             :around
-;;             (lambda (orig-fn html-string)
-;;               (if (plist-get org-html-latex-image-options :inline)
-;;                   html-string
-;;                 (funcall orig-fn html-string)))
-;;             '((name . inline-image-workaround)))
 
 ;; org mode navigation map
 (defvar org-nav-map
@@ -755,79 +523,14 @@
    org-nav-map)
   (define-key org-mode-map (kbd "C-l") org-nav-map))
 
-;; automatic recursive exporting of linked notes
-(defun nodes-linked-from-node (node)
-  "return list of roam nodes linked to from node with node-id";
-  (when node
-    (mapcar
-     #'org-roam-node-from-id
-     (mapcar
-      #'car
-      (org-roam-db-query
-       [:select :distinct [dest]
-                :from links
-                :where (= source $s1)
-                :and (= type "id")]
-       (org-roam-node-id node))))))
-
-(defun nodes-linked-from-node-file (node)
-  (when node
-    (mapcar
-     #'org-roam-node-from-id
-     (mapcar
-      #'car
-      (org-roam-db-query
-       [:select :distinct [links:dest]
-                :from links
-                :left-join nodes
-                :on (= links:source nodes:id)
-                :left-join files
-                :on (= files:file nodes:file)
-                :where (= nodes:file $s1)]
-       (org-roam-node-file node))))))
-
-(defun this-buffer-roam-node ()
-  "get the roam-node of the current buffer"
-  (save-excursion
-    (goto-char 0)
-    (when (org-id-get)
-      (org-roam-node-from-id (org-id-get)))))
-
-(defun nodes-linked-from-this-node ()
-  "nodes linked to from this node"
-  (let ((node (this-buffer-roam-node)))
-    (nodes-linked-from-node node)))
-
-(defun nodes-linked-from-this-file ()
-  "nodes linked to from this node"
-  (let ((node (this-buffer-roam-node)))
-    (nodes-linked-from-node-file node)))
-
-;; old one
-;; (defun export-node (node)
-;;   "export a node's file to both hugo md and pdf"
-;;   (condition-case err
-;;       (let ((org-startup-with-latex-preview nil)
-;;             (file (org-roam-node-file node)))
-;;         (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-;;           ;; (org-to-pdf)
-;;           (org-hugo-export-to-md)))
-;;     (error
-;;      (error (format "export-node failed %s, not retrying, err: %s" (org-roam-node-file node) err))
-;;      ;; (org-latex-preview--clear-preamble-cache)
-;;      ;; (org-latex-preview-clear-cache)
-;;      ;; (export-node node)
-;;      )))
-
-(defun export-node (node &rest kw)
+(defun export-file (file &rest kw)
   "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
-  (let ((file (org-roam-node-file node)))
-    (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-      (when (plist-get kw :pdf-p)
-        (org-to-pdf))
-      (when (plist-get kw :html-p)
-        (let ((org-hugo-section (or (node-hugo-section node) "index")))
-          (org-hugo-export-to-md))))))
+  (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
+    (when (plist-get kw :pdf-p)
+      (org-to-pdf))
+    (when (plist-get kw :html-p)
+      (let ((org-hugo-section (or (node-hugo-section node) "index")))
+        (org-hugo-export-to-md)))))
 
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
@@ -836,42 +539,30 @@
     (when node
       (apply #'export-node node kw))))
 
-(defun export-current-buffer-recursively ()
-  "gets the node associated with the current buffer, exports it with export-node-recursively, see its docstring"
-  (interactive)
-  (let ((node (this-buffer-roam-node)))
-    (when node
-      (export-node-recursively node))))
+;; (defun export-node-recursively (node &optional exceptions)
+;;   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
+;;   ;; (message "%s" exceptions)
+;;   (if (and node
+;;            (when (not (cl-find node exceptions
+;;                                :test (lambda (node1 node2)
+;;                                        (string= (org-roam-node-file node1)
+;;                                                 (org-roam-node-file node2)))))))
+;;       (progn
+;;         (push node exceptions)
+;;         (let ((nodes (nodes-linked-from-node-file node)))
+;;           (dolist (other-node nodes)
+;;             (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
+;;             (setf exceptions (export-node-recursively other-node exceptions))))
+;;         (when (and node (should-export-node node))
+;;           (message (format "exporting: %s" (org-roam-node-file node)))
+;;           (export-node node :html-p t))
+;;         exceptions)
+;;     exceptions))
 
-(defun export-node-recursively (node &optional exceptions)
-  "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
-  ;; (message "%s" exceptions)
-  (if (and node
-           (when (not (cl-find node exceptions
-                               :test (lambda (node1 node2)
-                                       (string= (org-roam-node-file node1)
-                                                (org-roam-node-file node2)))))))
-      (progn
-        (push node exceptions)
-        (let ((nodes (nodes-linked-from-node-file node)))
-          (dolist (other-node nodes)
-            (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
-            (setf exceptions (export-node-recursively other-node exceptions))))
-        (when (and node (should-export-node node))
-          (message (format "exporting: %s" (org-roam-node-file node)))
-          (export-node node :html-p t))
-        exceptions)
-    exceptions))
-
-(defun should-export-node (node)
-  "whether an org note should be exported"
-  (or (member "public" (org-roam-node-tags node))
-      (member "public-archive" (org-roam-node-tags node))))
-
-(defun node-hugo-section (node)
-  "the section the file should be placed into on hugo export, see HUGO_SECTION or whatever"
-  (cond ((member "public" (org-roam-node-tags node)) "blog")
-        ((member "public-archive" (org-roam-node-tags node)) "index")))
+;; (defun should-export-node (node)
+;;   "whether an org note should be exported"
+;;   (or (member "public" (org-roam-node-tags node))
+;;       (member "public-archive" (org-roam-node-tags node))))
 
 ;; (defun my-org-link-advice (fn link desc info)
 ;;   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
@@ -917,20 +608,7 @@
     ;;(format-time-string "<%Y-%m-%d>" (file-creation-time myfile))))
     (format-time-string "<%Y-%m-%d>"
                         (file-creation-time-using-git myfile))))
-(advice-add #'org-export-get-date :around #'my-org-date-advice)
-
-(defun export-all-public ()
-  "export nodes with tag 'public'"
-  (interactive)
-  (let ((exceptions))
-    (go-through-roam-files-with-tag "public" #'export-all-public-helper)
-    (go-through-roam-files-with-tag "public-archive" #'export-all-public-helper)))
-
-(defun export-all-public-helper ()
-  "a helper for `export-all-public', the variable `exceptions' is dynamically bound"
-  ;; (message "%s" exceptions)
-  (setf exceptions
-        (export-node-recursively (org-roam-node-from-id (org-id-get)) exceptions)))
+;; (advice-add #'org-export-get-date :around #'my-org-date-advice)
 
 ;; org-special-edit with lsp?, laggy af
 ;; (defun org-babel-edit-prep:python (babel-info)
@@ -962,15 +640,6 @@
 ;;         blk
 ;;       nil)))
 
-;; (defun execute-src-block-with-dependencies (&optional arg info params executor-type)
-;;   (save-excursion
-;;     (let ((src-block-location (nth 5 info)))
-;;       )
-;;     (message "%s" info)))
-;; (defun org-babel-execute-src-block-advice ()
-;;   (message "hi"))
-;; (advice-add #'org-babel-execute-src-block :before #'execute-src-block-with-dependencies)
-
 ;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
 ;; (defun my/org-latex-preview-center (ov)
 ;;   (save-excursion
@@ -997,7 +666,6 @@
     (setf (nth 1 decoded) 0)
     (setf (nth 2 decoded) 0)
     (apply #'encode-time decoded)))
-
 (defun org-agenda-skip-if-scheduled-earlier ()
   "If this function returns nil, the current match should not be skipped.
 Otherwise, the function must return a position from where the search
@@ -1109,11 +777,8 @@ should be continued."
 (defun org-blk-open (link _)
   "open the file containing a block with the name `link'"
   (find-file (grep-brain (regexp-quote (format "#+name: %s" link)))))
-  ;; (shell-command-to-string "find . -name \"*.org\" -exec grep '^#+name: blk' {} \;"))
 
 (defun org-blk-export (path _)
   (message "got: %s" path))
-
-(require 'org-attach)
 
 (provide 'setup-org)

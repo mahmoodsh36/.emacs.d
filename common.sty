@@ -58,15 +58,26 @@
 % graphdrawing library is only available to luatex
 \usetikzlibrary{graphdrawing}
 \usegdlibrary{force, trees, layered}
-\usepackage{unicode-math} % only usable with lualatex
+
+ % only usable with lualatex
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+% \setmainfont{GFS Bodoni}
+
+% \usepackage[math-style=ISO, bold-style=ISO]{unicode-math} % this causes lualatex to not find some symbols in files
+% \setmainfont{Latin Modern Roman}
+% \setmathfont[range=\mathup/{latin,Latin}]{TeX Gyre Heros}
+% \defaultfontfeatures{Ligatures={TeX}}
+% \setmainfont{CMU Serif}
+% \setsansfont{CMU Sans Serif}
+% \setmathfont{Latin Modern Math}
+
 \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
 \else
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
-\usepackage{kpfonts} % better(?) looking fonts
 
-% \setmainfont{Linux Libertine O}
-% \setmainfont{GFS Bodoni}
+% \usepackage{kpfonts} % better(?) looking fonts
 
 % \setmainlanguage{english}
 % \setotherlanguage{greek}
