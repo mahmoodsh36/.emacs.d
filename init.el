@@ -47,9 +47,9 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 (elpaca elpaca-use-package
-        ;; enable use-package :ensure support for elpaca.
-        (elpaca-use-package-mode)
-        (setq use-package-always-ensure t))
+  ;; enable use-package :ensure support for elpaca.
+  (elpaca-use-package-mode)
+  (setq use-package-always-ensure t))
 
 ;; block until current queue processed.
 (elpaca-wait)

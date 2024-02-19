@@ -49,6 +49,7 @@
 \usepackage{fonttable}
 \usepackage{float} % fixes some errors for figure previews in org mode (allows the figure to "float")
 % \usepackage{breqn}
+\usepackage{hyperref}
 
 % for venn diagrams
 \usepackage[svgnames]{xcolor}
@@ -72,10 +73,11 @@
 % \setsansfont{CMU Sans Serif}
 % \setmathfont{Latin Modern Math}
 
-\newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
-\else
-\newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
+% \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
+% \else
+% \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
+\newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 
 % \usepackage{kpfonts} % better(?) looking fonts
 

@@ -249,7 +249,7 @@
     )
 
   ;; make org roam insert link after cursor in evil mode
-  (defun my-insert-advice-append-if-in-normal-mode (fn)
+  (defun my-insert-advice-append-if-in-normal-mode (fn &rest args)
     "if in evil normal mode and cursor is on a whitespace character, then go into
 append mode first before inserting the link. this is to put the link after the
 space rather than before."
@@ -257,11 +257,11 @@ space rather than before."
                                        (not (bound-and-true-p evil-insert-state-minor-mode))
                                        (looking-at "[[:blank:]]"))))
       (if (not is-in-evil-normal-mode)
-          (funcall fn)
+          (apply fn args)
         (evil-append 0)
-        (funcall fn)
+        (apply fn args)
         (evil-normal-state))))
-  (advice-add 'denote-insert-link :around #'my-org-roam-node-insert-advice-append-if-in-normal-mode)
+  (advice-add 'denote-insert-link :around #'my-insert-advice-append-if-in-normal-mode)
 
   ;; (use-package evil-snipe
   ;;   :config

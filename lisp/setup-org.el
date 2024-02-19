@@ -229,6 +229,7 @@
   ;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
   ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
   (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
+  (setq org-babel-latex-preamble (lambda (_) "\\documentclass[preview]{article}"))
   ;; latex syntax highlighting in org mode (and more)
   ;; (setq org-highlight-latex-and-related nil)
   (setq org-highlight-latex-and-related '(latex))
@@ -236,14 +237,14 @@
   ;; disable org-mode's mathjax because my blog's code uses another version
   (setq org-html-mathjax-template "")
   (setq org-html-mathjax-options '())
-  ;; (setq org-babel-default-header-args:latex
-  ;;       '((:results . "file graphics")
-  ;;         ;; (:exports . "results")
-  ;;         ;; (:fit . t)
-  ;;         ;; (:imagemagick . t)
-  ;;         ;; (:eval . "no-export")
-  ;;         ;; (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
-  ;;         ))
+  (setq org-babel-default-header-args:latex
+        '((:results . "file graphics")
+          (:exports . "results")
+          ;; (:fit . t)
+          ;; (:imagemagick . t)
+          ;; (:eval . "no-export")
+          (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
+          ))
   ;; make org export deeply nested headlines as headlines still
   (setq org-export-headline-levels 20)
   ;; workaround to make yasnippet expand after dollar sign in org mode
