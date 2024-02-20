@@ -151,7 +151,7 @@
       (unbind-key "TAB" corfu-map)
       (define-key corfu-map [tab] nil)
       (define-key corfu-map "\t" nil)
-      (bind-key "M-TAB" #'corfu-complete corfu-map)
+      (bind-key "C-TAB" #'corfu-complete corfu-map)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)
       )
@@ -287,7 +287,9 @@
   (define-key help-map (kbd "f") #'helpful-callable)
   (define-key help-map (kbd "v") #'helpful-variable)
   (define-key help-map (kbd "a") #'helpful-symbol)
-  (define-key help-map (kbd "k") #'helpful-key))
+  (define-key help-map (kbd "k") #'helpful-key)
+  ;; stop helpful buffers from jumping between windows
+  (setq helpful-switch-buffer-function #'pop-to-buffer-same-window))
 
 ;; yasnippet
 ;; (use-package yasnippet-snippets)

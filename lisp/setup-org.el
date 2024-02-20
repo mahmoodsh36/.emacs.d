@@ -198,6 +198,7 @@
           "|" ; remaining entries close tasks
           "DONE(d@)"
           "CANCELED(c@)"
+          "MISSED(m@)"
           "CANCELLED(C@)" ;; for backward compatibility
           ))
   ;; filter out entries with tag "ignore"
@@ -775,11 +776,26 @@ should be continued."
          (files (mapcar (lambda (line) (car (split-string line ":"))) (split-string output "\n"))))
     (car files)))
 
+(defun org-blk-find-file (link)
+  "open the file containing a block with the name `link'"
+  (grep-brain (regexp-quote (format "#+name: %s" link))))
+
 (defun org-blk-open (link _)
   "open the file containing a block with the name `link'"
-  (find-file (grep-brain (regexp-quote (format "#+name: %s" link)))))
+  (message "%s" (org-blk-find-file link))
+  (find-file-noselect (org-blk-find-file link)))
 
-(defun org-blk-export (path _)
-  (message "got: %s" path))
+(defun org-blk-export (link desc format)
+  "return the file containing a block with the name `link' for org exporting purposes"
+  (let* ((linked-file (org-blk-find-file link))
+         (desc (or desc link))
+         (linked-file-html (file-name-sans-extension linked-file)))
+    (cond
+     ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-html desc))
+     ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
+     ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+     ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
+     ;; ((eq format 'md) (format "[%s](%s.md)" desc p))
+     (t path))))
 
 (provide 'setup-org)
