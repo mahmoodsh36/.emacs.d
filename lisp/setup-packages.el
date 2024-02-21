@@ -302,7 +302,14 @@
   (yas-global-mode 1)
   ;; prevent warnings about snippets using elisp
   (require 'warnings)
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+  ;; enable latex snippets in org mode
+  (defun my-org-latex-yas ()
+    "Activate org and LaTeX yas expansion in org-mode buffers."
+    (yas-minor-mode)
+    (yas-activate-extra-mode 'latex-mode))
+  (add-hook 'org-mode-hook #'my-org-latex-yas)
+  )
   ;; disable the default tab binding
   ;; (define-key yas-minor-mode-map [(tab)] nil)
   ;; (define-key yas-minor-mode-map (kbd "TAB") nil)

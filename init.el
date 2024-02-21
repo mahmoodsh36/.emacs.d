@@ -8,15 +8,9 @@
 
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
+(require 'setup-constants)
 (require 'setup-utils)
 (require 'setup-elpaca)
-
-;; path where all my notes etc go
-(defconst *brain-dir* (getenv "BRAIN_DIR"))
-(defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
-(defun from-brain (filename)
-  "return `filename', prefixed by the path to the brain dir"
-  (join-path *brain-dir* filename))
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default ; tab-width 2
@@ -286,10 +280,6 @@ if a buffer is not file and not dired, copy value of `default-directory'."
        (progn
          (message "file path copied: %s" $fpath)
          $fpath)))))
-
-(defun cached-file (filename)
-  "return 'filename' prefixed with cache dir path"
-  (from-brain (concat "out/" filename)))
 
 ;; disable stupid beep sounds on macos
 (setq ring-bell-function #'ignore)

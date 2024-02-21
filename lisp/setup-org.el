@@ -52,6 +52,19 @@
   (interactive)
   (from-brain "out/"))
 
+;; compile org docs to pdfs and put them in cache dir
+(defun latex-out-file ()
+  (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".tex"))
+(defun pdf-out-file ()
+  (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".pdf"))
+(defun my-org-to-pdf ()
+  (interactive)
+  (let ((outfile (latex-out-file)))
+    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
+    (org-export-to-file 'latex outfile
+      nil nil nil nil nil nil)
+    (compile-latex-file outfile)))
+
 (defun compile-latex-file (path)
   (start-process-shell-command "latex" "latex" (format "%s -shell-escape -output-directory=%s %s" org-latex-compiler (file-truename (get-latex-cache-dir-path)) path)))
 
@@ -162,30 +175,12 @@
   ;; enter insert state after invoking org-capture
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
-  ;; compile org docs to pdfs and put them in cache dir
-  (defun latex-out-file ()
-    (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".tex"))
-  (defun pdf-out-file ()
-    (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".pdf"))
-  (defun org-to-pdf ()
-    (interactive)
-    (let ((outfile (latex-out-file)))
-      (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
-      (org-export-to-file 'latex outfile
-        nil nil nil nil nil nil)
-      (compile-latex-file outfile)))
   ;; allow usage of #+BIND in latex exports
   (setq org-export-allow-bind-keywords t)
   ;; decrease image size in latex exports
   ;; (setq org-latex-image-default-scale "2.0")
   ;; disable images from being scaled/their dimensions being changed
   ;; (setq org-latex-image-default-width "2.0")
-  ;; enable latex snippets in org mode
-  (defun my-org-latex-yas ()
-    "Activate org and LaTeX yas expansion in org-mode buffers."
-    (yas-minor-mode)
-    (yas-activate-extra-mode 'latex-mode))
-  (add-hook 'org-mode-hook #'my-org-latex-yas)
   ;; preserve all line breaks when exporting
   (setq org-export-preserve-breaks t)
   ;; indent headings properly
@@ -529,7 +524,7 @@
   "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
   (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
     (when (plist-get kw :pdf-p)
-      (org-to-pdf))
+      (my-org-to-pdf))
     (when (plist-get kw :html-p)
       (let ((org-hugo-section (or (node-hugo-section node) "index")))
         (org-hugo-export-to-md)))))

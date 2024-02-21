@@ -105,4 +105,13 @@
   (file-name-sans-extension
    (file-name-nondirectory (buffer-file-name))))
 
+(defun from-brain (filename)
+  "return `filename', prefixed by the path to the brain dir"
+  (join-path *brain-dir* filename))
+
+(defun from-cache (filename)
+  "return 'filename' prefixed with cache dir path"
+  (from-brain (concat "out/" filename)))
+(defalias 'cached-file 'from-cache)
+
 (provide 'setup-utils)
