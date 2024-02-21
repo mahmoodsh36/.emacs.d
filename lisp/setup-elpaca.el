@@ -85,11 +85,6 @@
     (display-buffer cmd)
     (end-of-buffer-other-window nil)))
 
-(defun current-filename-no-ext ()
-  "current filename without extension"
-  (file-name-sans-extension
-   (file-name-nondirectory (buffer-file-name))))
-
 (defun yas-delete-if-empty ()
   "function to remove _{} or ^{} fields, used by some of my latex yasnippets"
   (interactive)

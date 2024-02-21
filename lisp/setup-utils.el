@@ -100,4 +100,9 @@
     (pop list))
   (car list))
 
+(defun current-filename-no-ext ()
+  "current filename without extension"
+  (file-name-sans-extension
+   (file-name-nondirectory (buffer-file-name))))
+
 (provide 'setup-utils)
