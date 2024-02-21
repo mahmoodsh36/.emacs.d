@@ -1105,4 +1105,6 @@
                     ;; "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
                     ))
 
+(use-package orglink)
+
 (provide 'setup-packages)

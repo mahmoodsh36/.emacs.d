@@ -50,4 +50,19 @@
 ;;     ;;         'done)))
 ;;     nil 'first-match))
 
+(defun my-process-file (file funcs)
+  (let ((present-buffer (find-buffer-visiting file)))
+    (with-current-buffer (or present-buffer (find-file-noselect file))
+      (mapcar #'funcall funcs)
+      (when (not present-buffer)
+        (kill-buffer (current-buffer))))))
+
+(defun map-files (files funcs)
+  "run the functions `funcs' on each file in `files'"
+  (mapcar (lambda (file) (my-process-file file funcs)) files))
+
+(defun map-dir-files (dir funcs &optional regex)
+  "run the functions `funcs' on each file on the directory `dir', if `regex' is supplied, reduce the list of files to the ones matched by the regex"
+  (map-files (directory-files dir t regex) funcs))
+
 (provide 'setup-utils)
