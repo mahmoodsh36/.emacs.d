@@ -94,4 +94,10 @@
 (defun temp-file (EXT)
   (format "%stmp_%s.%s" (from-brain "out/") (generate-random-string 7) EXT))
 
+(defun any (pred list)
+  "return `t' if `pred' returns `t' for any items in `list'"
+  (while (and list (not (funcall pred (car list))))
+    (pop list))
+  (car list))
+
 (provide 'setup-utils)

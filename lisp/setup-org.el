@@ -63,10 +63,10 @@
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
+  (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename-no-ext) ".pdf")))
 (defun open-current-document-this-window ()
   (interactive)
-  (let ((pdf-file (concat (get-latex-cache-dir-path) (current-filename) ".pdf")))
+  (let ((pdf-file (concat (get-latex-cache-dir-path) (current-filename-no-ext) ".pdf")))
     (if (file-exists-p pdf-file)
         (find-file pdf-file)
       (message "pdf file hasnt been generated"))))
@@ -164,13 +164,13 @@
 
   ;; compile org docs to pdfs and put them in cache dir
   (defun latex-out-file ()
-    (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".tex"))
+    (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".tex"))
   (defun pdf-out-file ()
-    (concat (file-truename (get-latex-cache-dir-path)) (current-filename) ".pdf"))
+    (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".pdf"))
   (defun org-to-pdf ()
     (interactive)
     (let ((outfile (latex-out-file)))
-      (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename)))
+      (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
       (org-export-to-file 'latex outfile
         nil nil nil nil nil nil)
       (compile-latex-file outfile)))
