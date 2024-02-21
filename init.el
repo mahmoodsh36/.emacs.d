@@ -250,15 +250,6 @@
   (let ((my-file (completing-read "select file: " (directory-files-recursively directory-path regex))))
     (find-file (expand-file-name my-file) "'")))
 
-;; automatically run script being edited, demonstrates how we can auto compile files on save
-;; (defun run-script ()
-;;   "run the current bash script being edited"
-;;   (interactive)
-;;   (run-command-show-output (buffer-file-name)))
-;; (add-hook 'sh-mode-hook
-;;           (lambda ()
-;;             (add-hook 'after-save-hook 'run-script 0 t)))
-
 ;; eshell configs
 ;; make the cursor stay at the prompt when scrolling
 (setq eshell-scroll-to-bottom-on-input t)
@@ -276,24 +267,6 @@
 
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
-
-(defun generate-random-string (NUM)
-  "generate a random alphanumerics string of length NUM."
-  (interactive "P")
-  (let* ((random-str "")
-         (charset "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-         (baseCount (length charset)))
-    (dotimes (_ (if (numberp NUM) (abs NUM) NUM))
-      (setq random-str (concat random-str
-                               (char-to-string (elt charset (random baseCount))))))
-    random-str))
-(defun insert-random-string (&optional num)
-  (interactive)
-  (or num (setq num 7))
-  (insert (generate-random-string num)))
-(defun temp-file (EXT)
-  (format "%stmp_%s.%s" (from-brain "out/") (generate-random-string 7) EXT))
-(global-set-key (kbd "C-c R") #'insert-random-string)
 
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
@@ -399,16 +372,11 @@
   (kill-this-buffer))
 
 (defun copy-file-path (&optional DirPathOnlyQ)
-  "Copy current buffer file path or dired path.
-Result is full path.
-If `universal-argument' is called first, copy only the dir path.
-
-If in dired, copy the current or marked files.
-
-If a buffer is not file and not dired, copy value of `default-directory'.
-
-URL `http://xahlee.info/emacs/emacs/emacs_copy_file_path.html'
-Version 2018-06-18 2021-09-30"
+  "copy current buffer file path or dired path.
+result is full path.
+if `universal-argument' is called first, copy only the dir path.
+if in dired, copy the current or marked files.
+if a buffer is not file and not dired, copy value of `default-directory'."
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -423,10 +391,10 @@ Version 2018-06-18 2021-09-30"
     (kill-new
      (if DirPathOnlyQ
          (progn
-           (message "Directory copied: %s" (file-name-directory $fpath))
+           (message "directory copied: %s" (file-name-directory $fpath))
            (file-name-directory $fpath))
        (progn
-         (message "File path copied: %s" $fpath)
+         (message "file path copied: %s" $fpath)
          $fpath)))))
 
 (defun cached-file (filename)
@@ -483,9 +451,9 @@ prompt the user for a coding system."
     (and found (goto-char (1+ (car found))))
     found))
 
-(defun open-kitty-here ()
+(defun open-wezterm-here ()
   (interactive)
-  (async-shell-command "kitty ."))
+  (async-shell-command "wezterm ."))
 
 (defun treemacs-remove-project-at-point-force ()
   (interactive)
@@ -776,16 +744,6 @@ prompt the user for a coding system."
 ;; dont deactivate the mark on non-shift commands
 (setq shift-select-mode 'permanent)
 
-;; from https://emacs.stackexchange.com/questions/58073/how-to-find-inheritance-of-modes
-(defun derived-modes (mode)
-  "Return a list of the ancestor modes that MODE is derived from."
-  (let ((modes   ())
-        (parent  nil))
-    (while (setq parent (get mode 'derived-mode-parent))
-      (push parent modes)
-      (setq mode parent))
-    (setq modes  (nreverse modes))))
-
 ;; default shell for M-x term
 (setq explicit-shell-file-name "zsh")
 
@@ -795,10 +753,6 @@ prompt the user for a coding system."
 ;;     (replace-regexp-in-string "\\`\\\\textbf{\\(.+\\)}"
 ;;                               "\\\\ast{}\\1\\\\ast{}" contents)))
 ;; (add-to-list 'org-export-filter-bold-functions 'my-bold)
-
-;; for now, this is the one with the packages on my system
-;; (setq python-shell-interpreter "python3.10")
-;; (setq python-interpreter "python3.10")
 
 (defun eval-after-load-all (my-features form)
   "Run FORM after all MY-FEATURES are loaded.
@@ -821,6 +775,12 @@ See `eval-after-load' for the possible formats of FORM."
 (require 'setup-evil)
 (require 'setup-theme)
 (require 'setup-dired)
+
+(defun insert-random-string (&optional num)
+  (interactive)
+  (or num (setq num 7))
+  (insert (generate-random-string num)))
+(global-set-key (kbd "C-c R") #'insert-random-string)
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
@@ -859,11 +819,6 @@ See `eval-after-load' for the possible formats of FORM."
   (add-hook hook (lambda () (flyspell-mode 1))))
 ;; ;; flyspell buffer when its opened
 ;; (add-hook 'flyspell-mode-hook #'flyspell-buffer)
-
-;; sometimes useful for refactoring old tex notes
-(defun replace-dollar-signs ()
-  (interactive)
-  (replace-regexp "\\$\\(.*?\\)\\$" "\\\\(\\1\\\\)"))
 
 (defun any (pred list)
   "return `t' if `pred' returns `t' for any items in `list'"
