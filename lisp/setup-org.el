@@ -66,7 +66,12 @@
     (compile-latex-file outfile)))
 
 (defun compile-latex-file (path)
-  (start-process-shell-command "latex" "latex" (format "%s -shell-escape -output-directory=%s %s" org-latex-compiler (file-truename (get-latex-cache-dir-path)) path)))
+  (call-process-shell-command
+   (format "%s -shell-escape -output-directory=%s %s"
+           org-latex-compiler
+           (file-truename (get-latex-cache-dir-path))
+           path)
+   nil "latex"))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -791,6 +796,6 @@ should be continued."
      ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
      ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
      ;; ((eq format 'md) (format "[%s](%s.md)" desc p))
-     (t path))))
+     (t link))))
 
 (provide 'setup-org)

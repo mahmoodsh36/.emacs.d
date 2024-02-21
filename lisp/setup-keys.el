@@ -82,7 +82,7 @@
 ;; (led-kbd "r x" (lambda () (interactive) (export-current-buffer :html-p t)) :keymaps 'org-mode-map)
 ;; (led-kbd "r X" #'export-all-public)
 ;; (led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
-(led-kbd "r d" #'org-to-pdf :keymaps 'org-mode-map)
+(led-kbd "r d" #'my-org-to-pdf :keymaps 'org-mode-map)
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
 (led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
 (led-kbd "r E" 'org-babel-tangle-file :keymaps 'org-mode-map)
