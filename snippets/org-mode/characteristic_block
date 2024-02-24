@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: characteristic block
-# key: cb
-# --
-#+begin_characteristic
-$0
-#+end_characteristic

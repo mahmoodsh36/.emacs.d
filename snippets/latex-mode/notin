@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: notin
+# key: ni
+# --
+\notin$0

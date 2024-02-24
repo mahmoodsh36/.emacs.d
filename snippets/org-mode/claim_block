@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: claim block
+# key: cb
+# --
+#+begin_claim
+$0
+#+end_claim

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: proof idea block
+# key: ;b
+# --
+#+begin_proof_idea
+$0
+#+end_proof_idea
