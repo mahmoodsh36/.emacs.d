@@ -138,6 +138,8 @@
 \newcommand{\textand}{\text{ AND }}
 \newcommand{\textnot}{\text{ NOT }}
 \newcommand{\textor}{\text{ OR }}
+\newcommand{\textif}{\text{ if }}
+\newcommand{\textthen}{\text{ then }}
 
 % some symbols for cryptography notation (Gen,Enc,Dec)
 \DeclareMathOperator{\Gen}{Gen}
@@ -180,7 +182,7 @@
 % so that latex doesnt complain about sage not being a language
 \lstdefinelanguage{sage}{}
 
-% environment definition for special blocks
+% environments like definition for special blocks
 \theoremstyle{definition}
 \newtheorem{my_example}{example}
 \counterwithin{my_example}{section}
@@ -208,6 +210,9 @@
 \newtheorem{task}{task}
 \newtheorem{theorem}{theorem}
 \newtheorem{axiom}{axiom}
+\newtheorem{claim}{claim}
+\newtheorem{proposition}{proposition}
+\newtheorem{notation}{notation}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
@@ -292,6 +297,7 @@
   \renewcommand\given{\givensymbol{\vert}}%
   #1%
 }
+\newcommand{\set}{\Set*}
 
 % for karnaughmap package
 \define@cmdkey{karnaughmap}{dontcare}[\phi]{} % change default dontcare symbol, doesnt work?

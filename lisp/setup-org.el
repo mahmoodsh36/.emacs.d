@@ -340,7 +340,7 @@
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
-  (plist-put org-latex-preview-appearance-options :page-width 1.0)
+  (plist-put org-latex-preview-appearance-options :page-width 0.85)
 
   ;; make org not evaluate code blocks on exporting
   (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
@@ -797,5 +797,8 @@ should be continued."
      ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
      ;; ((eq format 'md) (format "[%s](%s.md)" desc p))
      (t link))))
+
+;; temporary fix for captions breaking latex export
+(advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
 
 (provide 'setup-org)

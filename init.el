@@ -106,38 +106,6 @@
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
 
-;;(defconst *leader-key* "C-z");;"SPC")
-(defconst *leader-key* "<SPC>")
-;; (global-set-key (kbd "<SPC>") (make-sparse-keymap))
-;;(defconst *leader-key* "<escape>")
-(defun led (key-str)
-  "return the keybinding `key-str', which is taken as a string, prefixed by the leader key defined in '*leader-key*'"
-  (concat *leader-key* " " key-str))
-;; (defun mykbd ()
-;;   "to be written"
-;;     )
-;; backup/alternative for leader key in cases where it doesnt work like evil-state=emacs
-(defun led-kbd (binding function &rest args)
-  "define a keybinding prefixed by `*leader-key*'"
-  (interactive)
-  (let ((mykeymaps (plist-get args :keymaps)))
-    (if mykeymaps
-        (progn
-          (general-define-key :states '(normal visual motion operator)
-                              :keymaps mykeymaps
-                              (led binding) function)
-          (general-define-key :states '(normal visual motion operator emacs)
-                              :keymaps mykeymaps
-                              (concat "C-' " binding) function))
-      (progn (general-define-key :states '(normal visual motion operator)
-                                 :keymaps 'override
-                                 (led binding) function)
-             (general-define-key :states '(insert normal motion visual emacs)
-                                 :keymaps 'override
-                                 (concat "C-' " binding) function)))))
-(defun my-kbd (binding function &rest args)
-  )
-
 ;; start server
 (server-start)
 
@@ -644,8 +612,8 @@ See `eval-after-load' for the possible formats of FORM."
       (quote ,form))))))
 
 ;; load other elisp files
-(require 'setup-packages)
 (require 'setup-org)
+(require 'setup-packages)
 (require 'setup-evil)
 (require 'setup-theme)
 (require 'setup-dired)
@@ -675,10 +643,10 @@ See `eval-after-load' for the possible formats of FORM."
             ;; (switch-to-theme 'doom-gruvbox-light)
             ;; (switch-to-theme 'stimmung-themes-light)
             ;; (switch-to-theme 'stimmung-themes-dark)
-            ;; (switch-to-theme 'ef-melissa-light)
+            (switch-to-theme 'ef-melissa-light)
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
-            (switch-to-theme 'ef-autumn)
+            ;; (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-theme 'modus-operandi)

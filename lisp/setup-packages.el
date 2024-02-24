@@ -1065,8 +1065,10 @@
 ;; (use-package denote-explore)
   ;; :elpaca (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
+;; (use-package xeft)
 ;; (use-package citar)
 ;; (use-package reorg)
+;; (use-package iscroll)
 
 (use-package rg)
 

@@ -114,4 +114,54 @@
   (from-brain (concat "out/" filename)))
 (defalias 'cached-file 'from-cache)
 
+;; Clean up ob-jupyter source block output
+;; From Henrik Lissner
+(defun my/org-babel-jupyter-strip-ansi-escapes-block ()
+  (when (string-match-p "^jupyter-"
+                        (nth 0 (org-babel-get-src-block-info)))
+    (unless (or
+             ;; ...but not while Emacs is exporting an org buffer (where
+             ;; `org-display-inline-images' can be awfully slow).
+             (bound-and-true-p org-export-current-backend)
+             ;; ...and not while tangling org buffers (which happens in a temp
+             ;; buffer where `buffer-file-name' is nil).
+             (string-match-p "^ \\*temp" (buffer-name)))
+      (save-excursion
+        (when-let* ((beg (org-babel-where-is-src-block-result))
+                    (end (progn (goto-char beg)
+                                (forward-line)
+                                (org-babel-result-end))))
+          (ansi-color-apply-on-region (min beg end) (max beg end)))))))
+
+(add-hook 'org-babel-after-execute-hook
+          #'my/org-babel-jupyter-strip-ansi-escapes-block)
+
+(defun led (key-str)
+  "return the keybinding `key-str', which is taken as a string, prefixed by the leader key defined in '*leader-key*'"
+  (concat *leader-key* " " key-str))
+;; (defun mykbd ()
+;;   "to be written"
+;;     )
+;; backup/alternative for leader key in cases where it doesnt work like evil-state=emacs
+(defun led-kbd (binding function &rest args)
+  "define a keybinding prefixed by `*leader-key*'"
+  (interactive)
+  (let ((mykeymaps (plist-get args :keymaps)))
+    (if mykeymaps
+        (progn
+          (general-define-key :states '(normal visual motion operator)
+                              :keymaps mykeymaps
+                              (led binding) function)
+          (general-define-key :states '(normal visual motion operator emacs)
+                              :keymaps mykeymaps
+                              (concat "C-' " binding) function))
+      (progn (general-define-key :states '(normal visual motion operator)
+                                 :keymaps 'override
+                                 (led binding) function)
+             (general-define-key :states '(insert normal motion visual emacs)
+                                 :keymaps 'override
+                                 (concat "C-' " binding) function)))))
+(defun my-kbd (binding function &rest args)
+  )
+
 (provide 'setup-utils)
