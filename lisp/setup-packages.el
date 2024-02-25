@@ -1116,4 +1116,7 @@
 
 (use-package orglink)
 
+;; for mail, not used yet
+;; (use-package lieer)
+
 (provide 'setup-packages)

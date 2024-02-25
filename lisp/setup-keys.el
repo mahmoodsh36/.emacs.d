@@ -110,12 +110,6 @@
 ;; (led-kbd "F b"
 ;;          (lambda () (interactive) (search-open-file-in-emacs *brain-dir* ".*\\(pdf\\|tex\\|doc\\|org\\)")))
 (led-kbd "f h" (lambda () (interactive) (search-open-file "./" ".*")))
-(led-kbd "f m"
-         (lambda () (interactive)
-           (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
-                                                                           (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
-                                                                         (directory-files-recursively *music-dir* "")))))
-             (browse-url (expand-file-name my-file)))))
 
 (led-kbd "f n"
          (lambda () (interactive) (find-file "~/work/nixos/configuration.nix")))
@@ -129,70 +123,21 @@
 ;;               (search-open-file-in-emacs "~/data" "")))
 
 ;; music keys
+(require 'setup-music)
+(led-kbd "f m" #'play-file)
 ;; play artist
-(led-kbd "m a"
-         (lambda ()
-           (interactive)
-           (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
-             (let ((chosen-artist (completing-read "pick artist: " artist-names)))
-               (dired (join-path *music-dir* chosen-artist))))))
+(led-kbd "m a" #'play-artist)
 ;; play album by artist name + album name
-(led-kbd "m b"
-         (lambda ()
-           (interactive)
-           (let ((album-titles
-                  (apply
-                   #'cl-concatenate
-                   (list*
-                    'list
-                    (mapcar
-                     (lambda (dir)
-                       (mapcar (lambda (album-title)
-                                 (concat (file-name-nondirectory dir) "/" album-title))
-                               (directory-files dir)))
-                     (cl-remove-if-not
-                      #'file-directory-p
-                      (directory-files *music-dir* t "^[^.].*$")))))))
-             (let ((chosen-album (completing-read "pick album: " album-titles)))
-               (message (join-path *music-dir* chosen-album))
-               (call-process "play_dir_as_album.sh" nil 0 nil
-                             (join-path *music-dir* chosen-album))
-               (message "playing album %s" chosen-album)))))
+(led-kbd "m b" #'play-album)
 ;; play album
-(led-kbd "m B"
-         (lambda ()
-           (interactive)
-           (let ((album-titles
-                  (apply
-                   #'cl-concatenate
-                   (list*
-                    'list
-                    (mapcar
-                     (lambda (dir)
-                       (directory-files dir nil "^[^.].*$"))
-                     (cl-remove-if-not
-                      #'file-directory-p
-                      (directory-files *music-dir* t "^[^.].*$")))))))
-             (let ((chosen-album (completing-read "pick album: " album-titles)))
-               (call-process "play_dir_as_album.sh" nil 0 nil
-                             (cl-find-if (lambda (filepath) (string-match (format ".*/%s$" chosen-album) filepath)) (directory-files-recursively *music-dir* "" t)))
-               (message "playing album %s" chosen-album)))))
+;; (led-kbd "m B" #'play-album-2)
 ;; open music table file
 (led-kbd "m f"
          (lambda ()
            (interactive)
            (find-file "/home/mahmooz/brain/notes/20231010T211129--music-table__.org")))
 ;; open artist's last.fm page
-(led-kbd "m l"
-         (lambda ()
-           (interactive)
-           (let ((artist-names (mapcar #'file-name-nondirectory (cl-remove-if-not #'file-directory-p (directory-files *music-dir* t)))))
-             (let ((chosen-artist (completing-read "pick artist: "
-                                                   artist-names
-                                                   nil
-                                                   nil
-                                                   (current-mpv-artist))))
-               (browse-url (format "https://www.last.fm/music/%s" chosen-artist))))))
+(led-kbd "m l" #'open-lastfm-page)
 
 ;; keybinding to evaluate math expressions
 ;; (general-define-key :states '(normal motion) :keymaps 'override "SPC m"
@@ -421,6 +366,7 @@
       '((note . "#+title: ")
         (memo . "* Some heading")))
 (led-kbd "r n" #'denote-create-note)
+(led-kbd "r N" #'denote-type)
 (led-kbd "r f" #'denote-open-or-create)
 
 (provide 'setup-keys)

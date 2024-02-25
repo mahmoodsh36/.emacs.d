@@ -13,7 +13,7 @@
 (require 'setup-elpaca)
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default ; tab-width 2
+(setq-default ;tab-width 2
               js-indent-level 2
               c-basic-offset 2
               indent-tabs-mode nil
@@ -643,10 +643,10 @@ See `eval-after-load' for the possible formats of FORM."
             ;; (switch-to-theme 'doom-gruvbox-light)
             ;; (switch-to-theme 'stimmung-themes-light)
             ;; (switch-to-theme 'stimmung-themes-dark)
-            (switch-to-theme 'ef-melissa-light)
+            ;; (switch-to-theme 'ef-melissa-light)
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
-            ;; (switch-to-theme 'ef-autumn)
+            (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-theme 'modus-operandi)
