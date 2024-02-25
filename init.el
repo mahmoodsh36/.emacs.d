@@ -603,13 +603,13 @@ prompt the user for a coding system."
 See `eval-after-load' for the possible formats of FORM."
   (if (null my-features)
       (if (functionp form)
-      (funcall form)
-    (eval form))
-    (eval-after-load (car my-features)
+          (funcall form)
+        (eval form))
+    (with-eval-after-load (car my-features)
       `(lambda ()
-     (eval-after-load-all
-      (quote ,(cdr my-features))
-      (quote ,form))))))
+         (eval-after-load-all
+          (quote ,(cdr my-features))
+          (quote ,form))))))
 
 ;; load other elisp files
 (require 'setup-org)
@@ -627,9 +627,9 @@ See `eval-after-load' for the possible formats of FORM."
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
           (lambda ()
-            (with-eval-after-load 'evil
-              (with-eval-after-load 'general
-                (require 'setup-keys))) ;; load setup-org.el
+            (eval-after-load-all
+             '(evil general)
+             (require 'setup-keys)) ;; load setup-org.el
             (when (file-exists-p persp-state-default-file)
               (persp-state-load persp-state-default-file)
               (persp-switch "main"))

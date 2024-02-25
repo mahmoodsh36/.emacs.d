@@ -331,8 +331,6 @@
   :config
   (add-hook 'prog-mode-hook #'highlight-parentheses-mode))
 
-(use-package literate-calc-mode)
-
 ;; generating linear ranges quickly
 (use-package tiny
   :config
@@ -600,7 +598,6 @@
 
 ;; (use-package ialign)
 ;; (use-package 'org-protocol-capture-html)
-;; (use-package org-download)
 
 ;; evaulation overlay for elisp
 (use-package eros
@@ -664,8 +661,6 @@
   (add-hook 'prog-mode-hook 'linum-relative-mode)
   ;; show the real line number at current line
   (setq linum-relative-current-symbol ""))
-
-(use-package org-super-agenda)
 
 ;; krita-supported manual drawing with org mode
 ;; (quelpa '(org-krita :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources")))
@@ -740,7 +735,7 @@
 ;;           (cmucl ("cmucl"))
 ;;           (ccl ("ccl"))
 ;;           (maxima ("rmaxima" "-r" "to_lisp();"))))
-;;   ;; disable evil-mode 
+;;   ;; disable evil-mode
 ;;   (setq slime-repl-history-file (from-brain "slime_history"))
 ;;   (setq slime-repl-history-size 1000000))
 
@@ -989,8 +984,6 @@
 ;;   :config
 ;;   (setq browse-url-browser-function 'browse-url-chrome))
 
-;; (use-package lispy)
-
 ;; (use-package delve
 ;;   :quelpa (:repo "publicimageltd/delve" :host github))
 ;; (use-package svg-tag-mode)
@@ -1116,7 +1109,61 @@
 
 (use-package orglink)
 
+;; hmmmm??
+(use-package pulsar)
+(use-package ace-link)
+(use-package literate-calc-mode)
+;; (use-package bm) ;; visual bookmarks, is this useful for evil?
+;; (use-package lispy) ? is this needed for lispyville?
+(use-package lispyville
+  :after (evil general)
+  :init
+  (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
+  :config
+  (lispyville-set-key-theme '(operators c-w additional)))
+(with-eval-after-load 'lispyville
+  (lispyville-set-key-theme
+   '(operators
+     c-w
+     (escape insert)
+     (additional-movement normal visual motion))))
+(use-package lentic)
+(use-package org-download)
+;; (use-package visual-regexp-steroids)
+(use-package browse-kill-ring)
+(use-package vundo)
+;; (use-package polymode)
+(use-package tldr)
+;; (use-package emacs-fancy-compilation)
+;; (use-package dired-k)
+(use-package racket-mode)
+(use-package clojure-mode)
+(use-package cider)
+(use-package quack) ;; for racket and scheme
+;; (use-package geiser) ;; for racket and scheme
+;; (use-package org-ai) ;; ??
+;; (use-package gptel) ;; ??
+;; (use-package ellama) ;; ??
+(use-package org-super-agenda)
+(use-package fasd)
+(use-package aweshell
+  :ensure ( :host github :repo "manateelazycat/aweshell"))
+(use-package full-ack)
+;; (use-package ack-el)
+(use-package ansible)
+(use-package emms)
+(use-package fireplace)
+(use-package ledger-mode)
+(use-package wttrin)
+
+(use-package git-undo
+  :ensure ( :host github :repo "jwiegley/git-undo-el"))
+
+;; for mail, not used yet
+
 ;; for mail, not used yet
 ;; (use-package lieer)
+;; more packages:
+;; volatile-highlights
 
 (provide 'setup-packages)

@@ -43,9 +43,9 @@
     (evil-collection-init))
 
   ;; ;; display visual hints for evil actions
-  ;; (use-package evil-goggles
-  ;;   :config
-  ;;   (evil-goggles-mode))
+  (use-package evil-goggles
+    :config
+    (evil-goggles-mode))
 
   ;; make line a text object - yil dil cil, etc..
   (use-package evil-textobj-line)
