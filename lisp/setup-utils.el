@@ -87,8 +87,8 @@
   (from-brain (concat "out/" filename)))
 (defalias 'cached-file 'from-cache)
 
-;; Clean up ob-jupyter source block output
-;; From Henrik Lissner
+;; clean up ob-jupyter source block output
+;; from henrik lissner
 (defun my/org-babel-jupyter-strip-ansi-escapes-block ()
   (when (string-match-p "^jupyter-"
                         (nth 0 (org-babel-get-src-block-info)))
@@ -105,17 +105,13 @@
                                 (forward-line)
                                 (org-babel-result-end))))
           (ansi-color-apply-on-region (min beg end) (max beg end)))))))
-
 (add-hook 'org-babel-after-execute-hook
           #'my/org-babel-jupyter-strip-ansi-escapes-block)
 
 (defun led (key-str)
   "return the keybinding `key-str', which is taken as a string, prefixed by the leader key defined in '*leader-key*'"
   (concat *leader-key* " " key-str))
-;; (defun mykbd ()
-;;   "to be written"
-;;     )
-;; backup/alternative for leader key in cases where it doesnt work like evil-state=emacs
+
 (defun led-kbd (binding function &rest args)
   "define a keybinding prefixed by `*leader-key*'"
   (interactive)
@@ -134,7 +130,51 @@
              (general-define-key :states '(insert normal motion visual emacs)
                                  :keymaps 'override
                                  (concat "C-' " binding) function)))))
-(defun my-kbd (binding function &rest args)
-  )
+
+(defun join-path (&rest paths)
+  "join file paths using a forward slash"
+  (let ((mypath (car paths)))
+    (dolist (path (cdr paths))
+      (setq mypath (concat mypath "/" path)))
+    (file-truename mypath)))
+
+(defun kill-all-buffers ()
+  "kill all buffers excluding internal buffers (buffers starting with a space)"
+  (interactive)
+  (setq list (buffer-list))
+  (while list
+    (let* ((buffer (car list))
+           (name (buffer-name buffer)))
+      (and name
+           (not (string-equal name ""))
+           (/= (aref name 0) ?\s)
+           (kill-buffer buffer)))
+    (setq list (cdr list))))
+
+(defun run-command-show-output (cmd)
+  "run shell command and show continuous output in new buffer"
+  (interactive)
+  (progn
+    (start-process-shell-command cmd cmd cmd)
+    (display-buffer cmd)
+    (end-of-buffer-other-window nil)))
+
+(defun yas-delete-if-empty ()
+  "function to remove _{} or ^{} fields, used by some of my latex yasnippets"
+  (interactive)
+  (point-to-register 'my-stored-pos)
+  (save-excursion
+    (while (re-search-backward "\\(_{}\\)" (line-beginning-position) t)
+      (progn
+        (replace-match "" t t nil 1)
+        (jump-to-register 'my-stored-pos)))
+    (while (re-search-backward "\\(\\^{}\\)" (line-beginning-position) t)
+      (progn
+        (replace-match "" t t nil 1)
+        (jump-to-register 'my-stored-pos)))))
+
+(defun message-no-format (msg)
+  "invoke 'message' without it invoking 'format' (not really)"
+  (message "%s" msg))
 
 (provide 'setup-utils)
