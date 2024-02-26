@@ -525,47 +525,6 @@
    org-nav-map)
   (define-key org-mode-map (kbd "C-l") org-nav-map))
 
-(defun export-file (file &rest kw)
-  "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
-  (with-current-buffer (or (find-buffer-visiting file) (find-file-noselect file))
-    (when (plist-get kw :pdf-p)
-      (my-org-to-pdf))
-    (when (plist-get kw :html-p)
-      (let ((org-hugo-section (or (node-hugo-section node) "index")))
-        (org-hugo-export-to-md)))))
-
-(defun export-current-buffer (&rest kw)
-  "gets the node associated with the current buffer, exports it"
-  (interactive)
-  (let ((node (this-buffer-roam-node)))
-    (when node
-      (apply #'export-node node kw))))
-
-;; (defun export-node-recursively (node &optional exceptions)
-;;   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
-;;   ;; (message "%s" exceptions)
-;;   (if (and node
-;;            (when (not (cl-find node exceptions
-;;                                :test (lambda (node1 node2)
-;;                                        (string= (org-roam-node-file node1)
-;;                                                 (org-roam-node-file node2)))))))
-;;       (progn
-;;         (push node exceptions)
-;;         (let ((nodes (nodes-linked-from-node-file node)))
-;;           (dolist (other-node nodes)
-;;             (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
-;;             (setf exceptions (export-node-recursively other-node exceptions))))
-;;         (when (and node (should-export-node node))
-;;           (message (format "exporting: %s" (org-roam-node-file node)))
-;;           (export-node node :html-p t))
-;;         exceptions)
-;;     exceptions))
-
-;; (defun should-export-node (node)
-;;   "whether an org note should be exported"
-;;   (or (member "public" (org-roam-node-tags node))
-;;       (member "public-archive" (org-roam-node-tags node))))
-
 ;; (defun my-org-link-advice (fn link desc info)
 ;;   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
 ;;   (let* ((link-type (org-element-property :type link))
@@ -800,5 +759,71 @@ should be continued."
 
 ;; temporary fix for captions breaking latex export
 (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
+
+(defmacro with-file-as-current-buffer (file &rest body)
+  (let ((present-buffer (gensym))
+        (result (gensym)))
+    `(let ((,present-buffer (find-buffer-visiting ,file)))
+       (with-current-buffer (or (find-buffer-visiting ,file) (find-file-noselect ,file))
+         (setq ,result (progn ,@body))
+         (when (not ,present-buffer)
+           (kill-buffer (current-buffer)))
+         ,result))))
+
+(defun export-org-file (file &rest kw)
+  "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
+  (with-file-as-current-buffer
+   file
+   (when (plist-get kw :pdf-p)
+     (my-org-to-pdf))
+   (when (plist-get kw :html-p)
+     (let ((org-hugo-section "index")) ;;(or (node-hugo-section node) "index")))
+       (org-hugo-export-to-md)))))
+
+(defun all-org-files ()
+  "return all known org files"
+  (directory-files (from-brain "notes/") t ".*\\.org$"))
+
+(defun export-all-org-files ()
+  "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
+  (interactive)
+  (mapcar (lambda (file)
+            (message "%s" file)
+            (when (should-export-org-file file)
+              (export-org-file file :html-p t :pdf-p t)))
+          (all-org-files)))
+
+(defun export-current-buffer (&rest kw)
+  "gets the node associated with the current buffer, exports it"
+  (interactive)
+  (let ((node (this-buffer-roam-node)))
+    (when node
+      (apply #'export-node node kw))))
+
+(defun should-export-org-file (file)
+  "whether the current org buffer should be exported"
+  (with-file-as-current-buffer
+   file
+   (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
+
+;; (defun export-node-recursively (node &optional exceptions)
+;;   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
+;;   ;; (message "%s" exceptions)
+;;   (if (and node
+;;            (when (not (cl-find node exceptions
+;;                                :test (lambda (node1 node2)
+;;                                        (string= (org-roam-node-file node1)
+;;                                                 (org-roam-node-file node2)))))))
+;;       (progn
+;;         (push node exceptions)
+;;         (let ((nodes (nodes-linked-from-node-file node)))
+;;           (dolist (other-node nodes)
+;;             (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
+;;             (setf exceptions (export-node-recursively other-node exceptions))))
+;;         (when (and node (should-export-node node))
+;;           (message (format "exporting: %s" (org-roam-node-file node)))
+;;           (export-node node :html-p t))
+;;         exceptions)
+;;     exceptions))
 
 (provide 'setup-org)

@@ -1115,21 +1115,22 @@
 (use-package literate-calc-mode)
 ;; (use-package bm) ;; visual bookmarks, is this useful for evil?
 ;; (use-package lispy) ? is this needed for lispyville?
-(use-package lispyville
-  :after (evil general)
-  :init
-  (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
-  :config
-  (lispyville-set-key-theme '(operators c-w additional)))
-(with-eval-after-load 'lispyville
-  (lispyville-set-key-theme
-   '(operators
-     c-w
-     (escape insert)
-     (additional-movement normal visual motion))))
+;; (use-package lispyville
+;;   :after (evil general)
+;;   :init
+;;   (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
+;;   :config
+;;   (lispyville-set-key-theme '(operators c-w additional)))
+;; (with-eval-after-load 'lispyville
+;;   (lispyville-set-key-theme
+;;    '(operators
+;;      c-w
+;;      (escape insert)
+;;      (additional-movement normal visual motion))))
 (use-package lentic)
 (use-package org-download)
-;; (use-package visual-regexp-steroids)
+;; (use-package visual-regexp-steroids
+;;   :ensure ( :host github :repo "benma/visual-regexp-steroids"))
 (use-package browse-kill-ring)
 (use-package vundo)
 ;; (use-package polymode)
