@@ -718,8 +718,8 @@ should be continued."
    (when (plist-get kw :pdf-p)
      (my-org-to-pdf))
    (when (plist-get kw :html-p)
-     (let ((org-hugo-section "index")) ;;(or (node-hugo-section node) "index")))
-       (org-hugo-export-to-md)))))
+     ;; (let ((org-hugo-section "index")) ;;(or (node-hugo-section node) "index")))
+       (org-hugo-export-to-md))))
 
 (defun all-org-files ()
   "return all known org files"
@@ -737,15 +737,14 @@ should be continued."
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
   (interactive)
-  (let ((node (this-buffer-roam-node)))
-    (when node
-      (apply #'export-node node kw))))
+  (apply #'export-org-file buffer-file-name kw))
 
 (defun should-export-org-file (file)
   "whether the current org buffer should be exported"
   (with-file-as-current-buffer
    file
-   (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
+   (org-collect-keywords '("hugo_section"))))
+   ;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
 
 ;; (defun export-node-recursively (node &optional exceptions)
 ;;   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
