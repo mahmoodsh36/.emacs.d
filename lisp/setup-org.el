@@ -271,29 +271,6 @@
   ;; use html5 for org exports
   (setq org-html-html5-fancy t)
 
-  ;; dynamic org-agenda
-  ;; (defun buffer-contains-todo ()
-  ;;   "check if the buffer contains a TODO entry"
-  ;;   (org-element-map
-  ;;       (org-element-parse-buffer 'headline)
-  ;;       'headline
-  ;;     (lambda (h)
-  ;;       (eq (org-element-property :todo-type h) 'todo))
-  ;;     nil 'first-match))
-  ;; (add-hook 'before-save-hook #'update-todo-tag)
-  ;; (defun update-todo-tag ()
-  ;;   "remove/add the todo tag to the buffer by checking whether it contains a TODO entry"
-  ;;   (let ((kill-ring)) ;; keep kill ring, dont modify it
-  ;;     (when (and (not (active-minibuffer-window))
-  ;;                (is-buffer-roam-note))
-  ;;       (save-excursion
-  ;;         (goto-char (point-min))
-  ;;         (if (buffer-contains-todo)
-  ;;             (org-roam-tag-add '("todo"))
-  ;;           (ignore-errors (org-roam-tag-remove '("todo")))))))
-  ;;   (agenda-files-update))
-  ;; (advice-add 'org-agenda :before #'agenda-files-update)
-  ;; (advice-add 'org-todo-list :before #'agenda-files-update)
   ;; stop showing deadlines in today
   (setq org-deadline-warning-days 0)
   ;; remove done items
@@ -374,18 +351,6 @@
   (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
     (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
   )
-
-;; disable ox-hugo relative path exports
-;; (defun non-relative-path (obj)
-;;   "return non-relative path for hugo"
-;;   (interactive)
-;;   (if (eq (type-of obj) 'string)
-;;       (progn
-;;         ;; if we're here, obj is a link to a file, file-truename can be used to get the full path of it
-;;         ;; (message (format "filename: %s" obj))
-;;         (file-name-nondirectory obj))
-;;     obj))
-;; (advice-add 'org-export-resolve-id-link :filter-return #'non-relative-path)
 
 ;; run some python code from my org notes on shell startup
 ;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
@@ -473,30 +438,6 @@
   (org-insert-time-stamp (current-time) t)
   (insert " ")
   (evil-insert 0))
-
-;; make links like [[id::blockname]] work, need to rebuild database after defining the advice using org-roam-db-clear-all and then org-roam-db-sync
-;; (defun +org--follow-search-string-a (fn link &optional arg)
-;;   "Support ::SEARCH syntax for id::name links.
-;; note that this doesnt work for exports"
-;;   (save-match-data
-;;     (cl-destructuring-bind (id &optional search)
-;;         (split-string link "::")
-;;       (prog1 (funcall fn id arg)
-;;         (cond ((null search))
-;;               ((string-match-p "\\`[0-9]+\\'" search)
-;;                ;; Move N lines after the ID (in case it's a heading), instead
-;;                ;; of the start of the buffer.
-;;                (forward-line (string-to-number option)))
-;;               ((string-match "^/\\([^/]+\\)/$" search)
-;;                (let ((match (match-string 1 search)))
-;;                  (save-excursion (org-link-search search))
-;;                  ;; `org-link-search' only reveals matches. Moving the point
-;;                  ;; to the first match after point is a sensible change.
-;;                  (when (re-search-forward match)
-;;                    (goto-char (match-beginning 0)))))
-;;               ((org-link-search search)))))))
-;; (advice-add 'org-id-open :around #'+org--follow-search-string-a)
-;; (advice-add 'org-roam-id-open :around #'+org--follow-search-string-a)
 
 ;; org mode navigation map
 (defvar org-nav-map
