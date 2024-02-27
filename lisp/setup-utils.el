@@ -177,4 +177,8 @@
   "invoke 'message' without it invoking 'format' (not really)"
   (message "%s" msg))
 
+(defun open-wezterm-here ()
+  (interactive)
+  (async-shell-command "wezterm ."))
+
 (provide 'setup-utils)

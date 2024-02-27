@@ -97,6 +97,10 @@
 ;; stop always inserting a newline at the end of a file
 (setq require-final-newline nil) ;; not sure if this is needed
 (setq mode-require-final-newline nil)
+;; dont deactivate the mark on non-shift commands
+(setq shift-select-mode 'permanent)
+;; default shell for M-x term
+(setq explicit-shell-file-name "zsh")
 
 ;; "smooth" scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -299,15 +303,6 @@ prompt the user for a coding system."
     (and found (goto-char (1+ (car found))))
     found))
 
-(defun open-wezterm-here ()
-  (interactive)
-  (async-shell-command "wezterm ."))
-
-(defun treemacs-remove-project-at-point-force ()
-  (interactive)
-  "force removal of project at point, even if its the last one"
-  (treemacs-do-remove-project-from-workspace (treemacs-project-at-point) t))
-
 (unbind-key "C-z")
 (bind-keys :prefix-map mymap
            :prefix "C-z"
@@ -405,23 +400,30 @@ prompt the user for a coding system."
 (defun current-mpv-artist ()
   (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist' 2>/dev/null"))
 
-;; tree-sitter
 (setq treesit-language-source-alist
-      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-        (cmake "https://github.com/uyha/tree-sitter-cmake")
-        (css "https://github.com/tree-sitter/tree-sitter-css")
-        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-        (go "https://github.com/tree-sitter/tree-sitter-go")
-        (html "https://github.com/tree-sitter/tree-sitter-html")
-        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-        (json "https://github.com/tree-sitter/tree-sitter-json")
-        (make "https://github.com/alemuller/tree-sitter-make")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-        (python "https://github.com/tree-sitter/tree-sitter-python")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+    (c "https://github.com/tree-sitter/tree-sitter-c")
+    (cmake "https://github.com/uyha/tree-sitter-cmake")
+    (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+    (css "https://github.com/tree-sitter/tree-sitter-css")
+    (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+    (go "https://github.com/tree-sitter/tree-sitter-go")
+    (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+    (html "https://github.com/tree-sitter/tree-sitter-html")
+    (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+    (json "https://github.com/tree-sitter/tree-sitter-json")
+    (lua "https://github.com/Azganoth/tree-sitter-lua")
+    (make "https://github.com/alemuller/tree-sitter-make")
+    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+    (python "https://github.com/tree-sitter/tree-sitter-python")
+    (r "https://github.com/r-lib/tree-sitter-r")
+    (rust "https://github.com/tree-sitter/tree-sitter-rust")
+    (toml "https://github.com/tree-sitter/tree-sitter-toml")
+    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+    (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 ;; install those grammars
 ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
@@ -495,33 +497,6 @@ prompt the user for a coding system."
 ;;                          (--reduce (concat acc " " it) pacman-install-list))))
 ;;        (message install-cmd)))
 ;;  (user-error "Treesitter not available"))
-;;
-
-;; (setq treesit-language-source-alist
-;;   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-;;     (c "https://github.com/tree-sitter/tree-sitter-c")
-;;     (cmake "https://github.com/uyha/tree-sitter-cmake")
-;;     (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-;;     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-;;     (css "https://github.com/tree-sitter/tree-sitter-css")
-;;     (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-;;     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-;;     (go "https://github.com/tree-sitter/tree-sitter-go")
-;;     (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
-;;     (html "https://github.com/tree-sitter/tree-sitter-html")
-;;     (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-;;     (json "https://github.com/tree-sitter/tree-sitter-json")
-;;     (lua "https://github.com/Azganoth/tree-sitter-lua")
-;;     (make "https://github.com/alemuller/tree-sitter-make")
-;;     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-;;     (python "https://github.com/tree-sitter/tree-sitter-python")
-;;     (r "https://github.com/r-lib/tree-sitter-r")
-;;     (rust "https://github.com/tree-sitter/tree-sitter-rust")
-;;     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-;;     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-;;     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-;;     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-;;
 
 ;; persistent comint history
 ;; https://oleksandrmanzyuk.wordpress.com/2011/10/23/a-persistent-command-history-in-emacs/
@@ -584,12 +559,6 @@ prompt the user for a coding system."
 ;;  (lambda (_ cmd)
 ;;    (put cmd 'repeat-map 'combobulate-edit-map))
 ;;  combobulate-edit-map)
-
-;; dont deactivate the mark on non-shift commands
-(setq shift-select-mode 'permanent)
-
-;; default shell for M-x term
-(setq explicit-shell-file-name "zsh")
 
 ;; from https://emacs.stackexchange.com/questions/16688/how-can-i-escape-the-in-org-mode-to-prevent-bold-fontification
 ;; (defun my-bold (contents backend info)

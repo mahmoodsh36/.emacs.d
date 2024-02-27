@@ -64,6 +64,10 @@
   (treemacs-resize-icons 15)
   (setq treemacs-width 30)
   (treemacs-follow-mode -1))
+(defun treemacs-remove-project-at-point-force ()
+  (interactive)
+  "force removal of project at point, even if its the last one"
+  (treemacs-do-remove-project-from-workspace (treemacs-project-at-point) t))
 
 ;; projectile, for project browsing/management
 ;; (use-package projectile
@@ -365,17 +369,8 @@
       :custom
       (lsp-completion-provider :none) ;; we use corfu!
       :init
-      ;; (defun my/orderless-dispatch-flex-first (_pattern index _total)
-      ;;   (and (eq index 0) 'orderless-flex))
-      ;; (defun my/lsp-mode-setup-completion ()
-      ;;   (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-      ;;         '(orderless)))
-      ;; Optionally configure the first word as flex filtered.
-      ;; (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
-      ;; Optionally configure the cape-capf-buster.
+      ;; optionally configure the cape-capf-buster.
       (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
-      ;; :hook
-      ;; (lsp-completion-mode . my/lsp-mode-setup-completion)
       ))
 
 ;; show simple info on the right
@@ -537,9 +532,7 @@
 ;;               ([remap save-buffer] . elfeed-tube-save)))
 
 ;; (use-package dumb-jump)
-;; (use-package ob-async)
 (use-package format-all)
-;; (use-package jupyter)
 ;; (use-package plantuml-mode)
 
 ;; for latex references
@@ -573,6 +566,7 @@
 ;; (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
+
 ;; (use-package auto-yasnippet)
 
 (use-package avy)
@@ -607,9 +601,6 @@
 
 (use-package org-ql)
 
-;; (use-package ialign)
-;; (use-package 'org-protocol-capture-html)
-
 ;; evaulation overlay for elisp
 (use-package eros
   :config
@@ -617,6 +608,9 @@
 
 ;; live web dev
 (use-package skewer-mode)
+
+;; (use-package ialign)
+;; (use-package 'org-protocol-capture-html)
 
 ;; emacs application framework
 ;; (use-package eaf
@@ -833,21 +827,12 @@
   ;; use selected window
   (setq vertico-buffer-display-action '(display-buffer-same-window))
   )
-;; emacs 28: Hide commands in M-x which do not work in the current mode.
-;; vertico commands are hidden in normal buffers.
-;; (setq read-extended-command-predicate
-;;       #'command-completion-default-include-p)
 ;; enable recursive minibuffers
 (setq enable-recursive-minibuffers t)
 (use-package orderless
   :config
-  (setq ;;orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-        orderless-component-separator #'orderless-escapable-split-on-space
-        completion-styles '(orderless partial-completion basic))
-  ;; completion-category-defaults nil
-  ;; completion-category-overrides nil))
-  ;; orderless-component-separator "\s+"
-  )
+  (setq orderless-component-separator #'orderless-escapable-split-on-space
+        completion-styles '(orderless partial-completion basic)))
 (setq read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
 ;; commands for ido-like directory navigation.
@@ -997,13 +982,10 @@
 ;; (use-package ox-json)
 
 ;;(use-package org-tree-slide)
-;;(use-package orgajs) installed externally i think
-;;(use-package roam-block)
 ;;(use-package aio)
 ;;(use-package org-web-tools)
 ;;(use-package system-packages)
 ;;(use-package ox-pandoc)
-;;(use-package org-html-themes)
 ;;(use-package org-ioslide)
 ;;(use-package google-this)
 ;;(use-package google-maps)
