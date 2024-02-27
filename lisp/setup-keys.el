@@ -64,7 +64,7 @@
 ;; (led-kbd "r n" (lambda () (interactive) (org-roam-capture nil "n")))
 (led-kbd "r i" 'denote-insert-link)
 (led-kbd "r m" 'denote-rename-file)
-(led-kbd "r c" 'org-id-get-create)
+;; (led-kbd "r c" 'org-id-get-create)
 (led-kbd "r o" 'org-open-at-point :keymaps 'org-mode-map)
 (led-kbd "r a" 'org-attach :keymaps 'org-mode-map)
 (led-kbd "r A" 'org-attach-open :keymaps 'org-mode-map)
@@ -80,7 +80,7 @@
 ;;                       (interactive)
 ;;                       (org-roam-capture nil "t")))
 (led-kbd "r x" (lambda () (interactive) (export-current-buffer :html-p t)) :keymaps 'org-mode-map)
-(led-kbd "r X" #'export-all-org-files)
+(led-kbd "r X" #'export-all-org-files-to-html-and-pdf)
 ;; (led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
 (led-kbd "r d" (lambda () (interactive)
                  (my-org-to-pdf)
@@ -368,5 +368,9 @@
 (led-kbd "r n" #'denote-create-note)
 (led-kbd "r N" #'denote-type)
 (led-kbd "r f" #'denote-open-or-create)
+
+(led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))
+(led-kbd "r c i" (lambda () (interactive) (org-capture nil "i")))
+;; (led-kbd "r c t" (lambda () (interactive) (org-capture nil "t")))
 
 (provide 'setup-keys)

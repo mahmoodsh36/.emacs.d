@@ -305,8 +305,8 @@
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
   ;; enable latex snippets in org mode
   (defun my-org-latex-yas ()
-    "Activate org and LaTeX yas expansion in org-mode buffers."
-    (yas-minor-mode)
+    "activate org and latex yas expansion in org-mode buffers."
+    ;; (yas-minor-mode)
     (yas-activate-extra-mode 'latex-mode))
   (add-hook 'org-mode-hook #'my-org-latex-yas)
   )
@@ -317,6 +317,17 @@
   ;; (define-key yas-minor-mode-map (kbd "C-h") #'yas-expand))
 ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise).
 ;; (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
+
+;; function that tries to autoexpand yasnippets
+;; the double quoting is not a typo!
+;; (defun my/yas-try-expanding-auto-snippets ()
+;;   (when (bound-and-true-p yas-minor-mode)
+;;     (message "test")
+;;     ;; (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+;;       (yas-expand)))
+;; ;; try after every insertion
+;; (with-eval-after-load 'yasnippet
+;;   (add-hook 'post-self-insert-hook #'my/yas-try-expanding-auto-snippets))
 
 ;; highlight errors in code
 (use-package flycheck
@@ -941,12 +952,6 @@
 ;; zeal docs
 (use-package zeal-at-point)
 
-;; devdocs seems to have more docs than zeal?
-(use-package devdocs)
-  ;; :config
-  ;; (add-hook 'python-mode-hook
-  ;;         (lambda () (setq-local devdocs-current-docs '("python~3.9")))))
-
 ;(use-package ob-julia-vterm
   ;:config
   ;(setq vterm-always-compile-module t)
@@ -1161,10 +1166,14 @@
   :ensure ( :host github :repo "jwiegley/git-undo-el"))
 
 ;; for mail, not used yet
-
-;; for mail, not used yet
 ;; (use-package lieer)
-;; more packages:
-;; volatile-highlights
+
+;; for offline docs
+(use-package devdocs
+  :config
+  (add-hook 'python-mode-hook
+            (lambda () (setq-local devdocs-current-docs '("python~3.9"))))
+  (setq devdocs-data-dir (file-truename "~/data/devdocs")))
+(use-package consult-dash)
 
 (provide 'setup-packages)

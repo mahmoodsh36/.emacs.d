@@ -137,12 +137,12 @@
   (setq org-log-reschedule 'time)
   (setq org-log-redeadline 'time)
   ;; show images when opening a file.
-  (setq org-startup-with-inline-images nil)
+  (setq org-startup-with-inline-images t)
   ;; show images after evaluating code blocks.
   (add-hook 'org-babel-after-execute-hook (lambda ()
                                             (interactive)
                                             (clear-image-cache)
-                                            (org-display-inline-images)))
+                                            (org-redisplay-inline-images)))
   ;; disable prompt when executing code block in org mode
   (setq org-confirm-babel-evaluate nil)
   (setq org-link-elisp-confirm-function nil)
@@ -651,7 +651,20 @@ should be continued."
                  "todo"
                  entry
                  (file "/home/mahmooz/brain/notes/20240204T953231--agenda__todo.org")
-                 "* TODO %?\nentered on %U\n %i\n %a")))
+                 "* TODO %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               '("i"
+                 "idea"
+                 entry
+                 (file "/home/mahmooz/brain/notes/20221106T180410--ideas.org")
+                 "* %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               '("q"
+                 "question"
+                 entry
+                 (file "/home/mahmooz/brain/notes/20240226T224954--questions.org")
+                 "* %?\nentered on %U\n %i\n %a"))
+  )
 
 ;; enforce some default keywords for all org buffers (in a hacky way)
 (defun my-org-collect-keywords-advice (orig-func &rest args)
@@ -725,14 +738,17 @@ should be continued."
   "return all known org files"
   (directory-files (from-brain "notes/") t ".*\\.org$"))
 
-(defun export-all-org-files ()
+(defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
-  (interactive)
   (mapcar (lambda (file)
             (message "%s" file)
             (when (should-export-org-file file)
-              (export-org-file file :html-p t :pdf-p t)))
+              (apply #'export-org-file file kw)))
           (all-org-files)))
+
+(defun export-all-org-files-to-html-and-pdf ()
+  (interactive)
+  (export-all-org-files :html-p t :pdf-p t))
 
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
