@@ -14,10 +14,10 @@
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default ;tab-width 2
-              js-indent-level 2
-              c-basic-offset 2
-              indent-tabs-mode nil
-              python-indent-offset 4)
+ js-indent-level 2
+ c-basic-offset 2
+ indent-tabs-mode nil
+ python-indent-offset 4)
 (setq evil-shift-width 2)
 ;; overwrite highlighted text
 (delete-selection-mode 1)
@@ -82,7 +82,8 @@
 ;; use imagemagick for formats like webp
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
-(setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
+;; (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
+(setq whitespace-style '(face tabs spaces trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof))
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; change newline character
@@ -101,6 +102,23 @@
 (setq shift-select-mode 'permanent)
 ;; default shell for M-x term
 (setq explicit-shell-file-name "zsh")
+
+;; configure eglot (builtin)
+(use-package eglot
+  :ensure nil
+  :bind (:map eglot-mode-map
+              ("C-h ." . eldoc))
+  :hook ((eglot-managed-mode . my/eglot-eldoc-settings))
+  :config
+  (add-hook 'prog-mode-hook #'eglot-ensure)
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '(python-mode . ("ruff-lsp")))
+  (defun my/eglot-eldoc-settings ()
+    (setq eldoc-documentation-strategy
+          'eldoc-documentation-compose-eagerly))
+  ;; (setq eglot-put-doc-in-help-buffer nil)
+  (setq eglot-events-buffer-size 0)
+  (setq eglot-extend-to-xref t))
 
 ;; "smooth" scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -401,29 +419,29 @@ prompt the user for a coding system."
   (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist' 2>/dev/null"))
 
 (setq treesit-language-source-alist
-  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-    (c "https://github.com/tree-sitter/tree-sitter-c")
-    (cmake "https://github.com/uyha/tree-sitter-cmake")
-    (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-    (css "https://github.com/tree-sitter/tree-sitter-css")
-    (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-    (go "https://github.com/tree-sitter/tree-sitter-go")
-    (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
-    (html "https://github.com/tree-sitter/tree-sitter-html")
-    (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-    (json "https://github.com/tree-sitter/tree-sitter-json")
-    (lua "https://github.com/Azganoth/tree-sitter-lua")
-    (make "https://github.com/alemuller/tree-sitter-make")
-    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-    (python "https://github.com/tree-sitter/tree-sitter-python")
-    (r "https://github.com/r-lib/tree-sitter-r")
-    (rust "https://github.com/tree-sitter/tree-sitter-rust")
-    (toml "https://github.com/tree-sitter/tree-sitter-toml")
-    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-    (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+        (c "https://github.com/tree-sitter/tree-sitter-c")
+        (cmake "https://github.com/uyha/tree-sitter-cmake")
+        (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+        (css "https://github.com/tree-sitter/tree-sitter-css")
+        (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+        (go "https://github.com/tree-sitter/tree-sitter-go")
+        (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+        (json "https://github.com/tree-sitter/tree-sitter-json")
+        (lua "https://github.com/Azganoth/tree-sitter-lua")
+        (make "https://github.com/alemuller/tree-sitter-make")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (python "https://github.com/tree-sitter/tree-sitter-python")
+        (r "https://github.com/r-lib/tree-sitter-r")
+        (rust "https://github.com/tree-sitter/tree-sitter-rust")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+        (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 ;; install those grammars
 ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))

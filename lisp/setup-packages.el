@@ -314,11 +314,11 @@
     (yas-activate-extra-mode 'latex-mode))
   (add-hook 'org-mode-hook #'my-org-latex-yas)
   )
-  ;; disable the default tab binding
-  ;; (define-key yas-minor-mode-map [(tab)] nil)
-  ;; (define-key yas-minor-mode-map (kbd "TAB") nil)
-  ;; bind C-h to snippet expand
-  ;; (define-key yas-minor-mode-map (kbd "C-h") #'yas-expand))
+;; disable the default tab binding
+;; (define-key yas-minor-mode-map [(tab)] nil)
+;; (define-key yas-minor-mode-map (kbd "TAB") nil)
+;; bind C-h to snippet expand
+;; (define-key yas-minor-mode-map (kbd "C-h") #'yas-expand))
 ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise).
 ;; (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
@@ -355,45 +355,45 @@
 (use-package f)
 
 ;; language server protocol support
-;; getting errors about (void-variable lsp-ada-project-file)
-(use-package lsp-mode
-  :config
-  (add-hook 'prog-mode-hook 'lsp-deferred)
-  ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
-  ;; (setq lsp-auto-guess-root t)
-  ;; another annoying warning
-  (setq lsp-warn-no-matched-clients nil)
-  )
-(if (not enable-company)
-    (use-package lsp-mode
-      :custom
-      (lsp-completion-provider :none) ;; we use corfu!
-      :init
-      ;; optionally configure the cape-capf-buster.
-      (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
-      ))
+;; (use-package lsp-mode
+;;   :config
+;;   (add-hook 'prog-mode-hook 'lsp-deferred)
+;;   ;; gets rid of some annoying prompts to add project root when visiting definition of symbol
+;;   ;; (setq lsp-auto-guess-root t)
+;;   ;; another annoying warning
+;;   (setq lsp-warn-no-matched-clients nil)
+;;   )
+;; (if (not enable-company)
+;;     (use-package lsp-mode
+;;       :custom
+;;       (lsp-completion-provider :none) ;; we use corfu!
+;;       :init
+;;       ;; optionally configure the cape-capf-buster.
+;;       (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
+;;       )
+;;   )
 
 ;; show simple info on the right
-(use-package lsp-ui
-  :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  (setq lsp-ui-doc-delay 0
-        lsp-ui-sideline-delay 0
-        lsp-ui-sideline-show-diagnostics t
-        lsp-ui-sideline-show-hover t
-        lsp-ui-sideline-show-symbol t
-        lsp-ui-sideline-show-code-actions t
-        lsp-ui-doc-enable t
-        lsp-ui-sideline-enable t
-        lsp-lens-enable t
-        lsp-completion-show-detail t)
-  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
+;; (use-package lsp-ui
+;;   :config
+;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;;   (setq lsp-ui-doc-delay 0
+;;         lsp-ui-sideline-delay 0
+;;         lsp-ui-sideline-show-diagnostics t
+;;         lsp-ui-sideline-show-hover t
+;;         lsp-ui-sideline-show-symbol t
+;;         lsp-ui-sideline-show-code-actions t
+;;         lsp-ui-doc-enable t
+;;         lsp-ui-sideline-enable t
+;;         lsp-lens-enable t
+;;         lsp-completion-show-detail t)
+;;   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+;;   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
 ;; lsp support for treemacs
-(use-package lsp-treemacs
-  :config
-  (lsp-treemacs-sync-mode 1))
+;; (use-package lsp-treemacs
+;;   :config
+;;   (lsp-treemacs-sync-mode 1))
 
 ;; ensure the PATH variable is set according to the users shell, solves some issues on macos
 ;; (use-package exec-path-from-shell
@@ -415,7 +415,7 @@
   ;; highlight-indent-guides-responsive 'stack)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package flutter)
-(use-package lsp-dart)
+;; (use-package lsp-dart)
 
 ;; pdf viewer
 (use-package pdf-tools
@@ -543,9 +543,9 @@
 
 ;; (use-package code-compass)
 
-;(use-package vterm
-             ;:custom
-             ;(vterm-always-compile-module t))
+                                        ;(use-package vterm
+                                        ;:custom
+                                        ;(vterm-always-compile-module t))
 
 ;; check which keys i press most
 (use-package keyfreq
@@ -635,7 +635,7 @@
 ;;   :config
 ;;   (tree-sitter-langs-install-grammars t))
 
-;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
+                                        ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
 ;; (use-package lsp-java)
 
@@ -894,12 +894,12 @@
   :config
   (setq combobulate-key-prefix "C-c o"))
 
-;(use-package embrace
-  ;:config
-  ;(global-set-key (kbd "C-,") #'embrace-commander)
+                                        ;(use-package embrace
+                                        ;:config
+                                        ;(global-set-key (kbd "C-,") #'embrace-commander)
   ;;; org-mode has a default binding for C-, override it
-  ;(define-key org-mode-map (kbd "C-,") #'embrace-commander)
-  ;(add-hook 'org-mode-hook #'embrace-org-mode-hook))
+                                        ;(define-key org-mode-map (kbd "C-,") #'embrace-commander)
+                                        ;(add-hook 'org-mode-hook #'embrace-org-mode-hook))
 
 (use-package easy-kill)
 
@@ -937,14 +937,14 @@
 ;; zeal docs
 (use-package zeal-at-point)
 
-;(use-package ob-julia-vterm
-  ;:config
-  ;(setq vterm-always-compile-module t)
-  ;(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
-  ;(add-to-list 'org-babel-load-languages '(julia-vterm . t))
-  ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-  ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-  ;(defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
+                                        ;(use-package ob-julia-vterm
+                                        ;:config
+                                        ;(setq vterm-always-compile-module t)
+                                        ;(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+                                        ;(add-to-list 'org-babel-load-languages '(julia-vterm . t))
+                                        ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+                                        ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+                                        ;(defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
 ;;  :elpaca
@@ -1043,7 +1043,7 @@
 ;; (use-package citar-denote)
 ;; (use-package consult-explore)
 ;; (use-package denote-explore)
-  ;; :elpaca (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
+;; :elpaca (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
 ;; (use-package xeft)
 ;; (use-package citar)
@@ -1157,5 +1157,11 @@
             (lambda () (setq-local devdocs-current-docs '("python~3.9"))))
   (setq devdocs-data-dir (file-truename "~/data/devdocs")))
 (use-package consult-dash)
+
+(use-package apheleia
+  :config
+  (apheleia-global-mode +1))
+;; (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
+;; (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff)))
 
 (provide 'setup-packages)

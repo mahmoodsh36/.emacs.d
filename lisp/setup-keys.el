@@ -18,7 +18,7 @@
 (led-kbd "f s" 'sudo-find-file)
 (led-kbd *leader-key* #'execute-extended-command)
 (led-kbd "b k" 'kill-this-buffer)
- ;; if we manually kill the buffer it doesnt save eshell command history
+;; if we manually kill the buffer it doesnt save eshell command history
 (led-kbd "b k" (lambda () (interactive) (run-this-in-eshell "exit")) :keymaps 'eshell-mode-map)
 (led-kbd "b k" 'sly-quit-lisp :keymaps 'sly-repl-mode)
 (led-kbd "b K" 'kill-buffer-and-window)
@@ -163,9 +163,9 @@
 (led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
 (led-kbd "s i"
-                    (lambda ()
-                      (interactive)
-                      (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+         (lambda ()
+           (interactive)
+           (let ((current-prefix-arg '-)) (call-interactively 'sly))))
 (led-kbd "s r" #'eat);;'vterm)
 (led-kbd "s s" #'shell)
 (led-kbd "s w" #'term)
@@ -175,7 +175,7 @@
 ;; (led-kbd "s s" 'spotify-lyrics)
 ;; (led-kbd "s w" 'open-spotify-lyrics-file)
 (led-kbd "s t" #'consult-theme)
-(led-kbd "s k" 'open-kitty-here)
+(led-kbd "s k" (lambda () (interactive) (start-process-shell-command "okular" "okular" (format "okular %s" buffer-file-name))))
 (led-kbd "s q" 'calc)
 (led-kbd "s u" 'copy-file-path)
 
@@ -247,6 +247,9 @@
 (led-kbd "c" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
 (led-kbd "l b" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
 
+;; general keys for programming languages i guess
+(led-kbd "l f" 'apheleia-format-buffer :keymaps 'prog-mode-map)
+
 ;;sagemath
 (led-kbd "b k" 'comint-quit-subjob :keymaps 'sage-shell-mode-map)
 
@@ -302,7 +305,7 @@
 ;; c-j in repl's to emulate return
 (define-key comint-mode-map (kbd "C-j") #'comint-send-input)
 ;; spc g to cancel like C-g
-; (define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
+                                        ; (define-key key-translation-map (kbd (led "g")) (kbd "C-g"))
 
 ;; evaluate and insert without truncating output
 (general-define-key
