@@ -1158,9 +1158,9 @@
   (setq devdocs-data-dir (file-truename "~/data/devdocs")))
 (use-package consult-dash)
 
-(use-package apheleia
-  :config
-  (apheleia-global-mode +1))
+(use-package apheleia)
+  ;; :config
+  ;; (apheleia-global-mode +1)) ;; the minor mode isnt needed, its for auto formatting on save
 ;; (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
 ;; (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff)))
 

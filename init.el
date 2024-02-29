@@ -685,4 +685,4 @@ See `eval-after-load' for the possible formats of FORM."
 ;;             (let ((completion
 ;;                 (completing-read "Completion: " collection predicate nil initial)))
 ;;                 (throw 'done completion))))
-;;   (setq completion-in-region-function #'completing-read-in-region)f
+;;   (setq completion-in-region-function #'completing-read-in-region)
