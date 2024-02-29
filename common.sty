@@ -57,35 +57,35 @@
 \usepackage{venndiagram}
 
 \ifLuaTeX
-% graphdrawing library is only available to luatex
-\usetikzlibrary{graphdrawing}
-\usegdlibrary{force, trees, layered}
+  % graphdrawing library is only available to luatex
+  \usetikzlibrary{graphdrawing}
+  \usegdlibrary{force, trees, layered}
 
- % only usable with lualatex
-\usepackage{fontspec}
-\setmainfont{Linux Libertine O}
-% \setmainfont{GFS Bodoni}
+  % only usable with lualatex
+  \usepackage{fontspec}
+  \setmainfont{Linux Libertine O}
+  % \setmainfont{GFS Bodoni}
 
-% \usepackage[math-style=ISO, bold-style=ISO]{unicode-math} % this causes lualatex to not find some symbols in files
-% \setmainfont{Latin Modern Roman}
-% \setmathfont[range=\mathup/{latin,Latin}]{TeX Gyre Heros}
-% \defaultfontfeatures{Ligatures={TeX}}
-% \setmainfont{CMU Serif}
-% \setsansfont{CMU Sans Serif}
-% \setmathfont{Latin Modern Math}
+  % \usepackage[math-style=ISO, bold-style=ISO]{unicode-math} % this causes lualatex to not find some symbols in files
+  % \setmainfont{Latin Modern Roman}
+  % \setmathfont[range=\mathup/{latin,Latin}]{TeX Gyre Heros}
+  % \defaultfontfeatures{Ligatures={TeX}}
+  % \setmainfont{CMU Serif}
+  % \setsansfont{CMU Sans Serif}
+  % \setmathfont{Latin Modern Math}
 
-% \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
-% \else
-% \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
+  % \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
+  % \else
+  % \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 
-% \usepackage{kpfonts} % better(?) looking fonts
+\usepackage{kpfonts} % better(?) looking fonts
 
 % \setmainlanguage{english}
 % \setotherlanguage{greek}
 % \newfontfamily\greekfont{GFS Artemisia}[
-%   Scale=MatchUppercase
+% Scale=MatchUppercase
 % ]
 
 % get \varv from the txfonts package
@@ -99,8 +99,8 @@
 % matrix derivative notation for vector calculus
 \newcommand{\matderiv}[2][]{%
   \ifthenelse{\equal{#1}{}}
-    {\ensuremath{\left[\brm{D}#2\right]}}% if #1 is empty
-    {\ensuremath{\left[\brm{D}_{#1}#2\right]}}% if #2,#1 not empty
+  {\ensuremath{\left[\brm{D}#2\right]}}% if #1 is empty
+  {\ensuremath{\left[\brm{D}_{#1}#2\right]}}% if #2,#1 not empty
 }
 
 % no space before paragraph (is this desired?)
@@ -194,12 +194,12 @@
 \newtheorem{characteristic}{characteristic}
 \newtheorem{entailment}{entailment}
 \newtheorem{corollary}{corollary}
-%\newtheore*{proof}{Proof}
+% \newtheore*{proof}{Proof}
 \newtheorem{lemma}{lemma}
 \newtheorem{question}{question}
 \newtheorem{remark}{remark}
 \newtheorem{subquestion}{subquestion}[question]
-%\newtheorem{note}{Note}
+% \newtheorem{note}{Note}
 \newtheorem{answer}{answer}
 \counterwithin{answer}{question}
 \counterwithin{answer}{subquestion}
@@ -219,45 +219,45 @@
 % Determine if the image is too wide for the page.
 % \makeatletter
 % \def\ScaleIfNeeded{%
-%   \ifdim\Gin@nat@width>\linewidth
-%     \linewidth
-%   \else
-%     \Gin@nat@width
-%   \fi
+% \ifdim\Gin@nat@width>\linewidth
+%   \linewidth
+% \else
+%   \Gin@nat@width
+% \fi
 % }
-% \makeatother
-% % Resize figures that are too wide for the page.
-% \let\oldincludegraphics\includegraphics
-% \renewcommand\includegraphics[2][]{%
+%   \makeatother
+% %   Resize figures that are too wide for the page.
+%   \let\oldincludegraphics\includegraphics
+%   \renewcommand\includegraphics[2][]{%
 %   \oldincludegraphics[width=\ScaleIfNeeded]{#2}
 % }
 
-% brace to group lines of code for a quote
+%   brace to group lines of code for a quote
 \newcommand*{\addbrace}[4]{%
-    \begin{tikzpicture}[overlay, remember picture]
-        \draw[decoration={brace,amplitude=0.5em}, decorate, thick]
-            ($(#3)!(#1.north)!($(#3)-(0,1)$)$) --
-            ($(#3)!(#2.south)!($(#3)-(0,1)$)$)
-                node[right=0.2cm, text width=5cm, pos=0.5, anchor=west] {#4};
-    \end{tikzpicture}
+  \begin{tikzpicture}[overlay, remember picture]
+    \draw[decoration={brace,amplitude=0.5em}, decorate, thick]
+    ($(#3)!(#1.north)!($(#3)-(0,1)$)$) --
+    ($(#3)!(#2.south)!($(#3)-(0,1)$)$)
+    node[right=0.2cm, text width=5cm, pos=0.5, anchor=west] {#4};
+  \end{tikzpicture}
 }%
 
 \newenvironment{note}
-  {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
+{\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
   {\end{bclogo}}
 \newenvironment{attention}
-  {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true, 
-                couleur=red!15]{Important!}}
+{\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
+    couleur=red!15]{Important!}}
   {\end{bclogo}}
 \newenvironment{any}{}{}
 
 % an algorithm environment to reduce algorithm2e boilerplate
 \newenvironment{alg} {
   \begin{algorithm}[H]
-  \DontPrintSemicolon
-  \SetKwFunction{func}{My-Super-Function}
-  \SetKwProg{fn}{}{}{}
-  \SetKwRepeat{Do}{do}{while} % do-while macro
+    \DontPrintSemicolon
+    \SetKwFunction{func}{My-Super-Function}
+    \SetKwProg{fn}{}{}{}
+    \SetKwRepeat{Do}{do}{while} % do-while macro
   }
   {\end{algorithm}}
 % more keywords for algorithm2e
@@ -275,15 +275,15 @@
 
 % code evaluation results environment
 \newenvironment{results}
-  {}
-  {}
+{}
+{}
 
 % extensible \vec alternative from https://tex.stackexchange.com/questions/114321/extensible-vec-instead-of-overrightarrow
 \makeatletter
 \newcommand{\vect}[1]{%
   \vbox{\m@th \ialign {##\crcr
-  \vectfill\crcr\noalign{\kern-\p@ \nointerlineskip}
-  $\hfil\displaystyle{#1}\hfil$\crcr}}}
+      \vectfill\crcr\noalign{\kern-\p@ \nointerlineskip}
+      $\hfil\displaystyle{#1}\hfil$\crcr}}}
 \def\vectfill{%
   $\m@th\smash-\mkern-7mu%
   \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
