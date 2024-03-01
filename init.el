@@ -6,10 +6,6 @@
 ;; disable stupid startup screen
 (setq inhibit-startup-screen t)
 
-(defun is-android-system ()
-  (or (string-equal system-type "android")
-      (eq (shell-command "command -v termux-setup-storage") 0)))
-
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
 (require 'setup-constants)

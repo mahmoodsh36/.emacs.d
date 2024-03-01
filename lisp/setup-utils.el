@@ -181,4 +181,8 @@
   (interactive)
   (async-shell-command "wezterm ."))
 
+(defun is-android-system ()
+  (or (string-equal system-type "android")
+      (eq (shell-command "command -v termux-setup-storage") 0)))
+
 (provide 'setup-utils)

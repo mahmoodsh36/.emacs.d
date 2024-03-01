@@ -142,9 +142,10 @@
   (setq org-startup-with-inline-images t)
   ;; show images after evaluating code blocks.
   (add-hook 'org-babel-after-execute-hook (lambda ()
-                                            (interactive)
                                             (clear-image-cache)
-                                            (org-redisplay-inline-images)))
+                                            (org-redisplay-inline-images)
+                                            (org-latex-preview)
+                                            ))
   ;; disable prompt when executing code block in org mode
   (setq org-confirm-babel-evaluate nil)
   (setq org-link-elisp-confirm-function nil)
@@ -521,11 +522,11 @@
      filepath))))
 (defun my-org-date-advice (fn info &optional fmt)
   (let ((myfile (plist-get info :input-file)))
-    ;; (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
+    (format-time-string "<%Y-%m-%d>" (file-modif-time myfile))))
     ;;(format-time-string "<%Y-%m-%d>" (file-creation-time myfile))))
-    (format-time-string "<%Y-%m-%d>"
-                        (file-creation-time-using-git myfile))))
-;; (advice-add #'org-export-get-date :around #'my-org-date-advice)
+    ;; (format-time-string "<%Y-%m-%d>"
+    ;;                     (file-creation-time-using-git myfile))))
+(advice-add #'org-export-get-date :around #'my-org-date-advice)
 
 ;; org-special-edit with lsp?, laggy af
 ;; (defun org-babel-edit-prep:python (babel-info)
