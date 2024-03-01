@@ -1126,12 +1126,12 @@
 ;; (use-package dired-k)
 (use-package racket-mode)
 (use-package clojure-mode)
-(use-package cider)
-(use-package quack) ;; for racket and scheme
+;; (use-package cider)
+;; (use-package quack) ;; for racket and scheme
 ;; (use-package geiser) ;; for racket and scheme
-;; (use-package org-ai) ;; ??
-;; (use-package gptel) ;; ??
-;; (use-package ellama) ;; ??
+;; (use-package org-ai)
+;; (use-package gptel)
+;; (use-package ellama)
 (use-package org-super-agenda)
 (use-package fasd)
 (use-package aweshell
@@ -1163,5 +1163,10 @@
   ;; (apheleia-global-mode +1)) ;; the minor mode isnt needed, its for auto formatting on save
 ;; (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
 ;; (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff)))
+
+;; (use-package stripe-buffer
+;;   :config
+;;   (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
+;;   (add-hook 'org-mode-hook 'turn-on-stripe-table-mode))
 
 (provide 'setup-packages)
