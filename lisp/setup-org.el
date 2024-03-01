@@ -5,7 +5,9 @@
   :ensure ( :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
             :files (:defaults "etc")))
 
-(defvar *latex-previews-enabled-p* t "whether latex previews for org mode are enabled for the current session")
+(defvar *latex-previews-enabled-p*
+  (not (is-android-system))
+  "whether latex previews for org mode are enabled for the current session")
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
