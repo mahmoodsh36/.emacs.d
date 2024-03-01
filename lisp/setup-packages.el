@@ -418,10 +418,11 @@
 ;; (use-package lsp-dart)
 
 ;; pdf viewer
-(use-package pdf-tools
-  :config
-  (pdf-tools-install t)
-  (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+(when (not (is-android-system))
+  (use-package pdf-tools
+    :config
+    (pdf-tools-install t)
+    (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)))
 
 ;; history for ivy completion
 ;; (use-package ivy-prescient
