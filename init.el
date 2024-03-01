@@ -6,8 +6,9 @@
 ;; disable stupid startup screen
 (setq inhibit-startup-screen t)
 
-(defun is-system-android ()
-    (string-equal system-type "android"))
+(defun is-android-system ()
+  (or (string-equal system-type "android")
+      (eq (shell-command "command -v termux-setup-storage") 0)))
 
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
@@ -27,7 +28,7 @@
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-(when (not (is-system-android))
+(when (not (is-android-system))
   ;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
   (toggle-scroll-bar -1)
   (tool-bar-mode -1))

@@ -100,6 +100,7 @@
             (("results") () ("end") "monogamy"))))
 
   ;; text evil objects for latex
+  ;; it requries auctex for some reason
   (use-package evil-tex
     :config
     (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
