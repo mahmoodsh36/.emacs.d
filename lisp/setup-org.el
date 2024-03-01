@@ -320,8 +320,21 @@
   (plist-put org-latex-preview-appearance-options :page-width 0.85)
 
   ;; make org not evaluate code blocks on exporting
-  (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
-  (add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
+  ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
+  ;; (add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
+  (setq org-babel-default-header-args '((:exports . "both")
+                                        (:eval . "no-export")
+                                        (:session . "none")
+                                        (:results . "replace")
+                                        (:cache . "no")
+                                        (:noweb . "no")
+                                        (:hlines . "no")
+                                        (:tangle . "no")))
+  (setq org-babel-default-inline-header-args '(((:exports . "both")
+                                                (:eval . "no-export")
+                                                (:session . "none")
+                                                (:results . "replace")
+                                                (:hlines . "yes"))))
 
   (setq org-publish-project-alist
         '(("orgfiles"
