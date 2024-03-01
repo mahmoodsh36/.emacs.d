@@ -6,6 +6,9 @@
 ;; disable stupid startup screen
 (setq inhibit-startup-screen t)
 
+(defun is-system-android ()
+    (string-equal system-type "android"))
+
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
 (require 'setup-constants)
@@ -13,20 +16,21 @@
 (require 'setup-elpaca)
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default ;tab-width 2
- js-indent-level 2
- c-basic-offset 2
- indent-tabs-mode nil
- python-indent-offset 4)
+(setq-default tab-width 2
+              js-indent-level 2
+              c-basic-offset 2
+              indent-tabs-mode nil
+              python-indent-offset 4)
 (setq evil-shift-width 2)
 ;; overwrite highlighted text
 (delete-selection-mode 1)
 ;; show matching parenthases
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
-;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
-(toggle-scroll-bar -1)
-(tool-bar-mode -1)
+(when (not (is-system-android))
+  ;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+  (toggle-scroll-bar -1)
+  (tool-bar-mode -1))
 ;; always follow symlinks
 (setq vc-follow-symlinks t)
 ;; y-or-n instead of yes-or-no

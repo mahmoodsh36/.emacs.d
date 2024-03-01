@@ -1023,7 +1023,7 @@
   (unbind-key "M-RET" hyperbole-mode-map))
 
 (use-package denote
-  :elpaca (denote :fetcher github :repo "protesilaos/denote")
+  :ensure ( :fetcher github :repo "protesilaos/denote" :ref "55dcf23")
   :config
   (setq denote-directory (from-brain "notes/")
         denote-date-prompt-use-org-read-date t
@@ -1143,6 +1143,10 @@
 (use-package fireplace)
 (use-package ledger-mode)
 (use-package wttrin)
+(use-package ace-link)
+
+;;(use-package emacs-webkit
+;;  :ensure ( :fetcher github :repo "akirakyle/emacs-webkit"))
 
 (use-package git-undo
   :ensure ( :host github :repo "jwiegley/git-undo-el"))
