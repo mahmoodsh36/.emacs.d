@@ -31,7 +31,11 @@
 (when (not (is-android-system))
   ;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
   (toggle-scroll-bar -1)
-  (tool-bar-mode -1))
+  (tool-bar-mode -1)
+  ;; margin around the windows
+  ;; (set-fringe-style '(12 . 0))
+  (set-fringe-style '(0 . 0))
+  )
 ;; always follow symlinks
 (setq vc-follow-symlinks t)
 ;; y-or-n instead of yes-or-no
@@ -54,9 +58,6 @@
 ;; initial frame size
 ;; (when window-system (set-frame-size (selected-frame) 120 48))
 (when window-system (set-frame-size (selected-frame) 100 50))
-;; margin around the windows
-;; (set-fringe-style '(12 . 0))
-(set-fringe-style '(0 . 0))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
 (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
