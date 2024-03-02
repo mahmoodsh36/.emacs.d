@@ -151,11 +151,11 @@
       (corfu-on-exact-match nil) ;; dont auto insert when there is an exact match
       (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
       :config
-      (unbind-key "RET" corfu-map)
-      (unbind-key "TAB" corfu-map)
-      (define-key corfu-map [tab] nil)
-      (define-key corfu-map "\t" nil)
-      (bind-key "C-TAB" #'corfu-complete corfu-map)
+      ;; (unbind-key "RET" corfu-map)
+      ;; (unbind-key "TAB" corfu-map)
+      ;; (define-key corfu-map [tab] nil)
+      ;; (define-key corfu-map "\t" nil)
+      ;; (bind-key "C-TAB" #'corfu-complete corfu-map)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)
       )
@@ -938,14 +938,14 @@
 ;; zeal docs
 (use-package zeal-at-point)
 
-                                        ;(use-package ob-julia-vterm
-                                        ;:config
-                                        ;(setq vterm-always-compile-module t)
-                                        ;(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
-                                        ;(add-to-list 'org-babel-load-languages '(julia-vterm . t))
-                                        ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-                                        ;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-                                        ;(defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
+;(use-package ob-julia-vterm
+;:config
+;(setq vterm-always-compile-module t)
+;(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+;(add-to-list 'org-babel-load-languages '(julia-vterm . t))
+;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+;(defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
 ;;  :elpaca

@@ -798,4 +798,18 @@ should be continued."
 ;;         exceptions)
 ;;     exceptions))
 
+(defun my-denote-open-by-title ()
+  (interactive)
+  (let* ((grep-results
+          (split-string
+           (shell-command-to-string
+            (format "grep '#+title:\\|#+alias:' %s/*.org" (from-brain "notes")))
+           "\n"))
+         (titles (mapcar (lambda (line) (cadr (split-string line ":[ ]+")))
+                         grep-results))
+         (picked-title (completing-read "title: " titles))
+         (entry (cl-find-if (lambda (item) (string-match-p (regexp-quote picked-title) item)) grep-results))
+         (filepath (car (split-string entry ":"))))
+    (find-file filepath)))
+
 (provide 'setup-org)
