@@ -321,6 +321,8 @@
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
   (plist-put org-latex-preview-appearance-options :page-width 0.85)
+  ;; display inline tramp images in org mode (and other remote image links)
+  (setq org-display-remote-inline-images t)
 
   ;; make org not evaluate code blocks on exporting
   ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
@@ -798,18 +800,22 @@ should be continued."
 ;;         exceptions)
 ;;     exceptions))
 
-(defun my-denote-open-by-title ()
+(defun my-notes-open-by-title ()
+  "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
   (interactive)
   (let* ((grep-results
           (split-string
            (shell-command-to-string
-            (format "grep '#+title:\\|#+alias:' %s/*.org" (from-brain "notes")))
+            (format "grep '#+title:\\|#+alias:' %s/*.org" *notes-dir*))
            "\n"))
          (titles (mapcar (lambda (line) (cadr (split-string line ":[ ]+")))
                          grep-results))
          (picked-title (completing-read "title: " titles))
-         (entry (cl-find-if (lambda (item) (string-match-p (regexp-quote picked-title) item)) grep-results))
-         (filepath (car (split-string entry ":"))))
-    (find-file filepath)))
+         (picked-title-index (cl-position picked-title titles :test #'equal)))
+    (if picked-title-index
+        (let* ((entry (elt grep-results picked-title-index))
+               (filepath (if entry (car (split-string entry ":")) nil)))
+          (find-file filepath))
+      (denote picked-title))))
 
 (provide 'setup-org)

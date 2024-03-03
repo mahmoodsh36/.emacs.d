@@ -775,25 +775,20 @@
   (setq org-inline-anim-loop t)
   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
-;; (use-package julia-snail
-;;   :elpaca '(julia-snail :fetcher github
-;;                           :repo "gcv/julia-snail"
-;;                           :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*"))
-;;   :config
-;;   (setq julia-snail-terminal-type :eat)
-;;   (setq julia-snail-extensions '(repl-history formatter ob-julia))
-;;   ;; (setq julia-snail-extensions '(repl-history formatter))
-;;   (setq julia-snail/ob-julia-mirror-output-in-repl t)
-;;   (setq julia-snail/ob-julia-capture-io nil))
+(use-package julia-snail
+  :ensure ( :fetcher github
+            :repo "gcv/julia-snail")
+            ;; :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*"))
+  :config
+  (setq julia-snail-terminal-type :eat)
+  (setq julia-snail-extensions '(repl-history formatter ob-julia))
+  (setq julia-snail/ob-julia-mirror-output-in-repl t)
+  (setq julia-snail/ob-julia-capture-io nil))
+(setq julia-snail-extensions '(repl-history formatter ob-julia)) ;; why is this not getting set on startup?
 ;; ;; (quelpa '(julia-snail :fetcher github
 ;; ;;                       :repo "gcv/julia-snail"
 ;; ;;                       :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
 ;; ;; (add-hook 'julia-mode-hook 'julia-snail-mode)
-;; ;; (setq julia-snail-terminal-type :eat)
-;; ;; (setq julia-snail-extensions '(repl-history formatter ob-julia))
-;; ;; ;;(setq julia-snail-extensions '(repl-history formatter))
-;; ;; (setq julia-snail/ob-julia-mirror-output-in-repl t)
-;; ;; (setq julia-snail/ob-julia-capture-io nil)
 
 ;; for python, it doesnt work with corfu so i disabled it
 ;; (use-package elpy
@@ -1026,7 +1021,7 @@
 (use-package denote
   :ensure ( :fetcher github :repo "protesilaos/denote" :ref "55dcf23")
   :config
-  (setq denote-directory (from-brain "notes/")
+  (setq denote-directory *notes-dir*
         denote-date-prompt-use-org-read-date t
         denote-file-type 'org)
   (add-hook 'dired-mode-hook #'denote-dired-mode)
