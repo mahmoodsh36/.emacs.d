@@ -700,25 +700,36 @@ should be continued."
                            :export #'org-blk-export))
                          ;; :store #'org-blk-store-link)
 
-(defun grep-brain (rgx)
-  "grep `*brain-dir*' for the regex `rgx'"
-  (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading" rgx *brain-dir*))
-         (output (shell-command-to-string cmd))
-         (files (mapcar (lambda (line) (car (split-string line ":"))) (split-string output "\n"))))
-    (car files)))
+(require 'subr-x) ;; for string-trim
+(defun grep-org-dir (rgx dir)
+  "grep all org files in `*dir*' for the regex `rgx', returns a list of conses of the form (file . line-number)"
+  (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
+         (output (string-trim (shell-command-to-string cmd))))
+    (mapcar
+     (lambda (line)
+       (message "here2 %s " (cadr (split-string line ":")))
+       (cons (car (split-string line ":"))
+             (string-to-number (cadr (split-string line ":")))))
+     (split-string output "\n"))))
 
-(defun org-blk-find-file (link)
+(defun grep-org-dir-non-regex (str dir)
+  (grep-org-dir (regexp-quote str) dir))
+
+(defun org-blk-find-anchor (link)
   "open the file containing a block with the name `link'"
-  (grep-brain (regexp-quote (format "#+name: %s" link))))
+  (car (grep-org-dir-non-regex (format "#+name: %s" link) *notes-dir*)))
 
 (defun org-blk-open (link _)
   "open the file containing a block with the name `link'"
-  (message "%s" (org-blk-find-file link))
-  (find-file-noselect (org-blk-find-file link)))
+  (let* ((position (org-blk-find-anchor link))
+         (filepath (car position))
+         (line (cdr position)))
+    (find-file-noselect filepath)
+    (goto-line line)))
 
 (defun org-blk-export (link desc format)
   "return the file containing a block with the name `link' for org exporting purposes"
-  (let* ((linked-file (org-blk-find-file link))
+  (let* ((linked-file (org-blk-find-anchor link))
          (desc (or desc link))
          (linked-file-html (file-name-sans-extension linked-file)))
     (cond
@@ -817,5 +828,25 @@ should be continued."
                (filepath (if entry (car (split-string entry ":")) nil)))
           (find-file filepath))
       (denote picked-title))))
+
+(defun map-org-dir-elements (regex dir elm-type fn)
+  "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
+  (interactive)
+  (let ((positions (grep-org-dir regex dir)))
+    (dolist (position positions)
+      (message "hi %s" position)
+      (let ((file (car position))
+            (line (cdr position)))
+        (with-file-as-current-buffer
+         file
+         (message file)
+         (goto-line line)
+         (let ((elm (org-element-at-point)))
+           (when (eq (org-element-type elm) elm-type)
+             (message file)
+             (funcall fn))))))))
+
+(defun notes-execute-marked-src-block (rgx)
+  (map-org-dir-elements rgx *notes-dir* 'src-block #'org-ctrl-c-ctrl-c))
 
 (provide 'setup-org)

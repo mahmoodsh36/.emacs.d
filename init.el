@@ -698,3 +698,6 @@ See `eval-after-load' for the possible formats of FORM."
 ;;                 (completing-read "Completion: " collection predicate nil initial)))
 ;;                 (throw 'done completion))))
 ;;   (setq completion-in-region-function #'completing-read-in-region)
+
+;; execute some python blocks when a python repl starts
+(add-hook 'inferior-python-mode-hook (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
