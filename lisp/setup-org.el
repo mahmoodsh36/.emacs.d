@@ -705,12 +705,12 @@ should be continued."
   "grep all org files in `*dir*' for the regex `rgx', returns a list of conses of the form (file . line-number)"
   (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
          (output (string-trim (shell-command-to-string cmd))))
-    (mapcar
-     (lambda (line)
-       (message "here2 %s " (cadr (split-string line ":")))
-       (cons (car (split-string line ":"))
-             (string-to-number (cadr (split-string line ":")))))
-     (split-string output "\n"))))
+    (when (not (equal "" output))
+      (mapcar
+       (lambda (line)
+         (cons (car (split-string line ":"))
+               (string-to-number (cadr (split-string line ":")))))
+       (split-string output "\n")))))
 
 (defun grep-org-dir-non-regex (str dir)
   (grep-org-dir (regexp-quote str) dir))
@@ -770,7 +770,6 @@ should be continued."
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
   (mapcar (lambda (file)
-            (message "%s" file)
             (when (should-export-org-file file)
               (apply #'export-org-file file kw)))
           (all-org-files)))
@@ -834,19 +833,19 @@ should be continued."
   (interactive)
   (let ((positions (grep-org-dir regex dir)))
     (dolist (position positions)
-      (message "hi %s" position)
       (let ((file (car position))
             (line (cdr position)))
         (with-file-as-current-buffer
          file
-         (message file)
          (goto-line line)
          (let ((elm (org-element-at-point)))
            (when (eq (org-element-type elm) elm-type)
-             (message file)
              (funcall fn))))))))
 
 (defun notes-execute-marked-src-block (rgx)
-  (map-org-dir-elements rgx *notes-dir* 'src-block #'org-ctrl-c-ctrl-c))
+  (map-org-dir-elements rgx *notes-dir* 'src-block
+                        (lambda ()
+                          (message "running code block in file %s" (buffer-file-name))
+                          (org-ctrl-c-ctrl-c))))
 
 (provide 'setup-org)
