@@ -20,6 +20,10 @@
                                     (getenv "LD_LIBRARY_PATH")))
   (push "/data/data/com.termux/files/usr/bin" exec-path))
 
+;; disable native comp on android to prevent exhausting the cpu
+(when (is-android-system)
+  (setq native-comp-speed -1))
+
 (require 'setup-elpaca)
 
 ;; set tab size to 2 spaces except 4 for python
