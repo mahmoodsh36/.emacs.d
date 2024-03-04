@@ -20,7 +20,7 @@
                                     (getenv "LD_LIBRARY_PATH")))
   (push "/data/data/com.termux/files/usr/bin" exec-path))
 
-;; disable native comp on android to prevent exhausting the cpu
+;; disable native comp on android to prevent exhausting the cpu, doesnt work?
 (when (is-android-system)
   (setq native-comp-speed -1))
 

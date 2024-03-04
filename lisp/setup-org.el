@@ -1,9 +1,10 @@
 ;; org mode configuration and setup
 
 ;; tecosaur's org-mode version
-(use-package org
-  :ensure ( :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
-            :files (:defaults "etc")))
+(when (not (is-android-system))
+  (use-package org
+    :ensure ( :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
+              :files (:defaults "etc"))))
 
 (defvar *latex-previews-enabled-p*
   (not (is-android-system))
