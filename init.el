@@ -70,7 +70,8 @@
 (when window-system (set-frame-size (selected-frame) 100 50))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
-(setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name))))
+(when (not (is-android-system))
+  (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name)))))
 ;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
 ;; restore default status line for pdf mode
 (add-hook 'pdf-view-mode-hook
