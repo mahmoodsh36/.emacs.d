@@ -1,17 +1,16 @@
-;; needed because they dont work with elpaca by default
-(use-package seq)
-(use-package transient)
-(use-package auctex
-  :elpaca '(auctex
-            :pre-build (("./autogen.sh")
-                        ("./configure"
-                         "--without-texmf-dir"
-                         "--with-packagelispdir=./"
-                         "--with-packagedatadir=./")
-                        ("make"))
-            :build (:not elpaca--compile-info) ;; Make will take care of this step
-            :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
-            :version (lambda (_) (require 'tex-site) AUCTeX-version)))
+;; fails to compile on android, also default recipe fails when used with elpaca
+(when (not (is-android-system))
+  (use-package auctex
+    :elpaca '(auctex
+              :pre-build (("./autogen.sh")
+                          ("./configure"
+                           "--without-texmf-dir"
+                           "--with-packagelispdir=./"
+                           "--with-packagedatadir=./")
+                          ("make"))
+              :build (:not elpaca--compile-info) ;; Make will take care of this step
+              :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
+              :version (lambda (_) (require 'tex-site) AUCTeX-version))))
 
 ;; set of org-contrib packages
 (use-package org-contrib)
@@ -197,12 +196,14 @@
     ;;         completion-category-overrides nil))
 
     ;; corfu completion in the minibuffer
-    (defun corfu-enable-in-minibuffer ()
-      "enable corfu in the minibuffer if `completion-at-point' is bound."
-      (when (where-is-internal #'completion-at-point (list (current-local-map)))
-        ;; (setq-local corfu-auto nil) enable/disable auto completion
-        (corfu-mode 1)))
-    (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+    (with-eval-after-load 'corfu
+      (defun corfu-enable-in-minibuffer ()
+        "enable corfu in the minibuffer if `completion-at-point' is bound."
+        (when (where-is-internal #'completion-at-point (list (current-local-map)))
+          ;; (setq-local corfu-auto nil) enable/disable auto completion
+          (corfu-mode 1)))
+      (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+      )
 
     (use-package pcmpl-args)
 
@@ -555,7 +556,8 @@
   (keyfreq-autosave-mode 1)
   (setq keyfreq-file (from-brain "emacs_keyfreq")))
 
-(use-package magit)
+;; has issues with transient versions
+;; (use-package magit)
 
 ;; need the "global" package for gtags binary
 (use-package ggtags
@@ -1069,6 +1071,7 @@
   )
 
 ;; latex auto activating snippets
+;; it requries auctex, so disable it on android
 (use-package laas
   :hook (LaTeX-mode . laas-mode)
   :config ; do whatever here

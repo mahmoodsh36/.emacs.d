@@ -100,11 +100,12 @@
             (("results") () ("end") "monogamy"))))
 
   ;; text evil objects for latex
-  ;; it requries auctex for some reason
-  (use-package evil-tex
-    :config
-    (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
-    (add-hook 'org-mode-hook #'evil-tex-mode))
+  ;; it requries auctex, so disable it on android
+  (when (not (is-android-system))
+    (use-package evil-tex
+      :config
+      (add-hook 'LaTeX-mode-hook #'evil-tex-mode)
+      (add-hook 'org-mode-hook #'evil-tex-mode)))
 
   ;; preview registers and marks before actually using them
   (use-package evil-owl
