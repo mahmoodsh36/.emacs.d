@@ -41,6 +41,9 @@
 (elpaca elpaca-use-package
   ;; enable use-package :ensure support for elpaca.
   (elpaca-use-package-mode)
+  (when (is-android-system)
+    ;; to prevent android killing the process for exhausting the cpu
+    (setq elpaca-queue-limit 4))
   (setq use-package-always-ensure t))
 
 ;; block until current queue processed.
