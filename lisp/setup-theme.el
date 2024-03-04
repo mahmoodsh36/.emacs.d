@@ -2,11 +2,13 @@
 ;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
 ;; (set-face-attribute 'default nil :family "Iosevka" :height 130)
 ;; (set-face-attribute 'default nil :family "Monaco" :height 120)
-(set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 100)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 100)
-(set-face-attribute 'variable-pitch nil :font "Fira Code" :weight 'normal :height 1.0)
-;; this font makes hebrew text unreadable, gotta disable it
-(add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
+(ignore-errors
+  (set-face-attribute 'default nil :font "Iosevka" :weight 'light :height 100)
+  (set-face-attribute 'fixed-pitch nil :font "Iosevka" :weight 'light :height 100)
+  (set-face-attribute 'variable-pitch nil :font "Fira Code" :weight 'normal :height 1.0)
+  ;; this font makes hebrew text unreadable, gotta disable it
+  (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
+  )
 (use-package darktooth-theme)
 (use-package modus-themes)
 (use-package ample-theme)
