@@ -80,7 +80,7 @@
 \fi
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 
-\usepackage{kpfonts} % better(?) looking fonts
+% \usepackage{kpfonts} % better(?) looking fonts, although misses some important chars such as the hyphen
 
 % \setmainlanguage{english}
 % \setotherlanguage{greek}
@@ -146,8 +146,12 @@
 \DeclareMathOperator{\Gen}{Gen}
 \DeclareMathOperator{\Enc}{Enc}
 \DeclareMathOperator{\Dec}{Dec}
+\DeclareMathOperator{\Sign}{Sign}
+\DeclareMathOperator{\Vrfy}{Vrfy}
+\DeclareMathOperator{\negl}{negl}
+\DeclareMathOperator{\cert}{cert}
 \newcommand{\privkexp}{\operatorname{PrivK}_{\mathcal{A},\Pi}^{\mathrm{eav}}}
-
+\newcommand{\sigexp}{\operatorname{Sig-Forge}_{\mathcal{A},\Pi}}
 
 % some symbols for relational algebra
 \def\ojoin{\setbox0=\hbox{$\bowtie$}%
