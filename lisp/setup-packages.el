@@ -477,9 +477,9 @@
 
 (use-package dap-mode)
 
-;; (use-package mixed-pitch
-;;   :hook
-;;   (text-mode . mixed-pitch-mode))
+(use-package mixed-pitch
+  :hook
+  (text-mode . mixed-pitch-mode))
 ;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; ;; give org mode a better look

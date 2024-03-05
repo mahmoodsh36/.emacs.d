@@ -175,7 +175,7 @@
 ;; (led-kbd "s s" 'spotify-lyrics)
 ;; (led-kbd "s w" 'open-spotify-lyrics-file)
 (led-kbd "s t" #'consult-theme)
-(led-kbd "s k" (lambda () (interactive) (start-process-shell-command "okular" "okular" (format "okular %s" buffer-file-name))))
+(led-kbd "s k" (lambda () (interactive) (start-process-shell-command "okular" "okular" (format "okular '%s'" buffer-file-name))))
 (led-kbd "s q" 'calc)
 (led-kbd "s u" 'copy-file-path)
 
