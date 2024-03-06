@@ -85,11 +85,6 @@ table th {
     border-right: 20px solid transparent;
 }
 
-/* equations */
-.equation-container {
-    margin: 10px;
-}
-
 .custom-block {
     margin: 10px 0 0 0;
     position: relative;
@@ -133,3 +128,13 @@ img.figure {
     margin: auto;
     display: block;
 }
+
+/* centering for latex previews */
+.equation-container .equation .org-latex {
+  display: block !important; /* for some reason its set to inline-block which prevents centering */
+  margin: auto;
+}
+.org-latex-block {
+  margin: auto;
+}
+
