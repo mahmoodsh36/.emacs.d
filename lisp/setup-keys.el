@@ -182,6 +182,8 @@
 ;; agenda keys
 (led-kbd "a a" (lambda () (interactive) (org-agenda nil "A")))
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
+(general-define-key :states 'normal :keymaps 'org-agenda-mode-map "[" 'org-agenda-earlier)
+(general-define-key :states 'normal :keymaps 'org-agenda-mode-map "]" 'org-agenda-later)
 (led-kbd "a s" #'org-schedule)
 (led-kbd "a d" #'org-deadline)
 (led-kbd "a j" #'org-clock-in :keymaps 'org-mode-map)
@@ -191,6 +193,7 @@
 (led-kbd "a p" #'org-clock-display :keymaps 'org-mode-map)
 (led-kbd "a t" (lambda () (interactive) (org-capture nil "t")))
 (led-kbd "a c" #'org-todo :keymaps 'org-mode-map)
+(led-kbd "a C" (lambda () (interactive) (execute-kbd-macro "C-- 1 C-c C-t")) :keymaps 'org-mode-map) ;; modify recurring task "forever"
 (led-kbd "" (make-sparse-keymap) :keymaps 'org-agenda-mode-map) ;; needed for the next one
 (led-kbd "a c" #'org-agenda-todo :keymaps 'org-agenda-mode-map)
 (led-kbd "a n" 'today-entry)

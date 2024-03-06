@@ -717,7 +717,7 @@ should be continued."
 
 (defun org-blk-find-anchor (link)
   "open the file containing a block with the name `link'"
-  (car (grep-org-dir-non-regex (format "#+name: %s" link) *notes-dir*)))
+  (car (grep-org-dir (format "#+name: %s\\\\|\\label{%s}" (regexp-quote link) (regexp-quote link)) *notes-dir*)))
 
 (defun org-blk-open (link _)
   "open the file containing a block with the name `link'"
@@ -729,16 +729,18 @@ should be continued."
 
 (defun org-blk-export (link desc format)
   "return the file containing a block with the name `link' for org exporting purposes"
-  (let* ((linked-file (org-blk-find-anchor link))
-         (desc (or desc link))
-         (linked-file-html (file-name-sans-extension linked-file)))
-    (cond
-     ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-html desc))
-     ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
-     ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
-     ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
-     ;; ((eq format 'md) (format "[%s](%s.md)" desc p))
-     (t link))))
+  (if (org-blk-find-anchor link)
+      (let* ((linked-file (car (org-blk-find-anchor link)))
+             (desc (or desc link))
+             (linked-file-html (file-name-sans-extension linked-file)))
+        (cond
+         ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-html desc))
+         ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
+         ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+         ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
+         ;; ((eq format 'md) (format "[%s](%s.md)" desc p))
+         (t link)))
+    link))
 
 ;; temporary fix for captions breaking latex export
 (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
@@ -847,5 +849,17 @@ should be continued."
                         (lambda ()
                           (message "running code block in file %s" (buffer-file-name))
                           (org-ctrl-c-ctrl-c))))
+
+(defun notes-block ()
+  (map-org-dir-elements
+   ":title\\\\|:defines"
+   *notes-dir*
+   'special-block
+   (lambda ()
+     (let* ((elm (org-element-at-point))
+            (args (org-babel-parse-header-arguments
+                   (org-element-property :parameters elm)))
+            (title (or (alist-get :title args) (alist-get :defines args))))
+       (message "got %s" title)))))
 
 (provide 'setup-org)

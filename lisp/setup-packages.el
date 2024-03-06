@@ -506,6 +506,7 @@
 
 ;; show hidden elements when cursor is over them like links/markers etc
 (use-package org-appear
+  :after org
   :config
   (setq org-appear-autoemphasis t
         org-appear-autoentities t
@@ -684,11 +685,11 @@
 ;;   (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
 ;; perfectly aligned org mode tables
-;; (use-package valign
-;;   :hook
-;;   (org-mode . valign-mode)
-;;   :config
-;;   (setq valign-fancy-bar t))
+(use-package valign
+  :hook
+  (org-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar t))
 
 ;; (use-package hydra
 ;;   :config
