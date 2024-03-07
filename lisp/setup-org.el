@@ -179,6 +179,7 @@
   ;; (setq org-latex-preview-cache 'temp)
   ;; (setq org-element-cache-persistent nil)
   ;; (setq org-element-use-cache nil)
+  (setq org-latex-default-packages-alist nil)
 
   ;; enter insert state after invoking org-capture
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
