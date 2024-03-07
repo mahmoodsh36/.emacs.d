@@ -352,7 +352,7 @@ prompt the user for a coding system."
            )
 
 ;; https://karthinks.com/software/a-consistent-structural-editing-interface/
-(repeat-mode 1)
+;; (repeat-mode 1)
 ;; (defvar structural-edit-map
 ;;   (let ((map (make-sparse-keymap)))
 ;;     (pcase-dolist (`(,k . ,f)

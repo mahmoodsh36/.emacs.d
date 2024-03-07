@@ -1056,7 +1056,8 @@
 
 ;; (use-package hl-block-mode)
 
-(use-package djvu)
+;; (use-package djvu2
+;;   :ensure ( :fetcher github :repo "dalanicolai/djvu2.el"))
 
 (setq enable-god nil)
 (when enable-god
@@ -1173,5 +1174,7 @@
 ;;   :config
 ;;   (add-hook 'dired-mode-hook 'turn-on-stripe-buffer-mode)
 ;;   (add-hook 'org-mode-hook 'turn-on-stripe-table-mode))
+
+(use-package litable)
 
 (provide 'setup-packages)
