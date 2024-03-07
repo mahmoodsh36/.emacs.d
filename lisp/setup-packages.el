@@ -702,11 +702,12 @@ Return nil if not found."
 ;;   (add-hook 'org-mode-hook 'org-xournalpp-mode))
 
 ;; perfectly aligned org mode tables
-(use-package valign
-  :hook
-  (org-mode . valign-mode)
-  :config
-  (setq valign-fancy-bar t))
+;; painfully slows down org-mode, on block evaluation for example
+;; (use-package valign
+;;   :hook
+;;   (org-mode . valign-mode)
+;;   :config
+;;   (setq valign-fancy-bar t))
 
 ;; (use-package hydra
 ;;   :config
