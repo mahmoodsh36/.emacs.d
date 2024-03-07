@@ -1,4 +1,8 @@
-\usepackage[margin=0.2in]{geometry}
+\makeatletter%
+\@ifclassloaded{beamer}%
+  {}%
+  {\usepackage[margin=0.2in]{geometry}}%
+\makeatother%
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{indentfirst}
@@ -93,10 +97,6 @@
 \DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts
 \DeclareMathSymbol{\varv}{\mathord}{matha}{118}
 
-% a dummy environment to group together "stuff"
-\newenvironment*{dummyenv}{}{}
-\newenvironment*{dummy}{}{}
-
 % matrix derivative notation for vector calculus
 \newcommand{\matderiv}[2][]{%
   \ifthenelse{\equal{#1}{}}
@@ -190,12 +190,14 @@
 % so that latex doesnt complain about sage not being a language
 \lstdefinelanguage{sage}{}
 
-% environments like definition for special blocks
-\theoremstyle{definition}
+% environments like definition for special blocks, some of them are defined in beamer, so dont load them when the document class is beamer
+\makeatletter%
+\@ifclassloaded{beamer}%
+  {}%
+  {\theoremstyle{definition} \newtheorem{definition}{definition}
 \newtheorem{my_example}{example}
 \counterwithin{my_example}{section}
 \counterwithin{my_example}{subsection}
-\newtheorem{definition}{definition}
 \counterwithin{definition}{section}
 \counterwithin{definition}{subsection}
 \newtheorem{characteristic}{characteristic}
@@ -221,6 +223,19 @@
 \newtheorem{claim}{claim}
 \newtheorem{proposition}{proposition}
 \newtheorem{notation}{notation}
+\newenvironment{note}
+{\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
+  {\end{bclogo}}
+\newenvironment{attention}
+{\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
+    couleur=red!15]{Important!}}
+  {\end{bclogo}}
+\newenvironment{any}{}{}
+% a dummy environment to group together "stuff"
+\newenvironment*{dummyenv}{}{}
+\newenvironment*{dummy}{}{}
+}%
+\makeatother%
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
@@ -248,15 +263,6 @@
     node[right=0.2cm, text width=5cm, pos=0.5, anchor=west] {#4};
   \end{tikzpicture}
 }%
-
-\newenvironment{note}
-{\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
-  {\end{bclogo}}
-\newenvironment{attention}
-{\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
-    couleur=red!15]{Important!}}
-  {\end{bclogo}}
-\newenvironment{any}{}{}
 
 % an algorithm environment to reduce algorithm2e boilerplate
 \newenvironment{alg} {
