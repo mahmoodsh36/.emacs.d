@@ -706,6 +706,7 @@ should be continued."
   "grep all org files in `*dir*' for the regex `rgx', returns a list of conses of the form (file . line-number)"
   (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
          (output (string-trim (shell-command-to-string cmd))))
+    (message "running %s" cmd)
     (when (not (equal "" output))
       (mapcar
        (lambda (line)
@@ -718,15 +719,34 @@ should be continued."
 
 (defun org-blk-find-anchor (link)
   "open the file containing a block with the name `link'"
-  (car (grep-org-dir (format "#+name: %s\\\\|\\label{%s}" (regexp-quote link) (regexp-quote link)) *notes-dir*)))
+  (car (grep-org-dir (format "#\\+name: %s|\\\\label\\{%s\\}" (regexp-quote link) (regexp-quote link)) *notes-dir*)))
 
 (defun org-blk-open (link _)
   "open the file containing a block with the name `link'"
   (let* ((position (org-blk-find-anchor link))
          (filepath (car position))
          (line (cdr position)))
-    (find-file-noselect filepath)
+    (find-file filepath)
     (goto-line line)))
+
+;; (defun org-blk-marker (link _)
+;;   (let* ((position (org-blk-find-anchor link))
+;;          (filepath (car position))
+;;          (line (cdr position)))
+;;     (with-file-as-current-buffer
+;;      filepath
+;;      (goto-line line)
+;;      (point-marker))))
+(defun org-blk-marker (link _)
+  "open the file containing a block with the name `link'"
+  (let* ((position (org-blk-find-anchor link))
+         (filepath (car position))
+         (line (cdr position)))
+    ;; for now we cant work with the marker returned unless we have the file open in a buffer4 after the function returns (unfortunately this is how org-transclusion handles things)
+    (find-file-noselect filepath)
+    (with-file-as-current-buffer filepath
+      (goto-line line)
+      (point-marker))))
 
 (defun org-blk-export (link desc format)
   "return the file containing a block with the name `link' for org exporting purposes"

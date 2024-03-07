@@ -649,9 +649,26 @@
   (add-hook 'web-mode-hook 'emmet-mode))
 
 ;; transclusions (including text from other documents) for org mode
-;; (use-package org-transclusion
-;;   :config
-;;   (add-hook 'org-mode-hook #'org-transclusion-mode))
+(use-package org-transclusion
+  :config
+  (add-hook 'org-mode-hook #'org-transclusion-mode))
+(with-eval-after-load 'org-transclusion
+  (defun org-transclusion-add-blk (link plist)
+    "Return a list for Org-ID LINK object and PLIST.
+Return nil if not found."
+    (when (string= "blk" (org-element-property :type link))
+      (let* ((path (org-element-property :path link))
+             (marker (ignore-errors (org-blk-marker path t)))
+             (payload '(:tc-type "org-link")))
+        (message "marker %s" marker)
+        (if marker
+            (append payload (org-transclusion-content-org-marker marker plist))
+          (message
+           (format "No transclusion done for this blk. Ensure it works at point %d, line %d"
+                   (point) (org-current-line)))
+          nil))))
+  (add-to-list 'org-transclusion-add-functions 'org-transclusion-add-blk)
+  )
 
 (use-package eat)
 
