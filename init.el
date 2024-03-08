@@ -102,7 +102,7 @@
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
 ;; (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-(setq whitespace-style '(face tabs spaces trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof))
+(setq whitespace-style '(face tabs trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof))
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; change newline character
@@ -148,14 +148,7 @@
 (setq auto-window-vscroll nil)
 
 ;; start server
-(server-start)
-
-;; tex hook to auto compile on save
-;; (add-hook
-;;  'TeX-mode-hook
-;;  (lambda ()
-;;    (compile-current-document)
-;;    (add-hook 'after-save-hook 'compile-current-document 0 t)))
+;; (server-start)
 
 ;; dmenu like functions
 (defun search-open-file (directory-path regex)
@@ -252,11 +245,6 @@
   (interactive (list (read-file-name "file: " "/sudo::/")))
   (let ((tramp-file-name (expand-file-name file-name)))
     (find-file tramp-file-name)))
-
-(defun open-in-vscode ()
-  "open current file in vscode"
-  (interactive)
-  (shell-command (format "code %s" (buffer-file-name))))
 
 (defun kill-this-buffer-volatile ()
   "kill current buffer, even if it has been modified."
@@ -552,10 +540,6 @@ prompt the user for a coding system."
       (comint-read-input-ring)
       (set-process-sentinel process
                             #'comint-write-history-on-exit))))
-(add-hook 'inferior-haskell-mode-hook 'turn-on-comint-history)
-(add-hook 'inferior-python-mode-hook 'turn-on-comint-history)
-(add-hook 'shell-mode-hook 'turn-on-comint-history)
-(add-hook 'kill-buffer-hook 'comint-write-input-ring)
 (defun mapc-buffers (fn)
   (mapc (lambda (buffer)
           (with-current-buffer buffer
@@ -563,7 +547,12 @@ prompt the user for a coding system."
         (buffer-list)))
 (defun comint-write-input-ring-all-buffers ()
   (mapc-buffers 'comint-write-input-ring))
-(add-hook 'kill-emacs-hook 'comint-write-input-ring-all-buffers)
+(with-eval-after-load 'comint
+  (add-hook 'kill-emacs-hook 'comint-write-input-ring-all-buffers)
+  (add-hook 'inferior-haskell-mode-hook 'turn-on-comint-history)
+  (add-hook 'inferior-python-mode-hook 'turn-on-comint-history)
+  (add-hook 'shell-mode-hook 'turn-on-comint-history)
+  (add-hook 'kill-buffer-hook 'comint-write-input-ring))
 
 ;; combobulate, see https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter
 ;; here’s some example code that navigates to the next dictionary, list or set:
