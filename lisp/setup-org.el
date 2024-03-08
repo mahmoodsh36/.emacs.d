@@ -703,15 +703,17 @@ should be continued."
 
 (require 'subr-x) ;; for string-trim
 (defun grep-org-dir (rgx dir)
-  "grep all org files in `*dir*' for the regex `rgx', returns a list of conses of the form (file . line-number)"
-  (let* ((cmd (format "rg -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
+  "grep all org files in `*dir*' for the regex `rgx', returns a list of lists of the form ((file line-number line)...)"
+  (let* ((cmd (format "rg --field-match-separator '\t' -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
          (output (string-trim (shell-command-to-string cmd))))
     (message "running %s" cmd)
     (when (not (equal "" output))
       (mapcar
        (lambda (line)
-         (cons (car (split-string line ":"))
-               (string-to-number (cadr (split-string line ":")))))
+         (let ((split (split-string line "\t")))
+           (list (car split)
+                 (string-to-number (cadr split))
+                 (caddr split))))
        (split-string output "\n")))))
 
 (defun grep-org-dir-non-regex (str dir)
@@ -729,14 +731,6 @@ should be continued."
     (find-file filepath)
     (goto-line line)))
 
-;; (defun org-blk-marker (link _)
-;;   (let* ((position (org-blk-find-anchor link))
-;;          (filepath (car position))
-;;          (line (cdr position)))
-;;     (with-file-as-current-buffer
-;;      filepath
-;;      (goto-line line)
-;;      (point-marker))))
 (defun org-blk-marker (link _)
   "open the file containing a block with the name `link'"
   (let* ((position (org-blk-find-anchor link))
@@ -851,13 +845,37 @@ should be continued."
           (find-file filepath))
       (denote picked-title))))
 
+(defun grep-result-file (grep-result)
+    (car grep-result))
+(defun grep-result-line-number (grep-result)
+    (cadr grep-result))
+(defun grep-result-line-content (grep-result)
+    (caddr grep-result))
+
+(defun my-notes-insert-link-by-title ()
+  "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
+  (interactive)
+  (let* ((grep-results
+          (grep-org-dir
+           "#\\+title|#\\+alias"
+           *notes-dir*))
+         (titles (mapcar (lambda (entry) (cadr (split-string (grep-result-line-content entry) ":[ ]+")))
+                         grep-results))
+         (picked-title (completing-read "title: " titles))
+         (picked-title-index (cl-position picked-title titles :test #'equal)))
+    (when picked-title-index
+      (let* ((entry (elt grep-results picked-title-index))
+             (filepath (grep-result-file entry)))
+        (denote-link filepath 'org picked-title)))))
+
+
 (defun map-org-dir-elements (regex dir elm-type fn)
   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
   (interactive)
   (let ((positions (grep-org-dir regex dir)))
     (dolist (position positions)
       (let ((file (car position))
-            (line (cdr position)))
+            (line (cadr position)))
         (with-file-as-current-buffer
          file
          (goto-line line)
@@ -882,5 +900,23 @@ should be continued."
                    (org-element-property :parameters elm)))
             (title (or (alist-get :title args) (alist-get :defines args))))
        (message "got %s" title)))))
+
+(defun my-notes-open-blk ()
+  (interactive)
+  (let* ((grep-results
+          (grep-org-dir
+           ":title\\\\|:defines"
+           *notes-dir*))
+         (headers (mapcar (lambda (line) (org-babel-parse-header-arguments (caddr line)))
+                          grep-results))
+         (titles (mapcar
+                  (lambda (entry)
+                    (or (alist-get :title entry) (alist-get :defines entry)))
+                  headers))
+         (picked-title (completing-read "title: " titles))
+         (picked-title-index (cl-position picked-title titles :test #'equal)))
+    (when picked-title-index
+      (let ((filepath (car (elt grep-results picked-title-index))))
+        (find-file filepath)))))
 
 (provide 'setup-org)

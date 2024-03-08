@@ -660,7 +660,6 @@ Return nil if not found."
       (let* ((path (org-element-property :path link))
              (marker (ignore-errors (org-blk-marker path t)))
              (payload '(:tc-type "org-link")))
-        (message "marker %s" marker)
         (if marker
             (append payload (org-transclusion-content-org-marker marker plist))
           (message
