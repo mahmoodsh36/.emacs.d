@@ -702,11 +702,12 @@ Return nil if not found."
 
 ;; perfectly aligned org mode tables
 ;; painfully slows down org-mode, on block evaluation for example
-;; (use-package valign
-;;   :hook
-;;   (org-mode . valign-mode)
-;;   :config
-;;   (setq valign-fancy-bar t))
+(use-package valign
+  ;; :hook
+  ;; (org-mode . valign-mode)
+  ;; :config
+  ;; (setq valign-fancy-bar t)
+  )
 
 ;; (use-package hydra
 ;;   :config

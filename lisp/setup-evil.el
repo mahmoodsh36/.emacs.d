@@ -264,6 +264,7 @@ space rather than before."
         (apply fn args)
         (evil-normal-state))))
   (advice-add 'denote-insert-link :around #'my-insert-advice-append-if-in-normal-mode)
+  (advice-add 'my-notes-insert-link-by-title :around #'my-insert-advice-append-if-in-normal-mode)
 
   ;; (use-package evil-snipe
   ;;   :config
