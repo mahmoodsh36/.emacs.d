@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: mathscr
+# key: cr
+# --
+\mathscr{$1}$0
