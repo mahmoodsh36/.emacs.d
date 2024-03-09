@@ -382,12 +382,11 @@
 ;; (led-kbd "r c t" (lambda () (interactive) (org-capture nil "t")))
 
 ;; dired keys
-(defun my-dired-open-file ()
+(defun my-xdg-open-file ()
   "in dired, open the file named on this line."
   (interactive)
-  (let* ((file (dired-get-filename nil t)))
+  (let* ((file (if (derived-mode-p 'dired-mode) (dired-get-filename nil t) buffer-file-name)))
     (call-process "xdg-open" nil 0 nil file)))
-;; (define-key dired-mode-map (kbd "w") 'my-dired-open-file)
-(general-define-key :states 'normal :keymaps 'dired-mode-map "w" 'my-dired-open-file)
+(led-kbd "s ." 'my-xdg-open-file)
 
 (provide 'setup-keys)
