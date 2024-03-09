@@ -205,6 +205,10 @@
 (unless noninteractive  ; as `save-place-mode' does
   (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
 (setq bookmark-file (from-brain "emacs_bookmarks"))
+;; enable recentf for recently opened file history, https://www.emacswiki.org/emacs/RecentFiles#toc21
+(recentf-mode 1)
+(setq recentf-max-menu-items 10000000)
+(setq recentf-max-saved-items 10000000)
 
 ;; move over text object
 ;; (evil-define-motion evil-forward-text-object

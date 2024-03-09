@@ -1076,6 +1076,7 @@ Return nil if not found."
 
 ;; (use-package djvu2
 ;;   :ensure ( :fetcher github :repo "dalanicolai/djvu2.el"))
+;; (use-package djvu)
 
 (setq enable-god nil)
 (when enable-god

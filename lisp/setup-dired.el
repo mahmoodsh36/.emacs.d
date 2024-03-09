@@ -20,6 +20,23 @@
 (use-package dired-collapse)
 (use-package dired-rsync)
 
+(use-package dired-du)
+(use-package dired-single)
+(use-package diredful)
+(use-package dired-quick-sort)
+(use-package dired-narrow)
+(use-package dired-k)
+(use-package dired-filter)
+
+(use-package dired-recent
+  :config
+  (dired-recent-mode 1))
+
+(use-package dired-hist
+  :ensure ( :host github :repo "karthink/dired-hist")
+  :config
+  (dired-hist-mode 1))
+
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
   (interactive)
@@ -84,5 +101,10 @@
   (define-key image-dired-thumbnail-mode-map (kbd "0") 'image-dired-bol)
   (define-key image-dired-thumbnail-mode-map (kbd "$") 'image-dired-eol))
 (add-hook 'image-dired-thumbnail-mode-hook 'define-dired-thumbnail-mode-keys)
+
+(advice-add 'dired-get-file-for-visit :filter-return
+            (lambda (filename)
+              (add-to-history 'file-name-history filename)
+              filename))
 
 (provide 'setup-dired)
