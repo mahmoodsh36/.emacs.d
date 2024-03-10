@@ -57,10 +57,11 @@
 \usepackage{graphicx}
 \usepackage{lipsum}
 \usepackage{mathrsfs}
+\usepackage{newenviron}
 
-% for venn diagrams
-\usepackage[svgnames]{xcolor}
-\usepackage{venndiagram}
+% for venn diagrams (i dont think i need those)
+% \usepackage[svgnames]{xcolor}
+% \usepackage{venndiagram}
 
 \ifLuaTeX
   % graphdrawing library is only available to luatex
@@ -279,11 +280,16 @@
     \SetKwRepeat{Do}{do}{while} % do-while macro
   }
   {\end{algorithm}}
+% alias to above with no line numbering
+\NewEnviron{algn} {{\LinesNumberedHidden\begin{alg}
+      \BODY
+    \end{alg}}}
 % more keywords for algorithm2e
 \SetKwInput{returns}{returns}
 \SetKwInput{args}{arguments}
 \SetKw{yield}{yield}
 \SetKw{return}{return}
+\SetKw{goto}{goto}
 % get rid of annoying italics in for and if statements
 \SetArgSty{textnormal}%{textup}
 \SetFuncSty{textnormal}
