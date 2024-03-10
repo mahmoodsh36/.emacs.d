@@ -2,6 +2,4 @@
 # name: cases
 # key: cs
 # --
-\begin{cases}
-  $0
-\end{cases}
+\begin{cases} $0 \end{cases}
