@@ -61,10 +61,14 @@
   (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".pdf"))
 (defun my-org-to-pdf ()
   (interactive)
-  (let ((outfile (latex-out-file)))
+  (let ((outfile (latex-out-file))
+        (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
     (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
-    (org-export-to-file 'latex outfile
-      nil nil nil nil nil nil)
+    (if is-beamer
+        (org-export-to-file 'beamer outfile
+          nil nil nil nil nil nil)
+        (org-export-to-file 'latex outfile
+          nil nil nil nil nil nil))
     (compile-latex-file outfile)))
 
 (defun compile-latex-file (path)
@@ -262,8 +266,8 @@
   ;; try to get the width from an #+ATTR.* keyword and fall back on the original width if none is found.
   (setq org-image-actual-width nil)
   ;; dont center images/tables in latex
-  (setq org-latex-images-centered nil)
-  (setq org-latex-tables-centered nil)
+  ;; (setq org-latex-images-centered nil)
+  ;; (setq org-latex-tables-centered nil)
   ;; get rid of background colors of block lines bleeding all over folded headlines
   (setq org-fontify-whole-block-delimiter-line nil)
   (setq org-fold-catch-invisible-edits 'smart
@@ -321,9 +325,11 @@
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
-  (plist-put org-latex-preview-appearance-options :page-width 0.85)
+  (plist-put org-latex-preview-appearance-options :page-width 1.0)
   ;; display inline tramp images in org mode (and other remote image links)
   (setq org-display-remote-inline-images t)
+  ;; display full text of links
+  (setq org-link-descriptive nil)
 
   ;; make org not evaluate code blocks on exporting
   ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
@@ -354,21 +360,38 @@
            :with-toc nil
            :recursive t
            :html-preamble t)
-
           ("images"
            :base-directory "~/brain/"
            :base-extension "jpg\\|gif\\|png\\|webp\\|jpeg\\|svg"
            :publishing-directory "~/publish/"
            :recursive t
            :publishing-function org-publish-attachment)
-
           ("website" :components ("orgfiles" "images"))))
 
+  ;; also make org-special-edit respect tree-sitter modes
+  (dolist (mapping major-mode-remap-alist)
+    (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
+      (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
 
-;; also make org-special-edit respect tree-sitter modes
-(dolist (mapping major-mode-remap-alist)
-  (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
-    (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
+  ;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
+  ;; (defun my/org-latex-preview-center (ov)
+  ;;   (save-excursion
+  ;;     (goto-char (overlay-start ov))
+  ;;     (when-let* ((elem (org-element-context))
+  ;;                 ((or (eq (org-element-type elem) 'latex-environment)
+  ;;                      (string-match-p
+  ;;                       "^\\\\\\[" (org-element-property :value elem))))
+  ;;                 (img (overlay-get ov 'display))
+  ;;                 (width (car-safe (image-display-size img)))
+  ;;                 (offset (floor (- (window-max-chars-per-line) width) 2))
+  ;;                 ((> offset 0)))
+  ;;       (overlay-put ov 'before-string
+  ;;                    (propertize
+  ;;                     (make-string offset ?\ )
+  ;;                     'face (org-latex-preview--face-around
+  ;;                            (overlay-start ov) (overlay-end ov)))))))
+  ;; (add-hook 'org-latex-preview-overlay-update-functions
+  ;;           #'my/org-latex-preview-center)
   )
 
 ;; run some python code from my org notes on shell startup
@@ -561,26 +584,6 @@
 ;;         blk
 ;;       nil)))
 
-;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
-;; (defun my/org-latex-preview-center (ov)
-;;   (save-excursion
-;;     (goto-char (overlay-start ov))
-;;     (when-let* ((elem (org-element-context))
-;;                 ((or (eq (org-element-type elem) 'latex-environment)
-;;                      (string-match-p
-;;                       "^\\\\\\[" (org-element-property :value elem))))
-;;                 (img (overlay-get ov 'display))
-;;                 (width (car-safe (image-display-size img)))
-;;                 (offset (floor (- (window-max-chars-per-line) width) 2))
-;;                 ((> offset 0)))
-;;       (overlay-put ov 'before-string
-;;                    (propertize
-;;                     (make-string offset ?\ )
-;;                     'face (org-latex-preview--face-around
-;;                            (overlay-start ov) (overlay-end ov)))))))
-;; (add-hook 'org-latex-preview-update-overlay-functions
-;;          #'my/org-latex-preview-center)
-
 (defun timestamp-midnight (timestamp)
   (let ((decoded (decode-time timestamp)))
     (setf (nth 0 decoded) 0)
@@ -727,7 +730,7 @@ should be continued."
   "open the file containing a block with the name `link'"
   (let* ((position (org-blk-find-anchor link))
          (filepath (car position))
-         (line (cdr position)))
+         (line (cadr position)))
     (find-file filepath)
     (goto-line line)))
 
@@ -735,7 +738,7 @@ should be continued."
   "open the file containing a block with the name `link'"
   (let* ((position (org-blk-find-anchor link))
          (filepath (car position))
-         (line (cdr position)))
+         (line (cadr position)))
     ;; for now we cant work with the marker returned unless we have the file open in a buffer4 after the function returns (unfortunately this is how org-transclusion handles things)
     (find-file-noselect filepath)
     (with-file-as-current-buffer filepath
@@ -868,6 +871,36 @@ should be continued."
              (filepath (grep-result-file entry)))
         (denote-link filepath 'org picked-title)))))
 
+(defun my-notes-open-all ()
+  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky.."
+  (interactive)
+  (let* ((grep-results
+          (grep-org-dir
+           ":title|:defines|#\\+title:|#\\+alias:"
+           *notes-dir*))
+         (entries ;; (title . grep-result)
+          (apply
+           #'append
+           (mapcar
+            (lambda (entry)
+              (let ((line (caddr entry)))
+                (cond ((string-match-p ":defines\\|:title" line)
+                       (mapcar
+                        (lambda (part)
+                          (let ((headers (org-babel-parse-header-arguments (concat ":" part)))) ;; the : was deleted by split-string, restore it for the function to parse the headers properly
+                            ;; (message "here %s" entry)
+                            (cons (or (alist-get :title headers) (alist-get :defines headers)) entry)))
+                        (cdr (split-string line " :"))))
+                      ((string-match-p "#\\+alias:\\|#\\+title:" line)
+                       (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+")) entry))))))
+            grep-results)))
+         (just-titles (mapcar 'car entries))
+         (picked-title (completing-read "title: " just-titles))
+         (picked-entry-index (cl-position picked-title just-titles :test #'equal)))
+    (when picked-entry-index
+      (let* ((entry (elt entries picked-entry-index))
+             (filepath (grep-result-file (cdr entry))))
+        (find-file filepath)))))
 
 (defun map-org-dir-elements (regex dir elm-type fn)
   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
@@ -905,7 +938,7 @@ should be continued."
   (interactive)
   (let* ((grep-results
           (grep-org-dir
-           ":title\\\\|:defines"
+           ":title|:defines"
            *notes-dir*))
          (headers (mapcar (lambda (line) (org-babel-parse-header-arguments (caddr line)))
                           grep-results))

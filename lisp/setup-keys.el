@@ -375,7 +375,8 @@
 (led-kbd "r n" #'denote-create-note)
 (led-kbd "r N" #'denote-type)
 ;; (led-kbd "r f" #'denote-open-or-create)
-(led-kbd "r f" #'my-notes-open-by-title)
+;; (led-kbd "r f" #'my-notes-open-by-title)
+(led-kbd "r f" #'my-notes-open-all)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))
 (led-kbd "r c i" (lambda () (interactive) (org-capture nil "i")))

@@ -185,4 +185,8 @@
   (or (string-equal system-type "android")
       (eq (shell-command "command -v termux-setup-storage") 0)))
 
+(defun is-substring (small big)
+  "whether `small' is a substring of `big'"
+  (string-match-p (regexp-quote small) big))
+
 (provide 'setup-utils)
