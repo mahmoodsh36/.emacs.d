@@ -374,24 +374,24 @@
       (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
 
   ;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
-  ;; (defun my/org-latex-preview-center (ov)
-  ;;   (save-excursion
-  ;;     (goto-char (overlay-start ov))
-  ;;     (when-let* ((elem (org-element-context))
-  ;;                 ((or (eq (org-element-type elem) 'latex-environment)
-  ;;                      (string-match-p
-  ;;                       "^\\\\\\[" (org-element-property :value elem))))
-  ;;                 (img (overlay-get ov 'display))
-  ;;                 (width (car-safe (image-display-size img)))
-  ;;                 (offset (floor (- (window-max-chars-per-line) width) 2))
-  ;;                 ((> offset 0)))
-  ;;       (overlay-put ov 'before-string
-  ;;                    (propertize
-  ;;                     (make-string offset ?\ )
-  ;;                     'face (org-latex-preview--face-around
-  ;;                            (overlay-start ov) (overlay-end ov)))))))
-  ;; (add-hook 'org-latex-preview-overlay-update-functions
-  ;;           #'my/org-latex-preview-center)
+  (defun my/org-latex-preview-center (ov)
+    (save-excursion
+      (goto-char (overlay-start ov))
+      (when-let* ((elem (org-element-context))
+                  ((or (eq (org-element-type elem) 'latex-environment)
+                       (string-match-p
+                        "^\\\\\\[" (org-element-property :value elem))))
+                  (img (overlay-get ov 'display))
+                  (width (car-safe (image-display-size img)))
+                  (offset (floor (- (window-max-chars-per-line) width) 2))
+                  ((> offset 0)))
+        (overlay-put ov 'before-string
+                     (propertize
+                      (make-string offset ?\ )
+                      'face (org-latex-preview--face-around
+                             (overlay-start ov) (overlay-end ov)))))))
+  (add-hook 'org-latex-preview-overlay-update-functions
+            #'my/org-latex-preview-center)
   )
 
 ;; run some python code from my org notes on shell startup
@@ -876,7 +876,7 @@ should be continued."
   (interactive)
   (let* ((grep-results
           (grep-org-dir
-           ":title|:defines|#\\+title:|#\\+alias:"
+           ":title|:defines|:alias|#\\+title:|#\\+alias:"
            *notes-dir*))
          (entries ;; (title . grep-result)
           (apply
@@ -884,12 +884,12 @@ should be continued."
            (mapcar
             (lambda (entry)
               (let ((line (caddr entry)))
-                (cond ((string-match-p ":defines\\|:title" line)
+                (cond ((string-match-p ":defines\\|:title\\|:alias" line)
                        (mapcar
                         (lambda (part)
                           (let ((headers (org-babel-parse-header-arguments (concat ":" part)))) ;; the : was deleted by split-string, restore it for the function to parse the headers properly
                             ;; (message "here %s" entry)
-                            (cons (or (alist-get :title headers) (alist-get :defines headers)) entry)))
+                            (cons (or (alist-get :title headers) (alist-get :defines headers) (alist-get :alias headers)) entry)))
                         (cdr (split-string line " :"))))
                       ((string-match-p "#\\+alias:\\|#\\+title:" line)
                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+")) entry))))))

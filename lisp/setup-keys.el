@@ -337,12 +337,14 @@
 ;; (keymap-global-set "C-h" #'indent-according-to-mode)
 
 ;; perspective keys
-(led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
-(led-kbd "s 2" (lambda () (interactive) (persp-switch "college")))
-(led-kbd "s 3" (lambda () (interactive) (persp-switch "agenda")))
+;; (led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
+;; (led-kbd "s 2" (lambda () (interactive) (persp-switch "college")))
+;; (led-kbd "s 3" (lambda () (interactive) (persp-switch "agenda")))
 (led-kbd "1" (lambda () (interactive) (persp-switch "main")))
 (led-kbd "2" (lambda () (interactive) (persp-switch "college")))
 (led-kbd "3" (lambda () (interactive) (persp-switch "agenda")))
+(led-kbd "4" (lambda () (interactive) (persp-switch "college2")))
+(led-kbd "5" (lambda () (interactive) (persp-switch "college3")))
 (led-kbd "s c" #'persp-switch)
 
 (led-kbd "s z" #'zeal-at-point)
@@ -389,5 +391,17 @@
   (let* ((file (if (derived-mode-p 'dired-mode) (dired-get-filename nil t) buffer-file-name)))
     (call-process "xdg-open" nil 0 nil file)))
 (led-kbd "s ." 'my-xdg-open-file)
+
+;; pdf tools keys, make j,k navigation update the location bookmarked (hey atleast it works)
+(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "j"
+                    (lambda ()
+                      (interactive)
+                      (call-interactively 'pdf-view-next-line-or-next-page)
+                      (brds/pdf-set-last-viewed-bookmark)))
+(general-define-key :states 'normal :keymaps 'pdf-view-mode-map "k"
+                    (lambda ()
+                      (interactive)
+                      (call-interactively 'pdf-view-previous-line-or-previous-page)
+                      (brds/pdf-set-last-viewed-bookmark)))
 
 (provide 'setup-keys)

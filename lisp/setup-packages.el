@@ -421,9 +421,38 @@
 ;; pdf viewer
 (when (not (is-android-system))
   (use-package pdf-tools
+    :ensure (:host github :repo "vedang/pdf-tools")
     :config
     (pdf-tools-install t)
-    (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)))
+    (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
+
+  (with-eval-after-load 'pdf-tools
+    ;; workaround for pdf-tools not reopening to last-viewed page of the pdf:
+    ;; https://github.com/politza/pdf-tools/issues/18#issuecomment-269515117
+    (defun brds/pdf-set-last-viewed-bookmark ()
+      (interactive)
+      (when (eq major-mode 'pdf-view-mode)
+        (bookmark-set (brds/pdf-generate-bookmark-name))))
+    (defun brds/pdf-jump-last-viewed-bookmark ()
+      (bookmark-set "fake") ; this is new
+      (when
+          (brds/pdf-has-last-viewed-bookmark)
+        (bookmark-jump (brds/pdf-generate-bookmark-name))))
+    (defun brds/pdf-has-last-viewed-bookmark ()
+      (assoc
+       (brds/pdf-generate-bookmark-name) bookmark-alist))
+    (defun brds/pdf-generate-bookmark-name ()
+      (concat "PDF-LAST-VIEWED: " (buffer-file-name)))
+    (defun brds/pdf-set-all-last-viewed-bookmarks ()
+      (dolist (buf (buffer-list))
+        (with-current-buffer buf
+          (brds/pdf-set-last-viewed-bookmark))))
+    (add-hook 'kill-buffer-hook 'brds/pdf-set-last-viewed-bookmark)
+    (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
+    (unless noninteractive  ; as `save-place-mode' does
+      (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
+    )
+  )
 
 ;; history for ivy completion
 ;; (use-package ivy-prescient
@@ -1195,5 +1224,12 @@ Return nil if not found."
 ;;   (add-hook 'org-mode-hook 'turn-on-stripe-table-mode))
 
 (use-package litable)
+
+;; doesnt work..?
+;; (use-package pdf-view-restore
+;;   :after pdf-tools
+;;   :config
+;;   (add-hook 'pdf-view-mode-hook 'pdf-view-restore-mode)
+;;   (setq pdf-view-restore-filename (from-brain "pdf-view-restore")))
 
 (provide 'setup-packages)
