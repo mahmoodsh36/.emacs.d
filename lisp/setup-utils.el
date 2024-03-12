@@ -189,4 +189,10 @@
   "whether `small' is a substring of `big'"
   (string-match-p (regexp-quote small) big))
 
+(defun shell-command-to-string-no-stderr (cmd)
+  (with-output-to-string
+    (with-current-buffer
+        standard-output
+      (process-file shell-file-name nil '(t nil)  nil shell-command-switch cmd))))
+
 (provide 'setup-utils)

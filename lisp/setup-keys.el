@@ -229,7 +229,7 @@
            (call-interactively 'sly-eval-last-expression-in-repl))
          :keymaps 'lisp-mode-map)
 (led-kbd "s e" 'eshell)
-(led-kbd "s m" 'man)
+(led-kbd "s m" 'woman)
 
 ;; language-specific keybindings
 (led-kbd "l i" 'sly-repl-inspect :keymaps 'lisp-mode-map)

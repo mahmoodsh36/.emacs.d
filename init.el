@@ -653,27 +653,5 @@ See `eval-after-load' for the possible formats of FORM."
       )))
 (add-hook 'find-file-hook #'conditional-disable-modes)
 
-;; https://www.reddit.com/r/emacs/comments/zl6amy/completionatpoint_using_completingread_icomplete/
-;;  (defun completing-read-in-region (start end collection &optional predicate)
-;;     "Prompt for completion of region in the minibuffer if non-unique.
-;;    Use as a value for `completion-in-region-function'."
-;;     (let* ((initial (buffer-substring-no-properties start end))
-;;            (all (completion-all-completions initial collection predicate
-;;                                             (length initial)))
-;;            (completion (cond
-;;                         ((atom all) nil)
-;;                         ((and (consp all) (atom (cdr all))) (car all))
-;;                         (t (completing-read
-;;                             "Completion: " collection predicate t initial)))))
-;;       (cond (completion (completion--replace start end completion) t)
-;;             (t (message "No completion") nil))))
-;; (setq completion
-;;     (catch 'done
-;;         (atomic-change-group
-;;             (let ((completion
-;;                 (completing-read "Completion: " collection predicate nil initial)))
-;;                 (throw 'done completion))))
-;;   (setq completion-in-region-function #'completing-read-in-region)
-
 ;; execute some python blocks when a python repl starts
 (add-hook 'inferior-python-mode-hook (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))

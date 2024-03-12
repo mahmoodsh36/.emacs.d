@@ -708,7 +708,7 @@ should be continued."
 (defun grep-org-dir (rgx dir)
   "grep all org files in `*dir*' for the regex `rgx', returns a list of lists of the form ((file line-number line)...)"
   (let* ((cmd (format "rg --field-match-separator '\t' -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
-         (output (string-trim (shell-command-to-string cmd))))
+         (output (string-trim (shell-command-to-string-no-stderr cmd))))
     (message "running %s" cmd)
     (when (not (equal "" output))
       (mapcar
