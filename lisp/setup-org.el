@@ -876,7 +876,7 @@ should be continued."
   (interactive)
   (let* ((grep-results
           (grep-org-dir
-           ":title|:defines|:alias|#\\+title:|#\\+alias:"
+           ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
            *notes-dir*))
          (entries ;; (title . grep-result)
           (apply
@@ -891,7 +891,7 @@ should be continued."
                             ;; (message "here %s" entry)
                             (cons (or (alist-get :title headers) (alist-get :defines headers) (alist-get :alias headers)) entry)))
                         (cdr (split-string line " :"))))
-                      ((string-match-p "#\\+alias:\\|#\\+title:" line)
+                      ((string-match-p "#\\+alias:\\|#\\+title:\\|#\\+name:" line)
                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+")) entry))))))
             grep-results)))
          (just-titles (mapcar 'car entries))

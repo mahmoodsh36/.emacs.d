@@ -494,13 +494,10 @@
 (use-package ox-hugo
   :config
   (setq org-hugo-base-dir (file-truename "~/work/blog/"))
-  ;; (setq org-hugo-section "blog")
   ;; (setq org-more-dir (expand-file-name "~/work/blog/static/more/"))
   (setq *org-static-dir* (format "%s/static" org-hugo-base-dir))
-  ;; (ignore-errors (make-directory org-more-dir))
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html")
-  ;; (plist-put org-html-latex-image-options :image-dir (file-truename (concat user-emacs-directory "html_ltximg")))
   ;;(plist-put org-html-latex-image-options :image-dir (file-truename (concat *org-static-dir* "/ltximg/"))))
   )
 
@@ -509,7 +506,6 @@
 (use-package mixed-pitch
   :hook
   (text-mode . mixed-pitch-mode))
-;; (add-hook 'text-mode-hook #'variable-pitch-mode)
 
 ;; ;; give org mode a better look
 ;; (use-package org-modern
@@ -544,7 +540,7 @@
         org-appear-autosubmarkers t
         ;; org-hide-emphasis-markers t
         )
-  (add-hook 'org-mode-hook 'org-appear-mode))
+  (add-hook 'org-mode-hook 'org-appear-mode t))
 
 ;; (use-package dape)
 
@@ -564,7 +560,7 @@
 ;;               ([remap save-buffer] . elfeed-tube-save)))
 
 ;; (use-package dumb-jump)
-(use-package format-all)
+;; (use-package format-all)
 ;; (use-package plantuml-mode)
 
 ;; for latex references
@@ -575,9 +571,9 @@
 
 ;; (use-package code-compass)
 
-                                        ;(use-package vterm
-                                        ;:custom
-                                        ;(vterm-always-compile-module t))
+;; (use-package vterm
+;; :custom
+;; (vterm-always-compile-module t))
 
 ;; check which keys i press most
 (use-package keyfreq
@@ -668,7 +664,7 @@
 ;;   :config
 ;;   (tree-sitter-langs-install-grammars t))
 
-                                        ;(use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
+;; (use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
 ;; (use-package lsp-java)
 
@@ -833,12 +829,10 @@ Return nil if not found."
   (setq julia-snail-terminal-type :eat)
   (setq julia-snail-extensions '(repl-history formatter ob-julia))
   (setq julia-snail/ob-julia-mirror-output-in-repl t)
-  (setq julia-snail/ob-julia-capture-io nil))
-(setq julia-snail-extensions '(repl-history formatter ob-julia)) ;; why is this not getting set on startup?
-;; ;; (quelpa '(julia-snail :fetcher github
-;; ;;                       :repo "gcv/julia-snail"
-;; ;;                       :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*")))
-;; ;; (add-hook 'julia-mode-hook 'julia-snail-mode)
+  (setq julia-snail/ob-julia-capture-io nil)
+  (add-hook 'julia-mode-hook 'julia-snail-mode))
+(with-eval-after-load 'julia-snail
+  (setq julia-snail-extensions '(repl-history formatter ob-julia))) ;; why is this not getting set on startup?
 
 ;; for python, it doesnt work with corfu so i disabled it
 ;; (use-package elpy
@@ -940,12 +934,12 @@ Return nil if not found."
   :config
   (setq combobulate-key-prefix "C-c o"))
 
-                                        ;(use-package embrace
-                                        ;:config
-                                        ;(global-set-key (kbd "C-,") #'embrace-commander)
-  ;;; org-mode has a default binding for C-, override it
-                                        ;(define-key org-mode-map (kbd "C-,") #'embrace-commander)
-                                        ;(add-hook 'org-mode-hook #'embrace-org-mode-hook))
+;; (use-package embrace
+;;   :config
+;;   (global-set-key (kbd "C-,") #'embrace-commander)
+;;   ;;; org-mode has a default binding forC-, override it
+;;   (define-key org-mode-map (kbd "C-,") #'embrace-commander)
+;;   (add-hook 'org-mode-hook #'embrace-org-mode-hook))
 
 (use-package easy-kill)
 
@@ -983,14 +977,14 @@ Return nil if not found."
 ;; zeal docs
 (use-package zeal-at-point)
 
-;(use-package ob-julia-vterm
-;:config
-;(setq vterm-always-compile-module t)
-;(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
-;(add-to-list 'org-babel-load-languages '(julia-vterm . t))
-;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-;(defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
-;(defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
+;; (use-package ob-julia-vterm
+;;   :config
+;;   (setq vterm-always-compile-module t)
+;;   (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+;;   (add-to-list 'org-babel-load-languages '(julia-vterm . t))
+;;   (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+;;   (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
+;;   (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
 ;;  :elpaca
