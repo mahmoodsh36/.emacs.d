@@ -878,7 +878,7 @@ should be continued."
           (grep-org-dir
            ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
            *notes-dir*))
-         (entries ;; (title . grep-result)
+         (entries ;; (title . (annotation . grep-result)
           (apply
            #'append
            (mapcar
@@ -889,17 +889,23 @@ should be continued."
                         (lambda (part)
                           (let ((headers (org-babel-parse-header-arguments (concat ":" part)))) ;; the : was deleted by split-string, restore it for the function to parse the headers properly
                             ;; (message "here %s" entry)
-                            (cons (or (alist-get :title headers) (alist-get :defines headers) (alist-get :alias headers)) entry)))
+                            (cons (or (alist-get :title headers) (alist-get :defines headers) (alist-get :alias headers)) (cons "block" entry))))
                         (cdr (split-string line " :"))))
                       ((string-match-p "#\\+alias:\\|#\\+title:\\|#\\+name:" line)
-                       (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+")) entry))))))
+                       (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+")) (cons "file" entry)))))))
             grep-results)))
          (just-titles (mapcar 'car entries))
+         (completion-extra-properties
+          '(:annotation-function
+            (lambda (key)
+              (let* ((entry (alist-get key entries nil nil #'equal))
+                     (desc (format "%s %s" (car entry) (grep-result-file (cdr entry)))))
+                (format "\t%s" desc)))))
          (picked-title (completing-read "title: " just-titles))
          (picked-entry-index (cl-position picked-title just-titles :test #'equal)))
     (when picked-entry-index
       (let* ((entry (elt entries picked-entry-index))
-             (filepath (grep-result-file (cdr entry))))
+             (filepath (grep-result-file (cddr entry))))
         (find-file filepath)))))
 
 (defun map-org-dir-elements (regex dir elm-type fn)
