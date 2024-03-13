@@ -27,7 +27,7 @@
 (require 'setup-elpaca)
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default ;tab-width 2
+(setq-default tab-width 2
               js-indent-level 2
               c-basic-offset 2
               indent-tabs-mode nil

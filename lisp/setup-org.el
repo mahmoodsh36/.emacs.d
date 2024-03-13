@@ -903,10 +903,11 @@ should be continued."
                 (format "\t%s" desc)))))
          (picked-title (completing-read "title: " just-titles))
          (picked-entry-index (cl-position picked-title just-titles :test #'equal)))
-    (when picked-entry-index
+    (if picked-entry-index
       (let* ((entry (elt entries picked-entry-index))
              (filepath (grep-result-file (cddr entry))))
-        (find-file filepath)))))
+        (find-file filepath))
+      (call-interactively 'denote))))
 
 (defun map-org-dir-elements (regex dir elm-type fn)
   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"

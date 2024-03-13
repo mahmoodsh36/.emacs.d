@@ -1,76 +1,69 @@
-/* center images */
-/*
-img {
-  margin: auto;
-}
-figure {
-  display: flex !important;
-}
-*/
-
 /* table css */
-/*
 table {
-  margin: auto;
-  border-collapse: collapse;
+    margin: auto;
+    border-collapse: collapse;
 }
 table td, table th {
-  border: 1px solid #ddd;
-  padding: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 table tr:nth-child(even){background-color: #f2f2f2;}
 table tr:hover {background-color: #ddd;}
 table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-}*/
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+}
 
 .collage {
-  display: flex;
-  flex-flow: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  font-size: 12px;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 12px;
 }
 .collage img {
-  max-width: 95px;
-  border: 1px solid red;
-  margin: 3px;
-  justify-content: center;
+    border: 1px solid red;
+    margin: 3px;
+    justify-content: center;
 }
 /* for album collages - images with text below them */
 .collage .card {
-  display: flex;
-  flex-flow: column;
-  margin: 5px;
+    max-width: 150px;
+    display: flex;
+    flex-flow: column;
+    margin: 5px;
 }
 .collage .card span {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
+.album-name {
+    color: rgb(175, 39, 39);
+}
+
 .tooltip {
-  position: relative;
-  display: inline-block;
-  font-size: 12px;
+    position: relative;
+    display: inline-block;
+    font-size: 12px;
 }
 .tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border: 1px solid blue;
-  border-radius: 6px;
-  padding: 5px 2px;
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border: 1px solid blue;
+    border-radius: 6px;
+    padding: 5px 2px;
 
-  /* position the tooltip */
-  position: absolute;
-  z-index: 1;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -60px;
+    /* position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
 }
 .tooltip:hover .tooltiptext {
     visibility: visible;
@@ -83,6 +76,12 @@ table th {
     border-top: 20px solid black;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
+}
+
+@media only screen and (max-width: 600px) {
+    .card {
+        width: 40%;
+    }
 }
 
 .custom-block {
@@ -120,6 +119,7 @@ p {
     padding: 0px;
 }
 
+/* i think this is for pandoc exports, not sure */
 .DisplayMath {
     display: block;
     margin: auto;
@@ -131,10 +131,9 @@ img.figure {
 
 /* centering for latex previews */
 .equation-container .equation .org-latex {
-  display: block !important; /* for some reason its set to inline-block which prevents centering */
-  margin: auto;
+    display: block !important; /* for some reason its set to inline-block which prevents centering */
+    margin: auto;
 }
 .org-latex-block {
-  margin: auto;
+    margin: auto;
 }
-

@@ -136,7 +136,7 @@
 (led-kbd "m f"
          (lambda ()
            (interactive)
-           (find-file "/home/mahmooz/brain/notes/20231010T211129--music-table__.org")))
+           (find-file "/home/mahmooz/brain/notes/20231010T211129--music-table__music.org")))
 ;; open artist's last.fm page
 (led-kbd "m l" #'open-lastfm-page)
 
