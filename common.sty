@@ -25,8 +25,8 @@
 \usepgfplotslibrary{fillbetween}
 \usepackage{centernot}
 \usepackage{lmodern}
-\usepackage{physics}
-% \usepackage{physics2}
+% \usepackage{physics} % why does it redefine \div?
+\usepackage{physics2}
 \usepackage[linesnumbered,vlined]{algorithm2e}
 \usepackage{algpseudocode}
 \usepackage{algorithmicx}
@@ -223,7 +223,6 @@
 \newtheorem{problem}{problem}
 \newtheorem{solution}{solution}[problem]
 \newtheorem{subproblem}{subproblem}[problem]
-\newtheorem{thought}{thought}
 \newtheorem{task}{task}
 \newtheorem{theorem}{theorem}
 \newtheorem{axiom}{axiom}
@@ -243,6 +242,7 @@
 \newenvironment*{dummy}{}{}
 }%
 \makeatother%
+\newtheorem{thought}{thought}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.

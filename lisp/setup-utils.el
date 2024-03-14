@@ -173,17 +173,9 @@
         (replace-match "" t t nil 1)
         (jump-to-register 'my-stored-pos)))))
 
-(defun message-no-format (msg)
-  "invoke 'message' without it invoking 'format' (not really)"
-  (message "%s" msg))
-
-(defun open-wezterm-here ()
-  (interactive)
-  (async-shell-command "wezterm ."))
-
 (defun is-android-system ()
   (or (string-equal system-type "android")
-      (eq (shell-command "command -v termux-setup-storage") 0)))
+      (eq (shell-command "command -v termux-setup-storage" nil) 0)))
 
 (defun is-substring (small big)
   "whether `small' is a substring of `big'"

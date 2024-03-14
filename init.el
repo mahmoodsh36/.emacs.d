@@ -27,7 +27,7 @@
 (require 'setup-elpaca)
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default tab-width 2
+(setq-default ;tab-width 2
               js-indent-level 2
               c-basic-offset 2
               indent-tabs-mode nil
@@ -355,7 +355,13 @@ prompt the user for a coding system."
 (global-prettify-symbols-mode +1)
 ;; replace lambda text with symbol
 (defconst lisp--prettify-symbols-alist
-  '(("lambda"  . ?λ)))
+  '(("lambda"  . ?λ)
+    ("let" . ?≜)
+    ("nil" . ?∅)
+    ("sqrt" . ?√)
+    ("sum" . ?∑)
+    ("equal" . ?≡)
+    ("defu" . ?⪮)))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 ;; (add-hook 'emacs-lisp-mode-hook
@@ -655,3 +661,9 @@ See `eval-after-load' for the possible formats of FORM."
 
 ;; execute some python blocks when a python repl starts
 (add-hook 'inferior-python-mode-hook (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
+
+;; http://xahlee.info/emacs/emacs/emacs_file_encoding.html
+;; utf-8 as default encoding
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)

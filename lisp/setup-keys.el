@@ -181,7 +181,7 @@
 (led-kbd "s u" 'copy-file-path)
 
 ;; agenda keys
-(led-kbd "a a" (lambda () (interactive) (org-agenda nil "A")))
+(led-kbd "a a" #'my-org-agenda)
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "[" 'org-agenda-earlier)
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "]" 'org-agenda-later)

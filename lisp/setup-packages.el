@@ -1,7 +1,7 @@
 ;; fails to compile on android, also default recipe fails when used with elpaca
 (when (not (is-android-system))
   (use-package auctex
-    :elpaca '(auctex
+    :ensure '(auctex
               :pre-build (("./autogen.sh")
                           ("./configure"
                            "--without-texmf-dir"
@@ -70,7 +70,7 @@
 
 ;; projectile, for project browsing/management
 ;; (use-package projectile
-;;   :elpaca (:host github :repo "bbatsov/projectile")
+;;   :ensure (:host github :repo "bbatsov/projectile")
 ;;   :config
 ;;   ;; (setq projectile-completion-system 'ivy)
 ;;   (projectile-mode +1))
@@ -82,7 +82,7 @@
 (if enable-company
     (progn
       (use-package company
-        :elpaca (:host github :repo "company-mode/company-mode")
+        :ensure (:host github :repo "company-mode/company-mode")
         :config
         (add-hook 'after-init-hook 'global-company-mode)
         (global-set-key (kbd "M-/") 'company-complete-common-or-cycle)
@@ -141,7 +141,7 @@
       (corfu-quit-no-match t)
       (corfu-auto-delay 0.1) ;; never set it to 0, makes emacs very laggy and hogs cpu
       ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
-      ;; (corfu-separator " ") ;; set to orderless separator, if not using space
+      ;; (corfu-separator " ")
       (corfu-count 10)
       (corfu-indexed-mode t)
       (corfu-echo-mode t) ;; display brief documentation in echo area
@@ -185,15 +185,6 @@
       (interactive)
       (setq-local completion-at-point-functions (delete 'ispell-completion-at-point completion-at-point-functions)))
     (add-hook 'org-mode-hook #'remove-ispell-cap)
-
-    ;; (use-package orderless
-    ;;   :init
-    ;;   ;; configure a custom style dispatcher (see the consult wiki)
-    ;;   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-    ;;   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    ;;   (setq completion-styles '(orderless partial-completion basic);; '(orderless basic)
-    ;;         completion-category-defaults nil
-    ;;         completion-category-overrides nil))
 
     ;; corfu completion in the minibuffer
     (with-eval-after-load 'corfu
@@ -752,7 +743,7 @@ Return nil if not found."
 (use-package vimrc-mode)
 
 (use-package sly
-  :elpaca (:host github :repo "joaotavora/sly")
+  :ensure (:host github :repo "joaotavora/sly")
   :config
   (setq inferior-lisp-program "")
   (setq sly-lisp-implementations
@@ -811,7 +802,7 @@ Return nil if not found."
 
 ;; depth-dependent coloring of code
 (use-package prism
-  :elpaca (prism :fetcher github :repo "alphapapa/prism.el"))
+  :ensure (prism :fetcher github :repo "alphapapa/prism.el"))
 
 ;; its great but it uses alot of cpu especially when the gif has a fast timer
 (use-package org-inline-anim
@@ -846,11 +837,21 @@ Return nil if not found."
 
 ;; vertico config
 (use-package vertico
-  :init
+  :config
   (vertico-mode)
   ;; display vertico in different buffer
   (require 'vertico-buffer)
-  (vertico-buffer-mode))
+  (require 'vertico-grid)
+  (require 'vertico-mouse)
+  (require 'vertico-indexed)
+  (require 'vertico-reverse)
+  (vertico-buffer-mode)
+  (vertico-indexed-mode)
+  (vertico-mouse-mode)
+  (vertico-grid-mode)
+  ;; (vertico-reverse-mode)
+  (setq vertico-grid-annotate 1)
+  )
 (defun crm-indicator (args)
   (cons (format "[CRM%s] %s"
                 (replace-regexp-in-string
@@ -871,13 +872,15 @@ Return nil if not found."
 (setq enable-recursive-minibuffers t)
 (use-package orderless
   :config
-  (setq orderless-component-separator #'orderless-escapable-split-on-space
-        completion-styles '(orderless partial-completion basic)))
-(setq read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t)
+  (setq read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t)
+  (setq completion-styles '(orderless basic flex)
+        orderless-component-separator #'orderless-escapable-split-on-space
+        ;; completion-category-overrides '((file (styles basic partial-completion))))
+  ))
 ;; commands for ido-like directory navigation.
 (use-package vertico-directory
-  :elpaca nil
+  :ensure nil
   :after vertico
   :ensure nil
   ;; more convenient directory navigation commands
@@ -921,7 +924,7 @@ Return nil if not found."
 (use-package pyvenv)
 
 (use-package combobulate
-  :elpaca
+  :ensure
   (combobulate :type git :host github :repo "mickeynp/combobulate")
   :hook
   ((python-ts-mode . combobulate-mode)
@@ -958,14 +961,14 @@ Return nil if not found."
 
 ;; very buggy
 ;; (use-package org-src-context
-;;   :elpaca (org-src-context :type git :host github :repo "karthink/org-src-context")
+;;   :ensure (org-src-context :type git :host github :repo "karthink/org-src-context")
 ;;   :config
 ;;   (add-hook 'org-mode-hook #'org-src-context-mode))
 
 ;; (use-package wolfram)
 ;; (use-package wolfram-mode)
 (use-package wolfram-mode
-  :elpaca (wolfram-mode :fetcher github :repo "dalanicolai/wolfram-mode" :files ("*.el"))
+  :ensure (wolfram-mode :fetcher github :repo "dalanicolai/wolfram-mode" :files ("*.el"))
   :config
   (load-library "ob-wolfram")
   (setq org-babel-wolfram-command "wolfram -script")
@@ -987,13 +990,13 @@ Return nil if not found."
 ;;   (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
 ;;(use-package el-easydraw
-;;  :elpaca
+;;  :ensure
 ;;  (el-easydraw :type git :host github :repo "misohena/el-easydraw"))
 
 ;; (use-package org-timeblock)
 
 ;; (use-package org-modern-indent
-;;   :elpaca (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+;;   :ensure (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
 ;;   :config ; add late to hook
 ;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
@@ -1055,7 +1058,7 @@ Return nil if not found."
 (use-package org-pdftools)
 
 (use-package hyperbole
-  :elpaca (hyperbole :fetcher github :repo "rswgnu/hyperbole")
+  :ensure (hyperbole :fetcher github :repo "rswgnu/hyperbole")
   :config
   (hyperbole-mode 1)
   ;; it overrides the M-return key for vertico :/
@@ -1071,19 +1074,26 @@ Return nil if not found."
   (add-hook 'dired-mode-hook #'denote-dired-mode)
   (add-to-list 'denote-file-types
                '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
-  (setq org-agenda-files (denote-files-with-keyword "todo")))
+  )
 (defun denote-files-with-keyword (keyword)
   (cl-remove-if-not (lambda (filepath) (member keyword (denote-extract-keywords-from-path filepath)))
                     (denote-directory-files)))
+(defun my-org-agenda-files ()
+  (denote-files-with-keyword "todo"))
+(defun my-org-agenda ()
+  (interactive)
+  (let ((org-agenda-files (my-org-agenda-files)))
+    (org-agenda nil "A")))
+
 ;; (setq org-agenda-files (denote-directory-files ".*todo.*"))
 
 (use-package denote-menu
-  :elpaca (denote-menu :fetcher github :repo "namilus/denote-menu"))
+  :ensure (denote-menu :fetcher github :repo "namilus/denote-menu"))
 ;; (use-package consult-notes)
 ;; (use-package citar-denote)
 ;; (use-package consult-explore)
 ;; (use-package denote-explore)
-;; :elpaca (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
+;; :ensure (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
 ;; (use-package xeft)
 ;; (use-package citar)
@@ -1101,18 +1111,15 @@ Return nil if not found."
 ;;   :ensure ( :fetcher github :repo "dalanicolai/djvu2.el"))
 ;; (use-package djvu)
 
-(setq enable-god nil)
-(when enable-god
-  (use-package god-mode
-    :config
-    (god-mode)
-    (global-set-key (kbd "<escape>") #'god-mode-all)
-    (setq god-exempt-major-modes nil)
-    (setq god-exempt-predicates nil))
-  (defun my-god-mode-update-cursor-type ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-  )
+;; (use-package god-mode
+;;   :config
+;;   (god-mode)
+;;   (global-set-key (kbd "<escape>") #'god-mode-all)
+;;   (setq god-exempt-major-modes nil)
+;;   (setq god-exempt-predicates nil))
+;; (defun my-god-mode-update-cursor-type ()
+;;   (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+;; (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
 
 ;; latex auto activating snippets
 ;; it requries auctex, so disable it on android
