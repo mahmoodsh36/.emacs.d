@@ -354,14 +354,31 @@ prompt the user for a coding system."
 ;; prettify symbols..
 (global-prettify-symbols-mode +1)
 ;; replace lambda text with symbol
-(defconst lisp--prettify-symbols-alist
+(defconst lisp-prettify-symbols-alist
   '(("lambda"  . ?λ)
     ("let" . ?≜)
     ("nil" . ?∅)
     ("sqrt" . ?√)
     ("sum" . ?∑)
     ("equal" . ?≡)
-    ("defu" . ?⪮)))
+    ("defun" . ?⪮)
+    ("<=" . ?≤)
+    ("->" . ?→)
+    ("->>" . ?↠)
+    ("=>" . ?⇒)
+    ("map" . ?↦)
+    ("/=" . ?≠)
+    ("!=" . ?≠)
+    ("==" . ?≡)
+    ("<=" . ?≤)
+    (">=" . ?≥)
+    ("<<" . ?≪)
+    (">>" . ?≫)
+    ("<=<" . ?↢)
+    (">=>" . ?↣)
+    ("&&" . ?∧)
+    ("||" . ?∨)
+    ("not" . ?¬)))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 ;; (add-hook 'emacs-lisp-mode-hook
@@ -389,6 +406,25 @@ prompt the user for a coding system."
 ;;   ;; org mode doesnt inherit the global mode for some reason so imma hook it manually
 ;;   (prettify-symbols-mode))
 ;; (add-hook 'org-mode-hook #'org-set-prettify-symbols)
+
+;; https://www.emacswiki.org/emacs/PrettyGreek
+;; theres alsp https://www.emacswiki.org/emacs/PrettySymbolsForLanguages
+(defun pretty-greek ()
+  (let ((greek '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" "pi" "rho" "sigma_final" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega")))
+    (loop for word in greek
+          for code = 97 then (+ 1 code)
+          do  (let ((greek-char (make-char 'greek-iso8859-7 code))) 
+                (font-lock-add-keywords nil
+                                        `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
+                                           (0 (progn (decompose-region (match-beginning 2) (match-end 2))
+                                                     nil)))))
+                (font-lock-add-keywords nil 
+                                        `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
+                                           (0 (progn (compose-region (match-beginning 2) (match-end 2)
+                                                                     ,greek-char)
+                                                     nil)))))))))
+  (add-hook 'lisp-mode-hook 'pretty-greek)
+(add-hook 'emacs-lisp-mode-hook 'pretty-greek)
 
 (defun ascii-table ()
   "display basic ASCII table (0 thru 128)."

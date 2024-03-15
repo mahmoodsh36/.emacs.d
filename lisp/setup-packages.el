@@ -848,7 +848,7 @@ Return nil if not found."
   (vertico-buffer-mode)
   (vertico-indexed-mode)
   (vertico-mouse-mode)
-  (vertico-grid-mode)
+  ;; (vertico-grid-mode)
   ;; (vertico-reverse-mode)
   (setq vertico-grid-annotate 1)
   )
@@ -1082,8 +1082,8 @@ Return nil if not found."
   (denote-files-with-keyword "todo"))
 (defun my-org-agenda ()
   (interactive)
-  (let ((org-agenda-files (my-org-agenda-files)))
-    (org-agenda nil "A")))
+  (setq org-agenda-files (my-org-agenda-files))
+  (org-agenda nil "A"))
 
 ;; (setq org-agenda-files (denote-directory-files ".*todo.*"))
 
@@ -1232,5 +1232,10 @@ Return nil if not found."
 ;;   :config
 ;;   (add-hook 'pdf-view-mode-hook 'pdf-view-restore-mode)
 ;;   (setq pdf-view-restore-filename (from-brain "pdf-view-restore")))
+
+;; allows for defining expressions based on regexp, unlike the builtin prettify-symbols-mode
+(use-package pretty-mode)
+
+(use-package ligature)
 
 (provide 'setup-packages)

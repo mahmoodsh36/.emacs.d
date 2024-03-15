@@ -330,6 +330,8 @@
   (setq org-display-remote-inline-images t)
   ;; display full text of links
   (setq org-link-descriptive nil)
+  (setq org-pretty-entities t)
+  (setq org-ellipsis "⤵")
 
   ;; make org not evaluate code blocks on exporting
   ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
