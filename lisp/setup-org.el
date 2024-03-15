@@ -873,9 +873,8 @@ should be continued."
              (filepath (grep-result-file entry)))
         (denote-link filepath 'org picked-title)))))
 
-(defun my-notes-open-all ()
-  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky.."
-  (interactive)
+(defun my-notes-prompt ()
+  "returns (title . grep-result) or nil"
   (let* ((grep-results
           (grep-org-dir
            ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
@@ -909,11 +908,45 @@ should be continued."
                 (format "\t%s" desc)))))
          (picked-title (completing-read "title: " just-titles))
          (picked-entry-index (cl-position picked-title just-titles :test #'equal)))
-    (if picked-entry-index
-      (let* ((entry (elt entries picked-entry-index))
-             (filepath (grep-result-file (cddr entry))))
-        (find-file filepath))
-      (call-interactively 'denote))))
+    (when picked-entry-index
+      (cons (car (elt entries picked-entry-index))
+            (cddr (elt entries picked-entry-index))))))
+
+(defun my-notes-open ()
+  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky.."
+  (interactive)
+  (let ((entry (my-notes-prompt)))
+    (when entry
+      (let* ((title (car entry))
+             (grep-result (cdr entry))
+             (filepath (grep-result-file grep-result))
+             (line (grep-result-line-number grep-result)))
+        (message "opened node with title %s" title)
+        (find-file filepath)
+        (goto-line line)))))
+
+(defun my-notes-insert ()
+  (interactive)
+  (let ((entry (my-notes-prompt)))
+    (when entry
+      (let* ((grep-result (cdr entry))
+             (filepath (grep-result-file grep-result))
+             (line (grep-result-line-number grep-result))
+             (elm (with-file-as-current-buffer
+                   filepath
+                   (goto-line line)
+                   (org-element-at-point))))
+        (when elm
+          (let* ((elm-type (org-element-type elm))
+                 (link-path (cl-case elm-type
+                              ('special-block (concat "blk:" (org-element-property :name elm)) )
+                              ('keyword (concat "denote:" (denote-retrieve-filename-identifier filepath))))) ;; then its a denote file
+                 (link-value (cl-case elm-type
+                               ('special-block nil)
+                               ('keyword (org-element-property :value elm)))))
+            (if link-value
+                (insert (format "[[%s][%s]]" link-path link-value))
+              (insert (format "[[%s]]" link-path)))))))))
 
 (defun map-org-dir-elements (regex dir elm-type fn)
   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"

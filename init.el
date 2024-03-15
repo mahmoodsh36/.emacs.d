@@ -356,7 +356,7 @@ prompt the user for a coding system."
 ;; replace lambda text with symbol
 (defconst lisp-prettify-symbols-alist
   '(("lambda"  . ?λ)
-    ("let" . ?≜)
+    ;; ("let" . ?≜)
     ("nil" . ?∅)
     ("sqrt" . ?√)
     ("sum" . ?∑)
