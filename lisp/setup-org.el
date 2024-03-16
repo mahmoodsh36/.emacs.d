@@ -325,11 +325,11 @@
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
-  (plist-put org-latex-preview-appearance-options :page-width 0.85)
+  ;; (plist-put org-latex-preview-appearance-options :page-width 0.85)
   ;; display inline tramp images in org mode (and other remote image links)
   (setq org-display-remote-inline-images t)
   ;; display full text of links
-  (setq org-link-descriptive nil)
+  ;; (setq org-link-descriptive nil)
   ;; (setq org-pretty-entities t)
   (setq org-ellipsis "⤵")
 
@@ -752,7 +752,7 @@ should be continued."
   (if (org-blk-find-anchor link)
       (let* ((linked-file (car (org-blk-find-anchor link)))
              (desc (or desc link))
-             (linked-file-html (file-name-sans-extension linked-file)))
+             (linked-file-html (file-name-sans-extension (file-name-base linked-file))))
         (cond
          ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-html desc))
          ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))

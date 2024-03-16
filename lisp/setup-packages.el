@@ -497,28 +497,32 @@
 (use-package mixed-pitch
   :hook
   (text-mode . mixed-pitch-mode))
+(add-hook 'text-mode-hook
+          (lambda ()
+            (variable-pitch-mode 1)))
 
 ;; ;; give org mode a better look
-;; (use-package org-modern
-;;   :config
-;;   (setq
-;;    org-modern-hide-stars nil
-;;    org-auto-align-tags nil
-;;    org-tags-column 0
-;;    org-catch-invisible-edits 'show-and-error
-;;    org-special-ctrl-a/e t
-;;    org-insert-heading-respect-content t
-;;    ;; Agenda styling
-;;    ;; org-agenda-tags-column 0
-;;    ;; org-agenda-block-separator ?─
-;;    ;; org-agenda-time-grid
-;;    ;; '((daily today require-timed)
-;;    ;;   (800 1000 1200 1400 1600 1800 2000)
-;;    ;;   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-;;    ;; org-agenda-current-time-string
-;;    ;; "⭠ now ─────────────────────────────────────────────────"
-;;    )
-;;   (global-org-modern-mode))
+(use-package org-modern
+  ;; :config
+  ;; (setq
+  ;;  org-modern-hide-stars nil
+  ;;  org-auto-align-tags nil
+  ;;  org-tags-column 0
+  ;;  org-catch-invisible-edits 'show-and-error
+  ;;  org-special-ctrl-a/e t
+  ;;  org-insert-heading-respect-content t
+  ;;  ;; Agenda styling
+  ;;  ;; org-agenda-tags-column 0
+  ;;  ;; org-agenda-block-separator ?─
+  ;;  ;; org-agenda-time-grid
+  ;;  ;; '((daily today require-timed)
+  ;;  ;;   (800 1000 1200 1400 1600 1800 2000)
+  ;;  ;;   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+  ;;  ;; org-agenda-current-time-string
+  ;;  ;; "⭠ now ─────────────────────────────────────────────────"
+  ;;  )
+  ;; (global-org-modern-mode)
+  )
 
 ;; show hidden elements when cursor is over them like links/markers etc
 (use-package org-appear
@@ -1237,5 +1241,7 @@ Return nil if not found."
 (use-package pretty-mode)
 
 (use-package ligature)
+
+(use-package font-lock-studio)
 
 (provide 'setup-packages)

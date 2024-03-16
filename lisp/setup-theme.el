@@ -40,12 +40,42 @@
 ;; (set-face-attribute 'org-block-end-line nil :background nil)
 ;; (set-face-attribute 'org-block-begin-line nil :background nil)
 
+(defun clear-face (face)
+  (set-face-attribute face nil
+                      ;; there are more attributes not specified here
+                      :underline 'unspecified
+                      :slant 'unspecified
+                      :weight 'unspecified
+                      :height 'unspecified
+                      :family 'unspecified
+                      :foreground 'unspecified
+                      :background 'unspecified
+                      :inherit 'src))
+
+(with-eval-after-load 'org
+  ;; to get rid of the block fontification done by org, its horrible..
+  (defun org-fontify-meta-lines-and-blocks (_)
+    )
+  (font-lock-add-keywords 'org-mode '(("#\\+begin_.*\\|#\\+end_.*" 0 '(highlight :foreground 'cyan :background 'black))))
+
+  ;; this doesnt work, why?
+  ;; (font-lock-add-keywords 'org-mode '(("#\\+begin_" . font-lock-keyword-face)))
+  ;; (font-lock-remove-keywords 'org-mode '(("#\\+begin_.*" . font-lock-keyword-face)))
+  ;; (font-lock-add-keywords 'org-mode
+  ;;                         '(("#\\+begin_.*" . (:foreground "cyan"))))
+  )
+
 (defun switch-to-theme (theme)
   "remove current theme, switch to another"
   (when (car custom-enabled-themes)
     (disable-theme (car custom-enabled-themes)))
   (load-theme theme t)
-  ;; (set-face-attribute 'org-block nil :background nil)
+  (clear-face 'org-block)
+  (clear-face 'org-block-begin-line)
+  (clear-face 'org-block-end-line)
+  ;; (custom-set-faces '(org-block ((t (:inherit 'src)))))
+  ;; (set-face-attribute 'whitespace-space nil :background nil)
+  ;; (set-face-attribute 'whitespace-newline nil :background nil)
   (set-themed-pdf t))
 
 (defun switch-to-darktooth-theme ()
