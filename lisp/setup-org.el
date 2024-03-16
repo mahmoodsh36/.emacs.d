@@ -330,7 +330,7 @@
   (setq org-display-remote-inline-images t)
   ;; display full text of links
   (setq org-link-descriptive nil)
-  (setq org-pretty-entities t)
+  ;; (setq org-pretty-entities t)
   (setq org-ellipsis "⤵")
 
   ;; make org not evaluate code blocks on exporting
@@ -769,11 +769,12 @@ should be continued."
   (let ((present-buffer (gensym))
         (result (gensym)))
     `(let ((,present-buffer (find-buffer-visiting ,file)))
-       (with-current-buffer (or (find-buffer-visiting ,file) (find-file-noselect ,file))
-         (setq ,result (progn ,@body))
-         (when (not ,present-buffer)
-           (kill-buffer (current-buffer)))
-         ,result))))
+       (save-excursion
+         (with-current-buffer (or (find-buffer-visiting ,file) (find-file-noselect ,file))
+           (setq ,result (progn ,@body))
+           (when (not ,present-buffer)
+             (kill-buffer (current-buffer)))
+           ,result)))))
 
 (defun export-org-file (file &rest kw)
   "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
@@ -939,7 +940,8 @@ should be continued."
         (when elm
           (let* ((elm-type (org-element-type elm))
                  (link-path (cl-case elm-type
-                              ('special-block (concat "blk:" (org-element-property :name elm)) )
+                              ('special-block (concat "blk:" (org-element-property :name elm)))
+                              ('latex-environment (concat "blk:" (org-element-property :name elm)))
                               ('keyword (concat "denote:" (denote-retrieve-filename-identifier filepath))))) ;; then its a denote file
                  (link-value (cl-case elm-type
                                ('special-block nil)
