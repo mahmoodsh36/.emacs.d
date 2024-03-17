@@ -664,10 +664,9 @@ See `eval-after-load' for the possible formats of FORM."
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
 
-            ;; (switch-to-theme 'ef-autumn)
+            (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)
-            (switch-to-theme 'doom-tomorrow-night)
 
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)

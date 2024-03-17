@@ -53,7 +53,7 @@
                       :inherit 'src))
 
 (with-eval-after-load 'org
-  ;; to get rid of the block fontification done by org, its horrible..
+  ;; to get rid of the block fontification done by org, its horrible.., this also gets rid of some lag, i think..
   (defun org-fontify-meta-lines-and-blocks (_)
     )
   (font-lock-add-keywords 'org-mode '(("#\\+begin_.*\\|#\\+end_.*" 0 '(highlight :foreground 'cyan :background 'black))))

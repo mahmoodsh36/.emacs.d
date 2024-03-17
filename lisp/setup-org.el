@@ -325,7 +325,7 @@
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
-  ;; (plist-put org-latex-preview-appearance-options :page-width 0.85)
+  (plist-put org-latex-preview-appearance-options :page-width 0.85)
   ;; display inline tramp images in org mode (and other remote image links)
   (setq org-display-remote-inline-images t)
   ;; display full text of links
