@@ -122,12 +122,12 @@
 ;; default shell for M-x term
 (setq explicit-shell-file-name "zsh")
 (setq bookmark-file (from-brain "emacs_bookmarks"))
-(global-highlight-changes-mode)
-;; remove highlights after save
-(add-hook 'after-save-hook
-          '(lambda()
-             (if (boundp 'highlight-changes-mode)
-                 (highlight-changes-remove-highlight (point-min) (point-max)))))
+;; (global-highlight-changes-mode)
+;; ;; remove highlights after save
+;; (add-hook 'after-save-hook
+;;           '(lambda()
+;;              (if (boundp 'highlight-changes-mode)
+;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
 
 ;; configure eglot (builtin)
 (use-package eglot

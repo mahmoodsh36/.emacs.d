@@ -343,3 +343,7 @@
   \arrowfill@\twoheadleftarrow\relbar\twoheadrightarrow
 }
 \makeatother
+
+% rewrite some macros from physics to avoid using the package itself
+\newcommand\pmqty[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand\bmqty[1]{\begin{bmatrix}#1\end{bmatrix}}
