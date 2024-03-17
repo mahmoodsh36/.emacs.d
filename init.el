@@ -67,7 +67,7 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 ;; (when window-system (set-frame-size (selected-frame) 120 48))
-(when window-system (set-frame-size (selected-frame) 100 50))
+;; (when window-system (set-frame-size (selected-frame) 100 50))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
 (when (not (is-android-system))
@@ -122,6 +122,12 @@
 ;; default shell for M-x term
 (setq explicit-shell-file-name "zsh")
 (setq bookmark-file (from-brain "emacs_bookmarks"))
+(global-highlight-changes-mode)
+;; remove highlights after save
+(add-hook 'after-save-hook
+          '(lambda()
+             (if (boundp 'highlight-changes-mode)
+                 (highlight-changes-remove-highlight (point-min) (point-max)))))
 
 ;; configure eglot (builtin)
 (use-package eglot
@@ -660,13 +666,13 @@ See `eval-after-load' for the possible formats of FORM."
             ;; (switch-to-theme 'doom-gruvbox-light)
             ;; (switch-to-theme 'stimmung-themes-light)
             ;; (switch-to-theme 'stimmung-themes-dark)
-            ;; (switch-to-theme 'ef-melissa-light)
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
 
-            (switch-to-theme 'ef-autumn)
+            ;; (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)
+            (switch-to-theme 'ef-melissa-light)
 
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)

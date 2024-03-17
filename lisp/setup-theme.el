@@ -50,13 +50,13 @@
                       :family 'unspecified
                       :foreground 'unspecified
                       :background 'unspecified
-                      :inherit 'src))
+                      :inherit 'unspecified))
 
 (with-eval-after-load 'org
   ;; to get rid of the block fontification done by org, its horrible.., this also gets rid of some lag, i think..
   (defun org-fontify-meta-lines-and-blocks (_)
     )
-  (font-lock-add-keywords 'org-mode '(("#\\+begin_.*\\|#\\+end_.*" 0 '(highlight :foreground 'cyan :background 'black))))
+  (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n]*" 0 '(highlight :foreground 'cyan :background 'black))))
 
   ;; this doesnt work, why?
   ;; (font-lock-add-keywords 'org-mode '(("#\\+begin_" . font-lock-keyword-face)))
