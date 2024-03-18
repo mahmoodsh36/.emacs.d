@@ -886,7 +886,7 @@ should be continued."
            (mapcar
             (lambda (entry)
               (let ((line (caddr entry)))
-                (cond ((string-match-p ":defines\\|:title\\|:alias" line)
+                (cond ((string-match-p ":defines\\|:title\\|:alias\\|:name" line)
                        (mapcar
                         (lambda (part)
                           ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
@@ -905,7 +905,7 @@ should be continued."
           '(:annotation-function
             (lambda (key)
               (let* ((entry (alist-get key entries nil nil #'equal))
-                     (desc (format "%s %s" (car entry) (grep-result-file (cdr entry)))))
+                     (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
                 (format "\t%s" desc)))))
          (picked-title (completing-read "title: " just-titles))
          (picked-entry-index (cl-position picked-title just-titles :test #'equal)))

@@ -57,12 +57,6 @@
   (defun org-fontify-meta-lines-and-blocks (_)
     )
   (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n]*" 0 '(highlight :foreground "cyan" :background "black"))))
-
-  ;; this doesnt work, why?
-  ;; (font-lock-add-keywords 'org-mode '(("#\\+begin_" . font-lock-keyword-face)))
-  ;; (font-lock-remove-keywords 'org-mode '(("#\\+begin_.*" . font-lock-keyword-face)))
-  ;; (font-lock-add-keywords 'org-mode
-  ;;                         '(("#\\+begin_.*" . (:foreground "cyan"))))
   )
 
 (defun switch-to-theme (theme)
@@ -73,7 +67,6 @@
   (clear-face 'org-block)
   (clear-face 'org-block-begin-line)
   (clear-face 'org-block-end-line)
-  ;; (custom-set-faces '(org-block ((t (:inherit 'src)))))
   ;; (set-face-attribute 'whitespace-space nil :background nil)
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   (set-themed-pdf t))

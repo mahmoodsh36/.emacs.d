@@ -39,7 +39,7 @@
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
 (when (not (is-android-system))
-  ;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+  (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
   (toggle-scroll-bar -1)
   (tool-bar-mode -1)
   ;; margin around the windows
@@ -101,8 +101,8 @@
 ;; use imagemagick for formats like webp
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
-;; (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof))
-(setq whitespace-style '(face tabs trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof))
+;; (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof)) ;; use this to highlight everything including space
+(setq whitespace-style '(face tabs spaces indentation trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof)) ;; use this to not highlight spaces, works with org better and some themes.. (a fallback)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; change newline character
@@ -128,23 +128,6 @@
 ;;           '(lambda()
 ;;              (if (boundp 'highlight-changes-mode)
 ;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
-
-;; configure eglot (builtin)
-(use-package eglot
-  :ensure nil
-  :bind (:map eglot-mode-map
-              ("C-h ." . eldoc))
-  :hook ((eglot-managed-mode . my/eglot-eldoc-settings))
-  :config
-  (add-hook 'prog-mode-hook #'eglot-ensure)
-  ;; (add-to-list 'eglot-server-programs
-  ;;              '(python-mode . ("ruff-lsp")))
-  (defun my/eglot-eldoc-settings ()
-    (setq eldoc-documentation-strategy
-          'eldoc-documentation-compose-eagerly))
-  ;; (setq eglot-put-doc-in-help-buffer nil)
-  (setq eglot-events-buffer-size 0)
-  (setq eglot-extend-to-xref t))
 
 ;; "smooth" scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -387,31 +370,6 @@ prompt the user for a coding system."
     ("not" . ?¬)))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
-;; (add-hook 'emacs-lisp-mode-hook
-;;             (lambda ()
-;;               (push '(">=" . ?≥) prettify-symbols-alist)))
-;; (defun org-set-prettify-symbols ()
-;;   (setq-local prettify-symbols-alist
-;;               (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-;;                       '(("#+begin_src" . ?➤)
-;;                         ("#+end_src" . ?⮜)
-;;                         ("#+begin_example" . ?)
-;;                         ("#+end_example" . ?)
-;;                         ("#+header:" . ?)
-;;                         ("#+title:" . ?🌐)
-;;                         ("#+results:" . ?)
-;;                         ("#+name:" . ?📌)
-;;                         ("#+call:" . ?)
-;;                         (":properties:" . ?)
-;;                         ("#+include:" . ?📎);;?🔗) ;;?📌)
-;;                         ("#+setupfile:" . ?🔧)
-;;                         ("#+filetags:" . "🔑")
-;;                         ;;💡🔥🔑💡🚀🔥💎📝🎯📌🔒🎁⭐💌🌺☢️
-;;                         ;; 𓍢ִ໋🌷͙֒
-;;                         )))
-;;   ;; org mode doesnt inherit the global mode for some reason so imma hook it manually
-;;   (prettify-symbols-mode))
-;; (add-hook 'org-mode-hook #'org-set-prettify-symbols)
 
 ;; https://www.emacswiki.org/emacs/PrettyGreek
 ;; theres alsp https://www.emacswiki.org/emacs/PrettySymbolsForLanguages
@@ -429,7 +387,7 @@ prompt the user for a coding system."
                                            (0 (progn (compose-region (match-beginning 2) (match-end 2)
                                                                      ,greek-char)
                                                      nil)))))))))
-  (add-hook 'lisp-mode-hook 'pretty-greek)
+(add-hook 'lisp-mode-hook 'pretty-greek)
 (add-hook 'emacs-lisp-mode-hook 'pretty-greek)
 
 (defun ascii-table ()
@@ -640,6 +598,7 @@ See `eval-after-load' for the possible formats of FORM."
 (require 'setup-evil)
 (require 'setup-theme)
 (require 'setup-dired)
+(require 'setup-eglot)
 
 (defun insert-random-string (&optional num)
   (interactive)
@@ -669,10 +628,10 @@ See `eval-after-load' for the possible formats of FORM."
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
 
-            ;; (switch-to-theme 'ef-autumn)
+            (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)
-            (switch-to-theme 'ef-melissa-light)
+            ;; (switch-to-theme 'ef-melissa-light)
 
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'gruvbox-dark-hard)
@@ -707,6 +666,10 @@ See `eval-after-load' for the possible formats of FORM."
 
 ;; execute some python blocks when a python repl starts
 (add-hook 'inferior-python-mode-hook (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
+
+;; transparency
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 
 ;; http://xahlee.info/emacs/emacs/emacs_file_encoding.html
 ;; utf-8 as default encoding
