@@ -394,6 +394,24 @@
   ;;                            (overlay-start ov) (overlay-end ov)))))))
   ;; (add-hook 'org-latex-preview-overlay-update-functions
   ;;           #'my/org-latex-preview-center)
+
+  (setq ;; org-agenda-time-grid
+        ;; org-agenda-include-diary t
+        org-agenda-compact-blocks t
+        org-agenda-start-with-log-mode t)
+
+  (setq org-agenda-custom-commands
+        '(("c" "my custom agenda"
+           ((org-ql-block
+             '(or (and (not (done))
+                       (or (habit)
+                           (deadline auto)
+                           (scheduled :to today)
+                           (ts-active :on today)))
+                  (closed :on today))
+             ;; :sort '(todo priority date)
+             )))
+          ))
   )
 
 ;; run some python code from my org notes on shell startup
@@ -578,32 +596,6 @@
 ;; (advice-add #'org-html-special-block :around #'my-org-block-advice)
 ;; (advice-add #'org-hugo-special-block :around #'my-org-block-advice)
 
-;; (defun org-block-at-point ()
-;;   (let ((blk (org-element-at-point)))
-;;     (if (not (org-element-property :name blk)) ;; a block must have a :name
-;;         (setq blk (org-element-parent blk)))
-;;     (if (org-element-property :name blk)
-;;         blk
-;;       nil)))
-
-(defun timestamp-midnight (timestamp)
-  (let ((decoded (decode-time timestamp)))
-    (setf (nth 0 decoded) 0)
-    (setf (nth 1 decoded) 0)
-    (setf (nth 2 decoded) 0)
-    (apply #'encode-time decoded)))
-(defun org-agenda-skip-if-scheduled-earlier ()
-  "If this function returns nil, the current match should not be skipped.
-Otherwise, the function must return a position from where the search
-should be continued."
-  (ignore-errors
-    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-          (scheduled-seconds (org-time-string-to-seconds (org-entry-get nil "SCHEDULED")))
-          (now (time-to-seconds (timestamp-midnight (current-time)))))
-      (and scheduled-seconds
-           (>= scheduled-seconds now)
-           subtree-end))))
-
 (defun my-org-agenda-files ()
   (denote-files-with-keyword "todo"))
 (defun denote-files-with-keyword (keyword)
@@ -614,42 +606,19 @@ should be continued."
 
 ;; https://github.com/alphapapa/org-ql/blob/master/examples.org
 ;; https://github.com/alphapapa/org-super-agenda
+;; https://github.com/alphapapa/org-super-agenda/blob/master/examples.org
 (defun my-org-agenda ()
   (interactive)
   (setq org-agenda-files (my-org-agenda-files))
+
   (let ((org-super-agenda-groups
          '(;; Each group has an implicit boolean OR operator between its selectors.
-           (:name "Today"  ; Optionally specify section name
-                  :time-grid t  ; Items that appear on the time grid
-                  :todo "TODAY")  ; Items that have this TODO keyword
-           (:name "Important"
-                  ;; Single arguments given alone
-                  :tag "bills"
-                  :priority "A")
-           ;; Set order of multiple groups at once
-           (:order-multi (2 (:name "Shopping in town"
-                                   ;; Boolean AND group matches items that match all subgroups
-                                   :and (:tag "shopping" :tag "@town"))
-                            (:name "Food-related"
-                                   ;; Multiple args given in list with implicit OR
-                                   :tag ("food" "dinner"))
-                            (:name "Personal"
-                                   :habit t
-                                   :tag "personal")
-                            (:name "Space-related (non-moon-or-planet-related)"
-                                   ;; Regexps match case-insensitively on the entire entry
-                                   :and (:regexp ("space" "NASA")
-                                                 ;; Boolean NOT also has implicit OR between selectors
-                                                 :not (:regexp "moon" :tag "planet")))))
-           ;; Groups supply their own section names when none are given
-           (:todo "WAITING" :order 8)  ; Set order of this section
-           (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
-                  ;; Show this group at the end of the agenda (since it has the
-                  ;; highest number). If you specified this group last, items
-                  ;; with these todo keywords that e.g. have priority A would be
-                  ;; displayed in that group instead, because items are grouped
-                  ;; out in the order the groups are listed.
-                  :order 9)
+           (:name "Today"
+                  :time-grid t
+                  :date today
+                  :todo "TODAY"
+                  :scheduled today
+                  :order 1)
            (:priority<= "B"
                         ;; Show this section after "Today" and "Important", because
                         ;; their order is unspecified, defaulting to 0. Sections

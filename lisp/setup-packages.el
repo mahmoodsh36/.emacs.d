@@ -1038,7 +1038,6 @@ Return nil if not found."
 ;;(use-package google-maps)
 
 (use-package google-translate)
-(use-package biblio)
 
 ;; i think its buggy..
 ;; (use-package jinx
@@ -1201,7 +1200,6 @@ Return nil if not found."
 ;; (use-package org-ai)
 ;; (use-package gptel)
 ;; (use-package ellama)
-(use-package org-super-agenda)
 (use-package fasd)
 (use-package aweshell
   :ensure ( :host github :repo "manateelazycat/aweshell"))
@@ -1260,5 +1258,15 @@ Return nil if not found."
 
 ;; (use-package consult-eglot)
 (use-package sideline)
+
+(use-package origami)
+
+(use-package org-super-agenda
+  ;; :config
+  ;; (org-super-agenda-mode)
+  )
+
+(use-package biblio)
+(use-package ebib)
 
 (provide 'setup-packages)
