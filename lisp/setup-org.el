@@ -604,57 +604,61 @@ should be continued."
            (>= scheduled-seconds now)
            subtree-end))))
 
-(with-eval-after-load 'org-agenda
-  (defvar prot-org-custom-daily-agenda
-    `((agenda "" ((org-agenda-span 1)
-                  (org-deadline-warning-days 0)
-                  (org-scheduled-past-days 0)
-                  ;; We don't need the `org-agenda-date-today'
-                  ;; highlight because that only has a practical
-                  ;; utility in multi-day views.
-                  (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
-                  (org-agenda-format-date "%A %-e %B %Y")
-                  (org-agenda-overriding-header "\ntoday's agenda")))
-      (agenda "" ((org-agenda-start-on-weekday nil)
-                  (org-agenda-start-day "+1d")
-                  (org-agenda-span 14)
-                  (org-agenda-show-all-dates nil)
-                  (org-deadline-warning-days 0)
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-overriding-header "\nnext 2 weeks")))
-      (agenda "" ((org-agenda-overriding-header "overdue")
-                  ;; (org-agenda-entry-types '(:deadline :scheduled))
-                  (org-scheduled-past-days 10000)
-                  (org-deadline-past-days 10000)
-                  (org-agenda-span 1)
-                  (org-agenda-start-on-weekday nil)
-                  (org-agenda-show-all-dates nil)
-                  (org-agenda-skip-function 'org-agenda-skip-if-scheduled-earlier)))
-      (agenda "" ((org-agenda-time-grid nil)
-                  (org-agenda-start-on-weekday nil)
-                  ;; we don't want to replicate the previous section's
-                  ;; three days, so we start counting from the day after.
-                  (org-agenda-start-day "+4d")
-                  (org-agenda-span 30)
-                  (org-agenda-show-all-dates nil)
-                  (org-deadline-warning-days 0)
-                  (org-agenda-entry-types '(:deadline))
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-overriding-header "\nupcoming deadlines (+14d)"))))
-    "Custom agenda for use in `org-agenda-custom-commands'.")
+(defun my-org-agenda-files ()
+  (denote-files-with-keyword "todo"))
+(defun denote-files-with-keyword (keyword)
+  (cl-remove-if-not
+   (lambda (filepath)
+     (member keyword (denote-extract-keywords-from-path filepath)))
+   (denote-directory-files)))
 
-
-  (setq org-agenda-custom-commands
-        `(("A" "Daily agenda and top priority tasks"
-           ,prot-org-custom-daily-agenda)
-          ("P" "Plain text daily agenda and top priorities"
-           ,prot-org-custom-daily-agenda
-           ((org-agenda-with-colors nil)
-            (org-agenda-prefix-format "%t %s")
-            (org-agenda-current-time-string ,(car (last org-agenda-time-grid)))
-            (org-agenda-fontify-priorities nil)
-            (org-agenda-remove-tags t))
-           ("agenda.txt")))))
+;; https://github.com/alphapapa/org-ql/blob/master/examples.org
+;; https://github.com/alphapapa/org-super-agenda
+(defun my-org-agenda ()
+  (interactive)
+  (setq org-agenda-files (my-org-agenda-files))
+  (let ((org-super-agenda-groups
+         '(;; Each group has an implicit boolean OR operator between its selectors.
+           (:name "Today"  ; Optionally specify section name
+                  :time-grid t  ; Items that appear on the time grid
+                  :todo "TODAY")  ; Items that have this TODO keyword
+           (:name "Important"
+                  ;; Single arguments given alone
+                  :tag "bills"
+                  :priority "A")
+           ;; Set order of multiple groups at once
+           (:order-multi (2 (:name "Shopping in town"
+                                   ;; Boolean AND group matches items that match all subgroups
+                                   :and (:tag "shopping" :tag "@town"))
+                            (:name "Food-related"
+                                   ;; Multiple args given in list with implicit OR
+                                   :tag ("food" "dinner"))
+                            (:name "Personal"
+                                   :habit t
+                                   :tag "personal")
+                            (:name "Space-related (non-moon-or-planet-related)"
+                                   ;; Regexps match case-insensitively on the entire entry
+                                   :and (:regexp ("space" "NASA")
+                                                 ;; Boolean NOT also has implicit OR between selectors
+                                                 :not (:regexp "moon" :tag "planet")))))
+           ;; Groups supply their own section names when none are given
+           (:todo "WAITING" :order 8)  ; Set order of this section
+           (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+                  ;; Show this group at the end of the agenda (since it has the
+                  ;; highest number). If you specified this group last, items
+                  ;; with these todo keywords that e.g. have priority A would be
+                  ;; displayed in that group instead, because items are grouped
+                  ;; out in the order the groups are listed.
+                  :order 9)
+           (:priority<= "B"
+                        ;; Show this section after "Today" and "Important", because
+                        ;; their order is unspecified, defaulting to 0. Sections
+                        ;; are displayed lowest-number-first.
+                        :order 1)
+           ;; After the last group, the agenda will display items that didn't
+           ;; match any of these groups, with the default order position of 99
+           )))
+    (org-agenda nil "a")))
 
 (setq org-capture-templates (list))
 (with-eval-after-load 'org

@@ -1079,17 +1079,6 @@ Return nil if not found."
   (add-to-list 'denote-file-types
                '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
   )
-(defun denote-files-with-keyword (keyword)
-  (cl-remove-if-not
-   (lambda (filepath)
-     (member keyword (denote-extract-keywords-from-path filepath)))
-   (denote-directory-files)))
-(defun my-org-agenda-files ()
-  (denote-files-with-keyword "todo"))
-(defun my-org-agenda ()
-  (interactive)
-  (setq org-agenda-files (my-org-agenda-files))
-  (org-agenda nil "A"))
 (with-eval-after-load 'denote
   ;; overwrite the export function, for some slight modifications
   (defun denote-link-ol-export (link description format)
@@ -1268,5 +1257,8 @@ Return nil if not found."
 (use-package ligature)
 
 (use-package font-lock-studio)
+
+;; (use-package consult-eglot)
+(use-package sideline)
 
 (provide 'setup-packages)
