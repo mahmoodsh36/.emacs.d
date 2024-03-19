@@ -1080,16 +1080,40 @@ Return nil if not found."
                '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
   )
 (defun denote-files-with-keyword (keyword)
-  (cl-remove-if-not (lambda (filepath) (member keyword (denote-extract-keywords-from-path filepath)))
-                    (denote-directory-files)))
+  (cl-remove-if-not
+   (lambda (filepath)
+     (member keyword (denote-extract-keywords-from-path filepath)))
+   (denote-directory-files)))
 (defun my-org-agenda-files ()
   (denote-files-with-keyword "todo"))
 (defun my-org-agenda ()
   (interactive)
   (setq org-agenda-files (my-org-agenda-files))
   (org-agenda nil "A"))
-
-;; (setq org-agenda-files (denote-directory-files ".*todo.*"))
+(with-eval-after-load 'denote
+  ;; overwrite the export function, for some slight modifications
+  (defun denote-link-ol-export (link description format)
+    (let* ((path-id (denote-link--ol-resolve-link-to-target link :full-data))
+           (path (file-relative-name (nth 0 path-id)))
+           (id (nth 1 path-id))
+           (search (nth 2 path-id))
+           (anchor (file-name-sans-extension path))
+           (path-no-ext (file-name-sans-extension (file-name-base path)))
+           (desc (cond
+                  (description)
+                  (search (format "denote:%s::%s" id search))
+                  (t (concat "denote:" id)))))
+      (cond
+       ((eq format 'html)
+        (if search
+            (format "<a href=\"%s.html%s\">%s</a>" anchor search desc)
+          (format "<a href=\"%s.html\">%s</a>" anchor desc)))
+       ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
+       ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+       ((eq format 'ascii) (format "[%s] <denote:%s>" desc path))
+       ((eq format 'md) (format "[%s](../%s.md)" desc path-no-ext))
+       (t path))))
+  )
 
 (use-package denote-menu
   :ensure (denote-menu :fetcher github :repo "namilus/denote-menu"))
@@ -1113,6 +1137,7 @@ Return nil if not found."
 
 ;; (use-package djvu2
 ;;   :ensure ( :fetcher github :repo "dalanicolai/djvu2.el"))
+;; without this emacs chokes on djvu files
 (use-package djvu)
 
 ;; (use-package god-mode

@@ -381,6 +381,7 @@
 ;; (led-kbd "r f" #'my-notes-open-by-title)
 ;; (led-kbd "r f" #'my-notes-open-all)
 (led-kbd "r f" #'my-notes-open)
+(global-set-key (kbd "<f6>") #'my-notes-open)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))
 (led-kbd "r c i" (lambda () (interactive) (org-capture nil "i")))

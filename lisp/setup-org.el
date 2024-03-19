@@ -752,13 +752,13 @@ should be continued."
   (if (org-blk-find-anchor link)
       (let* ((linked-file (car (org-blk-find-anchor link)))
              (desc (or desc link))
-             (linked-file-html (file-name-sans-extension (file-name-base linked-file))))
+             (linked-file-no-ext (file-name-sans-extension (file-name-base linked-file))))
         (cond
-         ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-html desc))
+         ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-no-ext desc))
          ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
          ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
          ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
-         ;; ((eq format 'md) (format "[%s](%s.md)" desc p))
+         ((eq format 'md) (format "[%s](%s.md)" desc linked-file-no-ext))
          (t link)))
     link))
 
