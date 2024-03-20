@@ -322,7 +322,8 @@
   ;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
   ;; dont limit the width of previews
   ;; (plist-put org-latex-preview-appearance-options :page-width nil)
-  ;; (plist-put org-html-latex-image-options :page-width nil)
+  (require 'ox-html)
+  (plist-put org-html-latex-image-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
   (plist-put org-latex-preview-appearance-options :page-width 0.85)
@@ -763,12 +764,43 @@
   "return all known org files"
   (directory-files (from-brain "notes/") t ".*\\.org$"))
 
+(defun files-linked-from-org-file (filepath)
+  (with-file-as-current-buffer
+   filepath
+   (remove
+    nil
+    (org-element-map (org-element-parse-buffer) 'link
+      (lambda (mylink)
+        (when (string= (org-element-property :type mylink) "blk")
+          (let ((filepath (pcase (org-element-property :type mylink)
+                            ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path mylink))))
+                            ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
+                            (_ nil))))
+            filepath)))))))
+
+(defun export-node-recursively (node exceptions &rest kw)
+  "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
+  (if (and node (when (not (cl-find node exceptions :test #'string=))))
+      (progn
+        (push node exceptions)
+        (let ((nodes (files-linked-from-org-file node)))
+          (dolist (other-node nodes)
+            (when other-node (message (format "exporter jumping to: %s" other-node)))
+            (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw)))))
+        (when (and node (should-export-org-file node))
+          (message (format "exporting: %s" node))
+          (apply #'export-org-file node kw))
+        exceptions)
+    exceptions))
+
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
-  (mapcar (lambda (file)
-            (when (should-export-org-file file)
-              (apply #'export-org-file file kw)))
-          (all-org-files)))
+  (let ((exceptions))
+    (mapcar (lambda (file)
+              (if (should-export-org-file file)
+                  (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
+                (setq exceptions (push file exceptions))))
+            (all-org-files))))
 
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
@@ -785,26 +817,6 @@
    file
    (org-collect-keywords '("hugo_section"))))
    ;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
-
-;; (defun export-node-recursively (node &optional exceptions)
-;;   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
-;;   ;; (message "%s" exceptions)
-;;   (if (and node
-;;            (when (not (cl-find node exceptions
-;;                                :test (lambda (node1 node2)
-;;                                        (string= (org-roam-node-file node1)
-;;                                                 (org-roam-node-file node2)))))))
-;;       (progn
-;;         (push node exceptions)
-;;         (let ((nodes (nodes-linked-from-node-file node)))
-;;           (dolist (other-node nodes)
-;;             (when other-node (message (format "exporter jumping to: %s" (org-roam-node-file other-node))))
-;;             (setf exceptions (export-node-recursively other-node exceptions))))
-;;         (when (and node (should-export-node node))
-;;           (message (format "exporting: %s" (org-roam-node-file node)))
-;;           (export-node node :html-p t))
-;;         exceptions)
-;;     exceptions))
 
 (defun my-notes-open-by-title ()
   "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
@@ -973,6 +985,6 @@
       (let ((filepath (car (elt grep-results picked-title-index))))
         (find-file filepath)))))
 
-(add-hook 'org-mode-hook (lambda () (setq completions-at-point-functions nil)))
+(add-hook 'org-mode-hook (lambda () (setq-local completions-at-point-functions nil)))
 
 (provide 'setup-org)
