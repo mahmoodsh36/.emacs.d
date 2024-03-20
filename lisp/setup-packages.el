@@ -158,10 +158,10 @@
       (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
       (corfu-auto-prefix 2)
       :config
-      ;; (unbind-key "RET" corfu-map)
-      ;; (unbind-key "TAB" corfu-map)
-      ;; (define-key corfu-map [tab] nil)
-      ;; (define-key corfu-map "\t" nil)
+      (unbind-key "RET" corfu-map)
+      (unbind-key "TAB" corfu-map)
+      (define-key corfu-map [tab] nil)
+      (define-key corfu-map "\t" nil)
       ;; (bind-key "C-TAB" #'corfu-complete corfu-map)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)

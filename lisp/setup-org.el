@@ -538,7 +538,7 @@
     (if filepath
         (if (should-export-org-file filepath)
             (funcall fn link desc info)
-          (format "%s" (org-element-property :path link)))
+          (format "%s" (or desc (org-element-property :path link))))
       (funcall fn link desc info))))
 (advice-add #'org-html-link :around #'my-org-link-advice)
 (advice-add #'org-hugo-link :around #'my-org-link-advice)
