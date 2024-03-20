@@ -130,7 +130,7 @@ img.figure {
 }
 
 /* centering for latex previews */
-.equation-container .equation .org-latex {
+.equation-container .equation {
     display: block !important; /* for some reason its set to inline-block which prevents centering */
     margin: auto;
 }
