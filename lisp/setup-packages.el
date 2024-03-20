@@ -10,7 +10,14 @@
                           ("make"))
               :build (:not elpaca--compile-info) ;; Make will take care of this step
               :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
-              :version (lambda (_) (require 'tex-site) AUCTeX-version))))
+              :version (lambda (_) (require 'tex-site) AUCTeX-version))
+    ;;:hook
+    ;; (LaTeX-mode . turn-on-prettify-symbols-mode)
+    ;; (LaTeX-mode . reftex-mode)
+    ;; (LaTeX-mode . (lambda () (corfu-mode -1)))
+    ;; (LaTeX-mode . outline-minor-mode)
+    ;; (LaTeX-mode . olivetti-mode))
+  ))
 
 ;; set of org-contrib packages
 (use-package org-contrib)
@@ -170,14 +177,21 @@
       (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
       )
 
+    ;; https://github.com/minad/cape
     (use-package cape
       :init
       (add-to-list 'completion-at-point-functions #'cape-dabbrev)
       (add-to-list 'completion-at-point-functions #'cape-file)
       (add-to-list 'completion-at-point-functions #'cape-tex)
-      ;; (add-to-list 'completion-at-point-functions #'cape-line)
+      (add-to-list 'completion-at-point-functions #'cape-line)
       (add-to-list 'completion-at-point-functions #'cape-keyword)
       (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+      (add-to-list 'completion-at-point-functions #'cape-history)
+      (add-to-list 'completion-at-point-functions #'cape-sgml)
+      (add-to-list 'completion-at-point-functions #'cape-rfc1345)
+      (add-to-list 'completion-at-point-functions #'cape-abbrev)
+      (add-to-list 'completion-at-point-functions #'cape-dict)
+      (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
       )
 
     ;; for some reason ispell completion is enabled in org mode
@@ -196,6 +210,7 @@
       (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
       )
 
+    ;; for shell completion i think
     (use-package pcmpl-args)
 
     ;; (use-package corfu-doc)
@@ -1268,5 +1283,8 @@ Return nil if not found."
 
 (use-package biblio)
 (use-package ebib)
+(use-package zotra)
+
+(use-package proof-general)
 
 (provide 'setup-packages)

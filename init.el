@@ -119,8 +119,6 @@
 (setq mode-require-final-newline nil)
 ;; dont deactivate the mark on non-shift commands
 (setq shift-select-mode 'permanent)
-;; default shell for M-x term
-(setq explicit-shell-file-name "zsh")
 (setq bookmark-file (from-brain "emacs_bookmarks"))
 ;; (global-highlight-changes-mode)
 ;; ;; remove highlights after save
@@ -128,6 +126,14 @@
 ;;           '(lambda()
 ;;              (if (boundp 'highlight-changes-mode)
 ;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
+
+;; for M-x term
+(setq explicit-shell-file-name "zsh")
+(setq shell-file-name "zsh")
+(setq explicit-zsh-args '("--login" "--interactive"))
+(defun zsh-shell-mode-setup ()
+  (setq-local comint-process-echoes t))
+(add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
 
 ;; "smooth" scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -379,11 +385,11 @@ prompt the user for a coding system."
           for code = 97 then (+ 1 code)
           do  (let ((greek-char (make-char 'greek-iso8859-7 code)))
                 (font-lock-add-keywords nil
-                                        `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
+                                        `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
                                            (0 (progn (decompose-region (match-beginning 2) (match-end 2))
                                                      nil)))))
                 (font-lock-add-keywords nil
-                                        `((,(concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
+                                        `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
                                            (0 (progn (compose-region (match-beginning 2) (match-end 2)
                                                                      ,greek-char)
                                                      nil)))))))))
