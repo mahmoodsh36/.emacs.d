@@ -156,6 +156,7 @@
       (corfu-quit-at-boundary nil)
       (corfu-on-exact-match nil) ;; dont auto insert when there is an exact match
       (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
+      (corfu-auto-prefix 2)
       :config
       ;; (unbind-key "RET" corfu-map)
       ;; (unbind-key "TAB" corfu-map)
@@ -1286,5 +1287,11 @@ Return nil if not found."
 (use-package zotra)
 
 (use-package proof-general)
+
+(use-package yasnippet-capf
+  :after cape
+  :ensure ( :host github :repo "elken/yasnippet-capf")
+  :config
+  (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 
 (provide 'setup-packages)

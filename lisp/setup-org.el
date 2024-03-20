@@ -979,6 +979,4 @@
       (let ((filepath (car (elt grep-results picked-title-index))))
         (find-file filepath)))))
 
-(add-hook 'org-mode-hook (lambda () (setq-local completions-at-point-functions nil)))
-
 (provide 'setup-org)
