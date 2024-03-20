@@ -128,12 +128,13 @@
 ;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
 
 ;; for M-x term
-(setq explicit-shell-file-name "zsh")
-(setq shell-file-name "zsh")
-(setq explicit-zsh-args '("--login" "--interactive"))
-(defun zsh-shell-mode-setup ()
-  (setq-local comint-process-echoes t))
-(add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
+;; (setq explicit-shell-file-name "zsh")
+;; (setq shell-file-name "zsh")
+;; (setq explicit-zsh-args '("--login" "--interactive"))
+;; (setq explicit-zsh-args '("--interactive"))
+;; (defun zsh-shell-mode-setup ()
+;;   (setq-local comint-process-echoes t))
+;; (add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
 
 ;; "smooth" scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
