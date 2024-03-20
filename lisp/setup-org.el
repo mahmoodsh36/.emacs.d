@@ -529,24 +529,19 @@
    org-nav-map)
   (define-key org-mode-map (kbd "C-l") org-nav-map))
 
-;; (defun my-org-link-advice (fn link desc info)
-;;   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-;;   (let* ((link-type (org-element-property :type link))
-;;          (link-path (org-element-property :path link))
-;;          (is-id-link (string= link-type "id")))
-;;     (if is-id-link
-;;         (condition-case err ;; handle error when org-roam cannot find link in database
-;;             (let* ((node (org-roam-node-from-id link-path))
-;;                    (tags (org-roam-node-tags node)))
-;;               (if (and (should-export-node node) ;; if note is public export as usual, otherwise dont export it as link but just as text
-;;                        (not (string-match-p "::" link-path))) ;; if link isnt of form [[id::block]], dont export it as link, we cant handle those yet
-;;                   (funcall fn link desc info)
-;;                 (format "<b>%s</b>" desc)))
-;;           (error (message "org-roam couldnt find link %s, error was: %s" link-path err)
-;;                  (format "<b>%s</b>" desc))) ;; even when we cant find it in the database we still render it
-;;       (funcall fn link desc info))))
-;; (advice-add #'org-html-link :around #'my-org-link-advice)
-;; (advice-add #'org-hugo-link :around #'my-org-link-advice)
+(defun my-org-link-advice (fn link desc info)
+  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
+  (let* ((filepath (pcase (org-element-property :type link)
+                     ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path link))))
+                     ("denote" (denote-get-path-by-id (org-element-property :path link)))
+                     (_ nil))))
+    (if filepath
+        (if (should-export-org-file filepath)
+            (funcall fn link desc info)
+          (format "%s" (org-element-property :path link)))
+      (funcall fn link desc info))))
+(advice-add #'org-html-link :around #'my-org-link-advice)
+(advice-add #'org-hugo-link :around #'my-org-link-advice)
 
 ;; set org-mode date's export according to file creation date
 (defun file-modif-time (filepath)
@@ -581,19 +576,19 @@
 ;;   (lsp))
 
 ;; org html title of blocks, unfinished
-(defun my-org-block-advice (fn special-block contents info)
-  "i use properties like :title <block title>, make those available in html output too"
-  (let ((args (org-babel-parse-header-arguments
-               (org-element-property :parameters
-                                     special-block))))
-    (if args
-        (progn
-          (let ((mytitle (alist-get :title args)))
-            ;; this is temporary, it replaces all html attributes instead of appending
-            (setf (plist-get (plist-get special-block 'special-block) :attr_html)
-                  (list (format ":data-title %s" mytitle)))
-            (funcall fn special-block contents info)))
-      (funcall fn special-block contents info))))
+;; (defun my-org-block-advice (fn special-block contents info)
+;;   "i use properties like :title <block title>, make those available in html output too"
+;;   (let ((args (org-babel-parse-header-arguments
+;;                (org-element-property :parameters
+;;                                      special-block))))
+;;     (if args
+;;         (progn
+;;           (let ((mytitle (alist-get :title args)))
+;;             ;; this is temporary, it replaces all html attributes instead of appending
+;;             (setf (plist-get (plist-get special-block 'special-block) :attr_html)
+;;                   (list (format ":data-title %s" mytitle)))
+;;             (funcall fn special-block contents info)))
+;;       (funcall fn special-block contents info))))
 ;; (advice-add #'org-html-special-block :around #'my-org-block-advice)
 ;; (advice-add #'org-hugo-special-block :around #'my-org-block-advice)
 
@@ -771,12 +766,11 @@
     nil
     (org-element-map (org-element-parse-buffer) 'link
       (lambda (mylink)
-        (when (string= (org-element-property :type mylink) "blk")
-          (let ((filepath (pcase (org-element-property :type mylink)
-                            ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path mylink))))
-                            ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
-                            (_ nil))))
-            filepath)))))))
+        (let ((filepath (pcase (org-element-property :type mylink)
+                          ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path mylink))))
+                          ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
+                          (_ nil))))
+          filepath))))))
 
 (defun export-node-recursively (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
