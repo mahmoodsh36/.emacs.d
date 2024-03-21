@@ -678,7 +678,7 @@
 (require 'subr-x) ;; for string-trim
 (defun grep-org-dir (rgx dir)
   "grep all org files in `*dir*' for the regex `rgx', returns a list of lists of the form ((file line-number line)...)"
-  (let* ((cmd (format "rg --field-match-separator '\t' -e '%s' -g '*.org' '%s' --no-heading --line-number" rgx dir))
+  (let* ((cmd (format "rg --field-match-separator '\t' -e '%s' -g '*.org' '%s' --no-heading --line-number --ignore-case" rgx dir))
          (output (string-trim (shell-command-to-string-no-stderr cmd))))
     (message "running %s" cmd)
     (when (not (equal "" output))
@@ -854,9 +854,10 @@
         (denote-link filepath 'org picked-title)))))
 
 (defun my-notes-prompt ()
-  "returns (title . grep-result) or nil"
+  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky. returns (title . grep-result) or nil"
   (let* ((grep-results
           (grep-org-dir
+           ;; ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
            ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
            *notes-dir*))
          (entries ;; (title . (annotation . grep-result)
@@ -871,9 +872,9 @@
                           ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
                           (let ((headers (org-babel-parse-header-arguments (concat ":" part))))
                             (cons (or (alist-get :title headers)
-                                      (alist-get :defines headers)
-                                      (alist-get :alias headers)
-                                      (alist-get :name headers))
+                                     (alist-get :defines headers)
+                                     (alist-get :alias headers)
+                                     (alist-get :name headers))
                                   (cons "block" entry))))
                         (cdr (split-string line " :"))))
                       ((string-match-p "#\\+name:" line)
@@ -881,7 +882,10 @@
                                    (cons "block" entry))))
                       ((string-match-p "#\\+alias:\\|#\\+title:" line)
                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
-                                   (cons "file" entry)))))))
+                                   (cons "file" entry))))
+                      ((string-match-p "^\* " line)
+                       (list (cons (cl-subseq (grep-result-line-content entry) 2)
+                                   (cons "heading" entry)))))))
             grep-results)))
          (just-titles (mapcar 'car entries))
          (completion-extra-properties
@@ -897,7 +901,6 @@
             (cddr (elt entries picked-entry-index))))))
 
 (defun my-notes-open ()
-  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky.."
   (interactive)
   (let ((entry (my-notes-prompt)))
     (when entry
