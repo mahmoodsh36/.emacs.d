@@ -162,7 +162,8 @@
       (unbind-key "TAB" corfu-map)
       (define-key corfu-map [tab] nil)
       (define-key corfu-map "\t" nil)
-      ;; (bind-key "C-TAB" #'corfu-complete corfu-map)
+      (bind-key "C-TAB" #'corfu-complete corfu-map) ;; why does this not work
+      (bind-key "M-TAB" #'corfu-complete corfu-map)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
       ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)
       )
