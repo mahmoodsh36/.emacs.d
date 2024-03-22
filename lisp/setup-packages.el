@@ -185,7 +185,7 @@
       (add-to-list 'completion-at-point-functions #'cape-dabbrev)
       (add-to-list 'completion-at-point-functions #'cape-file)
       (add-to-list 'completion-at-point-functions #'cape-tex)
-      (add-to-list 'completion-at-point-functions #'cape-line)
+      ;; (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
       (add-to-list 'completion-at-point-functions #'cape-keyword)
       (add-to-list 'completion-at-point-functions #'cape-elisp-block)
       (add-to-list 'completion-at-point-functions #'cape-history)
@@ -1294,5 +1294,8 @@ Return nil if not found."
   :ensure ( :host github :repo "elken/yasnippet-capf")
   :config
   (add-to-list 'completion-at-point-functions #'yasnippet-capf))
+
+(use-package async-completing-read
+  :ensure ( :host github :repo "oantolin/async-completing-read"))
 
 (provide 'setup-packages)

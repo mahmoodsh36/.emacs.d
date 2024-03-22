@@ -126,6 +126,8 @@
 ;;           '(lambda()
 ;;              (if (boundp 'highlight-changes-mode)
 ;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
+;; return propertized strings from completing-read (when theyre passed) [[denote:20240321T195503][alternative completing read]]
+(setq minibuffer-allow-text-properties t)
 
 ;; for M-x term
 ;; (setq explicit-shell-file-name "zsh")
@@ -355,8 +357,8 @@ prompt the user for a coding system."
     ;; ("let" . ?≜)
     ("nil" . (?· (Br . Bl) ?· (Br . Bl) ?∅))
     ("sqrt" . ?√)
-    ("sum" . ?∑)
-    ("equal" . ?≡)
+    ("sum" . (?· (Br . Bl) ?· (Br . Bl) ?∑))
+    ;; ("equal" . (?· (Br . Bl) ?· (Br . Bl) ?· (Br . Bl) ?· (Br . Bl) ?≡))
     ;; ("defun" . ?⪮)
     ;; ("<=" . ?≤)
     ("<=" . (?· (Br . Bl) ?≤))
@@ -374,10 +376,10 @@ prompt the user for a coding system."
     ("<=<" . ?↢)
     (">=>" . ?↣)
     ("&&" . ?∧)
-    ("and" . ?∧)
-    ("or" . ?∨)
+    ("and" . (?· (Br . Bl) ?· (Br . Bl) ?∧))
+    ("or" . (?· (Br . Bl) ?∨))
     ("progn" . ?∘)
-    ("not" . ?¬)))
+    ("not" . (?· (Br . Bl) ?· (Br . Bl) ?¬))))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 

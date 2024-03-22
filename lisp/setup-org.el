@@ -853,8 +853,7 @@
              (filepath (grep-result-file entry)))
         (denote-link filepath 'org picked-title)))))
 
-(defun my-notes-prompt ()
-  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky. returns (title . grep-result) or nil"
+(defun notes-list-entries ()
   (let* ((grep-results
           (grep-org-dir
            ;; ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
@@ -867,16 +866,19 @@
             (lambda (entry)
               (let ((line (caddr entry)))
                 (cond ((string-match-p ":defines\\|:title\\|:alias\\|:name" line)
-                       (mapcar
-                        (lambda (part)
-                          ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
-                          (let ((headers (org-babel-parse-header-arguments (concat ":" part))))
-                            (cons (or (alist-get :title headers)
-                                     (alist-get :defines headers)
-                                     (alist-get :alias headers)
-                                     (alist-get :name headers))
-                                  (cons "block" entry))))
-                        (cdr (split-string line " :"))))
+                       (cl-remove-if
+                        (lambda (mycons) (not (car mycons))) ;; if of the form (nil . whatever), remove it
+                        (mapcar
+                         (lambda (part)
+                           ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
+                           ;; when the line contains a link the function org-babel-parse-header-arguments thinks its a vector and parses it as such, so use `format' to turn it back into a string
+                           (let* ((headers (org-babel-parse-header-arguments (concat ":" part)))
+                                  (value (or (alist-get :title headers)
+                                             (alist-get :defines headers)
+                                             (alist-get :alias headers)
+                                             (alist-get :name headers))))
+                             (cons (when value (format "%s" value)) (cons "block" entry))))
+                         (cdr (split-string line " :")))))
                       ((string-match-p "#\\+name:" line)
                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
                                    (cons "block" entry))))
@@ -886,7 +888,12 @@
                       ((string-match-p "^\* " line)
                        (list (cons (cl-subseq (grep-result-line-content entry) 2)
                                    (cons "heading" entry)))))))
-            grep-results)))
+            grep-results))))
+    entries))
+
+(defun my-notes-prompt ()
+  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky. returns (title . grep-result) or nil"
+  (let* ((entries (notes-list-entries))
          (just-titles (mapcar 'car entries))
          (completion-extra-properties
           '(:annotation-function
@@ -894,11 +901,12 @@
               (let* ((entry (alist-get key entries nil nil #'equal))
                      (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
                 (format "\t%s" desc)))))
-         (picked-title (completing-read "title: " just-titles))
-         (picked-entry-index (cl-position picked-title just-titles :test #'equal)))
-    (when picked-entry-index
-      (cons (car (elt entries picked-entry-index))
-            (cddr (elt entries picked-entry-index))))))
+         (picked-title (completing-read "title: " entries))
+         (picked-title-index (cl-position picked-title (mapcar 'car entries) :test #'equal))
+         (picked-entry (when picked-title-index (elt entries picked-title-index))))
+    (when picked-entry
+      (cons (car picked-entry)
+            (cddr picked-entry)))))
 
 (defun my-notes-open ()
   (interactive)
