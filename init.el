@@ -1,4 +1,4 @@
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -663,7 +663,7 @@ See `eval-after-load' for the possible formats of FORM."
 ;; disable some modes for large files (otherwise emacs will hang..)
 ;; there's also find-file-literally i guess
 (defun conditional-disable-modes ()
-  (unless (any #'derived-mode-p '(pdf-view-mode image-mode doc-view-mode))
+  (unless (any #'derived-mode-p '(pdf-view-mode image-mode doc-view-mode archive-mode arc-mode jka-compr-mode))
     (when (> (buffer-size) (* 1024 512))
       (message "entering fundamental-mode from %s" major-mode)
       (flycheck-mode -1)

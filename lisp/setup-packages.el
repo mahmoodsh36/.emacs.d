@@ -220,12 +220,15 @@
   )
 
 ;; vertical completion interface
-;; (use-package counsel
-;;   :config
-;;   (ivy-mode)
-;;   (setq ivy-height 20)
-;;   (global-set-key (kbd "M-x") 'counsel-M-x)
-;;   (global-set-key (kbd "C-x C-f") 'counsel-find-file))
+(use-package counsel
+  :config
+  ;;(ivy-mode)
+  (setq ivy-height 20)
+  (setq ivy-use-selectable-prompt t)
+  ;; (setq ivy-calling t)
+  ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+  ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  )
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -1297,5 +1300,15 @@ Return nil if not found."
 
 (use-package async-completing-read
   :ensure ( :host github :repo "oantolin/async-completing-read"))
+
+;; fails to install
+;; (use-package consult-bibtex
+;;   :ensure ( :host github :repo "mohkale/consult-bibtex"))
+
+;;(use-package consult-eglot)
+(use-package consult-lsp)
+(use-package consult-tex)
+(use-package consult-compile-multi)
+(use-package consult-flycheck)
 
 (provide 'setup-packages)

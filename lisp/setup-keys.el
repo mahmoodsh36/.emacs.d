@@ -407,4 +407,11 @@
                       (call-interactively 'pdf-view-previous-line-or-previous-page)
                       (brds/pdf-set-last-viewed-bookmark)))
 
+;; crashes
+;; (defun run-from-zsh-history ()
+;;   (interactive)
+;;   (let ((cmd (completing-read "command" (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-"))))
+;;     (when cmd
+;;       (call-process-shell-command (format "terminal_with_cmd/sh %s" (shell-quote-argument cmd))))))
+
 (provide 'setup-keys)

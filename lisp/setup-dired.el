@@ -7,9 +7,9 @@
 ;;   :config
 ;;   (diredp-toggle-find-file-reuse-dir 1))
 
-;; (use-package diredfl)
+(use-package diredfl)
 (use-package dired-hacks-utils)
-(use-package dired-avfs)
+;; (use-package dired-avfs)
 (use-package dired-rainbow)
 (use-package dired-filter)
 (use-package dired-open)

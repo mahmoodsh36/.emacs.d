@@ -291,7 +291,7 @@
   (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
   ;; enable latex previews everywhere possible and use a custom preamble
   (setq org-latex-preview-live '(block inline edit-special))
-  (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty
+  ;; (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty, its already in setup.org though
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
@@ -894,16 +894,13 @@
 (defun my-notes-prompt ()
   "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky. returns (title . grep-result) or nil"
   (let* ((entries (notes-list-entries))
-         (just-titles (mapcar 'car entries))
          (completion-extra-properties
           '(:annotation-function
             (lambda (key)
               (let* ((entry (alist-get key entries nil nil #'equal))
                      (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
                 (format "\t%s" desc)))))
-         (picked-title (completing-read "title: " entries))
-         (picked-title-index (cl-position picked-title (mapcar 'car entries) :test #'equal))
-         (picked-entry (when picked-title-index (elt entries picked-title-index))))
+         (picked-entry (completing-read-cons "title: " entries)))
     (when picked-entry
       (cons (car picked-entry)
             (cddr picked-entry)))))

@@ -58,6 +58,8 @@
 \usepackage{lipsum}
 \usepackage{mathrsfs}
 \usepackage{newenviron}
+\usepackage{upgreek}
+\usepackage{bbm}
 
 % for venn diagrams (i dont think i need those)
 % \usepackage[svgnames]{xcolor}
@@ -126,8 +128,7 @@
 \newcommand\dif[1]{\:\mathrm{d}#1}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-% apparently the physics package has the \rank operator so i dont gotta define it.
-% \DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\rank}{rank}
 \newcommand{\ihat}{\hat{\textbf{\i}}}
 \newcommand{\jhat}{\hat{\textbf{\j}}}
 \newcommand{\khat}{\hat{\textbf{k}}}
@@ -203,6 +204,7 @@
   {}%
   {\theoremstyle{definition} \newtheorem{definition}{definition}
 \newtheorem{my_example}{example}
+\newtheorem{assumption}{assumption}
 \counterwithin{my_example}{section}
 \counterwithin{my_example}{subsection}
 \counterwithin{definition}{section}

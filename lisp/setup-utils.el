@@ -187,15 +187,28 @@
         standard-output
       (process-file shell-file-name nil '(t nil)  nil shell-command-switch cmd))))
 
-;; (defun completing-read-1 (prompt collection)
-;;   "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t'."
-;;   (let ((new-collection)
-;;         (idx 0))
-;;     (dotimes (i (length collection))
-;;       (let ((entry (elt collection i)))
-;;         (push (propertize (number-to-string i) 'display (car entry)) new-collection)))
-;;     (let* ((key (completing-read prompt new-collection))
-;;            (idx (string-to-number key)))
-;;       (elt collection idx))))
+;; this cannot work with duplicates
+(defun completing-read-cons (prompt collection)
+  (let ((new-collection)
+        (id-prop 'myid))
+    (dotimes (i (length collection))
+      (let ((entry (elt collection i)))
+        (push (propertize (car entry) id-prop i) new-collection)))
+    (let* ((key (completing-read prompt new-collection))
+           (idx (get-text-property 0 id-prop key)))
+      (message "what %s" key)
+      (elt collection idx))))
+
+;; this can work with duplicates
+(defun completing-read-cons-ivy (prompt collection)
+  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t'. this depends on `ivy' and doesnt work with the builtin `completing-read'."
+  (let ((new-collection)
+        (id-prop 'myid))
+    (dotimes (i (length collection))
+      (let ((entry (elt collection i)))
+        (push (propertize (car entry) id-prop i) new-collection)))
+    (let* ((key (ivy-read prompt new-collection))
+           (idx (get-text-property 0 id-prop key)))
+      (elt collection idx))))
 
 (provide 'setup-utils)
