@@ -122,12 +122,6 @@
   ;; (use-package anzu)
   (use-package evil-anzu)
 
-  ;; extend evil-surround functionality
-  ;(use-package evil-embrace
-    ;:config
-    ;(evil-embrace-enable-evil-surround-integration)
-    ;(add-hook 'org-mode-hook 'embrace-org-mode-hook))
-
   ;; this macro was copied from here: https://stackoverflow.com/a/22418983/4921402
   (defmacro define-and-bind-quoted-text-object (name key start-regex end-regex)
     (let ((inner-name (make-symbol (concat "evil-inner-" name)))
@@ -273,7 +267,7 @@ space rather than before."
   ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
   ;; so that forward-sexp works at end of line, see https://github.com/fuco1/smartparens/issues/1037
-  ;; (setq evil-move-beyond-eol t)
+  (setq evil-move-beyond-eol t)
 
 
   (with-eval-after-load 'general
