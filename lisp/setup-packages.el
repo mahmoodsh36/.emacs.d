@@ -165,6 +165,15 @@
   ;; (global-set-key (kbd "M-x") 'counsel-M-x)
   ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   )
+;; ;; more featureful ivy menus, it may cause some error when switching buffers
+(use-package ivy-rich
+  :config
+  (ivy-rich-mode 1)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+;; icons for ivy
+(use-package all-the-icons-ivy-rich
+  :config (all-the-icons-ivy-rich-mode 1))
+(use-package ivy-bibtex)
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -311,16 +320,6 @@
       (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
     )
   )
-
-;; ;; more featureful ivy menus, it may cause some error when switching buffers
-;; (use-package ivy-rich
-;;   :config
-;;   (ivy-rich-mode 1)
-;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
-
-;; icons for ivy
-;; (use-package all-the-icons-ivy-rich
-;;   :config (all-the-icons-ivy-rich-mode 1))
 
 ;; provides syntax highlighting when exporting from org mode to html
 (use-package htmlize)
@@ -648,16 +647,17 @@ Return nil if not found."
 
 (use-package consult)
 
-(use-package marginalia
-  :config
-  (marginalia-mode))
+;; significantly slows down C-h f and others
+;; (use-package marginalia
+;;   :config
+;;   (marginalia-mode))
 
-(use-package all-the-icons-completion
-  :after (all-the-icons marginalia)
-  :config
-  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
-  (all-the-icons-completion-mode)
-  (all-the-icons-completion-marginalia-setup))
+;; (use-package all-the-icons-completion
+;;   :after (all-the-icons marginalia)
+;;   :config
+;;   (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
+;;   (all-the-icons-completion-mode)
+;;   (all-the-icons-completion-marginalia-setup))
 
 ;; virtual env integration for python
 (use-package pyvenv)

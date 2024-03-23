@@ -853,21 +853,33 @@
              (filepath (grep-result-file entry)))
         (denote-link filepath 'org picked-title)))))
 
+(defvar blk-regex-default
+  ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
+  "the regex used to match against elements to be linked to")
+
+(defvar blk-regex
+  blk-regex-default
+  "the regex used to match against elements to be linked to")
+
+(defvar blk-regex-with-headings
+  ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
+  "the regex used to match against elements to be linked to")
+
 (defun notes-list-entries ()
-  (let* ((grep-results
-          (grep-org-dir
-           ;; ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
-           ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
-           *notes-dir*))
+  (let* ((grep-results (grep-org-dir blk-regex
+                                     *notes-dir*))
          (entries ;; (title . (annotation . grep-result)
           (apply
            #'append
            (mapcar
             (lambda (entry)
               (let ((line (caddr entry)))
-                (cond ((string-match-p ":defines\\|:title\\|:alias\\|:name" line)
-                       (cl-remove-if
-                        (lambda (mycons) (not (car mycons))) ;; if of the form (nil . whatever), remove it
+                (cl-remove-if
+                 (lambda (mycons)
+                   (or (not (car mycons))
+                       (string-empty-p (string-trim (car mycons)))))
+                 (cond ((string-match-p ":defines\\|:title\\|:alias\\|:name" line)
+                        ;; if of the form (nil . whatever) or ("" . whatever), remove it
                         (mapcar
                          (lambda (part)
                            ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
@@ -878,21 +890,21 @@
                                              (alist-get :alias headers)
                                              (alist-get :name headers))))
                              (cons (when value (format "%s" value)) (cons "block" entry))))
-                         (cdr (split-string line " :")))))
-                      ((string-match-p "#\\+name:" line)
-                       (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
-                                   (cons "block" entry))))
-                      ((string-match-p "#\\+alias:\\|#\\+title:" line)
-                       (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
-                                   (cons "file" entry))))
-                      ((string-match-p "^\* " line)
-                       (list (cons (cl-subseq (grep-result-line-content entry) 2)
-                                   (cons "heading" entry)))))))
+                         (cdr (split-string line " :"))))
+                       ((string-match-p "#\\+name:" line)
+                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
+                                    (cons "block" entry))))
+                       ((string-match-p "#\\+alias:\\|#\\+title:" line)
+                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
+                                    (cons "file" entry))))
+                       ((string-match-p "^\* " line)
+                        (list (cons (cl-subseq (grep-result-line-content entry) 2)
+                                    (cons "heading" entry))))))))
             grep-results))))
     entries))
 
 (defun my-notes-prompt ()
-  "all in one function to navigate my notes, blocks, files (what about headers?). some parts of the function are very hacky. returns (title . grep-result) or nil"
+  "all in one function to navigate my notes, blocks, files, headers, etc. some parts of the function are very hacky. returns (title . grep-result) or nil"
   (let* ((entries (notes-list-entries))
          (completion-extra-properties
           '(:annotation-function
@@ -900,7 +912,22 @@
               (let* ((entry (alist-get key entries nil nil #'equal))
                      (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
                 (format "\t%s" desc)))))
+         (blk-regex blk-regex-default)
          (picked-entry (completing-read-cons "title: " entries)))
+    (when picked-entry
+      (cons (car picked-entry)
+            (cddr picked-entry)))))
+
+(defun my-notes-prompt-1 ()
+  (let* ((entries (notes-list-entries))
+         (completion-extra-properties
+          '(:annotation-function
+            (lambda (key)
+              (let* ((entry (alist-get key entries nil nil #'equal))
+                     (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
+                (format "\t%s" desc)))))
+         (blk-regex blk-regex-with-headings)
+         (picked-entry (completing-read-cons-ivy "title: " entries)))
     (when picked-entry
       (cons (car picked-entry)
             (cddr picked-entry)))))
@@ -908,6 +935,18 @@
 (defun my-notes-open ()
   (interactive)
   (let ((entry (my-notes-prompt)))
+    (when entry
+      (let* ((title (car entry))
+             (grep-result (cdr entry))
+             (filepath (grep-result-file grep-result))
+             (line (grep-result-line-number grep-result)))
+        (message "opened node with title %s" title)
+        (find-file filepath)
+        (goto-line line)))))
+
+(defun my-notes-open-1 ()
+  (interactive)
+  (let ((entry (my-notes-prompt-1)))
     (when entry
       (let* ((title (car entry))
              (grep-result (cdr entry))

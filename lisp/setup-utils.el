@@ -188,6 +188,7 @@
       (process-file shell-file-name nil '(t nil)  nil shell-command-switch cmd))))
 
 ;; this cannot work with duplicates
+;; propertize cannot handle empty strings
 (defun completing-read-cons (prompt collection)
   (let ((new-collection)
         (id-prop 'myid))
@@ -196,7 +197,6 @@
         (push (propertize (car entry) id-prop i) new-collection)))
     (let* ((key (completing-read prompt new-collection))
            (idx (get-text-property 0 id-prop key)))
-      (message "what %s" key)
       (elt collection idx))))
 
 ;; this can work with duplicates
