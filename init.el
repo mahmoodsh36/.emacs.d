@@ -93,6 +93,7 @@
 (add-to-list 'savehist-additional-variables 'search-ring)
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
 (add-to-list 'savehist-additional-variables 'kill-ring)
+(add-to-list 'savehist-additional-variables 'command-history)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple
 ;;(global-visual-line-mode)

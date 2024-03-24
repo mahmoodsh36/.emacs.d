@@ -56,7 +56,8 @@
   ;; to get rid of the block fontification done by org, its horrible.., this also gets rid of some lag, i think..
   (defun org-fontify-meta-lines-and-blocks (_)
     )
-  (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n]*" 0 '(highlight :foreground "cyan" :background "black"))))
+  ;; (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 '(highlight :foreground 'inherit :background "black"))))
+  (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face)))
   )
 
 (defun switch-to-theme (theme)

@@ -211,4 +211,15 @@
            (idx (get-text-property 0 id-prop key)))
       (elt collection idx))))
 
+(defun completing-read-cons-consult (prompt collection)
+  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t'. this depends on consult (package)"
+  (let ((new-collection)
+        (id-prop 'myid))
+    (dotimes (i (length collection))
+      (let ((entry (elt collection i)))
+        (push (consult--tofu-append (car entry) i) new-collection)))
+    (let* ((key (completing-read prompt new-collection))
+           (idx (consult--tofu-get key)))
+      (elt collection idx))))
+
 (provide 'setup-utils)

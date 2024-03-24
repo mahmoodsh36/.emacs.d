@@ -415,4 +415,6 @@
 ;;     (when cmd
 ;;       (call-process-shell-command (format "terminal_with_cmd/sh %s" (shell-quote-argument cmd))))))
 
+(led-kbd "; x" #'consult-complex-command)
+
 (provide 'setup-keys)
