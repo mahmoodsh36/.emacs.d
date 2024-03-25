@@ -854,7 +854,7 @@
         (denote-link filepath 'org picked-title)))))
 
 (defvar blk-regex-default
-  ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
+  ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
   "the regex used to match against elements to be linked to")
 
 (defvar blk-regex

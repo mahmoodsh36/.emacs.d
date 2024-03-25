@@ -156,24 +156,25 @@
 (use-package pcmpl-args)
 
 ;; vertical completion interface
-(use-package counsel
-  :config
-  ;;(ivy-mode)
-  (setq ivy-height 20)
-  (setq ivy-use-selectable-prompt t)
+;; (use-package counsel
+;;   :config
+;;   ;;(ivy-mode)
+;;   (setq ivy-height 20)
+;;   (setq ivy-use-selectable-prompt t)
   ;; (setq ivy-calling t)
   ;; (global-set-key (kbd "M-x") 'counsel-M-x)
   ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  )
+  ;; )
+
 ;; ;; more featureful ivy menus, it may cause some error when switching buffers
-(use-package ivy-rich
-  :config
-  (ivy-rich-mode 1)
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
-;; icons for ivy
-(use-package all-the-icons-ivy-rich
-  :config (all-the-icons-ivy-rich-mode 1))
-(use-package ivy-bibtex)
+;; (use-package ivy-rich
+;;   :config
+;;   (ivy-rich-mode 1)
+;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+;; ;; icons for ivy
+;; (use-package all-the-icons-ivy-rich
+;;   :config (all-the-icons-ivy-rich-mode 1))
+;; (use-package ivy-bibtex)
 
 ;; colorful delimiters
 (use-package rainbow-delimiters
@@ -906,5 +907,8 @@ Return nil if not found."
 (use-package consult-tex)
 (use-package consult-compile-multi)
 (use-package consult-flycheck)
+
+(use-package consult-bibtex
+  :ensure ( :host github :repo "mohkale/consult-bibtex"))
 
 (provide 'setup-packages)

@@ -400,8 +400,9 @@ prompt the user for a coding system."
                                            (0 (progn (compose-region (match-beginning 2) (match-end 2)
                                                                      ,greek-char)
                                                      nil)))))))))
-(add-hook 'lisp-mode-hook 'pretty-greek)
-(add-hook 'emacs-lisp-mode-hook 'pretty-greek)
+;; (add-hook 'lisp-mode-hook 'pretty-greek)
+;; (add-hook 'emacs-lisp-mode-hook 'pretty-greek)
+(add-hook 'prog-mode-hook 'pretty-greek)
 
 (defun ascii-table ()
   "display basic ASCII table (0 thru 128)."
