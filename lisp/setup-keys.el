@@ -67,7 +67,7 @@
 (led-kbd "r i" #'my-notes-insert)
 (led-kbd "r m" #'denote-rename-file)
 ;; (led-kbd "r c" 'org-id-get-create)
-(led-kbd "r o" #'org-open-at-point :keymaps 'org-mode-map)
+(led-kbd "r o" #'org-open-at-point-global)
 (led-kbd "r a" #'org-attach :keymaps 'org-mode-map)
 (led-kbd "r A" #'org-attach-open :keymaps 'org-mode-map)
 (led-kbd "r l" #'org-roam-alias-add :keymaps 'org-mode-map)
@@ -414,12 +414,23 @@
                       (brds/pdf-set-last-viewed-bookmark)))
 
 ;; crashes
-;; (defun run-from-zsh-history ()
-;;   (interactive)
-;;   (let ((cmd (completing-read "command" (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-"))))
-;;     (when cmd
-;;       (call-process-shell-command (format "terminal_with_cmd/sh %s" (shell-quote-argument cmd))))))
+(defun run-from-zsh-history ()
+  (interactive)
+  (let ((cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
+    (when cmd
+      ;; (start-process-shell-command "shell" nil (format "terminal_with_cmd.sh \"%s; exec zsh -i\"" (shell-quote-argument cmd))))))
+      (start-process-shell-command "shell" nil (format "terminal_with_cmd.sh \"%s; exec zsh -i\"" cmd)))))
+
+(defun run-from-zsh-history-1 ()
+  (interactive)
+  (let ((cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
+    (when cmd
+      (start-process-shell-command "shell" nil cmd))))
 
 (led-kbd "; x" #'consult-complex-command)
+(led-kbd "; s" #'run-from-zsh-history-1)
+(led-kbd "; S" #'run-from-zsh-history)
+
+(global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 
 (provide 'setup-keys)

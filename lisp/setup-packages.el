@@ -795,7 +795,9 @@ Return nil if not found."
                       ;; "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
                       )))
 
-(use-package orglink)
+(use-package orglink
+  :config
+  (global-orglink-mode))
 
 ;; hmmmm??
 (use-package pulsar)

@@ -42,22 +42,11 @@
   ;; enable use-package :ensure support for elpaca.
   (elpaca-use-package-mode)
   (when (is-android-system)
-    ;; to prevent android killing the subprocesses for exhausting the cpu
-    (setq elpaca-queue-limit 15))
+    ;; to prevent android killing the subprocesses for exhausting the cpu (ghostkiller), it doesnt really work well (15 was the value that first "worked")
+    (setq elpaca-queue-limit 20))
   (setq use-package-always-ensure t))
 
 ;; block until current queue processed.
 (elpaca-wait)
-
-;; (setq lexical-binding t)
-;; (elpaca-test
-;;   :early-init (setq elpaca-menu-functions '(elpaca-menu-org))
-;;   :init (elpaca (org :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git"
-;;                                :branch "dev")
-;;                      :files
-;;                      (:defaults "etc")))
-;;   (elpaca-wait)
-;;   (with-current-buffer (elpaca-info 'org)
-;;     (message "%s" (buffer-substring-no-properties (point-min) (point-max)))))
 
 (provide 'setup-elpaca)
