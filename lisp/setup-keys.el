@@ -188,6 +188,7 @@
 
 ;; agenda keys
 (led-kbd "a a" #'my-org-agenda)
+(led-kbd "a q" #'my-org-ql-agenda)
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "q" 'org-agenda-exit)
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "[" 'org-agenda-earlier)
 (general-define-key :states 'normal :keymaps 'org-agenda-mode-map "]" 'org-agenda-later)

@@ -508,12 +508,12 @@ Return nil if not found."
 
 (use-package eat)
 
-;; relative line numbers
-(use-package linum-relative
-  :config
-  (add-hook 'prog-mode-hook 'linum-relative-mode)
-  ;; show the real line number at current line
-  (setq linum-relative-current-symbol ""))
+;; relative line numbers, really slows buffer redisplay down, can cause cpu spikes even when simply navigating code buffers
+;; (use-package linum-relative
+;;   :config
+;;   (add-hook 'prog-mode-hook 'linum-relative-mode)
+;;   ;; show the real line number at current line
+;;   (setq linum-relative-current-symbol ""))
 
 ;; perfectly aligned org mode tables
 ;; painfully slows down org-mode, on block evaluation for example
@@ -795,9 +795,9 @@ Return nil if not found."
                       ;; "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
                       )))
 
-(use-package orglink
-  :config
-  (global-orglink-mode))
+;; (use-package orglink
+;;   :config
+;;   (global-orglink-mode))
 
 ;; hmmmm??
 (use-package pulsar)
@@ -912,5 +912,25 @@ Return nil if not found."
 
 (use-package consult-bibtex
   :ensure ( :host github :repo "mohkale/consult-bibtex"))
+
+(use-package notmuch
+  :config
+  ;; setup the mail address and use name
+  (setq mail-user-agent 'notmuch-user-agent)
+  (setq user-mail-address "mahmod.m2015@gmail.com"
+        user-full-name "mahmood sheikh")
+  ;; smtp config
+  (setq smtpmail-smtp-server "smtp.gmail.com"
+        message-send-mail-function 'message-smtpmail-send-it)
+  ;; report problems with the smtp server
+  (setq smtpmail-debug-info t)
+  ;; add Cc and Bcc headers to the message buffer
+  (setq message-default-mail-headers "Cc: \nBcc: \n")
+  ;; postponed message is put in the following draft directory
+  (setq message-auto-save-directory (from-brain "mail/draft"))
+  (setq message-kill-buffer-on-exit t)
+  ;; change the directory to store the sent mail
+  (setq message-directory (from-brain "mail/"))
+  )
 
 (provide 'setup-packages)

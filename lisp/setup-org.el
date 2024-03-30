@@ -476,7 +476,6 @@
     (if (not (file-exists-p todays-file))
         (progn
           (find-file todays-file)
-          ;; (org-id-get-create)
           (end-of-buffer)
           (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d"))))
     (find-file todays-file)))
@@ -731,7 +730,7 @@
          (t link)))
     link))
 
-;; temporary fix for captions breaking latex export
+;; temporary workaround for captions breaking latex export
 (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
 
 (defmacro with-file-as-current-buffer (file &rest body)
@@ -752,7 +751,6 @@
    (when (plist-get kw :pdf-p)
      (my-org-to-pdf))
    (when (plist-get kw :html-p)
-     ;; (let ((org-hugo-section "index")) ;;(or (node-hugo-section node) "index")))
        (org-hugo-export-to-md))))
 
 (defun all-org-files ()
@@ -1029,5 +1027,25 @@
     (when picked-title-index
       (let ((filepath (car (elt grep-results picked-title-index))))
         (find-file filepath)))))
+
+(defun my-org-ql-agenda ()
+  (interactive)
+  (org-ql-search (my-org-agenda-files)
+    '(or (and (not (done))
+             (or (habit)
+                 (deadline auto)
+                 (scheduled :to today)
+                 (ts-active :on today)))
+         (closed :on today)
+         (ts :from -7 :to today)
+         (deadline :from -60 :to +60)
+         (and (todo) (not (done))))
+    ;; :sort '(todo priority date)
+    :super-groups '((:name "habits" :habit)
+                    (:name "today" :time-grid t)
+                    (:name "college" :tag "college1")
+                    (:deadline t :name "deadlines")
+                    (:auto-planning t)
+                    (:todo t :name "other"))))
 
 (provide 'setup-org)

@@ -59,8 +59,8 @@
 (defun underscore-part-of-word-hook ()
   (modify-syntax-entry ?_ "w"))
 ;;(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
-;; highlight current line
-(global-hl-line-mode)
+;; highlight current line, slows down buffer redisplay, causes cpu spikes like linum-relative
+;; (global-hl-line-mode)
 ;; reload file automatically
 (global-auto-revert-mode t)
 ;; enable all disabled commands
@@ -129,6 +129,9 @@
 ;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
 ;; return propertized strings from completing-read (when theyre passed) [[denote:20240321T195503][alternative completing read]]
 (setq minibuffer-allow-text-properties t)
+;; save cursor position of files when you exit them
+(save-place-mode 1) 
+(setq save-place-file (from-brain "emacs_save_place"))
 
 ;; for M-x term
 ;; (setq explicit-shell-file-name "zsh")
@@ -642,13 +645,13 @@ See `eval-after-load' for the possible formats of FORM."
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
 
-            (switch-to-theme 'ef-autumn)
+            ;; (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)
             ;; (switch-to-theme 'ef-melissa-light)
+            (switch-to-theme 'gruvbox-dark-hard)
 
             ;; (switch-to-theme 'gruvbox-light-soft)
-            ;; (switch-to-theme 'gruvbox-dark-hard)
             ;; (switch-to-theme 'modus-operandi)
             ;; (switch-to-theme 'modus-vivendi)
             ;; (switch-to-tango-theme)
@@ -673,7 +676,7 @@ See `eval-after-load' for the possible formats of FORM."
       (font-lock-mode -1)
       (fundamental-mode)
       (which-function-mode -1)
-      (linum-mode 0)
+      (when (fboundp 'linum-mode) (linum-mode 0))
       (lsp-mode 0)
       )))
 (add-hook 'find-file-hook #'conditional-disable-modes)
@@ -690,3 +693,5 @@ See `eval-after-load' for the possible formats of FORM."
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8-unix)
+
+(setq blk-directories (list (from-brain "notes")))

@@ -21,7 +21,7 @@
 \usepackage{tikz-3dplot}
 \usepackage{mathtools}
 \usepackage{pgfplots}
-\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections,arrows.meta,bbox,chains,shapes}
+\usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections,arrows.meta,bbox,chains,shapes,calligraphy,decorations.pathreplacing}
 \usepgfplotslibrary{fillbetween}
 \usepackage{centernot}
 \usepackage{lmodern}
@@ -121,6 +121,7 @@
 \DeclareMathOperator{\dom}{domain}
 \DeclareMathOperator{\ran}{range}
 \DeclareMathOperator{\rng}{range}
+\DeclareMathOperator{\range}{range}
 \DeclareMathOperator{\img}{Im}
 \DeclareMathOperator{\adj}{adj}
 \DeclareMathOperator{\Var}{Var}
@@ -145,11 +146,12 @@
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
 \newcommand{\inpr}[2]{\langle #1, #2 \rangle} % inner product symbols, consider also physics' \braket
-\newcommand{\textand}{\text{ AND }}
-\newcommand{\textnot}{\text{ NOT }}
-\newcommand{\textor}{\text{ OR }}
+\newcommand{\textand}{\text{ and }}
+\newcommand{\textnot}{\text{ not }}
+\newcommand{\textor}{\text{ or }}
 \newcommand{\textif}{\text{ if }}
 \newcommand{\textthen}{\text{ then }}
+\DeclareMathOperator{\graph}{graph} % Mat symbol for sets of matrices of specific dimensions
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -161,6 +163,7 @@
 \DeclareMathOperator{\cert}{cert}
 \newcommand{\privkexp}{\operatorname{PrivK}_{\mathcal{A},\Pi}^{\mathrm{eav}}}
 \newcommand{\sigexp}{\operatorname{Sig-Forge}_{\mathcal{A},\Pi}}
+\newcommand{\smallspace}{\hspace{5pt}}
 
 % some symbols for relational algebra
 \def\ojoin{\setbox0=\hbox{$\bowtie$}%
@@ -349,6 +352,13 @@
 % rewrite some macros from physics to avoid using the package itself
 \newcommand\pmqty[1]{\begin{pmatrix}#1\end{pmatrix}}
 \newcommand\bmqty[1]{\begin{bmatrix}#1\end{bmatrix}}
+
+% absolute value macro, |var|
+\delimitershortfall-1sp
+\newcommand\abs[1]{\left|#1\right|}
+% norm macro, https://tex.stackexchange.com/questions/107186/how-to-write-norm-which-adjusts-its-size
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+
 % others i found here https://tex.stackexchange.com/questions/471532/alternatives-to-the-physics-package
 % \DeclarePairedDelimiter{\bra}{\langle}{\rvert}%
 % \DeclarePairedDelimiter{\ket}{\lvert}{\rangle}%
@@ -358,3 +368,16 @@
 % \DeclarePairedDelimiterX\ketbra[2]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#2}%
 % \DeclarePairedDelimiterX\outerp[2]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#2}%
 % \DeclarePairedDelimiterX\projector[1]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#1}%
+
+% dot above minus (for monus etc), https://tex.stackexchange.com/questions/114188/special-character-dot-over-dash
+\makeatletter
+\newcommand{\dotminus}{\mathbin{\text{\@dotminus}}}
+
+\newcommand{\@dotminus}{%
+  \ooalign{\hidewidth\raise1ex\hbox{.}\hidewidth\cr$\m@th-$\cr}%
+}
+\makeatother
+
+% for vertical equal signs, https://tex.stackexchange.com/questions/100538/vertical-equal-sign
+\newcommand{\verteq}{\rotatebox{90}{\(\,=\)}}
+\newcommand{\equalto}[2]{\underset{\scriptstyle\overset{\mkern4mu\verteq}{#2}}{#1}}
