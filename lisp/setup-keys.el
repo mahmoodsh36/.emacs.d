@@ -386,8 +386,9 @@
 ;; (led-kbd "r f" #'denote-open-or-create)
 ;; (led-kbd "r f" #'my-notes-open-by-title)
 ;; (led-kbd "r f" #'my-notes-open-all)
-(led-kbd "r f" #'my-notes-open)
-(led-kbd "r F" #'my-notes-open-1)
+;; (led-kbd "r f" #'my-notes-open)
+;; (led-kbd "r F" #'my-notes-open-1)
+(led-kbd "r f" #'blk-find)
 (global-set-key (kbd "<f6>") #'my-notes-open)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))

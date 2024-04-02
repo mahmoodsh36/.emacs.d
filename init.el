@@ -8,6 +8,8 @@
 
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
+(when (file-exists-p "/home/mahmooz/work/blk/")
+  (push "/home/mahmooz/work/blk/" load-path))
 (require 'setup-constants)
 (require 'setup-utils)
 
@@ -130,7 +132,7 @@
 ;; return propertized strings from completing-read (when theyre passed) [[denote:20240321T195503][alternative completing read]]
 (setq minibuffer-allow-text-properties t)
 ;; save cursor position of files when you exit them
-(save-place-mode 1) 
+(save-place-mode 1)
 (setq save-place-file (from-brain "emacs_save_place"))
 
 ;; for M-x term
@@ -359,7 +361,7 @@ prompt the user for a coding system."
 (defconst lisp-prettify-symbols-alist
   '(("lambda"  . ?λ)
     ;; ("let" . ?≜)
-    ("nil" . (?· (Br . Bl) ?· (Br . Bl) ?∅))
+    ;; ("nil" . (?· (Br . Bl) ?· (Br . Bl) ?∅))
     ("sqrt" . ?√)
     ("sum" . (?· (Br . Bl) ?· (Br . Bl) ?∑))
     ;; ("equal" . (?· (Br . Bl) ?· (Br . Bl) ?· (Br . Bl) ?· (Br . Bl) ?≡))
@@ -382,7 +384,7 @@ prompt the user for a coding system."
     ("&&" . ?∧)
     ("and" . (?· (Br . Bl) ?· (Br . Bl) ?∧))
     ("or" . (?· (Br . Bl) ?∨))
-    ("progn" . ?∘)
+    ;; ("progn" . ?∘)
     ("not" . (?· (Br . Bl) ?· (Br . Bl) ?¬))))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
@@ -617,6 +619,16 @@ See `eval-after-load' for the possible formats of FORM."
 (require 'setup-dired)
 (require 'setup-eglot)
 
+(with-eval-after-load 'org
+ (require 'blk)
+ (setq blk-directories
+       (list (from-brain "notes")
+             (file-name-parent-directory (expand-file-name user-init-file))))
+ (require 'blk-org)
+ (blk-configure-org-link)
+ ;; (blk-configure-org-transclude)
+ )
+
 (defun insert-random-string (&optional num)
   (interactive)
   (or num (setq num 7))
@@ -693,5 +705,3 @@ See `eval-after-load' for the possible formats of FORM."
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8-unix)
-
-(setq blk-directories (list (from-brain "notes")))

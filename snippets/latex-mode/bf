@@ -2,4 +2,4 @@
 # name: bf
 # key: bf
 # --
-{\bf $1}$0
+\textbf{$1}$0

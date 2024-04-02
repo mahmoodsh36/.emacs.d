@@ -692,43 +692,43 @@
 (defun grep-org-dir-non-regex (str dir)
   (grep-org-dir (regexp-quote str) dir))
 
-(defun org-blk-find-anchor (link)
-  "open the file containing a block with the name `link'"
-  (car (grep-org-dir (format "#\\+name: %s|\\\\label\\{%s\\}" (regexp-quote link) (regexp-quote link)) *notes-dir*)))
+;; (defun org-blk-find-anchor (link)
+;;   "open the file containing a block with the name `link'"
+;;   (car (grep-org-dir (format "#\\+name: %s|\\\\label\\{%s\\}" (regexp-quote link) (regexp-quote link)) *notes-dir*)))
 
-(defun org-blk-open (link _)
-  "open the file containing a block with the name `link'"
-  (let* ((position (org-blk-find-anchor link))
-         (filepath (car position))
-         (line (cadr position)))
-    (find-file filepath)
-    (goto-line line)))
+;; (defun org-blk-open (link _)
+;;   "open the file containing a block with the name `link'"
+;;   (let* ((position (org-blk-find-anchor link))
+;;          (filepath (car position))
+;;          (line (cadr position)))
+;;     (find-file filepath)
+;;     (goto-line line)))
 
-(defun org-blk-marker (link _)
-  "open the file containing a block with the name `link'"
-  (let* ((position (org-blk-find-anchor link))
-         (filepath (car position))
-         (line (cadr position)))
-    ;; for now we cant work with the marker returned unless we have the file open in a buffer4 after the function returns (unfortunately this is how org-transclusion handles things)
-    (find-file-noselect filepath)
-    (with-file-as-current-buffer filepath
-      (goto-line line)
-      (point-marker))))
+;; (defun org-blk-marker (link _)
+;;   "open the file containing a block with the name `link'"
+;;   (let* ((position (org-blk-find-anchor link))
+;;          (filepath (car position))
+;;          (line (cadr position)))
+;;     ;; for now we cant work with the marker returned unless we have the file open in a buffer4 after the function returns (unfortunately this is how org-transclusion handles things)
+;;     (find-file-noselect filepath)
+;;     (with-file-as-current-buffer filepath
+;;       (goto-line line)
+;;       (point-marker))))
 
-(defun org-blk-export (link desc format)
-  "return the file containing a block with the name `link' for org exporting purposes"
-  (if (org-blk-find-anchor link)
-      (let* ((linked-file (car (org-blk-find-anchor link)))
-             (desc (or desc link))
-             (linked-file-no-ext (file-name-sans-extension (file-name-base linked-file))))
-        (cond
-         ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-no-ext desc))
-         ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
-         ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
-         ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
-         ((eq format 'md) (format "[%s](%s.md)" desc linked-file-no-ext))
-         (t link)))
-    link))
+;; (defun org-blk-export (link desc format)
+;;   "return the file containing a block with the name `link' for org exporting purposes"
+;;   (if (org-blk-find-anchor link)
+;;       (let* ((linked-file (car (org-blk-find-anchor link)))
+;;              (desc (or desc link))
+;;              (linked-file-no-ext (file-name-sans-extension (file-name-base linked-file))))
+;;         (cond
+;;          ((eq format 'html) (format "<a href=\"%s.html\">%s</a>" linked-file-no-ext desc))
+;;          ;; ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
+;;          ;; ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+;;          ;; ((eq format 'ascii) (format "[%s] <denote:%s>" desc path)) ; NOTE 2022-06-16: May be tweaked further
+;;          ((eq format 'md) (format "[%s](%s.md)" desc linked-file-no-ext))
+;;          (t link)))
+;;     link))
 
 ;; temporary workaround for captions breaking latex export
 (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
@@ -810,173 +810,173 @@
    (org-collect-keywords '("hugo_section"))))
    ;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
 
-(defun my-notes-open-by-title ()
-  "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
-  (interactive)
-  (let* ((grep-results
-          (split-string
-           (shell-command-to-string
-            (format "grep '#+title:\\|#+alias:' %s/*.org" *notes-dir*))
-           "\n"))
-         (titles (mapcar (lambda (line) (cadr (split-string line ":[ ]+")))
-                         grep-results))
-         (picked-title (completing-read "title: " titles))
-         (picked-title-index (cl-position picked-title titles :test #'equal)))
-    (if picked-title-index
-        (let* ((entry (elt grep-results picked-title-index))
-               (filepath (if entry (car (split-string entry ":")) nil)))
-          (find-file filepath))
-      (denote picked-title))))
+;; (defun my-notes-open-by-title ()
+;;   "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
+;;   (interactive)
+;;   (let* ((grep-results
+;;           (split-string
+;;            (shell-command-to-string
+;;             (format "grep '#+title:\\|#+alias:' %s/*.org" *notes-dir*))
+;;            "\n"))
+;;          (titles (mapcar (lambda (line) (cadr (split-string line ":[ ]+")))
+;;                          grep-results))
+;;          (picked-title (completing-read "title: " titles))
+;;          (picked-title-index (cl-position picked-title titles :test #'equal)))
+;;     (if picked-title-index
+;;         (let* ((entry (elt grep-results picked-title-index))
+;;                (filepath (if entry (car (split-string entry ":")) nil)))
+;;           (find-file filepath))
+;;       (denote picked-title))))
 
-(defun grep-result-file (grep-result)
-    (car grep-result))
-(defun grep-result-line-number (grep-result)
-    (cadr grep-result))
-(defun grep-result-line-content (grep-result)
-    (caddr grep-result))
+;; (defun grep-result-file (grep-result)
+;;     (car grep-result))
+;; (defun grep-result-line-number (grep-result)
+;;     (cadr grep-result))
+;; (defun grep-result-line-content (grep-result)
+;;     (caddr grep-result))
 
-(defun my-notes-insert-link-by-title ()
-  "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
-  (interactive)
-  (let* ((grep-results
-          (grep-org-dir
-           "#\\+title|#\\+alias"
-           *notes-dir*))
-         (titles (mapcar (lambda (entry) (cadr (split-string (grep-result-line-content entry) ":[ ]+")))
-                         grep-results))
-         (picked-title (completing-read "title: " titles))
-         (picked-title-index (cl-position picked-title titles :test #'equal)))
-    (when picked-title-index
-      (let* ((entry (elt grep-results picked-title-index))
-             (filepath (grep-result-file entry)))
-        (denote-link filepath 'org picked-title)))))
+;; (defun my-notes-insert-link-by-title ()
+;;   "open an org file in `denote-directory' by grepping for its name, either by the #+title keyword or by the #+alias keyword."
+;;   (interactive)
+;;   (let* ((grep-results
+;;           (grep-org-dir
+;;            "#\\+title|#\\+alias"
+;;            *notes-dir*))
+;;          (titles (mapcar (lambda (entry) (cadr (split-string (grep-result-line-content entry) ":[ ]+")))
+;;                          grep-results))
+;;          (picked-title (completing-read "title: " titles))
+;;          (picked-title-index (cl-position picked-title titles :test #'equal)))
+;;     (when picked-title-index
+;;       (let* ((entry (elt grep-results picked-title-index))
+;;              (filepath (grep-result-file entry)))
+;;         (denote-link filepath 'org picked-title)))))
 
-(defvar blk-regex-default
-  ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
-  "the regex used to match against elements to be linked to")
+;; (defvar blk-regex-default
+;;   ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:"
+;;   "the regex used to match against elements to be linked to")
 
-(defvar blk-regex
-  blk-regex-default
-  "the regex used to match against elements to be linked to")
+;; (defvar blk-regex
+;;   blk-regex-default
+;;   "the regex used to match against elements to be linked to")
 
-(defvar blk-regex-with-headings
-  ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
-  "the regex used to match against elements to be linked to")
+;; (defvar blk-regex-with-headings
+;;   ":title|:defines|:alias|#\\+title:|#\\+alias:|#\\+name:|^\\* "
+;;   "the regex used to match against elements to be linked to")
 
-(defun notes-list-entries ()
-  (let* ((grep-results (grep-org-dir blk-regex
-                                     *notes-dir*))
-         (entries ;; (title . (annotation . grep-result)
-          (apply
-           #'append
-           (mapcar
-            (lambda (entry)
-              (let ((line (caddr entry)))
-                (cl-remove-if
-                 (lambda (mycons)
-                   (or (not (car mycons))
-                       (string-empty-p (string-trim (car mycons)))))
-                 (cond ((string-match-p ":defines\\|:title\\|:alias\\|:name" line)
-                        ;; if of the form (nil . whatever) or ("" . whatever), remove it
-                        (mapcar
-                         (lambda (part)
-                           ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
-                           ;; when the line contains a link the function org-babel-parse-header-arguments thinks its a vector and parses it as such, so use `format' to turn it back into a string
-                           (let* ((headers (org-babel-parse-header-arguments (concat ":" part)))
-                                  (value (or (alist-get :title headers)
-                                             (alist-get :defines headers)
-                                             (alist-get :alias headers)
-                                             (alist-get :name headers))))
-                             (cons (when value (format "%s" value)) (cons "block" entry))))
-                         (cdr (split-string line " :"))))
-                       ((string-match-p "#\\+name:" line)
-                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
-                                    (cons "block" entry))))
-                       ((string-match-p "#\\+alias:\\|#\\+title:" line)
-                        (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
-                                    (cons "file" entry))))
-                       ((string-match-p "^\* " line)
-                        (list (cons (cl-subseq (grep-result-line-content entry) 2)
-                                    (cons "heading" entry))))))))
-            grep-results))))
-    entries))
+;; (defun notes-list-entries ()
+;;   (let* ((grep-results (grep-org-dir blk-regex
+;;                                      *notes-dir*))
+;;          (entries ;; (title . (annotation . grep-result)
+;;           (apply
+;;            #'append
+;;            (mapcar
+;;             (lambda (entry)
+;;               (let ((line (caddr entry)))
+;;                 (cl-remove-if
+;;                  (lambda (mycons)
+;;                    (or (not (car mycons))
+;;                        (string-empty-p (string-trim (car mycons)))))
+;;                  (cond ((string-match-p ":defines\\|:title\\|:alias\\|:name" line)
+;;                         ;; if of the form (nil . whatever) or ("" . whatever), remove it
+;;                         (mapcar
+;;                          (lambda (part)
+;;                            ;; the colon was deleted by split-string, restore it for the function to parse the headers properly
+;;                            ;; when the line contains a link the function org-babel-parse-header-arguments thinks its a vector and parses it as such, so use `format' to turn it back into a string
+;;                            (let* ((headers (org-babel-parse-header-arguments (concat ":" part)))
+;;                                   (value (or (alist-get :title headers)
+;;                                              (alist-get :defines headers)
+;;                                              (alist-get :alias headers)
+;;                                              (alist-get :name headers))))
+;;                              (cons (when value (format "%s" value)) (cons "block" entry))))
+;;                          (cdr (split-string line " :"))))
+;;                        ((string-match-p "#\\+name:" line)
+;;                         (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
+;;                                     (cons "block" entry))))
+;;                        ((string-match-p "#\\+alias:\\|#\\+title:" line)
+;;                         (list (cons (cadr (split-string (grep-result-line-content entry) ":[ ]+"))
+;;                                     (cons "file" entry))))
+;;                        ((string-match-p "^\* " line)
+;;                         (list (cons (cl-subseq (grep-result-line-content entry) 2)
+;;                                     (cons "heading" entry))))))))
+;;             grep-results))))
+;;     entries))
 
-(defun my-notes-prompt ()
-  "all in one function to navigate my notes, blocks, files, headers, etc. some parts of the function are very hacky. returns (title . grep-result) or nil"
-  (let* ((entries (notes-list-entries))
-         (completion-extra-properties
-          '(:annotation-function
-            (lambda (key)
-              (let* ((entry (alist-get key entries nil nil #'equal))
-                     (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
-                (format "\t%s" desc)))))
-         (blk-regex blk-regex-default)
-         (picked-entry (completing-read-cons "title: " entries)))
-    (when picked-entry
-      (cons (car picked-entry)
-            (cddr picked-entry)))))
+;; (defun my-notes-prompt ()
+;;   "all in one function to navigate my notes, blocks, files, headers, etc. some parts of the function are very hacky. returns (title . grep-result) or nil"
+;;   (let* ((entries (notes-list-entries))
+;;          (completion-extra-properties
+;;           '(:annotation-function
+;;             (lambda (key)
+;;               (let* ((entry (alist-get key entries nil nil #'equal))
+;;                      (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
+;;                 (format "\t%s" desc)))))
+;;          (blk-regex blk-regex-default)
+;;          (picked-entry (completing-read-cons "title: " entries)))
+;;     (when picked-entry
+;;       (cons (car picked-entry)
+;;             (cddr picked-entry)))))
 
-(defun my-notes-prompt-1 ()
-  (let* ((entries (notes-list-entries))
-         (completion-extra-properties
-          '(:annotation-function
-            (lambda (key)
-              (let* ((entry (alist-get key entries nil nil #'equal))
-                     (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
-                (format "\t%s" desc)))))
-         (blk-regex blk-regex-with-headings)
-         (picked-entry (completing-read-cons-ivy "title: " entries)))
-    (when picked-entry
-      (cons (car picked-entry)
-            (cddr picked-entry)))))
+;; (defun my-notes-prompt-1 ()
+;;   (let* ((entries (notes-list-entries))
+;;          (completion-extra-properties
+;;           '(:annotation-function
+;;             (lambda (key)
+;;               (let* ((entry (alist-get key entries nil nil #'equal))
+;;                      (desc (format "%s\t%s" (car entry) (grep-result-file (cdr entry)))))
+;;                 (format "\t%s" desc)))))
+;;          (blk-regex blk-regex-with-headings)
+;;          (picked-entry (completing-read-cons-ivy "title: " entries)))
+;;     (when picked-entry
+;;       (cons (car picked-entry)
+;;             (cddr picked-entry)))))
 
-(defun my-notes-open ()
-  (interactive)
-  (let ((entry (my-notes-prompt)))
-    (when entry
-      (let* ((title (car entry))
-             (grep-result (cdr entry))
-             (filepath (grep-result-file grep-result))
-             (line (grep-result-line-number grep-result)))
-        (message "opened node with title %s" title)
-        (find-file filepath)
-        (goto-line line)))))
+;; (defun my-notes-open ()
+;;   (interactive)
+;;   (let ((entry (my-notes-prompt)))
+;;     (when entry
+;;       (let* ((title (car entry))
+;;              (grep-result (cdr entry))
+;;              (filepath (grep-result-file grep-result))
+;;              (line (grep-result-line-number grep-result)))
+;;         (message "opened node with title %s" title)
+;;         (find-file filepath)
+;;         (goto-line line)))))
 
-(defun my-notes-open-1 ()
-  (interactive)
-  (let ((entry (my-notes-prompt-1)))
-    (when entry
-      (let* ((title (car entry))
-             (grep-result (cdr entry))
-             (filepath (grep-result-file grep-result))
-             (line (grep-result-line-number grep-result)))
-        (message "opened node with title %s" title)
-        (find-file filepath)
-        (goto-line line)))))
+;; (defun my-notes-open-1 ()
+;;   (interactive)
+;;   (let ((entry (my-notes-prompt-1)))
+;;     (when entry
+;;       (let* ((title (car entry))
+;;              (grep-result (cdr entry))
+;;              (filepath (grep-result-file grep-result))
+;;              (line (grep-result-line-number grep-result)))
+;;         (message "opened node with title %s" title)
+;;         (find-file filepath)
+;;         (goto-line line)))))
 
-(defun my-notes-insert ()
-  (interactive)
-  (let ((entry (my-notes-prompt)))
-    (when entry
-      (let* ((grep-result (cdr entry))
-             (filepath (grep-result-file grep-result))
-             (line (grep-result-line-number grep-result))
-             (elm (with-file-as-current-buffer
-                   filepath
-                   (goto-line line)
-                   (org-element-at-point))))
-        (when elm
-          (let* ((elm-type (org-element-type elm))
-                 (link-path (cl-case elm-type
-                              ('special-block (concat "blk:" (org-element-property :name elm)))
-                              ('latex-environment (concat "blk:" (org-element-property :name elm)))
-                              ('keyword (concat "denote:" (denote-retrieve-filename-identifier filepath))))) ;; then its a denote file
-                 (link-value (cl-case elm-type
-                               ('special-block nil)
-                               ('keyword (org-element-property :value elm)))))
-            (if link-value
-                (insert (format "[[%s][%s]]" link-path link-value))
-              (insert (format "[[%s]]" link-path)))))))))
+;; (defun my-notes-insert ()
+;;   (interactive)
+;;   (let ((entry (my-notes-prompt)))
+;;     (when entry
+;;       (let* ((grep-result (cdr entry))
+;;              (filepath (grep-result-file grep-result))
+;;              (line (grep-result-line-number grep-result))
+;;              (elm (with-file-as-current-buffer
+;;                    filepath
+;;                    (goto-line line)
+;;                    (org-element-at-point))))
+;;         (when elm
+;;           (let* ((elm-type (org-element-type elm))
+;;                  (link-path (cl-case elm-type
+;;                               ('special-block (concat "blk:" (org-element-property :name elm)))
+;;                               ('latex-environment (concat "blk:" (org-element-property :name elm)))
+;;                               ('keyword (concat "denote:" (denote-retrieve-filename-identifier filepath))))) ;; then its a denote file
+;;                  (link-value (cl-case elm-type
+;;                                ('special-block nil)
+;;                                ('keyword (org-element-property :value elm)))))
+;;             (if link-value
+;;                 (insert (format "[[%s][%s]]" link-path link-value))
+;;               (insert (format "[[%s]]" link-path)))))))))
 
 (defun map-org-dir-elements (regex dir elm-type fn)
   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
@@ -998,35 +998,35 @@
                           (message "running code block in file %s" (buffer-file-name))
                           (org-ctrl-c-ctrl-c))))
 
-(defun notes-block ()
-  (map-org-dir-elements
-   ":title\\\\|:defines"
-   *notes-dir*
-   'special-block
-   (lambda ()
-     (let* ((elm (org-element-at-point))
-            (args (org-babel-parse-header-arguments
-                   (org-element-property :parameters elm)))
-            (title (or (alist-get :title args) (alist-get :defines args))))
-       (message "got %s" title)))))
+;; (defun notes-block ()
+;;   (map-org-dir-elements
+;;    ":title\\\\|:defines"
+;;    *notes-dir*
+;;    'special-block
+;;    (lambda ()
+;;      (let* ((elm (org-element-at-point))
+;;             (args (org-babel-parse-header-arguments
+;;                    (org-element-property :parameters elm)))
+;;             (title (or (alist-get :title args) (alist-get :defines args))))
+;;        (message "got %s" title)))))
 
-(defun my-notes-open-blk ()
-  (interactive)
-  (let* ((grep-results
-          (grep-org-dir
-           ":title|:defines"
-           *notes-dir*))
-         (headers (mapcar (lambda (line) (org-babel-parse-header-arguments (caddr line)))
-                          grep-results))
-         (titles (mapcar
-                  (lambda (entry)
-                    (or (alist-get :title entry) (alist-get :defines entry)))
-                  headers))
-         (picked-title (completing-read "title: " titles))
-         (picked-title-index (cl-position picked-title titles :test #'equal)))
-    (when picked-title-index
-      (let ((filepath (car (elt grep-results picked-title-index))))
-        (find-file filepath)))))
+;; (defun my-notes-open-blk ()
+;;   (interactive)
+;;   (let* ((grep-results
+;;           (grep-org-dir
+;;            ":title|:defines"
+;;            *notes-dir*))
+;;          (headers (mapcar (lambda (line) (org-babel-parse-header-arguments (caddr line)))
+;;                           grep-results))
+;;          (titles (mapcar
+;;                   (lambda (entry)
+;;                     (or (alist-get :title entry) (alist-get :defines entry)))
+;;                   headers))
+;;          (picked-title (completing-read "title: " titles))
+;;          (picked-title-index (cl-position picked-title titles :test #'equal)))
+;;     (when picked-title-index
+;;       (let ((filepath (car (elt grep-results picked-title-index))))
+;;         (find-file filepath)))))
 
 (defun my-org-ql-agenda ()
   (interactive)

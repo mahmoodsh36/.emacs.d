@@ -146,12 +146,14 @@
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
 \newcommand{\inpr}[2]{\langle #1, #2 \rangle} % inner product symbols, consider also physics' \braket
-\newcommand{\textand}{\text{ and }}
+\newcommand{\textand}{\mathbin{\text{and}}}
 \newcommand{\textnot}{\text{ not }}
-\newcommand{\textor}{\text{ or }}
-\newcommand{\textif}{\text{ if }}
+\newcommand{\textor}{\mathbin{\text{or}}}
+\newcommand{\textif}{\text{if }}
 \newcommand{\textthen}{\text{ then }}
+\newcommand{\textgoto}{\mathbin{\text{goto}}}
 \DeclareMathOperator{\graph}{graph} % Mat symbol for sets of matrices of specific dimensions
+\newcommand{\angled}[1]{\langle #1 \rangle} % inner product symbols, consider also physics' \braket
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -163,6 +165,7 @@
 \DeclareMathOperator{\cert}{cert}
 \newcommand{\privkexp}{\operatorname{PrivK}_{\mathcal{A},\Pi}^{\mathrm{eav}}}
 \newcommand{\sigexp}{\operatorname{Sig-Forge}_{\mathcal{A},\Pi}}
+
 \newcommand{\smallspace}{\hspace{5pt}}
 
 % some symbols for relational algebra
