@@ -1,4 +1,4 @@
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -8,8 +8,6 @@
 
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
-(when (file-exists-p "/home/mahmooz/work/blk/")
-  (push "/home/mahmooz/work/blk/" load-path))
 (require 'setup-constants)
 (require 'setup-utils)
 
@@ -618,16 +616,6 @@ See `eval-after-load' for the possible formats of FORM."
 (require 'setup-theme)
 (require 'setup-dired)
 (require 'setup-eglot)
-
-(with-eval-after-load 'org
- (require 'blk)
- (setq blk-directories
-       (list (from-brain "notes")
-             (file-name-parent-directory (expand-file-name user-init-file))))
- (require 'blk-org)
- (blk-configure-org-link)
- ;; (blk-configure-org-transclude)
- )
 
 (defun insert-random-string (&optional num)
   (interactive)

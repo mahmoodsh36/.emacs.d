@@ -222,4 +222,16 @@
            (idx (consult--tofu-get key)))
       (elt collection idx))))
 
+;; https://emacs.stackexchange.com/questions/2298/how-do-i-force-re-evaluation-of-a-defvar
+(defun my/eval-buffer ()
+  "Execute the current buffer as Lisp code.
+Top-level forms are evaluated with `eval-defun' so that `defvar'
+and `defcustom' forms reset their default values."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (forward-sexp)
+      (eval-defun nil))))
+
 (provide 'setup-utils)

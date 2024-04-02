@@ -935,4 +935,23 @@
   (setq message-directory (from-brain "mail/"))
   )
 
+;; (use-package blk
+;;   :after (org org-transclusion)
+;;   :ensure ( :host github :repo "mahmoodsheikh36/blk"))
+
+(when (file-exists-p "/home/mahmooz/work/blk/")
+  ;; (push "/home/mahmooz/work/blk/" load-path)
+  (use-package blk
+    :after (org org-transclusion)
+    :load-path "/home/mahmooz/work/blk/")
+  )
+
+(with-eval-after-load 'blk
+  (setq blk-directories
+        (list (from-brain "notes")
+              (file-name-parent-directory (expand-file-name user-init-file))))
+  (blk-configure-org-link)
+  (with-eval-after-load 'org-transclusion
+    (blk-configure-org-transclusion)))
+
 (provide 'setup-packages)
