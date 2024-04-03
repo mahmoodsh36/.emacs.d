@@ -703,7 +703,8 @@
 (use-package google-translate)
 
 ;; links to specific pdf pages from org mode
-(use-package org-pdftools)
+(when (not (is-android-system))
+  (use-package org-pdftools))
 
 (use-package hyperbole
   :ensure (hyperbole :fetcher github :repo "rswgnu/hyperbole")
@@ -935,23 +936,26 @@
   (setq message-directory (from-brain "mail/"))
   )
 
-;; (use-package blk
-;;   :after (org org-transclusion)
-;;   :ensure ( :host github :repo "mahmoodsheikh36/blk"))
 
-(when (file-exists-p "/home/mahmooz/work/blk/")
-  ;; (push "/home/mahmooz/work/blk/" load-path)
+(if (file-exists-p "/home/mahmooz/work/blk/")
+    ;; (push "/home/mahmooz/work/blk/" load-path)
+    (use-package blk
+      :after (org org-transclusion)
+      :load-path "/home/mahmooz/work/blk/"
+      :config
+      (setq blk-directories
+            (list (from-brain "notes")
+                  (file-name-parent-directory (expand-file-name user-init-file))))
+      (blk-configure-org-link)
+      (blk-configure-org-transclusion))
   (use-package blk
     :after (org org-transclusion)
-    :load-path "/home/mahmooz/work/blk/")
-  )
-
-(with-eval-after-load 'blk
-  (setq blk-directories
-        (list (from-brain "notes")
-              (file-name-parent-directory (expand-file-name user-init-file))))
-  (blk-configure-org-link)
-  (with-eval-after-load 'org-transclusion
+    :ensure ( :host github :repo "mahmoodsheikh36/blk")
+    :config
+    (setq blk-directories
+          (list (from-brain "notes")
+                (file-name-parent-directory (expand-file-name user-init-file))))
+    (blk-configure-org-link)
     (blk-configure-org-transclusion)))
 
 (provide 'setup-packages)
