@@ -15,6 +15,12 @@
   "check if the current buffer contains any math equations (latex blocks), isnt smart about it obviously"
   (buffer-contains-substring "\\"))
 
+(defun shell-command-to-string-no-stderr (cmd)
+  (with-output-to-string
+    (with-current-buffer
+        standard-output
+      (process-file shell-file-name nil '(t nil)  nil shell-command-switch cmd))))
+
 (defmacro save-buffer-modified-p (&rest body)
   "eval BODY without affected buffer modification status"
   `(let ((buffer-modified (buffer-modified-p))
@@ -173,19 +179,9 @@
         (replace-match "" t t nil 1)
         (jump-to-register 'my-stored-pos)))))
 
-(defun is-android-system ()
-  (or (string-equal system-type "android")
-      (eq (ignore-errors (shell-command "command -v termux-setup-storage" nil)) 0)))
-
 (defun is-substring (small big)
   "whether `small' is a substring of `big'"
   (string-match-p (regexp-quote small) big))
-
-(defun shell-command-to-string-no-stderr (cmd)
-  (with-output-to-string
-    (with-current-buffer
-        standard-output
-      (process-file shell-file-name nil '(t nil)  nil shell-command-switch cmd))))
 
 ;; this cannot work with duplicates
 ;; propertize cannot handle empty strings

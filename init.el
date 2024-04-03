@@ -10,20 +10,7 @@
 (push (concat user-emacs-directory "/lisp") load-path)
 (require 'setup-constants)
 (require 'setup-utils)
-
-;; for termux binaries on android
-(when (is-android-system)
-  (setenv "PATH" (format "%s:%s" "/data/data/com.termux/files/usr/bin"
-                         (getenv "PATH")))
-  (setenv "LD_LIBRARY_PATH" (format "%s:%s"
-                                    "/data/data/com.termux/files/usr/lib"
-                                    (getenv "LD_LIBRARY_PATH")))
-  (push "/data/data/com.termux/files/usr/bin" exec-path))
-
-;; disable native comp on android to prevent exhausting the cpu, doesnt work?
-(when (is-android-system)
-  (setq native-comp-speed -1))
-
+(require 'setup-android)
 (require 'setup-elpaca)
 
 ;; set tab size to 2 spaces except 4 for python
