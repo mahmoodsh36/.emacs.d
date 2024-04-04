@@ -1,4 +1,4 @@
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -119,6 +119,16 @@
 ;; save cursor position of files when you exit them
 (save-place-mode 1)
 (setq save-place-file (from-brain "emacs_save_place"))
+;; disable lock files
+(setq create-lockfiles nil)
+;; disable stupid beep sounds on macos
+(setq ring-bell-function #'ignore)
+;; increase max number of messages
+(setq message-log-max 100000)
+;; dont ask to confirm when opening large files
+(setq large-file-warning-threshold nil)
+;; disable multiplication precedence over division in calc
+(setq calc-multiplication-has-precedence nil)
 
 ;; for M-x term
 ;; (setq explicit-shell-file-name "zsh")
@@ -167,9 +177,6 @@
 (setq eshell-history-file-name (from-brain "eshell_history")) ;; save history to filesystem
 (setq eshell-history-size 100000000)
 
-;; disable multiplication precedence over division in calc
-(setq calc-multiplication-has-precedence nil)
-
 ;; enable recentf for recently opened file history, https://www.emacswiki.org/emacs/RecentFiles#toc21
 (recentf-mode 1)
 (setq recentf-max-menu-items 10000000)
@@ -204,11 +211,6 @@
 ;; (define-key evil-motion-state-map (kbd "M-b")
 ;;   #'evil-backward-text-object)
 
-;; increase max number of messages
-(setq message-log-max 100000)
-;; dont ask to confirm when opening large files
-(setq large-file-warning-threshold nil)
-
 (defun sudo-find-file (file-name)
   "like find file, but opens the file as root using tramp"
   (interactive (list (read-file-name "file: " "/sudo::/")))
@@ -221,6 +223,7 @@
   (set-buffer-modified-p nil)
   (kill-this-buffer))
 
+;; from xah's website or whatever
 (defun copy-file-path (&optional DirPathOnlyQ)
   "copy current buffer file path or dired path.
 result is full path.
@@ -246,9 +249,6 @@ if a buffer is not file and not dired, copy value of `default-directory'."
        (progn
          (message "file path copied: %s" $fpath)
          $fpath)))))
-
-;; disable stupid beep sounds on macos
-(setq ring-bell-function #'ignore)
 
 ;; from https://www.emacswiki.org/emacs/FindingNonAsciiCharacters
 (defun find-first-non-ascii-char ()
@@ -366,9 +366,9 @@ prompt the user for a coding system."
     (">>" . ?≫)
     ("<=<" . ?↢)
     (">=>" . ?↣)
-    ("&&" . ?∧)
-    ("and" . (?· (Br . Bl) ?· (Br . Bl) ?∧))
-    ("or" . (?· (Br . Bl) ?∨))
+    ;; ("&&" . ?∧)
+    ;; ("and" . (?· (Br . Bl) ?· (Br . Bl) ?∧))
+    ;; ("or" . (?· (Br . Bl) ?∨))
     ;; ("progn" . ?∘)
     ("not" . (?· (Br . Bl) ?· (Br . Bl) ?¬))))
 ;; convert back to text when cursor is over the symbol
@@ -376,23 +376,23 @@ prompt the user for a coding system."
 
 ;; https://www.emacswiki.org/emacs/PrettyGreek
 ;; theres alsp https://www.emacswiki.org/emacs/PrettySymbolsForLanguages
-(defun pretty-greek ()
-  (let ((greek '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" "pi" "rho" "sigma_final" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega")))
-    (cl-loop for word in greek
-          for code = 97 then (+ 1 code)
-          do  (let ((greek-char (make-char 'greek-iso8859-7 code)))
-                (font-lock-add-keywords nil
-                                        `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
-                                           (0 (progn (decompose-region (match-beginning 2) (match-end 2))
-                                                     nil)))))
-                (font-lock-add-keywords nil
-                                        `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
-                                           (0 (progn (compose-region (match-beginning 2) (match-end 2)
-                                                                     ,greek-char)
-                                                     nil)))))))))
+;; (defun pretty-greek ()
+;;   (let ((greek '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" "pi" "rho" "sigma_final" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega")))
+;;     (cl-loop for word in greek
+;;           for code = 97 then (+ 1 code)
+;;           do  (let ((greek-char (make-char 'greek-iso8859-7 code)))
+;;                 (font-lock-add-keywords nil
+;;                                         `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
+;;                                            (0 (progn (decompose-region (match-beginning 2) (match-end 2))
+;;                                                      nil)))))
+;;                 (font-lock-add-keywords nil
+;;                                         `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
+;;                                            (0 (progn (compose-region (match-beginning 2) (match-end 2)
+;;                                                                      ,greek-char)
+;;                                                      nil)))))))))
 ;; (add-hook 'lisp-mode-hook 'pretty-greek)
 ;; (add-hook 'emacs-lisp-mode-hook 'pretty-greek)
-(add-hook 'prog-mode-hook 'pretty-greek)
+;; (add-hook 'prog-mode-hook 'pretty-greek)
 
 (defun ascii-table ()
   "display basic ASCII table (0 thru 128)."
@@ -582,19 +582,6 @@ prompt the user for a coding system."
 ;;     (replace-regexp-in-string "\\`\\\\textbf{\\(.+\\)}"
 ;;                               "\\\\ast{}\\1\\\\ast{}" contents)))
 ;; (add-to-list 'org-export-filter-bold-functions 'my-bold)
-
-(defun eval-after-load-all (my-features form)
-  "Run FORM after all MY-FEATURES are loaded.
-See `eval-after-load' for the possible formats of FORM."
-  (if (null my-features)
-      (if (functionp form)
-          (funcall form)
-        (eval form))
-    (with-eval-after-load (car my-features)
-      `(lambda ()
-         (eval-after-load-all
-          (quote ,(cdr my-features))
-          (quote ,form))))))
 
 ;; load other elisp files
 (require 'setup-org)

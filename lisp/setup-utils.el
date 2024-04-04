@@ -230,4 +230,17 @@ and `defcustom' forms reset their default values."
       (forward-sexp)
       (eval-defun nil))))
 
+(defun eval-after-load-all (my-features form)
+  "Run FORM after all MY-FEATURES are loaded.
+See `eval-after-load' for the possible formats of FORM."
+  (if (null my-features)
+      (if (functionp form)
+          (funcall form)
+        (eval form))
+    (with-eval-after-load (car my-features)
+      `(lambda ()
+         (eval-after-load-all
+          (quote ,(cdr my-features))
+          (quote ,form))))))
+
 (provide 'setup-utils)
