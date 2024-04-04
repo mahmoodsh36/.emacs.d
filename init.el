@@ -590,6 +590,7 @@ prompt the user for a coding system."
 (require 'setup-theme)
 (require 'setup-dired)
 (require 'setup-eglot)
+(require 'setup-blk)
 
 (defun insert-random-string (&optional num)
   (interactive)

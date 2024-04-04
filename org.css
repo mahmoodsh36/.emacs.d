@@ -137,3 +137,9 @@ img.figure {
 .org-latex-block {
     margin: auto;
 }
+
+video {
+    margin: auto;
+    display: block;
+    max-width: 80%;
+}

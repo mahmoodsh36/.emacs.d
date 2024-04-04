@@ -527,19 +527,19 @@
    org-nav-map)
   (define-key org-mode-map (kbd "C-l") org-nav-map))
 
-(defun my-org-link-advice (fn link desc info)
-  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-  (let* ((filepath (pcase (org-element-property :type link)
-                     ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path link))))
-                     ("denote" (denote-get-path-by-id (org-element-property :path link)))
-                     (_ nil))))
-    (if filepath
-        (if (should-export-org-file filepath)
-            (funcall fn link desc info)
-          (format "%s" (or desc (org-element-property :path link))))
-      (funcall fn link desc info))))
-(advice-add #'org-html-link :around #'my-org-link-advice)
-(advice-add #'org-hugo-link :around #'my-org-link-advice)
+;; (defun my-org-link-advice (fn link desc info)
+;;   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
+;;   (let* ((filepath (pcase (org-element-property :type link)
+;;                      ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path link))))
+;;                      ("denote" (denote-get-path-by-id (org-element-property :path link)))
+;;                      (_ nil))))
+;;     (if filepath
+;;         (if (should-export-org-file filepath)
+;;             (funcall fn link desc info)
+;;           (format "%s" (or desc (org-element-property :path link))))
+;;       (funcall fn link desc info))))
+;; (advice-add #'org-html-link :around #'my-org-link-advice)
+;; (advice-add #'org-hugo-link :around #'my-org-link-advice)
 
 ;; set org-mode date's export according to file creation date
 (defun file-modif-time (filepath)
@@ -756,18 +756,18 @@
   "return all known org files"
   (directory-files (from-brain "notes/") t ".*\\.org$"))
 
-(defun files-linked-from-org-file (filepath)
-  (with-file-as-current-buffer
-   filepath
-   (remove
-    nil
-    (org-element-map (org-element-parse-buffer) 'link
-      (lambda (mylink)
-        (let ((filepath (pcase (org-element-property :type mylink)
-                          ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path mylink))))
-                          ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
-                          (_ nil))))
-          filepath))))))
+;; (defun files-linked-from-org-file (filepath)
+;;   (with-file-as-current-buffer
+;;    filepath
+;;    (remove
+;;     nil
+;;     (org-element-map (org-element-parse-buffer) 'link
+;;       (lambda (mylink)
+;;         (let ((filepath (pcase (org-element-property :type mylink)
+;;                           ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path mylink))))
+;;                           ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
+;;                           (_ nil))))
+;;           filepath))))))
 
 (defun export-node-recursively (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
@@ -787,11 +787,13 @@
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
   (let ((exceptions))
-    (mapcar (lambda (file)
-              (if (should-export-org-file file)
-                  (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
-                (setq exceptions (push file exceptions))))
-            (all-org-files))))
+    (mapcar
+     (lambda (file)
+       (when (should-export-org-file file)
+           (apply #'export-org-file (nconc (list file) kw))))
+         ;;   (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
+         ;; (setq exceptions (push file exceptions))))
+     (all-org-files))))
 
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
