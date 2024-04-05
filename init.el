@@ -26,7 +26,8 @@
 (show-paren-mode 1)
 ;; disable upper bars and scrollbar
 (when (not (is-android-system))
-  (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+  ;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
+  (when window-system (set-frame-size (selected-frame) 100 50))
   (toggle-scroll-bar -1)
   (tool-bar-mode -1)
   ;; margin around the windows
@@ -54,7 +55,6 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 ;; (when window-system (set-frame-size (selected-frame) 120 48))
-;; (when window-system (set-frame-size (selected-frame) 100 50))
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
 (when (not (is-android-system))
@@ -620,11 +620,11 @@ prompt the user for a coding system."
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
 
-            ;; (switch-to-theme 'ef-autumn)
+            (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)
             ;; (switch-to-theme 'ef-melissa-light)
-            (switch-to-theme 'gruvbox-dark-hard)
+            ;; (switch-to-theme 'gruvbox-dark-hard)
 
             ;; (switch-to-theme 'gruvbox-light-soft)
             ;; (switch-to-theme 'modus-operandi)
@@ -660,8 +660,8 @@ prompt the user for a coding system."
 (add-hook 'inferior-python-mode-hook (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
 
 ;; transparency
-(set-frame-parameter nil 'alpha-background 90)
-(add-to-list 'default-frame-alist '(alpha-background . 90))
+;; (set-frame-parameter nil 'alpha-background 90)
+;; (add-to-list 'default-frame-alist '(alpha-background . 90))
 
 ;; http://xahlee.info/emacs/emacs/emacs_file_encoding.html
 ;; utf-8 as default encoding
