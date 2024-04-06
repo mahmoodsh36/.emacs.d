@@ -2,6 +2,8 @@
 ;; https://www.gnu.org/software/emacs/manual/html_mono/eglot.html
 ;; https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot/
 
+(require 'eglot)
+
 (use-package eglot
   :ensure nil
   :bind (:map eglot-mode-map
@@ -22,8 +24,6 @@
   (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
   (setq-default eglot-workspace-configuration
                 '((:pylsp . (:configurationSources ["flake8"] :plugins (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t))))))
-  :hook
-  (python-mode . eglot-ensure)
   )
 
 (provide 'setup-eglot)
