@@ -244,6 +244,9 @@
 (led-kbd "l s" 'sly-inspect-presentation-at-point :keymaps 'sly-repl-mode-map)
 (led-kbd "c" 'eval-buffer :keymaps 'emacs-lisp-mode-map)
 
+;; jummp to definition of thing at point
+(led-kbd "l d" 'xref-find-definitions :keymaps 'prog-mode-map)
+
 ;; common lisp/sly
 (led-kbd "l d" 'sly-documentation-lookup :keymaps '(lisp-mode-map sly-mrepl-mode-map))
 

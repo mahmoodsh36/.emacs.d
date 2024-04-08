@@ -421,8 +421,9 @@
   (keyfreq-autosave-mode 1)
   (setq keyfreq-file (from-brain "emacs_keyfreq")))
 
-;; has issues with transient versions
+;; has issues with transient versions/elpaca
 ;; (use-package magit)
+  ;; :ensure ( :host github :repo "magit/magit"))
 
 ;; need the "global" package for gtags binary
 (use-package ggtags
@@ -935,5 +936,10 @@
   ;; change the directory to store the sent mail
   (setq message-directory (from-brain "mail/"))
   )
+
+(use-package pcre2el)
+
+;; for non-contiguous region selection
+(use-package zones)
 
 (provide 'setup-packages)

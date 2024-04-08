@@ -23,7 +23,7 @@
 (use-package dired-du)
 (use-package dired-single)
 (use-package diredful)
-(use-package dired-quick-sort)
+;; (use-package dired-quick-sort)
 (use-package dired-narrow)
 (use-package dired-k)
 (use-package dired-filter)
@@ -36,6 +36,31 @@
   :ensure ( :host github :repo "karthink/dired-hist")
   :config
   (dired-hist-mode 1))
+
+;; (use-package filetree
+;;   :ensure ( :host github :repo "knpatel401/filetree"))
+
+;; elpaca doesnt support :fetcher url
+;; (use-package dired-sort-menu
+;;   :ensure ( :fetcher url :url "https://www.emacswiki.org/emacs/dired-sort-menu.el"))
+
+;; alternative? https://wilkesley.org/~ian/xah/emacs/dired_sort.html
+(defun xah-dired-sort ()
+  "Sort dired dir listing in different ways.
+Prompt for a choice.
+URL `http://ergoemacs.org/emacs/dired_sort.html'
+Version 2015-07-30"
+  (interactive)
+  (let (-sort-by -arg)
+    (setq -sort-by (ido-completing-read "Sort by:" '( "date" "size" "name" "dir")))
+    (cond
+     ((equal -sort-by "name") (setq -arg "-Al --si --time-style long-iso "))
+     ((equal -sort-by "date") (setq -arg "-Al --si --time-style long-iso -t"))
+     ((equal -sort-by "size") (setq -arg "-Al --si --time-style long-iso -S"))
+     ((equal -sort-by "dir") (setq -arg "-Al --si --time-style long-iso --group-directories-first"))
+     (t (error "logic error 09535" )))
+    (dired-sort-other -arg )))
+
 
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
