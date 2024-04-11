@@ -258,8 +258,7 @@ space rather than before."
         (apply fn args)
         (evil-normal-state))))
   (advice-add 'denote-insert-link :around #'my-insert-advice-append-if-in-normal-mode)
-  (advice-add 'my-notes-insert-link-by-title :around #'my-insert-advice-append-if-in-normal-mode)
-  (advice-add 'my-notes-insert :around #'my-insert-advice-append-if-in-normal-mode)
+  (advice-add 'blk-insert :around #'my-insert-advice-append-if-in-normal-mode)
 
   ;; (use-package evil-snipe
   ;;   :config
@@ -267,7 +266,7 @@ space rather than before."
   ;;   (general-define-key :states '(normal motion) :keymaps 'override "SPC ;" 'evil-snipe-s))
 
   ;; so that forward-sexp works at end of line, see https://github.com/fuco1/smartparens/issues/1037
-  (setq evil-move-beyond-eol t)
+  ;; (setq evil-move-beyond-eol t)
 
   (with-eval-after-load 'general
     (general-define-key :states 'normal :keymaps 'doc-view-mode-map "k" 'doc-view-previous-page)

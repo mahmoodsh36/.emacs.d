@@ -601,7 +601,7 @@ prompt the user for a coding system."
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
           (lambda ()
-            (eval-after-load-all
+            (with-eval-after-load-all
              '(evil general)
              (require 'setup-keys)) ;; load setup-org.el
             (when (file-exists-p persp-state-default-file)

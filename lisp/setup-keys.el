@@ -84,10 +84,10 @@
 (led-kbd "r x" (lambda () (interactive) (export-current-buffer :html-p t)) :keymaps 'org-mode-map)
 (led-kbd "r X" #'export-all-org-files-to-html-and-pdf)
 ;; (led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
-(led-kbd "r d" (lambda () (interactive)
-                 (my-org-to-pdf)
-                 (switch-to-buffer "latex")
-                 (goto-char (point-max)))
+(led-kbd "r d"
+         (lambda () (interactive)
+           (my-org-to-pdf)
+           (switch-to-buffer-other-window  "latex"))
          :keymaps 'org-mode-map)
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
 (led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
@@ -392,6 +392,7 @@
 ;; (led-kbd "r f" #'my-notes-open)
 ;; (led-kbd "r F" #'my-notes-open-1)
 (led-kbd "r f" #'blk-find)
+(led-kbd "r F" #'blk-find-with-ivy)
 (global-set-key (kbd "<f6>") #'my-notes-open)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))
@@ -435,6 +436,8 @@
 (led-kbd "; x" #'consult-complex-command)
 (led-kbd "; s" #'run-from-zsh-history-1)
 (led-kbd "; S" #'run-from-zsh-history)
+(led-kbd "; f" #'consult-find)
+(led-kbd "; g" #'consult-grep)
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 

@@ -10,7 +10,8 @@
               ("C-h ." . eldoc))
   :hook ((eglot-managed-mode . my/eglot-eldoc-settings))
   :config
-  (add-hook 'prog-mode-hook #'eglot-ensure)
+  (add-hook 'python-mode-hook #'eglot-ensure)
+  (add-hook 'c-mode-hook #'eglot-ensure)
   ;; (add-to-list 'eglot-server-programs
   ;;              '(python-mode . ("ruff-lsp")))
   (defun my/eglot-eldoc-settings ()
@@ -18,6 +19,7 @@
           'eldoc-documentation-compose-eagerly))
   ;; (setq eglot-put-doc-in-help-buffer nil)
   (setq eglot-extend-to-xref t)
+  (setq eglot-sync-connect 0) ;; make eglot-ensure non-blocking (async)
   )
 
 (with-eval-after-load 'eglot

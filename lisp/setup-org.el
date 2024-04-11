@@ -72,12 +72,13 @@
     (compile-latex-file outfile)))
 
 (defun compile-latex-file (path)
-  (call-process-shell-command
+  (start-process-shell-command
+   "latex"
+   "latex"
    (format "%s -shell-escape -output-directory=%s %s"
            org-latex-compiler
            (file-truename (get-latex-cache-dir-path))
-           path)
-   nil "latex"))
+           path)))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"

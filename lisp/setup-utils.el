@@ -230,17 +230,12 @@ and `defcustom' forms reset their default values."
       (forward-sexp)
       (eval-defun nil))))
 
-(defun eval-after-load-all (my-features form)
-  "Run FORM after all MY-FEATURES are loaded.
-See `eval-after-load' for the possible formats of FORM."
-  (if (null my-features)
-      (if (functionp form)
-          (funcall form)
-        (eval form))
-    (with-eval-after-load (car my-features)
-      `(lambda ()
-         (eval-after-load-all
-          (quote ,(cdr my-features))
-          (quote ,form))))))
+(defmacro with-eval-after-load-all (my-features &rest body)
+  "Run BODY after all MY-FEATURES are loaded.
+example usage: (with-eval-after-load-all '(org) (message \"hi\"))"
+  (if (eval my-features)
+      `(with-eval-after-load (quote ,(car (eval my-features)))
+        (with-eval-after-load-all (quote ,(cdr (eval my-features))) ,@body))
+    `(progn ,@body)))
 
 (provide 'setup-utils)

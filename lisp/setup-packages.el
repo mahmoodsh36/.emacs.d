@@ -156,15 +156,15 @@
 (use-package pcmpl-args)
 
 ;; vertical completion interface
-;; (use-package counsel
-;;   :config
-;;   ;;(ivy-mode)
-;;   (setq ivy-height 20)
-;;   (setq ivy-use-selectable-prompt t)
-  ;; (setq ivy-calling t)
+(use-package counsel
+  :config
+  ;;(ivy-mode)
+  (setq ivy-height 20)
+  (setq ivy-use-selectable-prompt t)
+  (setq ivy-calling t)
   ;; (global-set-key (kbd "M-x") 'counsel-M-x)
   ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  ;; )
+  )
 
 ;; ;; more featureful ivy menus, it may cause some error when switching buffers
 ;; (use-package ivy-rich
@@ -422,16 +422,16 @@
   (setq keyfreq-file (from-brain "emacs_keyfreq")))
 
 ;; has issues with transient versions/elpaca
-;; (use-package magit)
+(use-package magit)
   ;; :ensure ( :host github :repo "magit/magit"))
 
 ;; need the "global" package for gtags binary
-(use-package ggtags
-  :config
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-                (ggtags-mode 1)))))
+;; (use-package ggtags
+;;   :config
+;;   (add-hook 'c-mode-common-hook
+;;             (lambda ()
+;;               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+;;                 (ggtags-mode 1)))))
 ;; (use-package counsel-gtags)
 
 (use-package git-auto-commit-mode)
@@ -478,7 +478,6 @@
 ;; live web dev
 (use-package skewer-mode)
 
-
 ;; (use-package json-to-org-table :quelpa (:host github :repo "noonker/json-to-org-table"))
 
 (use-package emmet-mode
@@ -490,24 +489,6 @@
 (use-package org-transclusion
   :config
   (add-hook 'org-mode-hook #'org-transclusion-mode))
-;; (eval-after-load-all '(org-transclusion blk)
-;;                      )
-;; (with-eval-after-load 'org-transclusion
-;;   (defun org-transclusion-add-blk (link plist)
-;;     "Return a list for Org-ID LINK object and PLIST.
-;; Return nil if not found."
-;;     (when (string= "blk" (org-element-property :type link))
-;;       (let* ((path (org-element-property :path link))
-;;              (marker (ignore-errors (org-blk-marker path t)))
-;;              (payload '(:tc-type "org-link")))
-;;         (if marker
-;;             (append payload (org-transclusion-content-org-marker marker plist))
-;;           (message
-;;            (format "No transclusion done for this blk. Ensure it works at point %d, line %d"
-;;                    (point) (org-current-line)))
-;;           nil))))
-;;   (add-to-list 'org-transclusion-add-functions 'org-transclusion-add-blk)
-;;   )
 
 (use-package eat)
 
@@ -655,13 +636,12 @@
   :config
   (marginalia-mode))
 
-;; significantly slows down C-h f and others
-;; (use-package all-the-icons-completion
-;;   :after (all-the-icons marginalia)
-;;   :config
-;;   (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
-;;   (all-the-icons-completion-mode)
-;;   (all-the-icons-completion-marginalia-setup))
+(use-package all-the-icons-completion
+  :after (all-the-icons marginalia)
+  :config
+  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
+  (all-the-icons-completion-mode)
+  (all-the-icons-completion-marginalia-setup))
 
 ;; virtual env integration for python
 (use-package pyvenv)
@@ -937,9 +917,16 @@
   (setq message-directory (from-brain "mail/"))
   )
 
+;; convert emacs regexes to other engine regexes and backwards
 (use-package pcre2el)
 
 ;; for non-contiguous region selection
 (use-package zones)
+
+;; automatic tangling and detangling for org babel
+(use-package org-tanglesync)
+
+;; make using julia's language server easier with eglot.
+(use-package eglot-jl)
 
 (provide 'setup-packages)
