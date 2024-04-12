@@ -23,8 +23,9 @@
   (defalias 'call-process-shell-command 'my-call-process-shell-command))
 
 (defun my-call-process-shell-command (cmd &optional infile buffer display)
-  (with-current-buffer buffer
-    (insert (shell-command-to-string-no-stderr cmd))
-    0))
+  (let ((buf (get-buffer-create (or buffer " my-shell"))))
+    (with-current-buffer buf
+      (insert (shell-command-to-string-no-stderr cmd))
+      0)))
 
 (provide 'setup-android)
