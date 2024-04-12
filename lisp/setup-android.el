@@ -19,6 +19,12 @@
 
 ;; some annoying error messages on android's termux keep interfering with shell-command-to-string, redefine it here to discard all error messages
 (when (is-android-system)
-  (defalias 'shell-command-to-string 'shell-command-to-string-no-stderr))
+  (defalias 'shell-command-to-string 'shell-command-to-string-no-stderr)
+  (defalias 'call-process-shell-command 'my-call-process-shell-command))
+
+(defun my-call-process-shell-command (cmd &optional infile buffer display)
+  (with-current-buffer buffer
+    (insert (shell-command-to-string-no-stderr cmd))
+    0))
 
 (provide 'setup-android)
