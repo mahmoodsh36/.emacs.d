@@ -438,6 +438,10 @@
 (led-kbd "; S" #'run-from-zsh-history)
 (led-kbd "; f" #'consult-find)
 (led-kbd "; g" #'consult-grep)
+(led-kbd "; m" (lambda ()
+                 (interactive)
+                 (let ((notmuch-search-oldest-first nil))
+                   (notmuch-search "tag:unread"))))
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 

@@ -889,7 +889,7 @@
   :ensure ( :host github :repo "oantolin/async-completing-read"))
 
 ;;(use-package consult-eglot)
-(use-package consult-lsp)
+;; (use-package consult-lsp)
 (use-package consult-tex)
 (use-package consult-compile-multi)
 (use-package consult-flycheck)
@@ -915,6 +915,7 @@
   (setq message-kill-buffer-on-exit t)
   ;; change the directory to store the sent mail
   (setq message-directory (from-brain "mail/"))
+  (setq notmuch-search-oldest-first nil)
   )
 
 ;; convert emacs regexes to other engine regexes and backwards
