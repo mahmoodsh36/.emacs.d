@@ -19,7 +19,7 @@
   (with-output-to-string
     (with-current-buffer
         standard-output
-      (process-file shell-file-name nil '(t nil)  nil shell-command-switch cmd))))
+      (process-file shell-file-name nil '(t nil) nil shell-command-switch cmd))))
 
 (defmacro save-buffer-modified-p (&rest body)
   "eval BODY without affected buffer modification status"
