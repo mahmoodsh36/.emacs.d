@@ -17,10 +17,10 @@
     ;; (LaTeX-mode . (lambda () (corfu-mode -1)))
     ;; (LaTeX-mode . outline-minor-mode)
     ;; (LaTeX-mode . olivetti-mode))
+    :config
+    (add-hook 'plain-TeX-mode-hook 'LaTeX-mode) ;; why is this not the default?
+    ;; (setq auto-mode-alist (cons '("\\.tex$" . latex-mode) auto-mode-alist))
   ))
-
-;; set of org-contrib packages
-(use-package org-contrib)
 
 ;; makes binding keys less painful
 (use-package general)
@@ -929,5 +929,7 @@
 
 ;; make using julia's language server easier with eglot.
 (use-package eglot-jl)
+
+(use-package command-log-mode)
 
 (provide 'setup-packages)

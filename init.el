@@ -1,4 +1,4 @@
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen

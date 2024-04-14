@@ -60,6 +60,7 @@
 \usepackage{newenviron}
 \usepackage{upgreek}
 \usepackage{bbm}
+\usepackage{newpxtext,newpxmath}
 
 % for venn diagrams (i dont think i need those)
 % \usepackage[svgnames]{xcolor}
@@ -384,3 +385,11 @@
 % for vertical equal signs, https://tex.stackexchange.com/questions/100538/vertical-equal-sign
 \newcommand{\verteq}{\rotatebox{90}{\(\,=\)}}
 \newcommand{\equalto}[2]{\underset{\scriptstyle\overset{\mkern4mu\verteq}{#2}}{#1}}
+
+% Z with a middle stroke, https://tex.stackexchange.com/questions/350453/z-with-a-stroke-through-it
+\newcommand{\Zstroke}{%
+  \text{\ooalign{\hidewidth\raisebox{0.2ex}{--}\hidewidth\cr$Z$\cr}}%
+}
+\newcommand{\zstroke}{%
+  \text{\ooalign{\hidewidth -\kern-.3em-\hidewidth\cr$z$\cr}}%
+}
