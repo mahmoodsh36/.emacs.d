@@ -114,6 +114,11 @@
   {\ensuremath{\left[\brm{D}_{#1}#2\right]}}% if #2,#1 not empty
 }
 
+% alternative to \hyperref to refer to a symbols definition/source
+\newcommand{\refdef}[2][]{%
+  \textcolor{green}{\hyperref[#1]{#2}}
+}
+
 % no space before paragraph (is this desired?)
 \setlength{\parindent}{0pt}
 
