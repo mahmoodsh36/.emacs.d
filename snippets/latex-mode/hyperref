@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: hyperref
+# key: hr
+# --
+\hyperref[$1]{$2}$0
