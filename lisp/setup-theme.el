@@ -58,6 +58,7 @@
     )
   ;; (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 '(highlight :foreground 'inherit :background "black"))))
   (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face)))
+  (font-lock-add-keywords 'org-mode '((":[^\s\n]+" 0 font-lock-keyword-face)))
   )
 
 (defun switch-to-theme (theme)
