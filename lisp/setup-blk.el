@@ -50,11 +50,17 @@
 
   ;; add the :defines pattern
   (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
-    (add-to-list pattern-table (list :title "definition or mention"
+    ;; (add-to-list pattern-table (list :title "definition or mention"
+    ;;                                  :glob "*.org"
+    ;;                                  :anchor-regex "(:defines|:mentions)\\s+[^:]+"
+    ;;                                  :title-function 'blk-value-after-space-before-colon
+    ;;                                  :extract-id-function 'blk-org-id-at-point))
+    (add-to-list pattern-table (list :title "definition"
                                      :glob "*.org"
-                                     :anchor-regex "(:defines|:mentions)\\s+[^:]+"
+                                     :anchor-regex "(:defines)\\s+[^:]+"
                                      :title-function 'blk-value-after-space-before-colon
-                                     :extract-id-function 'blk-org-id-at-point)))
+                                     :extract-id-function 'blk-org-id-at-point))
+    )
   (setq blk-patterns blk-rg-patterns)
   )
 
