@@ -100,32 +100,32 @@
       (message "pdf file hasnt been generated"))))
 
 ;; requires pre-isntallation of gcc/clang
-(use-package org-roam
-  :elpaca (org-roam :type git :repo "mahmoodsheikh36/org-roam")
-  :custom
-  (org-roam-directory (from-brain "notes"))
-  ;; (org-roam-completion-everywhere t)
-  :config
-  ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
-  ;; (org-roam-db-autosync-mode 1)
-  ;; (require 'org-roam-export)
-  ;; (require 'org-roam-protocol)
-  ;; (global-set-key (kbd "C-c r f") 'org-roam-node-find)
-  ;; (global-set-key (kbd "C-c r g") 'org-roam-graph)
-  (setq org-roam-capture-templates
-        '(("n" "note" plain "%?"
-           :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
-           :kill-buffer t :unnarrowed t :empty-lines-after 0)
-          ("k" "quick note" plain "%?"
-           :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
-           :kill-buffer t :unnarrowed t :empty-lines-after 0)
-          ;;("d" "daily" plain "%?" ;;"* %T %?"
-          ;;("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
-          ("d" "daily" plain "* %T %?"
-           :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
-           :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
-          ("t" "todo" plain "* TODO ${title}"
-           :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
+;; (use-package org-roam
+;;   :elpaca (org-roam :type git :repo "mahmoodsheikh36/org-roam")
+;;   :custom
+;;   (org-roam-directory (from-brain "notes"))
+;;   ;; (org-roam-completion-everywhere t)
+;;   :config
+;;   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
+;;   ;; (org-roam-db-autosync-mode 1)
+;;   ;; (require 'org-roam-export)
+;;   ;; (require 'org-roam-protocol)
+;;   ;; (global-set-key (kbd "C-c r f") 'org-roam-node-find)
+;;   ;; (global-set-key (kbd "C-c r g") 'org-roam-graph)
+;;   (setq org-roam-capture-templates
+;;         '(("n" "note" plain "%?"
+;;            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
+;;            :kill-buffer t :unnarrowed t :empty-lines-after 0)
+;;           ("k" "quick note" plain "%?"
+;;            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
+;;            :kill-buffer t :unnarrowed t :empty-lines-after 0)
+;;           ;;("d" "daily" plain "%?" ;;"* %T %?"
+;;           ;;("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
+;;           ("d" "daily" plain "* %T %?"
+;;            :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
+;;            :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
+;;           ("t" "todo" plain "* TODO ${title}"
+;;            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
 
 ;; (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
 ;;   (interactive "P")

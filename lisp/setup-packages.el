@@ -488,7 +488,8 @@
 ;; transclusions (including text from other documents) for org mode
 (use-package org-transclusion
   :config
-  (add-hook 'org-mode-hook #'org-transclusion-mode))
+  ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
+  )
 
 (use-package eat)
 
@@ -614,7 +615,7 @@
         read-buffer-completion-ignore-case t)
   (setq completion-styles '(orderless basic flex)
         orderless-component-separator #'orderless-escapable-split-on-space
-        ;; completion-category-overrides '((file (styles basic partial-completion))))
+        completion-category-overrides '((file (styles basic partial-completion)))
         )
   )
 ;; commands for ido-like directory navigation.
