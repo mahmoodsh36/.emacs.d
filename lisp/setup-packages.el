@@ -284,7 +284,7 @@
   ;; highlight-indent-guides-responsive 'stack)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package flutter)
-;; (use-package lsp-dart)
+(use-package dart-mode)
 
 ;; pdf viewer
 (when (not (is-android-system))
