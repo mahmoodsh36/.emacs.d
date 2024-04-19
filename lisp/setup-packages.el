@@ -933,4 +933,7 @@
 
 (use-package command-log-mode)
 
+(use-package consult-web
+  :ensure ( :host github :repo "armindarvish/consult-web"))
+
 (provide 'setup-packages)
