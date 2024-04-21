@@ -52,13 +52,18 @@
                       :background 'unspecified
                       :inherit 'unspecified))
 
-(with-eval-after-load 'org
-  ;; to get rid of the block fontification done by org, its horrible.., this also gets rid of some lag, i think..
-  (defun org-fontify-meta-lines-and-blocks (_)
-    )
+(with-eval-after-load-all '(org ol)
+  ;; to get rid of the fontification done by org, its horrible.., this also gets rid of some lag, i think..
+  ;; (defun org-fontify-meta-lines-and-blocks (_)
+  ;;   )
+  (defun org-set-font-lock-defaults ()
+      )
   ;; (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 '(highlight :foreground 'inherit :background "black"))))
-  (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face)))
-  (font-lock-add-keywords 'org-mode '((":\\([a-zA-Z]+\\)[\s\n]" 0 font-lock-keyword-face)))
+
+  (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face))) ;; #+keyword
+  (font-lock-add-keywords 'org-mode '((":\\([a-zA-Z]+\\)[\s\n]" 0 font-lock-keyword-face))) ;; :keyword
+  (font-lock-add-keywords 'org-mode (list (list org-link-any-re 0 'font-lock-keyword-face))) ;; [[link]]
+  (font-lock-add-keywords 'org-mode '(("\\[cite[^\\[]+\\]" 0 font-lock-keyword-face))) ;; [[..cite..]]
   (defvar my-mode-font-lock-keywords
     '(("\\[\\s-*\\([^\][:space:]]+\\)" (1 font-lock-function-name-face))))
   )
