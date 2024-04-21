@@ -61,6 +61,7 @@
 \usepackage{upgreek}
 \usepackage{bbm}
 \usepackage{newpxtext,newpxmath}
+\usepackage{cool}
 
 % for venn diagrams (i dont think i need those)
 % \usepackage[svgnames]{xcolor}
@@ -114,6 +115,96 @@
   {\ensuremath{\left[\brm{D}_{#1}#2\right]}}% if #2,#1 not empty
 }
 
+% integral notation, https://tex.stackexchange.com/questions/174121/easy-command-or-package-for-properly-formatted-integrals
+\makeatletter
+\newcommand*{\intf}{%
+  \@ifnextchar_{\intf@sub}{%
+    \@ifnextchar^{\intf@sup}{%
+      \intf@{}{}%
+    }%
+  }%
+}
+\def\intf@sub_#1{%
+  \@ifnextchar^{%
+    \intf@sub@sup{#1}%
+  }{%
+    \intf@{#1}{}%
+  }%
+}
+\def\intf@sup^#1{%
+  \@ifnextchar_{%
+    \intf@sup@sub{#1}%
+  }{%
+    \intf@{}{#1}%
+  }%
+}
+\def\intf@sub@sup#1^#2{\intf@{#1}{#2}}
+\def\intf@sup@sub#1_#2{\intf@{#2}{#1}}
+\newcommand*{\intf@}[4]{%
+  \int
+  \ifx\\#1\\\else _{#1}\fi
+  \ifx\\#2\\\else ^{#2}\fi
+  \!#3\,\mathrm{d}#4%
+}
+\makeatother
+
+% typesetting partial derivatives flexibly: https://tex.stackexchange.com/questions/22076/can-i-have-a-flexible-partial-derivative-macro/22571#22571
+\makeatletter
+
+\newcommand\Der[2]{%
+    \begingroup
+    \@temptokena{\@gobble}%
+    \@tempcnta\z@
+    \expandafter\@Der@var#2\relax
+    \ensuremath{\frac{\partial
+    \ifnum\@tempcnta>\@ne
+        ^{\the\@tempcnta}%
+    \fi
+    #1}{\the\@temptokena}}%
+    \endgroup
+}
+
+\def\@Der@var#1{%
+    \ifx\relax#1\empty\else
+        \def\next{\expandafter\@Der@num\expandafter{\the\@tempcntb}{#1}}%
+        \afterassignment\next
+        \@tempcntb=0%
+    \fi
+}
+
+\def\@Der@num#1#2{%
+    \ifnum#1=\z@
+        \advance\@tempcnta by \@ne
+        \@temptokena\expandafter{\the\@temptokena\,\partial{#2}}%
+    \else
+        \advance\@tempcnta by #1\relax
+        \@temptokena\expandafter{\the\@temptokena\,\partial{#2}^{#1}}%
+    \fi
+    \@Der@var
+}
+
+\makeatother
+
+% another partial derivative typesetting attempt, https://tex.stackexchange.com/questions/22076/can-i-have-a-flexible-partial-derivative-macro/22571#22571
+\makeatletter
+\newcommand{\der}[2]{\begingroup
+  \@tempswafalse\toks@={}\count@=\z@
+  \@for\next:=#2\do
+    {\expandafter\check@var\next\@nil
+     \advance\count@\der@exp
+     \if@tempswa
+       \toks@=\expandafter{\the\toks@\,}%
+     \else
+       \@tempswatrue
+     \fi
+     \toks@=\expandafter{\the\expandafter\toks@\expandafter\partial\der@var}}%
+  \frac{\partial\ifnum\count@=\@ne\else^{\number\count@}\fi#1}{\the\toks@}%
+  \endgroup}
+\def\check@var{\@ifstar{\mult@var}{\one@var}}
+\def\mult@var#1#2\@nil{\def\der@var{#2^{#1}}\def\der@exp{#1}}
+\def\one@var#1\@nil{\def\der@var{#1}\chardef\der@exp\@ne}
+\makeatother
+
 % alternative to \hyperref to refer to a symbols definition/source
 \newcommand{\refdef}[2][]{%
   \textcolor{green}{\hyperref[#1]{#2}}
@@ -144,7 +235,8 @@
 \newcommand{\?}{\stackrel{?}{=}}
 \newcommand{\cmark}{\text{\ding{51}}}
 \newcommand{\xmark}{\text{\ding{55}}}
-\renewcommand{\Pr}{\mathbb{P}}
+% \renewcommand{\Pr}{\mathbb{P}}
+\renewcommand{\Pr}{\mathscr{P}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator{\vct}{vec}
