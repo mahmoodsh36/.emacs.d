@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: partial derivative
+# key: dr
+# --
+\der{f(${1:x})}{$1}$0
