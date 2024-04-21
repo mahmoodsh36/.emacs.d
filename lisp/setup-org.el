@@ -334,7 +334,7 @@
   ;; display inline tramp images in org mode (and other remote image links)
   (setq org-display-remote-inline-images t)
   ;; display full text of links
-  (setq org-link-descriptive nil)
+  ;; (setq org-link-descriptive nil)
   ;; (setq org-pretty-entities t)
   (setq org-ellipsis "⤵")
 

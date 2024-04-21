@@ -122,7 +122,7 @@
 (use-package cape
   :init
   ;; somehow the value isnt really set but the completions work according to this list lol
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
   ;; (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable

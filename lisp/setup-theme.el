@@ -66,6 +66,30 @@
   (font-lock-add-keywords 'org-mode '(("\\[cite[^\\[]+\\]" 0 font-lock-keyword-face))) ;; [cite..]
   ;; (setq-default font-lock-multiline t) ;; needed for the following regex to work
   ;; (font-lock-add-keywords 'org-mode (list (cons "\\\\begin{\\([a-zA-Z]+\\)}\\(.\\|\n\\)*?\\\\end{\\1}" 'font-lock-keyword-face))) ;; latex env, doesnt work..
+
+  (defun my-latex-env-fontlock (bound)
+    "depends on auctex."
+    (let* ((origin-point (point))
+           (env-bounds (ignore-errors (blk-auctex-env-at-point-bounds)))
+           (begin (car env-bounds))
+           (end (cdr env-bounds)))
+      (when (not env-bounds)
+        (ignore-errors
+          (search-forward "\\begin{")
+          ;; (goto-char (match-beginning 0)) (forward-char)
+          (setq env-bounds (ignore-errors (blk-auctex-env-at-point-bounds))
+                begin (car env-bounds)
+                end (cdr env-bounds))))
+      (if env-bounds
+          (progn
+            (when (> end bound) (setq end bound))
+            (when (< begin origin-point) (setq begin origin-point))
+            (goto-char (1+ end))
+            (set-match-data (list begin end))
+            t)
+        (progn (goto-char (1+ origin-point))
+               nil))))
+  (font-lock-add-keywords 'org-mode '(my-latex-env-fontlock))
   )
 
 (defun switch-to-theme (theme)
