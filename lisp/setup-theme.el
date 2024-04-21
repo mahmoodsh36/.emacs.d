@@ -63,9 +63,9 @@
   (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face))) ;; #+keyword
   (font-lock-add-keywords 'org-mode '((":\\([a-zA-Z]+\\)[\s\n]" 0 font-lock-keyword-face))) ;; :keyword
   (font-lock-add-keywords 'org-mode (list (list org-link-any-re 0 'font-lock-keyword-face))) ;; [[link]]
-  (font-lock-add-keywords 'org-mode '(("\\[cite[^\\[]+\\]" 0 font-lock-keyword-face))) ;; [[..cite..]]
-  (defvar my-mode-font-lock-keywords
-    '(("\\[\\s-*\\([^\][:space:]]+\\)" (1 font-lock-function-name-face))))
+  (font-lock-add-keywords 'org-mode '(("\\[cite[^\\[]+\\]" 0 font-lock-keyword-face))) ;; [cite..]
+  ;; (setq-default font-lock-multiline t) ;; needed for the following regex to work
+  ;; (font-lock-add-keywords 'org-mode (list (cons "\\\\begin{\\([a-zA-Z]+\\)}\\(.\\|\n\\)*?\\\\end{\\1}" 'font-lock-keyword-face))) ;; latex env, doesnt work..
   )
 
 (defun switch-to-theme (theme)
