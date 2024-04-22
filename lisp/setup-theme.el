@@ -68,7 +68,7 @@
   ;; (font-lock-add-keywords 'org-mode (list (cons "\\\\begin{\\([a-zA-Z]+\\)}\\(.\\|\n\\)*?\\\\end{\\1}" 'font-lock-keyword-face))) ;; latex env, doesnt work..
 
   (defun my-latex-env-fontlock (bound)
-    "depends on auctex."
+    "depends on blk and auctex, for highlighting latex blocks."
     (let* ((origin-point (point))
            (env-bounds (ignore-errors (blk-auctex-env-at-point-bounds)))
            (begin (car env-bounds))
@@ -89,7 +89,7 @@
             t)
         (progn (goto-char (1+ origin-point))
                nil))))
-  (font-lock-add-keywords 'org-mode '(my-latex-env-fontlock))
+  (font-lock-add-keywords 'org-mode (list (list 'my-latex-env-fontlock 0 'font-lock-string-face)))
   )
 
 (defun switch-to-theme (theme)

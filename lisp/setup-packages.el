@@ -338,12 +338,12 @@
 
 (use-package dap-mode)
 
-(use-package mixed-pitch
-  :hook
-  (text-mode . mixed-pitch-mode))
-(add-hook 'text-mode-hook
-          (lambda ()
-            (variable-pitch-mode 1)))
+;; (use-package mixed-pitch
+;;   :hook
+;;   (text-mode . mixed-pitch-mode))
+;; (add-hook 'text-mode-hook
+;;           (lambda ()
+;;             (variable-pitch-mode 1)))
 
 ;; ;; give org mode a better look
 (use-package org-modern
@@ -487,7 +487,7 @@
 
 ;; transclusions (including text from other documents) for org mode
 (use-package org-transclusion
-  :config
+  ;; :config
   ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
   )
 
@@ -935,5 +935,8 @@
 
 (use-package consult-web
   :ensure ( :host github :repo "armindarvish/consult-web"))
+
+(use-package engrave-faces
+  :ensure ( :host github :repo "tecosaur/engrave-faces"))
 
 (provide 'setup-packages)
