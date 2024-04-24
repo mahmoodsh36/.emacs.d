@@ -243,7 +243,7 @@
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
 \newcommand{\inpr}[2]{\langle #1, #2 \rangle} % inner product symbols, consider also physics' \braket
-\newcommand{\textand}{\mathbin{\text{and}}}
+\newcommand{\textand}{\mathbin{\smallspace\text{and}\smallspace}}
 \newcommand{\textnot}{\text{ not }}
 \newcommand{\textor}{\mathbin{\text{or}}}
 \newcommand{\textif}{\text{if }}
@@ -368,7 +368,7 @@
 %   \oldincludegraphics[width=\ScaleIfNeeded]{#2}
 % }
 
-%   brace to group lines of code for a quote
+%  brace to group lines of code for a quote
 \newcommand*{\addbrace}[4]{%
   \begin{tikzpicture}[overlay, remember picture]
     \draw[decoration={brace,amplitude=0.5em}, decorate, thick]
@@ -503,4 +503,38 @@
 \newcommand{\rnumset}{\mathbb{R}} % for the set of real numbers
 \newcommand{\cnumset}{\mathbb{C}} % for the set of complex numbers
 \newcommand{\qnumset}{\mathbb{Q}} % for the set of rational numbers
-\newcommand{\vsfield}{\refdef[def-F]{\mathbb{F}}} % for the "field" of a vector space which may stand for R or C (reals or complex nums)
+\newcommand{\vsfield}{\refdef[blk:def-F]{\mathbb{F}}} % for the "field" of a vector space which may stand for R or C (reals or complex nums)
+\NewDocumentCommand\vecspace{o}{\refdef[blk:not-vector-space]{\IfNoValueTF{#1}{V}{#1}}}
+\NewDocumentCommand\duspace{o}{\refdef[blk:def-dual-space]{\IfNoValueTF{#1}{V'}{#1'}}}
+} % to denote some vector space V
+\newcommand{\linfuncsfromto}{\refdef[blk:not-linear-func-from-to]{\mathcal{L}}} % linear functions from one vector space onto another
+\newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
+\newcommand{\tensprod}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
+
+% used for function definitions, https://tex.stackexchange.com/questions/32019/dynamically-size-arrow-mapsto-in-function-definition
+\newcommand\phantomarrow[2]{%
+  \setbox0=\hbox{$\displaystyle #1\to$}%
+  \hbox to \wd0{%
+    $#2\mapstochar
+     \cleaders\hbox{$\mkern-1mu\relbar\mkern-3mu$}\hfill
+     \mkern-7mu\rightarrow$}%
+  \,}
+% function definition with domain and codomain and variable and value
+\newcommand{\funcdcv}[5]{%
+  \begin{align*}
+    #1 \colon & #2 \to #3\\
+    &\phantomarrow{#2}{#4} #5
+  \end{align*}
+}
+% function definition with domain and codomain
+\newcommand{\funcdc}[3]{%
+  #1 \colon #2 \to #3
+}
+% function definition with variable and value
+\newcommand{\funcd}[3]{%
+  #1 \colon #2 \mapsto #3
+}
+% function as a variable and value without name
+\newcommand{\funcv}[2]{%
+  #1 \mapsto #2
+}
