@@ -62,6 +62,8 @@
                                      :extract-id-function 'blk-org-id-at-point))
     )
   (setq blk-patterns blk-rg-patterns)
+
+  (add-hook 'text-mode-hook #'blk-enable-completion)
   )
 
 (provide 'setup-blk)

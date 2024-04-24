@@ -731,10 +731,11 @@
   (let ((exceptions))
     (mapcar
      (lambda (file)
+       (message "doing %s" file)
        (when (should-export-org-file file)
-           (apply #'export-org-file (nconc (list file) kw))))
-         ;;   (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
-         ;; (setq exceptions (push file exceptions))))
+         (apply #'export-org-file (nconc (list file) kw))))
+     ;;   (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
+     ;; (setq exceptions (push file exceptions))))
      (all-org-files))))
 
 (defun export-all-org-files-to-html-and-pdf ()

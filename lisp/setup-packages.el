@@ -421,8 +421,9 @@
   (keyfreq-autosave-mode 1)
   (setq keyfreq-file (from-brain "emacs_keyfreq")))
 
-;; has issues with transient versions/elpaca
-(use-package magit)
+;; has issues with transient versions/elpaca, build seems to fail on android
+(when (not (is-android-system))
+  (use-package magit))
   ;; :ensure ( :host github :repo "magit/magit"))
 
 ;; need the "global" package for gtags binary
@@ -487,8 +488,9 @@
 
 ;; transclusions (including text from other documents) for org mode
 (use-package org-transclusion
-  ;; :config
-  ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
+  :after (org)
+  :config
+  (add-hook 'org-mode-hook #'org-transclusion-mode)
   )
 
 (use-package eat)
