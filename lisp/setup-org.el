@@ -698,22 +698,22 @@
   "return all known org files"
   (directory-files (from-brain "notes/") t ".*\\.org$"))
 
-;; (defun files-linked-from-org-file (filepath)
-;;   (with-file-as-current-buffer
-;;    filepath
-;;    (remove
-;;     nil
-;;     (org-element-map (org-element-parse-buffer) 'link
-;;       (lambda (mylink)
-;;         (let ((filepath (pcase (org-element-property :type mylink)
-;;                           ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path mylink))))
-;;                           ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
-;;                           (_ nil))))
-;;           filepath))))))
+(defun files-linked-from-org-file (filepath)
+  (with-file-as-current-buffer
+   filepath
+   (remove
+    nil
+    (org-element-map (org-element-parse-buffer) 'link
+      (lambda (mylink)
+        (let ((filepath (pcase (org-element-property :type mylink)
+                          ("blk" (plist-get (car (blk-find-by-id (org-element-property :path mylink))) :filepath))
+                          ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
+                          (_ nil))))
+          filepath))))))
 
 (defun export-node-recursively (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
-  (if (and node (when (not (cl-find node exceptions :test #'string=))))
+  (if (and node (not (cl-find node exceptions :test #'string=)))
       (progn
         (push node exceptions)
         (let ((nodes (files-linked-from-org-file node)))
@@ -729,14 +729,11 @@
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
   (let ((exceptions))
-    (mapcar
-     (lambda (file)
-       (message "doing %s" file)
-       (when (should-export-org-file file)
-         (apply #'export-org-file (nconc (list file) kw))))
-     ;;   (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
-     ;; (setq exceptions (push file exceptions))))
-     (all-org-files))))
+    (let* ((grep-results (grep-org-dir *notes-dir* "#\\+hugo_section"))
+           (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
+      (dolist (file files-to-export)
+        (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
+        (setq exceptions (push file exceptions))))))
 
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
@@ -773,6 +770,11 @@
 ;;                         (lambda ()
 ;;                           (message "running code block in file %s" (buffer-file-name))
 ;;                           (org-ctrl-c-ctrl-c))))
+
+(defun grep-org-dir (dir regex)
+  (blk-grep blk-grepper
+            (list (list :anchor-regex regex :src-id-function 'identity :glob "*.org"))
+            (list dir)))
 
 (defun my-org-ql-agenda ()
   (interactive)
