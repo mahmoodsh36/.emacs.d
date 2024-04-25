@@ -246,6 +246,16 @@
     ;; (yas-minor-mode)
     (yas-activate-extra-mode 'latex-mode))
   (add-hook 'org-mode-hook #'my-org-latex-yas)
+
+  ;; some snippets i dont wanna create files for
+  (yas-define-snippets
+   'latex-mode
+   '(("pt" "\\ptvct{$1}$0" "point (coordinate vector or whatever one'd call it)")
+     ))
+  (yas-define-snippets
+   'text-mode
+   '(("tm" "`(current-time-string)`" "current Time")
+     ))
   )
 
 ;; highlight errors in code
@@ -486,11 +496,11 @@
   (add-hook 'mhtml-mode-hook 'emmet-mode)
   (add-hook 'web-mode-hook 'emmet-mode))
 
-;; transclusions (including text from other documents) for org mode
+;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
 (use-package org-transclusion
-  :after (org)
-  :config
-  (add-hook 'org-mode-hook #'org-transclusion-mode)
+  ;; :after (org)
+  ;; :config
+  ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
   )
 
 (use-package eat)
