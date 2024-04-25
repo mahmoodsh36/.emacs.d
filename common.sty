@@ -207,7 +207,10 @@
 
 % alternative to \hyperref to refer to a symbols definition/source
 \newcommand{\refdef}[2][]{%
-  \textcolor{green}{\hyperref[#1]{#2}}
+  \textcolor{orange}{\hyperref[#1]{#2}}
+}
+\newcommand{\defvar}[2]{% define a variable, \defvar{id/name}{symbol}, like lexical bindings but maybe extend it to highest block
+  \refdef[#1]{#2}
 }
 
 % no space before paragraph (is this desired?)
@@ -238,7 +241,6 @@
 \renewcommand\Pr{\operatorname{\mathbb{P}}} % for probability function symbol
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator{\vct}{vec}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
@@ -421,6 +423,9 @@
   $\m@th\smash-\mkern-7mu%
   \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
   \mkern-7mu\raisebox{-3.81pt}[\p@][\p@]{$\mathord\mathchar"017E$}$}
+% points to distinguish them from vectors (they are essentially the same thing but still)
+\newcommand{\ptvct}[1]{\refdef[blk:def-vec]{\brm{#1}}}
+\newcommand{\vct}[1]{\refdef[blk:def-vec]{\vect{#1}}}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
@@ -510,6 +515,7 @@
 \newcommand{\linfuncsfromto}{\refdef[blk:not-linear-func-from-to]{\mathcal{L}}} % linear functions from one vector space onto another
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
 \newcommand{\tensprod}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
+\newcommand{\vsprod}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 
 % used for function definitions, https://tex.stackexchange.com/questions/32019/dynamically-size-arrow-mapsto-in-function-definition
 \newcommand\phantomarrow[2]{%
