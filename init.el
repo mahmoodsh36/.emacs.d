@@ -182,35 +182,6 @@
 (setq recentf-max-menu-items 10000000)
 (setq recentf-max-saved-items 10000000)
 
-;; move over text object
-;; (evil-define-motion evil-forward-text-object
-;;   (count &optional text-object)
-;;   "move to the end of following input text-object define
-;; in evil-inner-text-objects-map ."
-;;   (unless text-object
-;;       (setf text-object
-;;             (let ((key (read-key-sequence "text-object:")))
-;;               (lookup-key evil-inner-text-objects-map key))))
-;;   (let* ((region (funcall text-object count))
-;;          (end (nth 1 region)))
-;;     (goto-char end)))
-;; (define-key evil-motion-state-map (kbd "M-w")
-;;   #'evil-forward-text-object)
-
-;; (evil-define-motion evil-backward-text-object
-;;   (count &optional text-object)
-;;   "move to the begin of following input text-object define
-;; in evil-inner-text-objects-map ."
-;;   (unless text-object
-;;       (setf text-object
-;;             (let ((key (read-key-sequence "text-object:")))
-;;               (lookup-key evil-inner-text-objects-map key))))
-;;   (let* ((region (funcall text-object count))
-;;          (start (nth 0 region)))
-;;     (goto-char start)))
-;; (define-key evil-motion-state-map (kbd "M-b")
-;;   #'evil-backward-text-object)
-
 (defun sudo-find-file (file-name)
   "like find file, but opens the file as root using tramp"
   (interactive (list (read-file-name "file: " "/sudo::/")))
@@ -297,49 +268,6 @@ prompt the user for a coding system."
     (and found (goto-char (1+ (car found))))
     found))
 
-(unbind-key "C-z")
-(bind-keys :prefix-map mymap
-           :prefix "C-z"
-           ;;:prefix-docstring "Personal key bindings"
-           ("v" . emacs-version)
-           ("e" . (lambda () (interactive) (find-file user-init-file)))
-           ("a" . kill-all-buffers)
-           ("z" . zap-up-to-char)
-           ("g" . deadgrep)
-           )
-
-;; https://karthinks.com/software/a-consistent-structural-editing-interface/
-;; (repeat-mode 1)
-;; (defvar structural-edit-map
-;;   (let ((map (make-sparse-keymap)))
-;;     (pcase-dolist (`(,k . ,f)
-;;                    '(("u" . backward-up-list)
-;;                      ("f" . forward-sexp)
-;;                      ("b" . backward-sexp)
-;;                      ("d" . down-list)
-;;                      ("k" . kill-sexp)
-;;                      ("n" . forward-list)
-;;                      ("p" . backward-list)
-;;                      ("K" . sp-kill-hybrid-sexp)
-;;                      ("]" . sp-forward-slurp-sexp)
-;;                      ("[" . sp-backward-slurp-sexp)
-;;                      ("}" . sp-forward-barf-sexp)
-;;                      ("{" . sp-backward-barf-sexp)
-;;                      ("C" . sp-convolute-sexp)
-;;                      ("J" . sp-join-sexp)
-;;                      ("S" . sp-split-sexp)
-;;                      ("R" . sp-raise-sexp)
-;;                      ("\\" . indent-region)
-;;                      ("/" . undo)
-;;                      ("t" . transpose-sexps)
-;;                      ("x" . eval-defun)))
-;;       (define-key map (kbd k) f))
-;;     map))
-;; (map-keymap
-;;  (lambda (_ cmd)
-;;    (put cmd 'repeat-map 'structural-edit-map))
-;;  structural-edit-map)
-
 ;; prettify symbols..
 (global-prettify-symbols-mode +1)
 ;; replace lambda text with symbol
@@ -373,26 +301,6 @@ prompt the user for a coding system."
     ("not" . (?· (Br . Bl) ?· (Br . Bl) ?¬))))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
-
-;; https://www.emacswiki.org/emacs/PrettyGreek
-;; theres alsp https://www.emacswiki.org/emacs/PrettySymbolsForLanguages
-;; (defun pretty-greek ()
-;;   (let ((greek '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta" "theta" "iota" "kappa" "lambda" "mu" "nu" "xi" "omicron" "pi" "rho" "sigma_final" "sigma" "tau" "upsilon" "phi" "chi" "psi" "omega")))
-;;     (cl-loop for word in greek
-;;           for code = 97 then (+ 1 code)
-;;           do  (let ((greek-char (make-char 'greek-iso8859-7 code)))
-;;                 (font-lock-add-keywords nil
-;;                                         `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
-;;                                            (0 (progn (decompose-region (match-beginning 2) (match-end 2))
-;;                                                      nil)))))
-;;                 (font-lock-add-keywords nil
-;;                                         `((,(cl-concatenate 'string "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
-;;                                            (0 (progn (compose-region (match-beginning 2) (match-end 2)
-;;                                                                      ,greek-char)
-;;                                                      nil)))))))))
-;; (add-hook 'lisp-mode-hook 'pretty-greek)
-;; (add-hook 'emacs-lisp-mode-hook 'pretty-greek)
-;; (add-hook 'prog-mode-hook 'pretty-greek)
 
 (defun ascii-table ()
   "display basic ASCII table (0 thru 128)."
@@ -452,67 +360,6 @@ prompt the user for a coding system."
                    (yaml-mode . yaml-ts-mode)))
   (add-to-list 'major-mode-remap-alist mapping))
 
-;; FIRST: git clone https://github.com/casouri/tree-sitter-module
-;;        bash batch.sh
-;; THEN : sudo cp dist/* /usr/local/lib
-;; FINALLY:
-;;(setq treesit-extra-load-path '("/usr/local/lib"))
-;;;; Treesit ;; Eglot
-;;(setq treesit-eglot-modes
-;;      '((:ts (bash-mode . bash-ts-mode) :pacman "bash-language-server")
-;;        (:ts (c++-mode . c++-ts-mode) :pacman "ccls")
-;;        (:ts (c-mode . c-ts-mode) :pacman "ccls")
-;;        (:ts (cpp-mode . cpp-ts-mode) :pacman "ccls")
-;;        (:ts (c-sharp-mode . sharp-ts-mode))
-;;        (:ts (cmake-mode . cmake-ts-mode))
-;;        (:ts (css-mode . css-ts-mode) :pacman "vscode-css-languageserver")
-;;        (:ts (dockerfile-mode . dockerfile-ts-mode))
-;;        (:ts (elixir-mode . elixir-ts-mode))
-;;        (:ts (glsl-mode . glsl-ts-mode))
-;;        (:ts (go-mode . go-ts-mode) :pacman "gopls")
-;;        (:ts (heex-mode . heex-ts-mode))
-;;        (:ts (html-mode . html-ts-mode) :pacman "vscode-html-languageserver")
-;;        (:ts (java-mode . java-ts-mode))
-;;        (:ts (javascript-mode . js-ts-mode) :pacman "typescript-language-server")
-;;        (:ts (js-json-mode . json-ts-mode) :pacman "vscode-json-languageserver")
-;;        (:ts (julia-mode . julia-ts-mode))
-;;        (:ts (make-mode . make-ts-mode))
-;;        (:ts (markdown-mode . markdown-ts-mode))
-;;        (:ts (python-mode . python-ts-mode) :pacman "jedi-language-server")
-;;        (:ts (typescript-mode . typescript-ts-mode) :pacman "typescript-language-server")
-;;        (:ts (proto-mode . proto-ts-mode))
-;;        (:ts (ruby-mode . ruby-ts-mode))
-;;        (:ts (rust-mode . rust-ts-mode) :pacman "rust-analyzer")
-;;        (:ts (sql-mode . sql-ts-mode))
-;;        (:ts (toml-mode . toml-ts-mode))
-;;        (:ts (tsx-mode . tsx-ts-mode))
-;;        (:ts (verilog-mode . verilog-ts-mode))
-;;        (:ts (vhdl-mode . vhdl-ts-mode))
-;;        (:ts (wgsl-mode . wgsl-ts-mode))
-;;        (:ts (yaml-mode . yaml-ts-mode) :pacman "yaml-language-server")))
-;;;; Not mature yet:
-;;;; (push '(org-mode . org-ts-mode) major-mode-remap-alist)
-;;;; (push '(perl-mode . perl-ts-mode) major-mode-remap-alist)              ;; cpan Perl::LanguageServer
-;;(require 'treesit)
-;;
-;;;; Function to parse the above and make an install command
-;;(if (treesit-available-p)
-;;    (let ((pacman-install-list (list )))
-;;      (dolist (ts-pm treesit-eglot-modes)
-;;        (let ((majmode-remap (plist-get ts-pm :ts))
-;;              (pacman-cmd (plist-get ts-pm :pacman)))
-;;          ;; bind default major-mode to ts-mode
-;;          (push majmode-remap major-mode-remap-alist)
-;;          ;; populate install cmd
-;;          (if pacman-cmd
-;;              (unless (member pacman-cmd pacman-install-list)
-;;                (push pacman-cmd pacman-install-list)))))
-;;      (let ((install-cmd (concat
-;;                          "pacman -S --needed "
-;;                          (--reduce (concat acc " " it) pacman-install-list))))
-;;        (message install-cmd)))
-;;  (user-error "Treesitter not available"))
-
 ;; persistent comint history
 ;; https://oleksandrmanzyuk.wordpress.com/2011/10/23/a-persistent-command-history-in-emacs/
 (defun comint-write-history-on-exit (process event)
@@ -543,45 +390,6 @@ prompt the user for a coding system."
   (add-hook 'inferior-python-mode-hook 'turn-on-comint-history)
   (add-hook 'shell-mode-hook 'turn-on-comint-history)
   (add-hook 'kill-buffer-hook 'comint-write-input-ring))
-
-;; combobulate, see https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter
-;; here’s some example code that navigates to the next dictionary, list or set:
-(defun move-to-next-container ()
-  (interactive)
-  (with-navigation-nodes (:nodes '("dictionary" "set" "list"))
-    (combobulate-visual-move-to-node
-     (combobulate-nav-logical-next) t)))
-
-;; (defvar combobulate-edit-map
-;;   (let ((map (make-sparse-keymap)))
-;;     (pcase-dolist (`(,k . ,f)
-;;                    '(("u" . combobulate-navigate-up-list-maybe)
-;;                      ("f" . combobulate-navigate-forward)
-;;                      ("b" . combobulate-navigate-backward)
-;;                      ("d" . combobulate-navigate-down-list-maybe)
-;;                      ("k" . combobulate-kill-node-dwim)
-;;                      ("n" . combobulate-navigate-next)
-;;                      ("p" . combobulate-navigate-previous)
-;;                      ("J" . combobulate-splice)
-;;                      ("a" . combobulate-navigate-beginning-of-defun)
-;;                      ("e" . combobulate-navigate-end-of-defun)
-;;                      ("\\" . indent-region)
-;;                      ("/" . undo)
-;;                      ("t" . combobulate-transpose-sexps)
-;;                      ("x" . eval-defun)))
-;;       (define-key map (kbd k) f))
-;;     map))
-;; (map-keymap
-;;  (lambda (_ cmd)
-;;    (put cmd 'repeat-map 'combobulate-edit-map))
-;;  combobulate-edit-map)
-
-;; from https://emacs.stackexchange.com/questions/16688/how-can-i-escape-the-in-org-mode-to-prevent-bold-fontification
-;; (defun my-bold (contents backend info)
-;;   (when (org-export-derived-backend-p backend 'latex)
-;;     (replace-regexp-in-string "\\`\\\\textbf{\\(.+\\)}"
-;;                               "\\\\ast{}\\1\\\\ast{}" contents)))
-;; (add-to-list 'org-export-filter-bold-functions 'my-bold)
 
 ;; load other elisp files
 (require 'setup-org)

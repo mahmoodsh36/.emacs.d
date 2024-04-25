@@ -671,7 +671,39 @@
    (typescript-ts-mode . combobulate-mode)
    (tsx-ts-mode . combobulate-mode))
   :config
-  (setq combobulate-key-prefix "C-c o"))
+  (setq combobulate-key-prefix "C-c o")
+
+  ;; here’s some example code that navigates to the next dictionary, list or set, see https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter
+  (defun move-to-next-container ()
+    (interactive)
+    (with-navigation-nodes (:nodes '("dictionary" "set" "list"))
+      (combobulate-visual-move-to-node
+       (combobulate-nav-logical-next) t)))
+
+  ;; (defvar combobulate-edit-map
+  ;;   (let ((map (make-sparse-keymap)))
+  ;;     (pcase-dolist (`(,k . ,f)
+  ;;                    '(("u" . combobulate-navigate-up-list-maybe)
+  ;;                      ("f" . combobulate-navigate-forward)
+  ;;                      ("b" . combobulate-navigate-backward)
+  ;;                      ("d" . combobulate-navigate-down-list-maybe)
+  ;;                      ("k" . combobulate-kill-node-dwim)
+  ;;                      ("n" . combobulate-navigate-next)
+  ;;                      ("p" . combobulate-navigate-previous)
+  ;;                      ("J" . combobulate-splice)
+  ;;                      ("a" . combobulate-navigate-beginning-of-defun)
+  ;;                      ("e" . combobulate-navigate-end-of-defun)
+  ;;                      ("\\" . indent-region)
+  ;;                      ("/" . undo)
+  ;;                      ("t" . combobulate-transpose-sexps)
+  ;;                      ("x" . eval-defun)))
+  ;;       (define-key map (kbd k) f))
+  ;;     map))
+  ;; (map-keymap
+  ;;  (lambda (_ cmd)
+  ;;    (put cmd 'repeat-map 'combobulate-edit-map))
+  ;;  combobulate-edit-map)
+  )
 
 (use-package easy-kill)
 
