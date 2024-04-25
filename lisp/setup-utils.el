@@ -238,4 +238,9 @@ example usage: (with-eval-after-load-all '(org) (message \"hi\"))"
         (with-eval-after-load-all (quote ,(cdr (eval my-features))) ,@body))
     `(progn ,@body)))
 
+(defun open-devdocs-entry (entry)
+  "simple function to open the devdocs reference for a specific manual/library/whatever the package accepts, by its name"
+  (let ((devdocs-current-docs (list entry)))
+    (devdocs-lookup)))
+
 (provide 'setup-utils)

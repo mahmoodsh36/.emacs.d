@@ -29,8 +29,6 @@
   ;; (setq stimmung-themes-comment 'foreground)
   )
 (use-package acme-theme)
-;; (switch-to-dark-theme)
-;; (switch-to-light-theme)
 ;; (load-theme 'minimal-light t)
 ;; (load-theme 'doom-gruvbox-light t)
 ;; (load-theme 'darktooth t)
