@@ -52,7 +52,7 @@ URL `http://ergoemacs.org/emacs/dired_sort.html'
 Version 2015-07-30"
   (interactive)
   (let (-sort-by -arg)
-    (setq -sort-by (ido-completing-read "Sort by:" '( "date" "size" "name" "dir")))
+    (setq -sort-by (completing-read "Sort by:" '( "date" "size" "name" "dir")))
     (cond
      ((equal -sort-by "name") (setq -arg "-Al --si --time-style long-iso "))
      ((equal -sort-by "date") (setq -arg "-Al --si --time-style long-iso -t"))

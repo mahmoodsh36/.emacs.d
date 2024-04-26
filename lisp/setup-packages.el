@@ -741,7 +741,7 @@
   (unbind-key "M-RET" hyperbole-mode-map))
 
 (use-package denote
-  :ensure ( :fetcher github :repo "protesilaos/denote" :ref "55dcf23")
+  :ensure ( :fetcher github :repo "protesilaos/denote")  ;; :ref "55dcf23"
   :config
   (setq denote-directory *notes-dir*
         denote-date-prompt-use-org-read-date t
