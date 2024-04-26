@@ -443,6 +443,7 @@ prompt the user for a coding system."
             ;; (switch-to-theme 'doom-sourcerer)
             ;;(switch-to-darktooth-theme)
             ))
+
 ;; enable flyspell (spell checking)
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))

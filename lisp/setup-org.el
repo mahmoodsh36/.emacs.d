@@ -532,19 +532,62 @@
    org-nav-map)
   (define-key org-mode-map (kbd "C-l") org-nav-map))
 
-;; (defun my-org-link-advice (fn link desc info)
-;;   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-;;   (let* ((filepath (pcase (org-element-property :type link)
-;;                      ("blk" (grep-result-file (org-blk-find-anchor (org-element-property :path link))))
-;;                      ("denote" (denote-get-path-by-id (org-element-property :path link)))
-;;                      (_ nil))))
-;;     (if filepath
-;;         (if (should-export-org-file filepath)
-;;             (funcall fn link desc info)
-;;           (format "%s" (or desc (org-element-property :path link))))
-;;       (funcall fn link desc info))))
-;; (advice-add #'org-html-link :around #'my-org-link-advice)
-;; (advice-add #'org-hugo-link :around #'my-org-link-advice)
+;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
+(defun my-org-link-advice (fn link desc info)
+  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
+  (let* ((filepath (pcase (org-element-property :type link)
+                     ("blk" (plist-get (car (blk-find-by-id link)) :filepath))
+                     ("denote" (denote-get-path-by-id (org-element-property :path link)))
+                     (_ nil))))
+    (if filepath
+        (if (should-export-org-file filepath)
+            (funcall fn link desc info)
+          (format "%s" (or desc (org-element-property :path link))))
+      (funcall fn link desc info))))
+(advice-add #'org-html-link :around #'my-org-link-advice)
+(advice-add #'org-hugo-link :around #'my-org-link-advice)
+
+;; advice to make links in hugo markdown export properly
+(defun my-blk-org-export-advice (fn link desc format)
+  (if (blk-find-by-id link)
+      (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
+             (desc (or desc link))
+             (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file))))
+        (message "testt %s" linked-file)
+        (when (member format (list 'html 'md))
+          (format "<a href=\"/%s/%s\">%s</a>" (org-export-dir-name path) linked-file-no-ext desc))
+        ;; ((eq format 'latex) (format "\\href{%s.tex}{%s}" linked-file-no-ext desc))
+        )
+    link))
+(advice-add #'blk-org-export :override #'my-blk-org-export-advice)
+;; overwrite the export function, for some slight modifications, to achieve the same effect as my-blk-org-export-advice
+(with-eval-after-load 'denote
+  (defun denote-link-ol-export (link description format)
+    (let* ((path-id (denote-link--ol-resolve-link-to-target link :full-data))
+           (path (file-relative-name (nth 0 path-id)))
+           (id (nth 1 path-id))
+           (search (nth 2 path-id))
+           (anchor (file-name-sans-extension path))
+           (path-no-ext (file-name-sans-extension (file-name-base path)))
+           (desc (cond
+                  (description)
+                  (search (format "denote:%s::%s" id search))
+                  (t (concat "denote:" id)))))
+      (if (member format (list 'html 'md))
+          (format "<a href=\"/%s/%s\">%s</a>" (org-export-dir-name path) path-no-ext desc)
+        link)
+      ;; (cond
+      ;;  ((eq format 'html)
+      ;;   (if search
+      ;;       (format "<a href=\"%s.html%s\">%s</a>" anchor search desc)
+      ;;     (format "<a href=\"%s.html\">%s</a>" anchor desc)))
+      ;;  ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
+      ;;  ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+      ;;  ((eq format 'ascii) (format "[%s] <denote:%s>" desc path))
+      ;;  ((eq format 'md) (format "[%s](../%s.md)" desc path-no-ext))
+      ;;  (t path))
+      ))
+  )
 
 ;; set org-mode date's export according to file creation date
 (defun file-modif-time (filepath)
@@ -706,7 +749,8 @@
     (org-element-map (org-element-parse-buffer) 'link
       (lambda (mylink)
         (let ((filepath (pcase (org-element-property :type mylink)
-                          ("blk" (plist-get (car (blk-find-by-id (org-element-property :path mylink))) :filepath))
+                          ("blk" (plist-get (car (blk-find-by-id (org-element-property :path mylink)))
+                                            :filepath))
                           ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
                           (_ nil))))
           filepath))))))
@@ -745,11 +789,15 @@
   (apply #'export-org-file buffer-file-name kw))
 
 (defun should-export-org-file (file)
+  (org-export-dir-name file))
+(defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
-  (with-file-as-current-buffer
-   file
-   (org-collect-keywords '("hugo_section"))))
-   ;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
+  (car
+   (cdar
+    (with-file-as-current-buffer
+     file
+     (org-collect-keywords '("hugo_section"))))))
+;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
 
 ;; (defun map-org-dir-elements (regex dir elm-type fn)
 ;;   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
