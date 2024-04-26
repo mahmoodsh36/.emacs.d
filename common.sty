@@ -61,7 +61,7 @@
 \usepackage{upgreek}
 \usepackage{bbm}
 \usepackage{newpxtext,newpxmath}
-\usepackage{cool}
+% \usepackage{cool}
 
 % for venn diagrams (i dont think i need those)
 % \usepackage[svgnames]{xcolor}
@@ -302,8 +302,9 @@
   showstringspaces=false,                 % dont show spaces in strings
   frame=shadowbox,
 }
-% so that latex doesnt complain about sage not being a language
+% so that latex doesnt complain about these not being languages
 \lstdefinelanguage{sage}{}
+\lstdefinelanguage{json}{}
 
 % environments like definition for special blocks, some of them are defined in beamer, so dont load them when the document class is beamer
 \makeatletter%
@@ -511,9 +512,8 @@
 \newcommand{\znumset}{\mathbb{Z}} % for the set of integers
 \newcommand{\nnumset}{\mathbb{N}} % for the set of naturals
 \newcommand{\vsfield}{\refdef[blk:def-F]{\mathbb{F}}} % for the "field" of a vector space which may stand for R or C (reals or complex nums)
-\NewDocumentCommand\vecspace{o}{\refdef[blk:not-vector-space]{\IfNoValueTF{#1}{V}{#1}}}
+\NewDocumentCommand\vecspace{o}{\refdef[blk:not-vector-space]{\IfNoValueTF{#1}{V}{#1}}} % to denote some vector space V
 \NewDocumentCommand\duspace{o}{\refdef[blk:def-dual-space]{\IfNoValueTF{#1}{V'}{#1'}}}
-} % to denote some vector space V
 \newcommand{\linfuncsfromto}{\refdef[blk:not-linear-func-from-to]{\mathcal{L}}} % linear functions from one vector space onto another
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
 \newcommand{\tensprod}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
