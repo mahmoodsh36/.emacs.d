@@ -627,23 +627,6 @@
 ;;   (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
 ;;   (lsp))
 
-;; org html title of blocks, unfinished
-;; (defun my-org-block-advice (fn special-block contents info)
-;;   "i use properties like :title <block title>, make those available in html output too"
-;;   (let ((args (org-babel-parse-header-arguments
-;;                (org-element-property :parameters
-;;                                      special-block))))
-;;     (if args
-;;         (progn
-;;           (let ((mytitle (alist-get :title args)))
-;;             ;; this is temporary, it replaces all html attributes instead of appending
-;;             (setf (plist-get (plist-get special-block 'special-block) :attr_html)
-;;                   (list (format ":data-title %s" mytitle)))
-;;             (funcall fn special-block contents info)))
-;;       (funcall fn special-block contents info))))
-;; (advice-add #'org-html-special-block :around #'my-org-block-advice)
-;; (advice-add #'org-hugo-special-block :around #'my-org-block-advice)
-
 (defun my-org-agenda-files ()
   (denote-files-with-keyword "todo"))
 (defun denote-files-with-keyword (keyword)
@@ -849,5 +832,51 @@
                     (:deadline t :name "deadlines")
                     (:auto-planning t)
                     (:todo t :name "other"))))
+
+(defun org-block-property (property block)
+  "example: #+begin_myblock :myproperty whatever-value"
+  (or (org-element-property property block)
+      (alist-get
+       property
+       (org-babel-parse-header-arguments
+        (org-element-property :parameters block)))))
+
+;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
+(defun my-org-link-advice (fn link desc info)
+  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
+  (let* ((filepath (pcase (org-element-property :type link)
+                     ("blk" (plist-get (car (blk-find-by-id link)) :filepath))
+                     ("denote" (denote-get-path-by-id (org-element-property :path link)))
+                     (_ nil))))
+    (if filepath
+        (if (should-export-org-file filepath)
+            (funcall fn link desc info)
+          (format "%s" (or desc (org-element-property :path link))))
+      (funcall fn link desc info))))
+(advice-add #'org-html-link :around #'my-org-link-advice)
+(advice-add #'org-hugo-link :around #'my-org-link-advice)
+
+;; handle some custom blocks i've defined
+(defun my-org-latex-special-block-advice (fn special-block contents info)
+  (let ((type (org-element-property :type special-block)))
+    (when (string= type "my_example") (setq type "example"))
+    (if (member type (list "definition"
+                           "theorem"
+                           "problem"
+                           "proposition"
+                           "notation"
+                           "solution"
+                           "example"
+                           "corollary"
+                           "claim"))
+        (progn
+          (let ((title (or (org-block-property :defines special-block)
+                           (org-block-property :title special-block)
+                           "")))
+            (concat (format "\\begin{myenv}{%s}[%s]\n" type title) ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+                    contents
+                    (format "\\end{myenv}"))))
+      (funcall fn special-block contents info))))
+(advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
 
 (provide 'setup-org)

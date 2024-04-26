@@ -959,4 +959,8 @@
 (use-package engrave-faces
   :ensure ( :host github :repo "tecosaur/engrave-faces"))
 
+;; imenu side buffer
+(use-package imenu-list)
+(use-package side-hustle)
+
 (provide 'setup-packages)

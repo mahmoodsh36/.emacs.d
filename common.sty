@@ -15,7 +15,7 @@
 \usepackage{tikz}
 \usepackage[tikz]{bclogo}
 \usepackage{listings}
-\usepackage[most]{tcolorbox}
+\usepackage[most,listings]{tcolorbox}
 \usepackage{forest}
 \usepackage{adjustbox}
 \usepackage{tikz-3dplot}
@@ -310,45 +310,46 @@
 \makeatletter%
 \@ifclassloaded{beamer}%
   {}%
-  {\theoremstyle{definition} \newtheorem{definition}{definition}
-\newtheorem{my_example}{example}
-\newtheorem{assumption}{assumption}
-\counterwithin{my_example}{section}
-\counterwithin{my_example}{subsection}
-\counterwithin{definition}{section}
-\counterwithin{definition}{subsection}
-\newtheorem{characteristic}{characteristic}
-\newtheorem{entailment}{entailment}
-\newtheorem{corollary}{corollary}
+  {
+% \theoremstyle{definition} \newtheorem{definition}{definition}
+% \newtheorem{my_example}{example}
+% \newtheorem{assumption}{assumption}
+% \counterwithin{my_example}{section}
+% \counterwithin{my_example}{subsection}
+% \counterwithin{definition}{section}
+% \counterwithin{definition}{subsection}
+% \newtheorem{characteristic}{characteristic}
+% \newtheorem{entailment}{entailment}
+% \newtheorem{corollary}{corollary}
 % \newtheore*{proof}{Proof}
-\newtheorem{lemma}{lemma}
-\newtheorem{question}{question}
-\newtheorem{remark}{remark}
-\newtheorem{subquestion}{subquestion}[question]
+% \newtheorem{lemma}{lemma}
+% \newtheorem{question}{question}
+% \newtheorem{remark}{remark}
+% \newtheorem{subquestion}{subquestion}[question]
 % \newtheorem{note}{Note}
-\newtheorem{answer}{answer}
-\counterwithin{answer}{question}
-\counterwithin{answer}{subquestion}
-\newtheorem{step}{step}[answer]
-\newtheorem{problem}{problem}
-\newtheorem{solution}{solution}[problem]
-\newtheorem{subproblem}{subproblem}[problem]
-\newtheorem{task}{task}
-\newtheorem{theorem}{theorem}
-\newtheorem{axiom}{axiom}
-\newtheorem{claim}{claim}
-\newtheorem{proposition}{proposition}
-\newtheorem{notation}{notation}
-\newenvironment{note}
-{\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
-  {\end{bclogo}}
-\newenvironment{attention}
-{\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
-    couleur=red!15]{Important!}}
-  {\end{bclogo}}
-\newenvironment{any}{}{}
+% \newtheorem{answer}{answer}
+% \counterwithin{answer}{question}
+% \counterwithin{answer}{subquestion}
+% \newtheorem{step}{step}[answer]
+% \newtheorem{problem}{problem}
+% \newtheorem{solution}{solution}% [problem]
+% \newtheorem{subproblem}{subproblem}% [problem]
+% \newtheorem{task}{task}
+% \newtheorem{theorem}{theorem}
+% \newtheorem{axiom}{axiom}
+% \newtheorem{claim}{claim}
+% \newtheorem{proposition}{proposition}
+% \newtheorem{notation}{notation}
+% \newenvironment{note}
+% {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
+%   {\end{bclogo}}
+% \newenvironment{attention}
+% {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
+%     couleur=red!15]{Important!}}
+%   {\end{bclogo}}
+% \newenvironment{any}{}{}
 % a dummy environment to group together "stuff"
-\newenvironment*{dummyenv}{}{}
+% \newenvironment*{dummyenv}{}{}
 \newenvironment*{dummy}{}{}
 }%
 \makeatother%
@@ -518,6 +519,88 @@
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
 \newcommand{\tensprod}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
 \newcommand{\vsprod}{\refdef[blk:def-vs-prod]{\times}} % vector space product
+
+\ExplSyntaxOn
+    \NewDocumentEnvironment{myenv}{mO{}o} % #1 is for type, #2 is for title, #3 is for caption
+     {
+      \par\noindent
+      \IfNoValueTF{#3}{\begin{myboxnocaption}{#1}{#2}}{\begin{myboxwithcaption}{#1}{#2}{#3}}
+      \ignorespaces
+     }
+     {
+      \par\noindent
+      \IfNoValueTF{#3}{\end{myboxnocaption}}{\end{myboxwithcaption}}
+      \ignorespaces
+     }
+\ExplSyntaxOff
+
+\newcounter{mycounter}
+\makeatletter
+\newtcolorbox{myboxwithcaption}[4][]{
+  enhanced jigsaw,
+  lower separated=false,
+  colback=white!80!gray,
+  colframe=white, fonttitle=\bfseries,
+  colbacktitle=white!50!gray,
+  coltitle=black,
+  enhanced,
+  boxed title style={colframe=black},
+  attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
+  before title={\stepcounter{mycounter}},
+  title={#2 \themycounter~#3},
+  % boxsep=0pt,
+  % bottom=3mm,
+  % left=3mm,
+  % right=3mm,
+  % top=3mm,
+  % boxrule=1pt,
+  % colframe=red,
+  % arc=0pt,
+  overlay={%
+    \node[anchor=north,text width=\tcb@width-4\pgflinewidth-6mm,fill=olive,inner xsep=3mm]
+    (a) at ([yshift=2mm]frame.south) {#4};
+    \draw[red,line width=1pt] (a.north west) -- (a.south west) -| (a.north east);
+  },
+  #1}
+\newtcolorbox{myboxnocaption}[3][]{
+  enhanced jigsaw,
+  lower separated=false,
+  colback=white!80!gray,
+  colframe=white, fonttitle=\bfseries,
+  colbacktitle=white!50!gray,
+  coltitle=black,
+  enhanced,
+  boxed title style={colframe=black},
+  attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
+  before title={\stepcounter{mycounter}},
+  title={#2 \themycounter~#3},
+  % boxsep=0pt,
+  % bottom=3mm,
+  % left=3mm,
+  % right=3mm,
+  % top=3mm,
+  % boxrule=1pt,
+  % colframe=red,
+  % arc=0pt,
+  #1}
+\makeatother
+
+% \newtcbtheorem[auto counter]{definition}{Definition}{
+%   lower separated=false,
+%   colback=white!80!gray,
+%   colframe=white, fonttitle=\bfseries,
+%   colbacktitle=white!50!gray,
+%   coltitle=black,
+%   enhanced,
+%   boxed title style={colframe=black},
+%   attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
+% }{def}
+% \newtcbtheorem[auto counter]{theorem}{theorem}{}{}
+% \newtcbtheorem[auto counter]{problem}{problem}{}{}
+% \newtcbtheorem[auto counter]{proposition}{proposition}{}{}
+% \newtcbtheorem[auto counter]{notation}{notation}{}{}
+% \newtcbtheorem[auto counter]{solution}{solution}{}{}
+% \newtcbtheorem[auto counter]{my_example}{example}{}{}
 
 % used for function definitions, https://tex.stackexchange.com/questions/32019/dynamically-size-arrow-mapsto-in-function-definition
 \newcommand\phantomarrow[2]{%
