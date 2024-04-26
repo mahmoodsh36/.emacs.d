@@ -6,6 +6,8 @@
 
 (defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
 
+(defconst *personal-website-url* "https://mahmoodsheikh36.github.io")
+
 ;;(defconst *leader-key* "C-z");;"SPC")
 ;; (global-set-key (kbd "<SPC>") (make-sparse-keymap))
 ;;(defconst *leader-key* "<escape>")

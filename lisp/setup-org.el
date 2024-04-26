@@ -555,7 +555,10 @@
              (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file))))
         (message "testt %s" linked-file)
         (when (member format (list 'html 'md))
-          (format "<a href=\"/%s/%s/\">%s</a>" (org-export-dir-name path) linked-file-no-ext desc))
+          (format "<a href=\"/%s/%s/\">%s</a>"
+                  (org-export-dir-name path)
+                  (downcase linked-file-no-ext)
+                  desc))
         ;; ((eq format 'latex) (format "\\href{%s.tex}{%s}" linked-file-no-ext desc))
         )
     link))
@@ -574,7 +577,10 @@
                   (search (format "denote:%s::%s" id search))
                   (t (concat "denote:" id)))))
       (if (member format (list 'html 'md))
-          (format "<a href=\"/%s/%s/\">%s</a>" (org-export-dir-name path) path-no-ext desc)
+          (format "<a href=\"/%s/%s/\">%s</a>"
+                  (org-export-dir-name path)
+                  (downcase path-no-ext)
+                  desc)
         link)
       ;; (cond
       ;;  ((eq format 'html)
