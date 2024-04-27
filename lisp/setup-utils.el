@@ -243,4 +243,33 @@ example usage: (with-eval-after-load-all '(org) (message \"hi\"))"
   (let ((devdocs-current-docs (list entry)))
     (devdocs-lookup)))
 
+(defun buffer-name-incremented (name)
+  "generate a name for a buffer named NAME, if such a buffer already exists use NAME but append
+1 at the end, so that it becomes NAME-1, if buffer NAME-1 exists, use NAME-2 and so on.
+this function doesnt create the buffer itself, it merely generates the proper name, use `get-buffer-create'"
+  (let ((index 1)
+        (original-name name))
+    (while (get-buffer name)
+      (setq name (format "%s-%s" original-name index))
+      (cl-incf index))
+    name))
+
+(defun term-create-name-incremented ()
+  "start a terminal and rename buffer."
+  (interactive)
+  (term "zsh")
+  (let ((buffer-name (buffer-name-incremented "myterm")))
+    (rename-buffer buffer-name t)
+    buffer-name))
+
+(defun shell-create-name-incremented ()
+  (interactive)
+  (let ((buffer-name (buffer-name-incremented "shell")))
+    (shell buffer-name)
+    buffer-name))
+
+(defun new-term-with-cmd (cmd)
+  (with-current-buffer (term-create-name-incremented)
+    (term-send-raw-string (format "%s\n" cmd))))
+
 (provide 'setup-utils)
