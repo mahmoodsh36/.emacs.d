@@ -868,6 +868,11 @@
                            "solution"
                            "example"
                            "corollary"
+                           "task"
+                           "thought"
+                           "question"
+                           "lemma"
+                           "note"
                            "claim"))
         (progn
           (let ((title (or (org-block-property :defines special-block)
