@@ -62,10 +62,8 @@
 \usepackage{bbm}
 \usepackage{newpxtext,newpxmath}
 % \usepackage{cool}
-
-% for venn diagrams (i dont think i need those)
-% \usepackage[svgnames]{xcolor}
-% \usepackage{venndiagram}
+\usepackage{fontenc}
+\usepackage{xcolor}
 
 \ifLuaTeX
   % graphdrawing library is only available to luatex
@@ -251,11 +249,18 @@
 \newcommand{\textif}{\text{if }}
 \newcommand{\textthen}{\text{ then }}
 \newcommand{\textgoto}{\mathbin{\text{goto}}}
-\DeclareMathOperator{\graph}{graph} % Mat symbol for sets of matrices of specific dimensions
-\newcommand{\angled}[1]{\langle #1 \rangle} % inner product symbols, consider also physics' \braket
+\DeclareMathOperator{\graph}{graph}
+\newcommand{\angled}[1]{\langle #1 \rangle}
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
 \newcommand{\incr}[1]{#1\texttt{+{}+}} % decrement of a number
 \newcommand{\halt}{\operatorname{HALT}} % operator for the halting problem
+\newcommand{\converges}[2][]{#2 \downarrow #1}
+\newcommand{\diverges}[1]{#1\uparrow}
+
+% some computability symbols
+\DeclareMathOperator{\program}{\refdef[blk:def-algorithm-inf]{\mathscr{P}}} % symbol for a turing program
+\DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
+\DeclareMathOperator{\cfunc}{\refdef[blk:not-comp-func]{\psi}} % computable function symbol
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -411,7 +416,7 @@
 % \SetDataSty{myvarsty}
 % search through https://ctan.ebinger.cc/tex-archive/macros/latex/contrib/algorithm2e/tex/algorithm2e.sty for the full list of commands
 
-% code evaluation results environment
+% org-babel code evaluation results environment
 \newenvironment{results}
 {}
 {}
