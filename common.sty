@@ -544,23 +544,23 @@
   colframe=white, fonttitle=\bfseries,
   colbacktitle=white!50!gray,
   coltitle=black,
-  enhanced,
   boxed title style={colframe=black},
   attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
   before title={\stepcounter{mycounter}},
   title={#2 \themycounter~#3},
-  % boxsep=0pt,
-  % bottom=3mm,
-  % left=3mm,
-  % right=3mm,
-  % top=3mm,
-  % boxrule=1pt,
-  % colframe=red,
-  % arc=0pt,
+  boxsep=0pt,
+  bottom=3mm,
+  left=3mm,
+  right=3mm,
+  top=3mm,
+  boxrule=1pt,
+  % after skip=20pt, % margin after box
+  arc=0pt,
   overlay={%
-    \node[anchor=north,text width=\tcb@width-4\pgflinewidth-6mm,fill=olive,inner xsep=3mm]
-    (a) at ([yshift=2mm]frame.south) {#4};
-    \draw[red,line width=1pt] (a.north west) -- (a.south west) -| (a.north east);
+    \tikzset{overlay=false} % to get proper spacing after the citation
+    \node[anchor=north,text width=\tcb@width-4\pgflinewidth-6mm,fill=white!50!gray,inner xsep=3mm,text=black]
+    (a) at ([yshift=2mm]frame.south) {citation: \textbf{#4}};
+    % \draw[line width=1pt] (a.north west) -- (a.south west) -| (a.north east);
   },
   #1}
 \newtcolorbox{myboxnocaption}[3][]{

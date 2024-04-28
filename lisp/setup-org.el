@@ -878,11 +878,45 @@
         (progn
           (let ((title (or (org-block-property :defines special-block)
                            (org-block-property :title special-block)
-                           "")))
-            (concat (format "\\begin{myenv}{%s}[%s]\n" type title) ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+                           ""))
+                (citation (org-block-citation-string special-block)))
+            (when citation
+              ;; delete the citation, we insert it ourselves later
+              (setq contents
+                    (with-temp-buffer
+                      (insert contents)
+                      (goto-char (point-max))
+                      (previous-line)
+                      (goto-char (pos-bol))
+                      (kill-line)
+                      (buffer-string))))
+            (concat (format "\\begin{myenv}{%s}[%s]%s\n" type title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+                            (if citation (format "[%s]" citation) ""))
                     contents
                     (format "\\end{myenv}"))))
       (funcall fn special-block contents info))))
 (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
+
+(defun org-block-citation-string (&optional block)
+  (save-excursion
+    (let* ((block (or block (org-element-at-point)))
+           (end (org-element-property :end block)))
+      (goto-char (1- end))
+      (previous-line)
+      (goto-char (pos-bol))
+      (let* ((context
+              (org-element-lineage
+               (org-element-context)
+               '(citation citation-reference clock comment comment-block
+                          footnote-definition footnote-reference headline
+                          inline-src-block inlinetask keyword link node-property
+                          planning src-block timestamp)
+               t))
+             (type (org-element-type context))
+             (value (org-element-property :value context)))
+        (when context
+          (let ((contents (buffer-substring (org-element-begin context)
+                                            (org-element-end context))))
+            (org-export-string-as contents 'latex t)))))))
 
 (provide 'setup-org)
