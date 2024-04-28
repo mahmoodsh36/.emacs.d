@@ -294,7 +294,8 @@
   (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
   ;; enable latex previews everywhere possible and use a custom preamble
   (setq org-latex-preview-live '(block inline edit-special))
-  ;; (setq org-latex-preview-preamble "\\documentclass{article}\n[DEFAULT-PACKAGES]\n[PACKAGES]\n\\usepackage{xcolor}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty, its already in setup.org though
+  ;; [border=2pt] argument to documentclass may be desired but not for inline previews...
+  (setq org-latex-preview-preamble "\\documentclass{standalone}\n\\usepackage{\\string\~/.emacs.d/common}") ;; use my ~/.emacs.d/common.sty, its already in setup.org though
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
@@ -752,8 +753,9 @@
         (push node exceptions)
         (let ((nodes (files-linked-from-org-file node)))
           (dolist (other-node nodes)
-            (when other-node (message (format "exporter jumping to: %s" other-node)))
-            (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw)))))
+            (when (should-export-org-file other-node) ;; to avoid jumping to nodes that arent for exporting anyway
+              (when other-node (message (format "exporter jumping to: %s" other-node)))
+              (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw))))))
         (when (and node (should-export-org-file node))
           (message (format "exporting: %s" node))
           (apply #'export-org-file node kw))

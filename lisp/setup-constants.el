@@ -13,4 +13,7 @@
 ;;(defconst *leader-key* "<escape>")
 (defconst *leader-key* "<SPC>")
 
+;; if i need more recursion depth
+;; (setq max-lisp-eval-depth 10000)
+
 (provide 'setup-constants)
