@@ -272,4 +272,117 @@ this function doesnt create the buffer itself, it merely generates the proper na
   (with-current-buffer (term-create-name-incremented)
     (term-send-raw-string (format "%s\n" cmd))))
 
+(defun kill-this-buffer-volatile ()
+  "kill current buffer, even if it has been modified."
+  (interactive)
+  (set-buffer-modified-p nil)
+  (kill-this-buffer))
+
+;; from xah's website or whatever
+(defun copy-file-path (&optional DirPathOnlyQ)
+  "copy current buffer file path or dired path.
+result is full path.
+if `universal-argument' is called first, copy only the dir path.
+if in dired, copy the current or marked files.
+if a buffer is not file and not dired, copy value of `default-directory'."
+  (interactive "P")
+  (let (($fpath
+         (if (string-equal major-mode 'dired-mode)
+             (progn
+               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
+                 (if (equal (length $result) 0)
+                     (progn default-directory )
+                   (progn $result))))
+           (if (buffer-file-name)
+               (buffer-file-name)
+             (expand-file-name default-directory)))))
+    (kill-new
+     (if DirPathOnlyQ
+         (progn
+           (message "directory copied: %s" (file-name-directory $fpath))
+           (file-name-directory $fpath))
+       (progn
+         (message "file path copied: %s" $fpath)
+         $fpath)))))
+
+;; from https://www.emacswiki.org/emacs/FindingNonAsciiCharacters
+(defun find-first-non-ascii-char ()
+  "Find the first non-ascii character from point onwards."
+  (interactive)
+  (let (point)
+    (save-excursion
+      (setq point
+            (catch 'non-ascii
+              (while (not (eobp))
+                (or (eq (char-charset (following-char))
+                        'ascii)
+                    (throw 'non-ascii (point)))
+                (forward-char 1)))))
+    (if point
+        (goto-char point)
+      (message "No non-ascii characters."))))
+(defun find-next-unsafe-char (&optional coding-system)
+  "Find the next character in the buffer that cannot be encoded by
+coding-system. If coding-system is unspecified, default to the coding
+system that would be used to save this buffer. With prefix argument,
+prompt the user for a coding system."
+  (interactive "Zcoding-system: ")
+  (if (stringp coding-system) (setq coding-system (intern coding-system)))
+  (if coding-system nil
+    (setq coding-system
+          (or save-buffer-coding-system buffer-file-coding-system)))
+  (let ((found nil) (char nil) (csets nil) (safe nil))
+    (setq safe (coding-system-get coding-system 'safe-chars))
+    ;; some systems merely specify the charsets as ones they can encode:
+    (setq csets (coding-system-get coding-system 'safe-charsets))
+    (save-excursion
+      ;;(message "zoom to <")
+      (let ((end  (point-max))
+            (here (point    ))
+            (char  nil))
+        (while (and (< here end) (not found))
+          (setq char (char-after here))
+          (if (or (eq safe t)
+                  (< char ?\177)
+                  (and safe  (aref safe char))
+                  (and csets (memq (char-charset char) csets)))
+              nil ;; safe char, noop
+            (setq found (cons here char)))
+          (setq here (1+ here))) ))
+    (and found (goto-char (1+ (car found))))
+    found))
+
+(defun sudo-find-file (file-name)
+  "like find file, but opens the file as root using tramp"
+  (interactive (list (read-file-name "file: " "/sudo::/")))
+  (let ((tramp-file-name (expand-file-name file-name)))
+    (find-file tramp-file-name)))
+
+(defun current-mpv-artist ()
+  (shell-command-to-string "sh -c 'echo \"{ \\\"command\\\": [\\\"get_property\\\", \\\"metadata\\\"] }\" | socat - /tmp/mpv_socket | jq -j .data.artist' 2>/dev/null"))
+
+(defun insert-random-string (&optional num)
+  (interactive)
+  (or num (setq num 7))
+  (insert (generate-random-string num)))
+(global-set-key (kbd "C-c R") #'insert-random-string)
+
+(defun ascii-table ()
+  "display basic ASCII table (0 thru 128)."
+  (interactive)
+  (switch-to-buffer "*ASCII*")
+  (erase-buffer)
+  (setq buffer-read-only nil)        ;; Not need to edit the content, just read mode (added)
+  (local-set-key "q" 'bury-buffer)   ;; Nice to have the option to bury the buffer (added)
+  (save-excursion (let ((i -1))
+                    (insert "ASCII characters 0 thru 127.\n\n")
+                    (insert " Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char|  Hex  Dec  Char\n")
+                    (while (< i 31)
+                      (insert (format "%4x %4d %4s | %4x %4d %4s | %4x %4d %4s | %4x %4d %4s\n"
+                                      (setq i (+ 1  i)) i (single-key-description i)
+                                      (setq i (+ 32 i)) i (single-key-description i)
+                                      (setq i (+ 32 i)) i (single-key-description i)
+                                      (setq i (+ 32 i)) i (single-key-description i)))
+                      (setq i (- i 96))))))
+
 (provide 'setup-utils)
