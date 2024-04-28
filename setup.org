@@ -1,8 +1,8 @@
-#+OPTIONS: toc:nil creator:nil timestamp:nil validate:nil
-# #+LATEX_CLASS: article
-# #+LATEX_CLASS_OPTIONS: [a4paper,12pt]
-#+LATEX_HEADER: \usepackage{\string~/.emacs.d/common}
-#+AUTHOR: mahmood
+#+options: toc:nil creator:nil timestamp:nil validate:nil
+# #+latex_class: article
+# #+latex_class_options: [a4paper,12pt]
+# #+latex_header: \usepackage{\string~/.emacs.d/common}
+#+author: mahmood
 #+macro: mywebsite [[https://mahmoodsheikh36.github.io]]
 #+macro: if-latex (eval (if (org-export-derived-backend-p org-export-current-backend 'latex) $1))
 #+macro: newline src_emacs-lisp[:results raw]{"\n"}
