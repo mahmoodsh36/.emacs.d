@@ -10,7 +10,7 @@
               ("C-h ." . eldoc))
   :hook ((eglot-managed-mode . my/eglot-eldoc-settings))
   :config
-  (add-hook 'python-mode-hook #'eglot-ensure)
+  (add-hook 'python-ts-mode-hook #'eglot-ensure)
   (add-hook 'c-mode-hook #'eglot-ensure)
   ;; some inline hints
   (add-hook 'eglot-managed-mode-hook 'eglot-inlay-hints-mode)

@@ -65,7 +65,7 @@
     )
   (setq blk-patterns blk-rg-patterns)
 
-  (add-hook 'text-mode-hook #'blk-enable-completion)
+  ;; (add-hook 'text-mode-hook #'blk-enable-completion)
   )
 
 (provide 'setup-blk)

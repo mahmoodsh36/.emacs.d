@@ -272,6 +272,10 @@ this function doesnt create the buffer itself, it merely generates the proper na
   (with-current-buffer (term-create-name-incremented)
     (term-send-raw-string (format "%s\n" cmd))))
 
+(defun new-shell-with-cmd (cmd)
+  (with-current-buffer (shell-create-name-incremented)
+    (comint-send-string (buffer-name (current-buffer)) (format "%s\n" cmd))))
+
 (defun kill-this-buffer-volatile ()
   "kill current buffer, even if it has been modified."
   (interactive)

@@ -303,7 +303,8 @@
             ;; (switch-to-theme 'ef-tritanopia-dark)
             ;; (switch-to-theme 'ef-melissa-dark)
 
-            (switch-to-light-theme)
+            ;; (switch-to-light-theme)
+            (switch-to-dark-theme)
             ;; (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)

@@ -163,7 +163,7 @@
 (defun switch-to-dark-theme ()
   (interactive)
   (switch-to-theme 'ef-autumn)
-  s(set-themed-pdf t))
+  (set-themed-pdf t))
 (defun switch-to-light-theme ()
   (interactive)
   (switch-to-theme 'ef-melissa-light)
@@ -435,7 +435,7 @@
   (interactive)
   (let ((cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
     (when cmd
-      (new-term-with-cmd cmd)
+      (new-shell-with-cmd cmd)
       ;; (start-process-shell-command "shell" nil cmd)
       )))
 
