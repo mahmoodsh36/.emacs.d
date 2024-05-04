@@ -51,7 +51,7 @@
   (setq blk-search-recursively t)
 
   ;; enable group search (group things together)
-  (setq blk-search-recursively t)
+  (setq blk-enable-groups t)
 
   ;; add the :defines pattern
   (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
