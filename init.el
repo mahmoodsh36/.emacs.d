@@ -354,3 +354,9 @@
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8-unix)
+
+;; tell erc to save logs
+(require 'erc)
+(require 'erc-log)
+(setq erc-log-channels-directory (from-brain "erc"))
+(setq erc-save-buffer-on-part t)

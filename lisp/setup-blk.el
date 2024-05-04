@@ -50,18 +50,21 @@
   ;; allow for recursive grep
   (setq blk-search-recursively t)
 
+  ;; enable group search (group things together)
+  (setq blk-search-recursively t)
+
   ;; add the :defines pattern
   (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
-    ;; (add-to-list pattern-table (list :title "definition or mention"
-    ;;                                  :glob "*.org"
-    ;;                                  :anchor-regex "(:defines|:mentions)\\s+[^:]+"
-    ;;                                  :title-function 'blk-value-after-space-before-colon
-    ;;                                  :extract-id-function 'blk-org-id-at-point))
-    (add-to-list pattern-table (list :title "definition"
+    (add-to-list pattern-table (list :title "definition or mention"
                                      :glob "*.org"
-                                     :anchor-regex "(:defines)\\s+[^:]+"
-                                     :title-function 'blk-value-after-space-before-colon
+                                     :anchor-regex "(:defines|:mentions)\\s+[^:]+"
+                                     :title-function 'blk-value-after-space-upto-colon
                                      :extract-id-function 'blk-org-id-at-point))
+    ;; (add-to-list pattern-table (list :title "definition"
+    ;;                                  :glob "*.org"
+    ;;                                  :anchor-regex "(:defines)\\s+[^:]+"
+    ;;                                  :title-function 'blk-value-after-space-upto-colon
+    ;;                                  :extract-id-function 'blk-org-id-at-point))
     )
   (setq blk-patterns blk-rg-patterns)
 

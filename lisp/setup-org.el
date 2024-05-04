@@ -422,6 +422,14 @@
           ))
   )
 
+;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's
+(defun ox-latex-disable-svg-handling ()
+  (interactive)
+  (setf (org-export-backend-feature-implementations (org-export-get-backend 'latex))
+        (cl-remove-if (lambda (entry)
+                        (equal (car entry) 'svg))
+                      (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
+
 ;; run some python code from my org notes on shell startup
 ;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
 ;; i need those in library of babel on startup too
@@ -907,14 +915,11 @@
            (end (org-element-property :end block)))
       (goto-char (1- end))
       (previous-line)
-      (goto-char (pos-bol))
+      (goto-char (pos-eol))
       (let* ((context
               (org-element-lineage
                (org-element-context)
-               '(citation citation-reference clock comment comment-block
-                          footnote-definition footnote-reference headline
-                          inline-src-block inlinetask keyword link node-property
-                          planning src-block timestamp)
+               '(citation citation-reference)
                t))
              (type (org-element-type context))
              (value (org-element-property :value context)))

@@ -389,4 +389,16 @@ prompt the user for a coding system."
                                       (setq i (+ 32 i)) i (single-key-description i)))
                       (setq i (- i 96))))))
 
+(defun my-insert-newline-same-indentation ()
+  "Insert a newline with the same indentation as the current line."
+  (interactive)
+  (end-of-line)
+  (let ((current-indentation (save-excursion
+                               (beginning-of-line)
+                               (skip-chars-forward " \t")
+                               (- (point) (line-beginning-position)))))
+    (newline)
+    (insert (make-string current-indentation ? ))
+    (evil-insert 0)))
+
 (provide 'setup-utils)

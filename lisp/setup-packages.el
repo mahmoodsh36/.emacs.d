@@ -921,12 +921,14 @@
 (use-package notmuch
   :config
   ;; setup the mail address and use name
-  (setq mail-user-agent 'notmuch-user-agent)
+  (setq mail-user-agent 'message-user-agent)
   (setq user-mail-address "mahmod.m2015@gmail.com"
         user-full-name "mahmood sheikh")
   ;; smtp config
   (setq smtpmail-smtp-server "smtp.gmail.com"
-        message-send-mail-function 'message-smtpmail-send-it)
+        message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'ssl
+        smtpmail-smtp-service 465)
   ;; report problems with the smtp server
   (setq smtpmail-debug-info t)
   ;; add Cc and Bcc headers to the message buffer
@@ -962,5 +964,7 @@
 ;; imenu side buffer
 (use-package imenu-list)
 (use-package side-hustle)
+
+(use-package envrc)
 
 (provide 'setup-packages)

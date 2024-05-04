@@ -30,7 +30,6 @@
 \usepackage[linesnumbered,vlined]{algorithm2e}
 \usepackage{algpseudocode}
 \usepackage{algorithmicx}
-% \usepackage{svg}
 % \usepackage{karnaugh-map}
 \usepackage{karnaughmap}
 \usepackage{bm}
@@ -64,8 +63,17 @@
 % \usepackage{cool}
 \usepackage{fontenc}
 \usepackage{xcolor}
+\usepackage{ifluatex}
+\usepackage{svg}
 
 \ifLuaTeX
+  % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
+  \usepackage{pdftexcmds}
+  \makeatletter
+  \let\pdfstrcmp\pdf@strcmp
+  \let\pdffilemoddate\pdf@filemoddate
+  \makeatother
+
   % graphdrawing library is only available to luatex
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
@@ -242,7 +250,6 @@
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 \DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
-\newcommand{\inpr}[2]{\langle #1, #2 \rangle} % inner product symbols, consider also physics' \braket
 \newcommand{\textand}{\mathbin{\smallspace\text{and}\smallspace}}
 \newcommand{\textnot}{\text{ not }}
 \newcommand{\textor}{\mathbin{\text{or}}}
@@ -256,6 +263,13 @@
 \newcommand{\halt}{\operatorname{HALT}} % operator for the halting problem
 \newcommand{\converges}[2][]{#2 \downarrow #1}
 \newcommand{\diverges}[1]{#1\uparrow}
+\newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
+
+% many different products
+\newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
+\newcommand{\proddot}[2]{#1 \refdef[blk:def-dot]{\cdot} #2} % dot product
+\newcommand{\prodtens}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
+\newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 
 % some computability symbols
 \DeclareMathOperator{\program}{\refdef[blk:def-algorithm-inf]{\mathscr{P}}} % symbol for a turing program
@@ -513,7 +527,7 @@
    \hfil\raise0.36ex\hbox{$\scriptscriptstyle\boldsymbol{\times}$}\hfil\cr}}}
 
 % some more macros for convenience
-\newcommand{\rnumset}{\mathbb{R}} % for the set of real numbers
+\newcommand{\rnumset}{\refdef[blk:def-reals-set]{\mathbb{R}}} % for the set of real numbers
 \newcommand{\cnumset}{\mathbb{C}} % for the set of complex numbers
 \newcommand{\qnumset}{\mathbb{Q}} % for the set of rational numbers
 \newcommand{\znumset}{\mathbb{Z}} % for the set of integers
@@ -523,8 +537,6 @@
 \NewDocumentCommand\duspace{o}{\refdef[blk:def-dual-space]{\IfNoValueTF{#1}{V'}{#1'}}}
 \newcommand{\linfuncsfromto}{\refdef[blk:not-linear-func-from-to]{\mathcal{L}}} % linear functions from one vector space onto another
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
-\newcommand{\tensprod}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
-\newcommand{\vsprod}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mO{}o} % #1 is for type, #2 is for title, #3 is for caption

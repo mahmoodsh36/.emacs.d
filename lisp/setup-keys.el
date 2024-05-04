@@ -87,7 +87,7 @@
 (led-kbd "r d"
          (lambda () (interactive)
            (my-org-to-pdf)
-           (switch-to-buffer-other-window  "latex"))
+           (switch-to-buffer-other-window "latex"))
          :keymaps 'org-mode-map)
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)
 (led-kbd "r e" 'org-babel-tangle :keymaps 'org-mode-map)
@@ -450,5 +450,8 @@
                    (notmuch-search "tag:unread"))))
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
+
+;; annoyingly some modes dont handle it newline indentation properly..
+;; (general-define-key :states 'normal :keymaps 'prog-mode-hook "o" 'my-insert-newline-same-indentation)
 
 (provide 'setup-keys)
