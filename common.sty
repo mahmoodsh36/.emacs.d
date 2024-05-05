@@ -52,7 +52,6 @@
 \usepackage{fonttable}
 \usepackage{float} % fixes some errors for figure previews in org mode (allows the figure to "float")
 % \usepackage{breqn}
-\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{lipsum}
 \usepackage{mathrsfs}
@@ -65,6 +64,10 @@
 \usepackage{xcolor}
 \usepackage{ifluatex}
 \usepackage{svg}
+\usepackage{biblatex}
+\addbibresource{\string~/brain/bib.bib}
+\usepackage{hyperref}
+\usepackage{cleveref}
 
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
@@ -539,20 +542,23 @@
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
 
 \ExplSyntaxOn
-    \NewDocumentEnvironment{myenv}{mO{}o} % #1 is for type, #2 is for title, #3 is for caption
+    \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
      {
       \par\noindent
-      \IfNoValueTF{#3}{\begin{myboxnocaption}{#1}{#2}}{\begin{myboxwithcaption}{#1}{#2}{#3}}
+      \IfNoValueTF{#4}{\begin{myboxnocaption}[#2]{#1}{#3}}{\begin{myboxwithcaption}[#2]{#1}{#3}{#4}}
       \ignorespaces
      }
      {
       \par\noindent
-      \IfNoValueTF{#3}{\end{myboxnocaption}}{\end{myboxwithcaption}}
+      \IfNoValueTF{#4}{\end{myboxnocaption}}{\end{myboxwithcaption}}
       \ignorespaces
      }
 \ExplSyntaxOff
 
 \newcounter{mycounter}
+% \newcounter{mycounter}[section] % Associate mycounter with section
+% \renewcommand{\themycounter}{\thesection.\arabic{mycounter}} % Reset numbering within section
+
 \makeatletter
 \newtcolorbox{myboxwithcaption}[4][]{
   enhanced jigsaw,
@@ -563,7 +569,8 @@
   coltitle=black,
   boxed title style={colframe=black},
   attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
-  before title={\stepcounter{mycounter}},
+  % before title={\refstepcounter{mycounter}},
+  before title={\refstepcounter{mycounter}\label{#1}}, % Labeling here
   title={#2 \themycounter~#3},
   boxsep=0pt,
   bottom=3mm,
@@ -578,8 +585,7 @@
     \node[anchor=north,text width=\tcb@width-4\pgflinewidth-6mm,fill=white!50!gray,inner xsep=3mm,text=black]
     (a) at ([yshift=2mm]frame.south) {citation: \textbf{#4}};
     % \draw[line width=1pt] (a.north west) -- (a.south west) -| (a.north east);
-  },
-  #1}
+  }}
 \newtcolorbox{myboxnocaption}[3][]{
   enhanced jigsaw,
   lower separated=false,
@@ -590,7 +596,8 @@
   enhanced,
   boxed title style={colframe=black},
   attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
-  before title={\stepcounter{mycounter}},
+  % before title={\refstepcounter{mycounter}},
+  before title={\refstepcounter{mycounter}\label{#1}}, % Labeling here
   title={#2 \themycounter~#3},
   % boxsep=0pt,
   % bottom=3mm,
@@ -600,7 +607,7 @@
   % boxrule=1pt,
   % colframe=red,
   % arc=0pt,
-  #1}
+  }
 \makeatother
 
 % \newtcbtheorem[auto counter]{definition}{Definition}{

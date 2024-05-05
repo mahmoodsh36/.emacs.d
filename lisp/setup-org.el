@@ -559,21 +559,21 @@
 (advice-add #'org-hugo-link :around #'my-org-link-advice)
 
 ;; advice to make links in hugo markdown export properly
-(defun my-blk-org-export-advice (fn link desc format)
-  (if (blk-find-by-id link)
-      (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
-             (desc (or desc link))
-             (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file))))
-        (message "testt %s" linked-file)
-        (when (member format (list 'html 'md))
-          (format "<a href=\"/%s/%s/\">%s</a>"
-                  (org-export-dir-name path)
-                  (downcase linked-file-no-ext)
-                  desc))
-        ;; ((eq format 'latex) (format "\\href{%s.tex}{%s}" linked-file-no-ext desc))
-        )
-    link))
-(advice-add #'blk-org-export :override #'my-blk-org-export-advice)
+;; (defun my-blk-org-export-advice (fn link desc format)
+;;   (if (blk-find-by-id link)
+;;       (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
+;;              (desc (or desc link))
+;;              (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file))))
+;;         (message "testt %s" linked-file)
+;;         (when (member format (list 'html 'md))
+;;           (format "<a href=\"/%s/%s/\">%s</a>"
+;;                   (org-export-dir-name path)
+;;                   (downcase linked-file-no-ext)
+;;                   desc))
+;;         ((eq format 'latex) (format "\\href{%s.tex}{%s}" linked-file-no-ext desc))
+;;         )
+;;     link))
+;; (advice-add #'blk-org-export :override #'my-blk-org-export-advice)
 ;; overwrite the export function, for some slight modifications, to achieve the same effect as my-blk-org-export-advice
 (with-eval-after-load 'denote
   (defun denote-link-ol-export (link description format)
@@ -851,7 +851,10 @@
       (alist-get
        property
        (org-babel-parse-header-arguments
-        (org-element-property :parameters block)))))
+        (org-element-property :parameters block)))
+      (member property
+              (mapcar 'car (org-babel-parse-header-arguments
+                            (org-element-property :parameters block))))))
 
 ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
 (defun my-org-link-advice (fn link desc info)
@@ -891,7 +894,18 @@
           (let ((title (or (org-block-property :defines special-block)
                            (org-block-property :title special-block)
                            ""))
-                (citation (org-block-citation-string special-block)))
+                (dependency (org-block-property :on special-block))
+                (citation (org-block-citation-string special-block))
+                (label (org-block-property :name special-block)))
+            (when (not label)
+              (setq label (generate-random-string 7)))
+            (if dependency
+                (progn
+                  (when (not (string-search "[" dependency)) ;; if its a link without the brackets
+                    (setq dependency (format "-> [[%s]]" dependency)))
+                  (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
+              (when (org-block-property :on-prev special-block)
+                (setq title (format "%s -> %s" title "previous block"))))
             (when citation
               ;; delete the citation, we insert it ourselves later
               (setq contents
@@ -902,7 +916,7 @@
                       (goto-char (pos-bol))
                       (kill-line)
                       (buffer-string))))
-            (concat (format "\\begin{myenv}{%s}[%s]%s\n" type title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+            (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
                             (if citation (format "[%s]" citation) ""))
                     contents
                     (format "\\end{myenv}"))))

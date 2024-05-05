@@ -320,6 +320,9 @@
             ;;(switch-to-darktooth-theme)
             ))
 
+;; disable repeat-mode
+(repeat-mode -1)
+
 ;; enable flyspell (spell checking)
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
@@ -329,7 +332,7 @@
 ;; disable some modes for large files (otherwise emacs will hang..)
 ;; there's also find-file-literally i guess
 (defun conditional-disable-modes ()
-  (unless (any #'derived-mode-p '(pdf-view-mode image-mode doc-view-mode archive-mode arc-mode jka-compr-mode))
+  (unless (any #'derived-mode-p '(org-mode pdf-view-mode image-mode doc-view-mode archive-mode arc-mode jka-compr-mode))
     (when (> (buffer-size) (* 1024 512))
       (message "entering fundamental-mode from %s" major-mode)
       (flycheck-mode -1)
