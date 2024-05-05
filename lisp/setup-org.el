@@ -75,13 +75,15 @@
     (compile-latex-file outfile)))
 
 (defun compile-latex-file (path)
-  (start-process-shell-command
-   "latex"
-   "latex"
-   (format "%s -shell-escape -output-directory=%s %s"
-           org-latex-compiler
-           (file-truename (get-latex-cache-dir-path))
-           path)))
+  ;; for biber we need a different set of commands, for cross-references we need to compile twice
+  (let ((cmd (format "%s -shell-escape -output-directory=%s %s"
+                     org-latex-compiler
+                     (file-truename (get-latex-cache-dir-path))
+                     path)))
+    (start-process-shell-command
+     "latex"
+     "latex"
+     (format "%s && %s" cmd cmd))))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
