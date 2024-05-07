@@ -65,6 +65,9 @@
   ;; (setq-default font-lock-multiline t) ;; needed for the following regex to work
   ;; (font-lock-add-keywords 'org-mode (list (cons "\\\\begin{\\([a-zA-Z]+\\)}\\(.\\|\n\\)*?\\\\end{\\1}" 'font-lock-keyword-face))) ;; latex env, doesnt work..
 
+  (font-lock-add-keywords 'org-mode '(("\\\\\\[.*?\\\\]" 0 font-lock-string-face))) ;; to highlight display math
+  (font-lock-add-keywords 'org-mode '(("\\\\(.*?\\\\)" 0 font-lock-string-face))) ;; to highlight inline math
+
   (defun my-latex-env-fontlock (bound)
     "depends on blk and auctex, for highlighting latex blocks."
     (let* ((origin-point (point))

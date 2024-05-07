@@ -227,10 +227,10 @@
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
-\DeclareMathOperator{\dom}{domain}
+\DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\ran}{range}
 \DeclareMathOperator{\rng}{range}
-\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\range}{rng}
 \DeclareMathOperator{\img}{Im}
 \DeclareMathOperator{\adj}{adj}
 \DeclareMathOperator{\Var}{Var}
@@ -257,6 +257,7 @@
 \newcommand{\textnot}{\text{ not }}
 \newcommand{\textor}{\mathbin{\text{or}}}
 \newcommand{\textif}{\text{if }}
+\newcommand{\textiff}{\text{ iff }}
 \newcommand{\textthen}{\text{ then }}
 \newcommand{\textgoto}{\mathbin{\text{goto}}}
 \DeclareMathOperator{\graph}{graph}
@@ -264,7 +265,7 @@
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
 \newcommand{\incr}[1]{#1\texttt{+{}+}} % decrement of a number
 \newcommand{\halt}{\operatorname{HALT}} % operator for the halting problem
-\newcommand{\converges}[2][]{#2 \downarrow #1}
+\newcommand{\converges}[1]{#1\downarrow}
 \newcommand{\diverges}[1]{#1\uparrow}
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
 
@@ -531,10 +532,10 @@
 
 % some more macros for convenience
 \newcommand{\rnumset}{\refdef[blk:def-reals-set]{\mathbb{R}}} % for the set of real numbers
-\newcommand{\cnumset}{\mathbb{C}} % for the set of complex numbers
-\newcommand{\qnumset}{\mathbb{Q}} % for the set of rational numbers
+\newcommand{\cnumset}{\refdef[blk:def-complex-set]{\mathbb{C}}} % for the set of complex numbers
+\newcommand{\qnumset}{\refdef[blk:def-rational-set]{\mathbb{Q}}} % for the set of rational numbers
 \newcommand{\znumset}{\mathbb{Z}} % for the set of integers
-\newcommand{\nnumset}{\mathbb{N}} % for the set of naturals
+\newcommand{\nnumset}{\refdef[blk:def-natural-set-inf]{\mathbb{N}}} % for the set of naturals
 \newcommand{\vsfield}{\refdef[blk:def-F]{\mathbb{F}}} % for the "field" of a vector space which may stand for R or C (reals or complex nums)
 \NewDocumentCommand\vecspace{o}{\refdef[blk:not-vector-space]{\IfNoValueTF{#1}{V}{#1}}} % to denote some vector space V
 \NewDocumentCommand\duspace{o}{\refdef[blk:def-dual-space]{\IfNoValueTF{#1}{V'}{#1'}}}

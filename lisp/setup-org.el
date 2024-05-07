@@ -944,4 +944,21 @@
                                             (org-element-end context))))
             (org-export-string-as contents 'latex t)))))))
 
+(defun html-out-file ()
+  (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".html"))
+(defun my-org-html-export ()
+  (interactive)
+  ;; disable some stuff thats enabled by default for html exporting
+  ;; (setq org-html-preamble-format '(("en" "test")))
+  ;; (setq org-html-head (with-temp-buffer (insert-file-contents "/home/mahmooz/head.html") (buffer-string)))
+  (plist-put org-html-latex-image-options :image-dir (from-brain "out/ltximg"))
+
+  (let ((org-export-with-title nil)
+        (org-html-head-include-default-style nil)
+        (org-html-head (with-temp-buffer
+                         (insert-file-contents "/home/mahmooz/head.html")
+                         (buffer-string))))
+    (org-export-to-file 'html (html-out-file)
+      nil nil nil nil nil nil)))
+
 (provide 'setup-org)
