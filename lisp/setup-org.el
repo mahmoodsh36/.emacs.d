@@ -140,6 +140,7 @@
 
 (with-eval-after-load 'org
   (require 'org-attach)
+  (require 'ox-beamer)
   ;; save the clock history across sessions
   (setq org-clock-persist 'history)
   (org-clock-persistence-insinuate)
@@ -200,7 +201,7 @@
   ;; disable images from being scaled/their dimensions being changed
   ;; (setq org-latex-image-default-width "2.0")
   ;; preserve all line breaks when exporting
-  (setq org-export-preserve-breaks t)
+  ;; (setq org-export-preserve-breaks t)
   ;; indent headings properly
   ;; (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-todo-keywords
@@ -422,6 +423,16 @@
              ;; :sort '(todo priority date)
              )))
           ))
+
+
+  ;; insert a blank line between everything in latex exports
+  (defun my-latex-newlines (_)
+    (goto-char (point-min))
+    (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
+    (goto-char (point-min))
+    (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
+    )
+  (add-to-list 'org-export-before-processing-functions 'my-latex-newlines)
   )
 
 ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's

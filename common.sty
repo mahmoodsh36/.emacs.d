@@ -38,7 +38,7 @@
 \usepackage{proof}
 % dont enable this its horrible, makes rendering from org-babel not work properly
 % \tikzstyle{every picture}+=[remember picture]
-\usepackage{enumitem}
+% \usepackage{enumitem} % incompatible with beamer
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{iftex}
@@ -49,25 +49,29 @@
 \usepackage{xparse}
 \usepackage{pdfpages}
 \usepackage{relsize} % for \mathsmaller, \mathlarger
-\usepackage{fonttable}
+% \usepackage{fonttable}
 \usepackage{float} % fixes some errors for figure previews in org mode (allows the figure to "float")
 % \usepackage{breqn}
 \usepackage{graphicx}
 \usepackage{lipsum}
-\usepackage{mathrsfs}
+% \usepackage{mathrsfs}
 \usepackage{newenviron}
-\usepackage{upgreek}
+% \usepackage{upgreek}
 \usepackage{bbm}
-\usepackage{newpxtext,newpxmath}
+% \usepackage{newpxtext,newpxmath}
 % \usepackage{cool}
 \usepackage{fontenc}
 \usepackage{xcolor}
 \usepackage{ifluatex}
-\usepackage{svg}
+% \usepackage{svg}
 \usepackage{biblatex}
 \addbibresource{\string~/brain/bib.bib}
 \usepackage{hyperref}
-\usepackage{cleveref}
+% \usepackage{cleveref}
+
+% https://www.draketo.de/anderes/latex-fonts.html
+\usepackage{libris}    % a nice, almost handwritten calligraphic look
+\renewcommand{\familydefault}{\sfdefault}
 
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
@@ -83,11 +87,12 @@
 
   % only usable with lualatex
   \usepackage{fontspec}
-  % \usepackage[math-style=ISO, bold-style=ISO]{unicode-math} % this causes lualatex to not find some symbols in files
+  % \usepackage{unicode-math} % this causes lualatex to not find some symbols in files
   \setmainfont{Linux Libertine O}
+
   % \setmainfont{TeX Gyre Pagella}
   %\setmathfont{TeX Gyre Pagella Math}
-  %\setmathfont{TeX Gyre Termes Math}
+  % \setmathfont{TeX Gyre Termes Math}
   %\setmathfont{STIX}
   % \setmainfont{GFS Bodoni}
   % \setmathfont{Asana Math}
@@ -223,7 +228,7 @@
 }
 
 % no space before paragraph (is this desired?)
-\setlength{\parindent}{0pt}
+% \setlength{\parindent}{0pt}
 
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
