@@ -427,12 +427,14 @@
 
   ;; insert a blank line between everything in latex exports
   (defun my-latex-newlines (_)
-    (goto-char (point-min))
-    (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
-    (goto-char (point-min))
-    (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
-    )
+    (let ((inhibit-message t))
+      (goto-char (point-min))
+      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
+      (goto-char (point-min))
+      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
+      ))
   (add-to-list 'org-export-before-processing-functions 'my-latex-newlines)
+
   )
 
 ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's
@@ -563,61 +565,19 @@
                      ("blk" (plist-get (car (blk-find-by-id link)) :filepath))
                      ("denote" (denote-get-path-by-id (org-element-property :path link)))
                      (_ nil))))
-    (if filepath
+    (if filepath ;; if indeed a blk/denote link
         (if (should-export-org-file filepath)
-            (funcall fn link desc info)
+            (let ((blk-result (car (blk-find-by-id (org-element-property :path link)))))
+              (if blk-result
+                  (let* ((blk-filepath (plist-get blk-result :filepath))
+                         (html-filename (file-name-nondirectory (org-file-html-out-file blk-filepath)))
+                         (html-link (format  "<a href=\"/static/%s\">%s</a>" html-filename
+                                             (or desc (org-element-property :path link)))))
+                    html-link)
+                (format "%s" (or desc (org-element-property :path link)))))
           (format "%s" (or desc (org-element-property :path link))))
       (funcall fn link desc info))))
 (advice-add #'org-html-link :around #'my-org-link-advice)
-(advice-add #'org-hugo-link :around #'my-org-link-advice)
-
-;; advice to make links in hugo markdown export properly
-;; (defun my-blk-org-export-advice (fn link desc format)
-;;   (if (blk-find-by-id link)
-;;       (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
-;;              (desc (or desc link))
-;;              (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file))))
-;;         (message "testt %s" linked-file)
-;;         (when (member format (list 'html 'md))
-;;           (format "<a href=\"/%s/%s/\">%s</a>"
-;;                   (org-export-dir-name path)
-;;                   (downcase linked-file-no-ext)
-;;                   desc))
-;;         ((eq format 'latex) (format "\\href{%s.tex}{%s}" linked-file-no-ext desc))
-;;         )
-;;     link))
-;; (advice-add #'blk-org-export :override #'my-blk-org-export-advice)
-;; overwrite the export function, for some slight modifications, to achieve the same effect as my-blk-org-export-advice
-(with-eval-after-load 'denote
-  (defun denote-link-ol-export (link description format)
-    (let* ((path-id (denote-link--ol-resolve-link-to-target link :full-data))
-           (path (file-relative-name (nth 0 path-id)))
-           (id (nth 1 path-id))
-           (search (nth 2 path-id))
-           (anchor (file-name-sans-extension path))
-           (path-no-ext (file-name-sans-extension (file-name-base path)))
-           (desc (cond
-                  (description)
-                  (search (format "denote:%s::%s" id search))
-                  (t (concat "denote:" id)))))
-      (if (member format (list 'html 'md))
-          (format "<a href=\"/%s/%s/\">%s</a>"
-                  (org-export-dir-name path)
-                  (downcase path-no-ext)
-                  desc)
-        link)
-      ;; (cond
-      ;;  ((eq format 'html)
-      ;;   (if search
-      ;;       (format "<a href=\"%s.html%s\">%s</a>" anchor search desc)
-      ;;     (format "<a href=\"%s.html\">%s</a>" anchor desc)))
-      ;;  ((eq format 'latex) (format "\\href{%s}{%s}" (replace-regexp-in-string "[\\{}$%&_#~^]" "\\\\\\&" path) desc))
-      ;;  ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
-      ;;  ((eq format 'ascii) (format "[%s] <denote:%s>" desc path))
-      ;;  ((eq format 'md) (format "[%s](../%s.md)" desc path-no-ext))
-      ;;  (t path))
-      ))
-  )
 
 ;; set org-mode date's export according to file creation date
 (defun file-modif-time (filepath)
@@ -742,13 +702,13 @@
            ,result)))))
 
 (defun export-org-file (file &rest kw)
-  "export a node's file to both hugo md and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
+  "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
   (with-file-as-current-buffer
    file
    (when (plist-get kw :pdf-p)
      (my-org-to-pdf))
    (when (plist-get kw :html-p)
-       (org-hugo-export-to-md))))
+     (my-org-to-html))))
 
 (defun all-org-files ()
   "return all known org files"
@@ -787,15 +747,23 @@
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
   (let ((exceptions))
-    (let* ((grep-results (grep-org-dir *notes-dir* "#\\+hugo_section"))
-           (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
+    (let ((files-to-export (list-org-files-to-export)))
       (dolist (file files-to-export)
         (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
         (setq exceptions (push file exceptions))))))
 
+(defun list-org-files-to-export ()
+  (let* ((grep-results (grep-org-dir *notes-dir* "#\\+export_section"))
+         (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
+    files-to-export))
+
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
   (export-all-org-files :html-p t :pdf-p t))
+
+(defun export-all-org-files-to-html ()
+  (interactive)
+  (export-all-org-files :html-p t))
 
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
@@ -810,7 +778,7 @@
    (cdar
     (with-file-as-current-buffer
      file
-     (org-collect-keywords '("hugo_section"))))))
+     (org-collect-keywords '("export_section"))))))
 ;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
 
 ;; (defun map-org-dir-elements (regex dir elm-type fn)
@@ -868,21 +836,6 @@
       (member property
               (mapcar 'car (org-babel-parse-header-arguments
                             (org-element-property :parameters block))))))
-
-;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
-(defun my-org-link-advice (fn link desc info)
-  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-  (let* ((filepath (pcase (org-element-property :type link)
-                     ("blk" (plist-get (car (blk-find-by-id link)) :filepath))
-                     ("denote" (denote-get-path-by-id (org-element-property :path link)))
-                     (_ nil))))
-    (if filepath
-        (if (should-export-org-file filepath)
-            (funcall fn link desc info)
-          (format "%s" (or desc (org-element-property :path link))))
-      (funcall fn link desc info))))
-(advice-add #'org-html-link :around #'my-org-link-advice)
-(advice-add #'org-hugo-link :around #'my-org-link-advice)
 
 ;; handle some custom blocks i've defined
 (defun my-org-latex-special-block-advice (fn special-block contents info)
@@ -955,21 +908,67 @@
                                             (org-element-end context))))
             (org-export-string-as contents 'latex t)))))))
 
-(defun html-out-file ()
-  (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".html"))
-(defun my-org-html-export ()
-  (interactive)
-  ;; disable some stuff thats enabled by default for html exporting
-  ;; (setq org-html-preamble-format '(("en" "test")))
-  ;; (setq org-html-head (with-temp-buffer (insert-file-contents "/home/mahmooz/head.html") (buffer-string)))
-  (plist-put org-html-latex-image-options :image-dir (from-brain "out/ltximg"))
+(defun html-out-file (title)
+  (join-path *static-html-dir-auto*
+             (format "%s.html"
+                     (or
+                      (replace-regexp-in-string " \\|/" "_" title)
+                      (current-filename-no-ext)))))
 
-  (let ((org-export-with-title nil)
-        (org-html-head-include-default-style nil)
-        (org-html-head (with-temp-buffer
-                         (insert-file-contents "/home/mahmooz/head.html")
-                         (buffer-string))))
-    (org-export-to-file 'html (html-out-file)
-      nil nil nil nil nil nil)))
+(defun org-file-html-out-file (org-filepath)
+  (with-file-as-current-buffer
+   org-filepath
+   (html-out-file (org-get-title))))
+
+(defun my-org-to-html (&optional heading)
+  (interactive)
+  ;; so that org mode places the latex previews in the specified dir
+  (plist-put org-html-latex-image-options :image-dir "ltx")
+  (plist-put org-html-latex-image-options :page-width nil)
+
+  ;; disable some stuff that is enabled by default in html exporting
+  (let* ((default-directory *static-html-dir-auto*) ;; so that org places the files (like latex previews) properly in a relative subdirectory
+         (title (if heading (car (last (org-get-outline-path t))) (org-get-title)))
+         (outfile (html-out-file title))
+         (org-export-with-title nil)
+         (org-html-postamble nil)
+         (org-html-head-include-default-style nil)
+         (org-html-head (concat
+                         (format "<title>%s</title>" title)
+                         (with-temp-buffer
+                          (insert-file-contents (from-emacsd "head.html"))
+                          (buffer-string))))
+         (my-preamble
+          (concat
+           (with-temp-buffer
+             (insert-file-contents (from-emacsd "preamble.html"))
+             (buffer-string))
+           (format "<h1 class=main-title>%s</h1>" title)))
+         (org-html-preamble-format (list (list "en" my-preamble))))
+    (message "writing to %s" outfile)
+    (when heading
+      (org-narrow-to-subtree))
+    (org-export-to-file 'html outfile
+      nil nil nil nil nil nil)
+    (when heading
+      (widen))
+    (copy-file (from-emacsd "main.css") *static-html-dir* t)))
+
+;; causes org to hang for some reason
+(defun org-remove-headlines (backend)
+  "Remove headlines with :notitle: tag."
+  (org-map-entries (lambda () (delete-region (pos-bol) (pos-eol)))
+                   "notitle"))
+(defun org-export-heading-html ()
+  (interactive)
+  ;; temoporarily add org-remove-headlines because otherwise it causes some issues
+  (let ((org-export-before-processing-functions (cons 'org-remove-headlines
+                                                      org-export-before-processing-functions)))
+    (my-org-to-html t)))
+
+;; remove the title that org inserts into exports by default
+(defun my-org-html--build-meta-info-hook (out)
+  (replace-regexp-in-string "<title>.*?</title>" "" out))
+(advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
 
 (provide 'setup-org)

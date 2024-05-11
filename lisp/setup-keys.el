@@ -82,7 +82,7 @@
 ;;                       (interactive)
 ;;                       (org-roam-capture nil "t")))
 (led-kbd "r x" (lambda () (interactive) (export-current-buffer :html-p t)) :keymaps 'org-mode-map)
-(led-kbd "r X" #'export-all-org-files-to-html-and-pdf)
+(led-kbd "r X" #'export-all-org-files-to-html)
 ;; (led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
 (led-kbd "r d"
          (lambda () (interactive)
@@ -448,6 +448,7 @@
                  (interactive)
                  (let ((notmuch-search-oldest-first nil))
                    (notmuch-search "tag:unread"))))
+(led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name))) ;; reload file
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 

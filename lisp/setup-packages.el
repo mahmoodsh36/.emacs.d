@@ -336,15 +336,15 @@
 (use-package htmlize)
 
 ;; static website generation for org mode
-(use-package ox-hugo
-  :config
-  (setq org-hugo-base-dir (file-truename "~/work/blog/"))
-  ;; (setq org-more-dir (expand-file-name "~/work/blog/static/more/"))
-  (setq *org-static-dir* (format "%s/static" org-hugo-base-dir))
-  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
-  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html")
-  ;;(plist-put org-html-latex-image-options :image-dir (file-truename (concat *org-static-dir* "/ltximg/"))))
-  )
+;; (use-package ox-hugo
+;;   :config
+;;   (setq org-hugo-base-dir (file-truename "~/work/blog/"))
+;;   ;; (setq org-more-dir (expand-file-name "~/work/blog/static/more/"))
+;;   (setq *org-static-dir* (format "%s/static" org-hugo-base-dir))
+;;   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp")
+;;   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "html")
+;;   ;;(plist-put org-html-latex-image-options :image-dir (file-truename (concat *org-static-dir* "/ltximg/"))))
+;;   )
 
 (use-package dap-mode)
 
@@ -495,13 +495,6 @@
   :config
   (add-hook 'mhtml-mode-hook 'emmet-mode)
   (add-hook 'web-mode-hook 'emmet-mode))
-
-;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
-(use-package org-transclusion
-  :after (org)
-  :config
-  (add-hook 'org-mode-hook #'org-transclusion-mode)
-  )
 
 (use-package eat)
 

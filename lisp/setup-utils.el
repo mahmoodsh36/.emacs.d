@@ -88,6 +88,10 @@
   "return `filename', prefixed by the path to the brain dir"
   (join-path *brain-dir* filename))
 
+(defun from-emacsd (filename)
+  "return `filename', prefixed by the path to the emacs config dir"
+  (join-path user-emacs-directory filename))
+
 (defun from-cache (filename)
   "return 'filename' prefixed with cache dir path"
   (from-brain (concat "out/" filename)))
@@ -142,7 +146,7 @@
   (let ((mypath (car paths)))
     (dolist (path (cdr paths))
       (setq mypath (concat mypath "/" path)))
-    (file-truename mypath)))
+    mypath))
 
 (defun kill-all-buffers ()
   "kill all buffers excluding internal buffers (buffers starting with a space)"
