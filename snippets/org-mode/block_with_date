@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: block with date
-# key: bd
+# key: 1b
 # --
 #+begin_${1:dummy} :date `(format-time-string (cdr org-time-stamp-formats))`
 $0
