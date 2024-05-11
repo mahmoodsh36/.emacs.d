@@ -1,0 +1,25 @@
+html, body {
+    /* margin: 0; */
+    /* padding: 0; */
+    color: #333;
+    background-color: #fff8e8;
+}
+
+.content {
+    max-width: 700px;
+    margin: auto;
+}
+
+.main-title {
+    margin: auto;
+    width: fit-content;
+}
+
+.navbar {
+    margin: auto;
+    max-width: 400px;
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 19px;
+    padding: 10px;
+}
