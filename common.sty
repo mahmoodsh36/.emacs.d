@@ -24,7 +24,7 @@
 \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections,arrows.meta,bbox,chains,shapes,calligraphy,decorations.pathreplacing}
 \usepgfplotslibrary{fillbetween}
 \usepackage{centernot}
-\usepackage{lmodern}
+% \usepackage{lmodern}
 % \usepackage{physics} % why does it redefine \div?
 \usepackage{physics2}
 \usepackage[linesnumbered,vlined]{algorithm2e}
@@ -54,7 +54,7 @@
 % \usepackage{breqn}
 \usepackage{graphicx}
 \usepackage{lipsum}
-% \usepackage{mathrsfs}
+\usepackage{mathrsfs} % for \mathscr
 \usepackage{newenviron}
 % \usepackage{upgreek}
 \usepackage{bbm}
@@ -86,9 +86,31 @@
   \usegdlibrary{force, trees, layered}
 
   % only usable with lualatex
-  \usepackage{fontspec}
+  % \usepackage{fontspec}
   % \usepackage{unicode-math} % this causes lualatex to not find some symbols in files
-  \setmainfont{Linux Libertine O}
+  % \setmainfont{Linux Libertine O}
+  % \setmathfont{XITS Math}
+  % \setmathfont[version=setB,StylisticSet=1]{XITS Math}
+
+  % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
+  % \usepackage[T1]{fontenc}
+  % \usepackage{mathptmx}
+  % \usepackage[utf8]{inputenc}
+
+  % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
+  % \usepackage{mathptmx}
+  % \usepackage{mathpazo} % or option osf
+  % \usepackage{newpxmath}
+  % \usepackage{times}
+  % \usepackage{stix}
+  % \usepackage{pxfonts}
+  % \usepackage{fontspec}
+  % \usepackage{newpxtext,newpxmath}
+  % \usepackage{txfonts}
+  % \usepackage{mathptmx}
+  % \usepackage{txfonts}
+  % \usepackage[T1]{fontenc}
+  % \usepackage{newtxtext,newtxmath}
 
   % \setmainfont{TeX Gyre Pagella}
   %\setmathfont{TeX Gyre Pagella Math}
@@ -110,7 +132,14 @@
 \fi
 \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 
+% \usepackage{mathpazo} % does loading it with kpfonts work?
 % \usepackage{kpfonts} % better(?) looking fonts, although misses some important chars such as the hyphen
+
+% \usepackage[utopia,expert]{mathdesign}
+% \usepackage{venturis}
+
+% \usepackage{ebgaramond-maths}
+
 
 % \setmainlanguage{english}
 % \setotherlanguage{greek}
@@ -261,18 +290,20 @@
 \newcommand{\textand}{\mathbin{\smallspace\text{and}\smallspace}}
 \newcommand{\textnot}{\text{ not }}
 \newcommand{\textor}{\mathbin{\text{or}}}
-\newcommand{\textif}{\text{if }}
-\newcommand{\textiff}{\text{ iff }}
-\newcommand{\textthen}{\text{ then }}
-\newcommand{\textgoto}{\mathbin{\text{goto}}}
+\newcommand{\textif}{\mathbin{\textbf{ if }}}
+\newcommand{\textiff}{\mathbin{\textbf{ iff }}}
+\newcommand{\textthen}{\mathbin{\textbf{ then }}}
+\newcommand{\textgoto}{\mathbin{\textbf{ goto }}}
+\newcommand{\textelse}{\mathbin{\textbf{ else }}}
 \DeclareMathOperator{\graph}{graph}
 \newcommand{\angled}[1]{\langle #1 \rangle}
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
 \newcommand{\incr}[1]{#1\texttt{+{}+}} % decrement of a number
-\newcommand{\halt}{\operatorname{HALT}} % operator for the halting problem
-\newcommand{\converges}[1]{#1\downarrow}
-\newcommand{\diverges}[1]{#1\uparrow}
+\newcommand{\halt}{\refdef[blk:the-halt]{\operatorname{HALT}}} % operator for the halting problem
+\newcommand{\converges}[1]{\left. #1 \right\downarrow}
+\newcommand{\diverges}[1]{\left. #1 \right\uparrow}
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
+\newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
@@ -284,6 +315,11 @@
 \DeclareMathOperator{\program}{\refdef[blk:def-algorithm-inf]{\mathscr{P}}} % symbol for a turing program
 \DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
 \DeclareMathOperator{\cfunc}{\refdef[blk:not-comp-func]{\psi}} % computable function symbol
+\newcommand{\godelnum}[1]{\left\langle #1 \right\rangle} % godel number notation
+\newcommand{\langS}{\refdef[blk:20240309T094530]{\mathscr{S}}}
+\newcommand{\turingreduce}[2]{#1 \refdef[blk:def-turing-reduc]{\le} #2}
+\DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{L}}
+\DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
