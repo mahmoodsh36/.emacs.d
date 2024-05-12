@@ -604,15 +604,14 @@
 \makeatletter
 \newtcolorbox{myboxwithcaption}[4][]{
   enhanced jigsaw,
-  lower separated=false,
   colback=white!80!gray,
   colframe=white, fonttitle=\bfseries,
   colbacktitle=white!50!gray,
   coltitle=black,
   boxed title style={colframe=black},
-  attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
+  attach boxed title to top left={xshift=0.5cm,yshift=-4mm},
   % before title={\refstepcounter{mycounter}},
-  before title={\refstepcounter{mycounter}\label{#1}}, % Labeling here
+  before title={\refstepcounter{mycounter}\label{#1}}, % labeling here
   title={#2 \themycounter~#3},
   boxsep=0pt,
   bottom=3mm,
@@ -620,7 +619,6 @@
   right=3mm,
   top=3mm,
   boxrule=1pt,
-  % after skip=20pt, % margin after box
   arc=0pt,
   overlay={%
     \tikzset{overlay=false} % to get proper spacing after the citation
@@ -630,16 +628,14 @@
   }}
 \newtcolorbox{myboxnocaption}[3][]{
   enhanced jigsaw,
-  lower separated=false,
   colback=white!80!gray,
   colframe=white, fonttitle=\bfseries,
   colbacktitle=white!50!gray,
   coltitle=black,
-  enhanced,
   boxed title style={colframe=black},
-  attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
+  attach boxed title to top left={xshift=0.5cm,yshift=-4mm},
   % before title={\refstepcounter{mycounter}},
-  before title={\refstepcounter{mycounter}\label{#1}}, % Labeling here
+  before title={\refstepcounter{mycounter}\label{#1}}, % labeling here
   title={#2 \themycounter~#3},
   % boxsep=0pt,
   % bottom=3mm,
