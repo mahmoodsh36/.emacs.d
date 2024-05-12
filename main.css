@@ -25,8 +25,38 @@ html, body {
 }
 
 
+/* style for lists of references like the archive or blog section */
 .list-item {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
+}
+
+
+/* style for album covers */
+.collage {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 12px;
+}
+.collage img {
+    border: 1px solid red;
+    margin: 3px;
+    justify-content: center;
+}
+.collage .card {
+    max-width: 150px;
+    display: flex;
+    flex-flow: column;
+    margin: 5px;
+}
+.collage .card span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.album-name {
+    color: rgb(175, 39, 39);
 }
