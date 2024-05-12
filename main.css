@@ -10,7 +10,7 @@ html, body {
     margin: auto;
 }
 
-.main-title {
+.main-title, .desc {
     margin: auto;
     width: fit-content;
 }
@@ -22,4 +22,11 @@ html, body {
     justify-content: space-evenly;
     font-size: 19px;
     padding: 10px;
+}
+
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
 }

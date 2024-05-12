@@ -86,11 +86,11 @@
 
 (defun from-brain (filename)
   "return `filename', prefixed by the path to the brain dir"
-  (join-path *brain-dir* filename))
+  (file-truename (join-path *brain-dir* filename)))
 
 (defun from-emacsd (filename)
   "return `filename', prefixed by the path to the emacs config dir"
-  (join-path user-emacs-directory filename))
+  (file-truename (join-path user-emacs-directory filename)))
 
 (defun from-cache (filename)
   "return 'filename' prefixed with cache dir path"

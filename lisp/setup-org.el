@@ -101,43 +101,6 @@
         (find-file pdf-file)
       (message "pdf file hasnt been generated"))))
 
-;; requires pre-isntallation of gcc/clang
-;; (use-package org-roam
-;;   :elpaca (org-roam :type git :repo "mahmoodsheikh36/org-roam")
-;;   :custom
-;;   (org-roam-directory (from-brain "notes"))
-;;   ;; (org-roam-completion-everywhere t)
-;;   :config
-;;   ;; (setq org-roam-node-display-template "${title:*} ${tags:*}")
-;;   ;; (org-roam-db-autosync-mode 1)
-;;   ;; (require 'org-roam-export)
-;;   ;; (require 'org-roam-protocol)
-;;   ;; (global-set-key (kbd "C-c r f") 'org-roam-node-find)
-;;   ;; (global-set-key (kbd "C-c r g") 'org-roam-graph)
-;;   (setq org-roam-capture-templates
-;;         '(("n" "note" plain "%?"
-;;            :if-new (file+head "notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}") ;; "#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/.emacs.d/common.org\n#+title: ${title}")
-;;            :kill-buffer t :unnarrowed t :empty-lines-after 0)
-;;           ("k" "quick note" plain "%?"
-;;            :if-new (file+head "quick/%<%Y%m%d%H%M%S>.org" "#+filetags: :quick-note:")
-;;            :kill-buffer t :unnarrowed t :empty-lines-after 0)
-;;           ;;("d" "daily" plain "%?" ;;"* %T %?"
-;;           ;;("d" "daily" plain "* %T %<%Y-%m-%d %H:%M:%S> %?"
-;;           ("d" "daily" plain "* %T %?"
-;;            :if-new (file+head "daily/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: :daily:")
-;;            :kill-buffer t :unnarrowed t :empty-lines-after 0 :immediate-finish t)
-;;           ("t" "todo" plain "* TODO ${title}"
-;;            :if-new (file+head "notes/agenda.org" "#+title: ${title}\n")))))
-
-;; (defun org-roam-capture-no-title-prompt (&optional goto keys &key filter-fn templates info)
-;;   (interactive "P")
-;;   (org-roam-capture- :goto goto
-;;                      :info info
-;;                      :keys keys
-;;                      :templates templates
-;;                      :node (org-roam-node-create :title "")
-;;                      :props '(:immediate-finish nil)))
-
 (with-eval-after-load 'org
   (require 'org-attach)
   (require 'ox-beamer)
@@ -325,18 +288,12 @@
   (setq org-latex-prefer-user-labels t)
   ;; dont let org handle subscripts lol
   (setq org-export-with-sub-superscripts nil)
-  ;; increase preview size
-  ;; (plist-put org-latex-preview-appearance-options :scale 1.5)
-  ;; (plist-put org-latex-preview-appearance-options :zoom 1.5)
-  ;; dont limit the width of previews
-  ;; (plist-put org-latex-preview-appearance-options :page-width nil)
   (require 'ox-html)
   ;; set to 1.0 to avoid some images being cut off, although that still happens, but less often
   ;; (plist-put org-html-latex-image-options :page-width nil)
   ;; (plist-put org-latex-preview-appearance-options :page-width nil)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
-  ;; (plist-put org-latex-preview-appearance-options :page-width 0.85)
   ;; display inline tramp images in org mode (and other remote image links)
   (setq org-display-remote-inline-images t)
   ;; display full text of links
@@ -430,8 +387,8 @@
     (let ((inhibit-message t))
       (goto-char (point-min))
       (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
-      (goto-char (point-min))
-      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
+      ;; (goto-char (point-min))
+      ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
       ))
   (add-to-list 'org-export-before-processing-functions 'my-latex-newlines)
 
@@ -561,21 +518,24 @@
 ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
 (defun my-org-link-advice (fn link desc info)
   "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-  (let* ((filepath (pcase (org-element-property :type link)
-                     ("blk" (plist-get (car (blk-find-by-id link)) :filepath))
-                     ("denote" (denote-get-path-by-id (org-element-property :path link)))
+  (let* ((link-path (org-element-property :path link))
+         (filepath (pcase (org-element-property :type link)
+                     ("blk" (plist-get (car (blk-find-by-id link-path)) :filepath))
+                     ("denote" (denote-get-path-by-id link-path))
                      (_ nil))))
     (if filepath ;; if indeed a blk/denote link
         (if (should-export-org-file filepath)
-            (let ((blk-result (car (blk-find-by-id (org-element-property :path link)))))
+            (let ((blk-result (car (blk-find-by-id link-path))))
               (if blk-result
                   (let* ((blk-filepath (plist-get blk-result :filepath))
                          (html-filename (file-name-nondirectory (org-file-html-out-file blk-filepath)))
-                         (html-link (format  "<a href=\"/static/%s\">%s</a>" html-filename
-                                             (or desc (org-element-property :path link)))))
+                         (html-link (format  "<a href=\"%s%s\">%s</a>"
+                                             *html-static-route*
+                                             html-filename
+                                             (or desc link-path))))
                     html-link)
-                (format "%s" (or desc (org-element-property :path link)))))
-          (format "%s" (or desc (org-element-property :path link))))
+                (format "%s" (or desc link-path))))
+          (format "%s" (or desc link-path)))
       (funcall fn link desc info))))
 (advice-add #'org-html-link :around #'my-org-link-advice)
 
@@ -770,6 +730,8 @@
   (interactive)
   (apply #'export-org-file buffer-file-name kw))
 
+(defun org-get-keyword (kw)
+  (cadar (org-collect-keywords (list kw))))
 (defun should-export-org-file (file)
   (org-export-dir-name file))
 (defun org-export-dir-name (file)
@@ -779,7 +741,17 @@
     (with-file-as-current-buffer
      file
      (org-collect-keywords '("export_section"))))))
-;; (member "public" (mapcar #'substring-no-properties (org-get-tags)))))
+(defun org-file-grab-date (orgfile)
+  (with-file-as-current-buffer
+   orgfile
+   (let ((date (org-get-keyword "date")))
+     (if date
+         (denote-parse-date date)
+       (current-time)))))
+(defun org-file-grab-keyword (orgfile kw)
+  (with-file-as-current-buffer
+   orgfile
+   (org-get-keyword kw)))
 
 ;; (defun map-org-dir-elements (regex dir elm-type fn)
 ;;   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
@@ -909,7 +881,7 @@
             (org-export-string-as contents 'latex t)))))))
 
 (defun html-out-file (title)
-  (join-path *static-html-dir-auto*
+  (join-path *static-html-dir*
              (format "%s.html"
                      (or
                       (replace-regexp-in-string " \\|/" "_" title)
@@ -927,8 +899,9 @@
   (plist-put org-html-latex-image-options :page-width nil)
 
   ;; disable some stuff that is enabled by default in html exporting
-  (let* ((default-directory *static-html-dir-auto*) ;; so that org places the files (like latex previews) properly in a relative subdirectory
+  (let* ((default-directory *static-html-dir*) ;; so that org places the files (like latex previews) properly in a relative subdirectory
          (title (if heading (car (last (org-get-outline-path t))) (org-get-title)))
+         (desc (when (not heading) (org-get-keyword "description")))
          (outfile (html-out-file title))
          (org-export-with-title nil)
          (org-html-postamble nil)
@@ -943,7 +916,9 @@
            (with-temp-buffer
              (insert-file-contents (from-emacsd "preamble.html"))
              (buffer-string))
-           (format "<h1 class=main-title>%s</h1>" title)))
+           (format "<h1 class=\"main-title\">%s</h1>%s"
+                   title
+                   (if desc "<span class=\"desc\">%s</span>" ""))))
          (org-html-preamble-format (list (list "en" my-preamble))))
     (message "writing to %s" outfile)
     (when heading
