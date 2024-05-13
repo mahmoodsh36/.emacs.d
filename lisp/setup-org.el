@@ -467,16 +467,17 @@
           (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d"))))
     (find-file todays-file)))
 
-(defun today-entry ()
+(defun today-entry (&optional todo-keyword)
   "insert an entry for today, an action/todo/whatever and clock in"
   (interactive)
   (open-todays-file)
   (org-insert-heading-respect-content)
-  (org-insert-time-stamp (current-time) t)
+  (insert todo-keyword)
   (insert " ")
+  (org-insert-time-stamp (current-time) t)
   (org-clock-in)
-  (org-up-heading-safe)
-  (end-of-line)
+  (org-end-of-subtree)
+  (next-line)
   (evil-insert 0))
 
 (defun today-entry-text-simple ()
