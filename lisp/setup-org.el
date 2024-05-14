@@ -833,6 +833,7 @@
     (if (member type (list "definition"
                            "theorem"
                            "problem"
+                           "subproblem"
                            "proposition"
                            "notation"
                            "solution"

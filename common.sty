@@ -88,15 +88,18 @@
 
   % only usable with lualatex
   % \usepackage{fontspec}
-  % \usepackage{unicode-math} % this causes lualatex to not find some symbols in files
   % \setmainfont{Linux Libertine O}
   % \setmathfont{XITS Math}
-  % \setmathfont[version=setB,StylisticSet=1]{XITS Math}
 
   % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
   % \usepackage[T1]{fontenc}
   % \usepackage{mathptmx}
   % \usepackage[utf8]{inputenc}
+
+  \usepackage{unicode-math}
+  \setmathfont{XITS Math}
+  % \setmathfont[version=setB,StylisticSet=1]{XITS Math}
+  \setmainfont{Linux Libertine O}
 
   % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
   % \usepackage{mathptmx}
@@ -312,9 +315,9 @@
 \newcommand{\prodtens}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
 \newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 
-% to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[+][blk:myref]{979}{2}{31}{9}\), \(\impop[+]{979}{2}{31}{9}\)
+% to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
 \makeatletter
-\NewDocumentCommand{\impop}{O{.}O{}m}{#3\checknextarg{#1}}
+\NewDocumentCommand{\impop}{O{}O{.}m}{#3\checknextarg{#2}}
 \newcommand{\checknextarg}[1]{\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
 \newcommand{\gobblenextarg}[2]{#1#2\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
 \makeatother
@@ -504,6 +507,12 @@
 % points to distinguish them from vectors (they are essentially the same thing but still)
 \newcommand{\ptvct}[1]{\refdef[blk:def-vec]{\brm{#1}}}
 \newcommand{\vct}[1]{\refdef[blk:def-vec]{\vect{#1}}}
+\newcommand{\mat}[1]{\refdef[blk:def-matrix]{\brm{#1}}} % to denote matrix
+% Insert a matrix. Usage: \matr{a & b \\ c & d} or \matr[<vertical spacing>]{a & b \\ c & d}, https://paulwintz.com/latex-macros/
+\newcommand{\matr}[2][1]{\begingroup
+  \renewcommand*{\arraystretch}{#1}
+  \begin{bmatrix}#2\end{bmatrix}
+\endgroup}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
