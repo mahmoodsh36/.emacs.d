@@ -55,7 +55,7 @@
   (setq blk-tex-env-at-point-function 'blk-auctex-env-at-point-bounds)
 
   ;; allow for recursive grep
-  (setq blk-search-recursively t)
+  ;; (setq blk-search-recursively t)
 
   ;; enable group search (group things together)
   (setq blk-enable-groups t)
