@@ -450,6 +450,7 @@
                    (notmuch-search "tag:unread"))))
 (led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name))) ;; reload file
 (led-kbd "; t" (lambda () (interactive) (today-entry "THOUGHT")))
+(led-kbd "; e" (lambda () (interactive) (today-entry "FEELING")))
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 

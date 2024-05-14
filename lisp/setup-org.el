@@ -392,6 +392,45 @@
       ))
   (add-to-list 'org-export-before-processing-functions 'my-latex-newlines)
 
+  ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
+  (defun my-org-link-advice (fn link desc info)
+    "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'. also we need to handle links to static files, copy those over to the html dir and link to them properly."
+    (let* ((link-path (org-element-property :path link))
+           (link-type (org-element-property :type link))
+           (denote-filepath (pcase link-type
+                              ("blk" (plist-get (car (blk-find-by-id link-path)) :filepath))
+                              ("denote" (denote-get-path-by-id link-path))
+                              (_ nil))))
+      (if denote-filepath ;; if indeed a blk/denote link
+          (if (should-export-org-file denote-filepath)
+              (let ((blk-result (car (blk-find-by-id link-path))))
+                (if blk-result
+                    (let* ((blk-filepath (plist-get blk-result :filepath))
+                           (html-filename (file-name-nondirectory (org-file-html-out-file blk-filepath)))
+                           (html-link (format "<a href=\"%s%s\">%s</a>"
+                                              *html-static-route*
+                                              html-filename
+                                              (or desc link-path))))
+                      html-link)
+                  (format "%s" (or desc link-path))))
+            (format "%s" (or desc link-path)))
+        (setq a link)
+        (if (equal link-type "file") ;; if its a link to a static file
+            (let* ((filename (file-name-nondirectory link-path))
+                   (ext (file-name-extension filename)))
+              (message "copying linked static file %s" filename)
+              (copy-file link-path (join-path *static-html-dir* filename) t)
+              (if (cl-member ext (list "png" "jpg" "webp" "svg") :test #'equal)
+                  (format "<img src=\"%s%s\" />"
+                          *html-static-route*
+                          filename)
+                (format "<a href=\"%s%s\">%s</a>"
+                          *html-static-route*
+                          filename
+                          (or desc link-path))))
+          (funcall fn link desc info)))))
+  (advice-add #'org-html-link :around #'my-org-link-advice)
+
   )
 
 ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's
@@ -472,8 +511,9 @@
   (interactive)
   (open-todays-file)
   (org-insert-heading-respect-content)
-  (insert todo-keyword)
-  (insert " ")
+  (when todo-keyword
+    (insert todo-keyword)
+    (insert " "))
   (org-insert-time-stamp (current-time) t)
   (org-clock-in)
   (org-end-of-subtree)
@@ -515,30 +555,6 @@
      (put cmd 'repeat-map 'org-nav-map))
    org-nav-map)
   (define-key org-mode-map (kbd "C-l") org-nav-map))
-
-;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
-(defun my-org-link-advice (fn link desc info)
-  "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'"
-  (let* ((link-path (org-element-property :path link))
-         (filepath (pcase (org-element-property :type link)
-                     ("blk" (plist-get (car (blk-find-by-id link-path)) :filepath))
-                     ("denote" (denote-get-path-by-id link-path))
-                     (_ nil))))
-    (if filepath ;; if indeed a blk/denote link
-        (if (should-export-org-file filepath)
-            (let ((blk-result (car (blk-find-by-id link-path))))
-              (if blk-result
-                  (let* ((blk-filepath (plist-get blk-result :filepath))
-                         (html-filename (file-name-nondirectory (org-file-html-out-file blk-filepath)))
-                         (html-link (format  "<a href=\"%s%s\">%s</a>"
-                                             *html-static-route*
-                                             html-filename
-                                             (or desc link-path))))
-                    html-link)
-                (format "%s" (or desc link-path))))
-          (format "%s" (or desc link-path)))
-      (funcall fn link desc info))))
-(advice-add #'org-html-link :around #'my-org-link-advice)
 
 ;; set org-mode date's export according to file creation date
 (defun file-modif-time (filepath)
@@ -754,25 +770,25 @@
    orgfile
    (org-get-keyword kw)))
 
-;; (defun map-org-dir-elements (regex dir elm-type fn)
-;;   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
-;;   (interactive)
-;;   (let ((positions (grep-org-dir regex dir)))
-;;     (dolist (position positions)
-;;       (let ((file (car position))
-;;             (line (cadr position)))
-;;         (with-file-as-current-buffer
-;;          file
-;;          (goto-line line)
-;;          (let ((elm (org-element-at-point)))
-;;            (when (eq (org-element-type elm) elm-type)
-;;              (funcall fn))))))))
+(defun map-org-dir-elements (dir regex elm-type fn)
+  "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
+  (interactive)
+  (let ((grep-results (grep-org-dir dir regex)))
+    (dolist (result grep-results)
+      (let ((file (plist-get result :filepath))
+            (position (plist-get result :position)))
+        (with-file-as-current-buffer
+         file
+         (goto-char position)
+         (let ((elm (org-element-at-point)))
+           (when (eq (org-element-type elm) elm-type)
+             (funcall fn elm))))))))
 
-;; (defun notes-execute-marked-src-block (rgx)
-;;   (map-org-dir-elements rgx *notes-dir* 'src-block
-;;                         (lambda ()
-;;                           (message "running code block in file %s" (buffer-file-name))
-;;                           (org-ctrl-c-ctrl-c))))
+(defun notes-execute-marked-src-block (rgx)
+  (map-org-dir-elements rgx *notes-dir* 'src-block
+                        (lambda ()
+                          (message "running code block in file %s" (buffer-file-name))
+                          (org-ctrl-c-ctrl-c))))
 
 (defun grep-org-dir (dir regex)
   (blk-grep blk-grepper
@@ -882,11 +898,12 @@
             (org-export-string-as contents 'latex t)))))))
 
 (defun html-out-file (title)
-  (join-path *static-html-dir*
-             (format "%s.html"
-                     (or
-                      (replace-regexp-in-string " \\|/" "_" title)
-                      (current-filename-no-ext)))))
+  (let ((inhibit-message t))
+    (join-path *static-html-dir*
+               (format "%s.html"
+                       (or
+                        (replace-regexp-in-string " \\|/" "_" title)
+                        (current-filename-no-ext))))))
 
 (defun org-file-html-out-file (org-filepath)
   (with-file-as-current-buffer
@@ -900,8 +917,7 @@
   (plist-put org-html-latex-image-options :page-width nil)
 
   ;; disable some stuff that is enabled by default in html exporting
-  (let* ((default-directory *static-html-dir*) ;; so that org places the files (like latex previews) properly in a relative subdirectory
-         (title (if heading (car (last (org-get-outline-path t))) (org-get-title)))
+  (let* ((title (if heading (car (last (org-get-outline-path t))) (org-get-title)))
          (desc (when (not heading) (org-get-keyword "description")))
          (outfile (html-out-file title))
          (org-export-with-title nil)
@@ -928,7 +944,8 @@
       nil nil nil nil nil nil)
     (when heading
       (widen))
-    (copy-file (from-emacsd "main.css") *static-html-dir* t)))
+    (copy-file (from-emacsd "main.css") *static-html-dir* t)
+    (copy-directory "ltx" *static-html-dir* t)))
 
 ;; causes org to hang for some reason
 (defun org-remove-headlines (backend)
@@ -944,7 +961,8 @@
 
 ;; remove the title that org inserts into exports by default
 (defun my-org-html--build-meta-info-hook (out)
-  (replace-regexp-in-string "<title>.*?</title>" "" out))
+  (let ((inhibit-message t))
+    (replace-regexp-in-string "<title>.*?</title>" "" out)))
 (advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
 
 (provide 'setup-org)
