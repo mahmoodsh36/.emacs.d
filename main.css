@@ -60,3 +60,9 @@ html, body {
 .album-name {
     color: rgb(175, 39, 39);
 }
+
+
+/* otherwise images overflow out of screen */
+img {
+    max-width: 100%;
+}
