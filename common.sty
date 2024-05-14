@@ -68,6 +68,7 @@
 \addbibresource{\string~/brain/bib.bib}
 \usepackage{hyperref}
 % \usepackage{cleveref}
+\usepackage{expl3}
 
 % https://www.draketo.de/anderes/latex-fonts.html
 \usepackage{libris}    % a nice, almost handwritten calligraphic look
@@ -311,6 +312,13 @@
 \newcommand{\prodtens}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
 \newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 
+% to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[+][blk:myref]{979}{2}{31}{9}\), \(\impop[+]{979}{2}{31}{9}\)
+\makeatletter
+\NewDocumentCommand{\impop}{O{.}O{}m}{#3\checknextarg{#1}}
+\newcommand{\checknextarg}[1]{\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
+\newcommand{\gobblenextarg}[2]{#1#2\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
+\makeatother
+
 % some computability symbols
 \DeclareMathOperator{\program}{\refdef[blk:def-algorithm-inf]{\mathscr{P}}} % symbol for a turing program
 \DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
@@ -340,6 +348,9 @@
 \def\leftouterjoin{\mathbin{\ojoin\mkern-5.8mu\bowtie}}
 \def\rightouterjoin{\mathbin{\bowtie\mkern-5.8mu\ojoin}}
 \def\fullouterjoin{\mathbin{\ojoin\mkern-5.8mu\bowtie\mkern-5.8mu\ojoin}}
+
+% some symbols for machine learning
+\DeclareMathOperator{\actfunc}{\refdef[blk:20230503T000820]{\phi}} % to denote activation functions
 
 % lst
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
