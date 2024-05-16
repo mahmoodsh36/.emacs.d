@@ -753,7 +753,6 @@
 ;; :ensure (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
 ;; (use-package deft)
 ;; (use-package xeft)
-;; (use-package citar)
 ;; (use-package reorg)
 ;; (use-package iscroll)
 
@@ -959,5 +958,8 @@
 (use-package side-hustle)
 
 (use-package envrc)
+
+;; hmmm, could it be useful?
+(use-package citar)
 
 (provide 'setup-packages)

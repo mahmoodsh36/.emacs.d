@@ -383,14 +383,15 @@
 
 
   ;; insert a blank line between everything in latex exports
-  (defun my-latex-newlines (_)
+  (defun my-export-newlines (_)
     (let ((inhibit-message t))
       (goto-char (point-min))
       (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
+      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.)\n" "\\1.\n\n") ;; insert newlines after lines ending with .)
       ;; (goto-char (point-min))
       ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
       ))
-  (add-to-list 'org-export-before-processing-functions 'my-latex-newlines)
+  (add-to-list 'org-export-before-processing-functions 'my-export-newlines)
 
   ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
   (defun my-org-link-advice (fn link desc info)
@@ -826,26 +827,28 @@
               (mapcar 'car (org-babel-parse-header-arguments
                             (org-element-property :parameters block))))))
 
+(defconst my-math-blocks
+  (list "definition"
+        "theorem"
+        "problem"
+        "subproblem"
+        "proposition"
+        "notation"
+        "solution"
+        "corollary"
+        "task"
+        "thought"
+        "my_example"
+        "question"
+        "lemma"
+        "note"
+        "result"
+        "claim"))
+
 ;; handle some custom blocks i've defined
 (defun my-org-latex-special-block-advice (fn special-block contents info)
   (let ((type (org-element-property :type special-block)))
-    (when (string= type "my_example") (setq type "example"))
-    (if (member type (list "definition"
-                           "theorem"
-                           "problem"
-                           "subproblem"
-                           "proposition"
-                           "notation"
-                           "solution"
-                           "example"
-                           "corollary"
-                           "task"
-                           "thought"
-                           "question"
-                           "lemma"
-                           "note"
-                           "result"
-                           "claim"))
+    (if (member type my-math-blocks)
         (progn
           (let ((title (or (org-block-property :defines special-block)
                            (org-block-property :title special-block)
@@ -965,5 +968,17 @@
   (let ((inhibit-message t))
     (replace-regexp-in-string "<title>.*?</title>" "" out)))
 (advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
+
+;; export some blocks with class=math-block so they get styled accordingly
+(defun my-org-export-read-attribute-hook (fn attribute element &optional property)
+  (when (equal attribute :attr_html)
+    (let ((block-type (org-element-property :type element)))
+      (if (cl-member block-type my-math-blocks :test #'equal)
+          (list :class "math-block"
+                :data-blocktype (pcase block-type
+                                  ("my_example" "example")
+                                  (_ block-type)))
+        (funcall fn attribute element property)))))
+(advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
 (provide 'setup-org)
