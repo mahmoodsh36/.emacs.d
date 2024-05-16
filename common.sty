@@ -24,7 +24,7 @@
 \usetikzlibrary{tikzmark,calc,fit,matrix,arrows,automata,positioning,angles,quotes,trees,graphs,backgrounds,intersections,arrows.meta,bbox,chains,shapes,calligraphy,decorations.pathreplacing}
 \usepgfplotslibrary{fillbetween}
 \usepackage{centernot}
-% \usepackage{lmodern}
+\usepackage{lmodern}
 % \usepackage{physics} % why does it redefine \div?
 \usepackage{physics2}
 \usepackage[linesnumbered,vlined]{algorithm2e}
@@ -71,8 +71,8 @@
 \usepackage{expl3}
 
 % https://www.draketo.de/anderes/latex-fonts.html
-\usepackage{libris}    % a nice, almost handwritten calligraphic look
-\renewcommand{\familydefault}{\sfdefault}
+% \usepackage{libris}    % a nice, almost handwritten calligraphic look
+% \renewcommand{\familydefault}{\sfdefault}
 
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
@@ -87,19 +87,20 @@
   \usegdlibrary{force, trees, layered}
 
   % only usable with lualatex
-  % \usepackage{fontspec}
   % \setmainfont{Linux Libertine O}
   % \setmathfont{XITS Math}
 
   % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
-  % \usepackage[T1]{fontenc}
   % \usepackage{mathptmx}
   % \usepackage[utf8]{inputenc}
 
-  \usepackage{unicode-math}
+  % \usepackage[no-math]{fontspec}
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{unicode-math} % causes lualatex to not find some symbols in fonts
+  % \setmainfont{Linux Libertine O}
+  \setmainfont{XITS}
   \setmathfont{XITS Math}
-  % \setmathfont[version=setB,StylisticSet=1]{XITS Math}
-  \setmainfont{Linux Libertine O}
 
   % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
   % \usepackage{mathptmx}
@@ -134,7 +135,8 @@
   % \else
   % \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
-\newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
+% \newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
+\newcommand\brm[1]{\symbf{#1}}
 
 % \usepackage{mathpazo} % does loading it with kpfonts work?
 % \usepackage{kpfonts} % better(?) looking fonts, although misses some important chars such as the hyphen
@@ -314,6 +316,8 @@
 \newcommand{\proddot}[2]{#1 \refdef[blk:def-dot]{\cdot} #2} % dot product
 \newcommand{\prodtens}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
 \newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
+% products but instead of writing "1 x 1" we write something like \myprod{1}{1}
+\newcommand{\mprodmat}[1]{\impop[blk:def-prodmat]{#1}}
 
 % to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
 \makeatletter
@@ -324,8 +328,8 @@
 
 % some computability symbols
 \DeclareMathOperator{\program}{\refdef[blk:def-algorithm-inf]{\mathscr{P}}} % symbol for a turing program
-\DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
-\DeclareMathOperator{\cfunc}{\refdef[blk:not-comp-func]{\psi}} % computable function symbol
+\DeclareMathOperator{\numedcfunc}{\mathnormal{\refdef[blk:def-std-program-numbering]{\varphi}}} % numbered computable function symbol
+\DeclareMathOperator{\cfunc}{\mathnormal{\refdef[blk:not-comp-func]{\psi}}} % computable function symbol
 \newcommand{\godelnum}[1]{\left\langle #1 \right\rangle} % godel number notation
 \newcommand{\langS}{\refdef[blk:20240309T094530]{\mathscr{S}}}
 \newcommand{\turingreduce}[2]{#1 \refdef[blk:def-turing-reduc]{\le} #2}
