@@ -86,10 +86,6 @@
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
 
-  % only usable with lualatex
-  % \setmainfont{Linux Libertine O}
-  % \setmathfont{XITS Math}
-
   % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
   % \usepackage{mathptmx}
   % \usepackage[utf8]{inputenc}
@@ -99,8 +95,20 @@
   \usepackage[utf8]{inputenc}
   \usepackage{unicode-math} % causes lualatex to not find some symbols in fonts
   % \setmainfont{Linux Libertine O}
-  \setmainfont{XITS}
-  \setmathfont{XITS Math}
+  % \setmainfont{XITS}
+  % \setmathfont{XITS Math}
+
+  % good looking, symbols are like handwritten
+  \setmainfont{GFS Neohellenic}
+  \setmathfont{GFS Neohellenic Math}
+
+  % i think thisis similar to one above
+  % \setmainfont{FiraGO}
+  % \setmathfont{FiraMath-Regular}
+
+  % even more handwritten-like... but i gotta get it first
+  % \setmainfont{NagwaTKText}
+  % \setmathfont{NagwaTKMath-Regular.otf}
 
   % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
   % \usepackage{mathptmx}
