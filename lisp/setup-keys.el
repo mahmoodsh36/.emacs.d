@@ -186,7 +186,8 @@
 ;; (led-kbd "s s" 'spotify-lyrics)
 ;; (led-kbd "s w" 'open-spotify-lyrics-file)
 (led-kbd "s t" #'consult-theme)
-(led-kbd "s k" (lambda () (interactive) (start-process-shell-command "zathura" "zathura" (format "zathura '%s'" buffer-file-name))))
+;; (led-kbd "s k" (lambda () (interactive) (start-process-shell-command "zathura" "zathura" (format "zathura '%s'" buffer-file-name))))
+(led-kbd "s k" #'my-kill-process)
 (led-kbd "s q" 'calc)
 (led-kbd "s u" 'copy-file-path)
 
@@ -448,6 +449,10 @@
                  (interactive)
                  (let ((notmuch-search-oldest-first nil))
                    (notmuch-search "tag:unread"))))
+(led-kbd "; M" (lambda ()
+                 (interactive)
+                 (let ((notmuch-search-oldest-first nil))
+                   (notmuch-search "tag:new"))))
 (led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name))) ;; reload file
 (led-kbd "; t" (lambda () (interactive) (today-entry "THOUGHT")))
 (led-kbd "; e" (lambda () (interactive) (today-entry "FEELING")))

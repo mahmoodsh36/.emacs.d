@@ -12,6 +12,7 @@
 (require 'setup-utils)
 (require 'setup-android)
 (require 'setup-elpaca)
+(require 'setup-other)
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default ;tab-width 2
