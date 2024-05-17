@@ -318,6 +318,8 @@
 \newcommand{\diverges}[1]{\left. #1 \right\uparrow}
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
 \newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
+\newcommand{\scomp}[1]{\overline{#1}} % set complement
+\DeclarePairedDelimiter\tupl{(}{)}
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
@@ -326,6 +328,7 @@
 \newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 % products but instead of writing "1 x 1" we write something like \myprod{1}{1}
 \newcommand{\mprodmat}[1]{\impop[blk:def-prodmat]{#1}}
+\newcommand{\prodcart}{\refdef[blk:def-cart-prod]{\times}} % cartesian product
 
 % to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
 \makeatletter
@@ -343,6 +346,7 @@
 \newcommand{\turingreduce}[2]{#1 \refdef[blk:def-turing-reduc]{\le} #2}
 \DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{L}}
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
+\NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -516,6 +520,7 @@
   $\m@th\smash-\mkern-7mu%
   \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
   \mkern-7mu\raisebox{-3.81pt}[\p@][\p@]{$\mathord\mathchar"017E$}$}
+
 % points to distinguish them from vectors (they are essentially the same thing but still)
 \newcommand{\ptvct}[1]{\refdef[blk:def-vec]{\brm{#1}}}
 \newcommand{\vct}[1]{\refdef[blk:def-vec]{\vect{#1}}}
