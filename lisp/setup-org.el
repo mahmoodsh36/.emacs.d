@@ -415,7 +415,6 @@
                       html-link)
                   (format "%s" (or desc link-path))))
             (format "%s" (or desc link-path)))
-        (setq a link)
         (if (equal link-type "file") ;; if its a link to a static file
             (let* ((filename (file-name-nondirectory link-path))
                    (ext (file-name-extension filename)))
@@ -431,6 +430,46 @@
                           (or desc link-path))))
           (funcall fn link desc info)))))
   (advice-add #'org-html-link :around #'my-org-link-advice)
+
+  (defun my-org-replace-citations (&optional export-backend)
+    "blocks whose last line is a citation, remove that citation to the block's :source keyword"
+    (interactive)
+    (let ((position 1)
+          (citations (org-element-map (org-element-parse-buffer) 'citation 'identity)))
+      (while citations
+        (let* ((citation (car citations))
+               (citation-start (1- (+ position (org-element-begin citation))))
+               (citation-end (1- (+ position (org-element-end citation))))
+               (parent (progn
+                         (save-excursion
+                           (goto-char citation-start)
+                           (next-line)
+                           (org-element-at-point))))
+               (parent-end (org-element-end parent))
+               (parent-start (org-element-begin parent))
+               (citation-contents (buffer-substring-no-properties citation-start
+                                                                  citation-end))
+               (to-insert (format " :source %s" citation-contents)))
+          (setq position parent-end)
+          (when (and (equal (org-element-type parent) 'special-block)
+                     (is-point-at-some-bol citation-start))
+            (goto-char parent-start)
+            (when (string-match-p "#\\+name:" (thing-at-point 'line 'no-properties)) ;; if we are at #+name, we need to move forward one line
+              (forward-line))
+            (end-of-line)
+            (insert to-insert)
+            (setq citation-start (+ citation-start (length to-insert)))
+            (setq citation-end (+ citation-end (length to-insert)))
+            (kill-region citation-start citation-end)))
+        (if (<= position (buffer-size))
+            (let ((original-buffer-substring
+                   (buffer-substring position
+                                     (point-max))))
+              (setq citations (with-temp-buffer
+                                (insert original-buffer-substring)
+                                (org-element-map (org-element-parse-buffer) 'citation 'identity))))
+          (setq citations nil)))))
+  (add-to-list 'org-export-before-processing-functions 'my-org-replace-citations)
 
   )
 
@@ -845,14 +884,17 @@
         "result"
         "claim"))
 
+(defun my-block-title (block)
+  (or (org-block-property :defines block)
+      (org-block-property :title block)
+      ""))
+
 ;; handle some custom blocks i've defined
 (defun my-org-latex-special-block-advice (fn special-block contents info)
   (let ((type (org-element-property :type special-block)))
     (if (member type my-math-blocks)
         (progn
-          (let ((title (or (org-block-property :defines special-block)
-                           (org-block-property :title special-block)
-                           ""))
+          (let ((title (my-block-title special-block))
                 (dependency (org-block-property :on special-block))
                 (citation (org-block-citation-string special-block))
                 (label (org-block-property :name special-block)))
@@ -865,8 +907,8 @@
                   (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
               (when (org-block-property :on-prev special-block)
                 (setq title (format "%s -> %s" title "previous block"))))
+            ;; delete the citation, we insert it ourselves later
             (when citation
-              ;; delete the citation, we insert it ourselves later
               (setq contents
                     (with-temp-buffer
                       (insert contents)
@@ -972,12 +1014,28 @@
 ;; export some blocks with class=math-block so they get styled accordingly
 (defun my-org-export-read-attribute-hook (fn attribute element &optional property)
   (when (equal attribute :attr_html)
-    (let ((block-type (org-element-property :type element)))
+    (let ((block-type (org-element-property :type element))
+          (block-title (my-block-title element))
+          ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
+          ;; it that way because of the brackets around it
+          (citation (format "%s" (or (org-block-property :source element) ""))))
       (if (cl-member block-type my-math-blocks :test #'equal)
           (list :class "math-block"
-                :data-blocktype (pcase block-type
-                                  ("my_example" "example")
-                                  (_ block-type)))
+                :data-before (concat (pcase block-type
+                                       ("my_example" "example")
+                                       (_ block-type))
+                                     (if (string-empty-p block-title)
+                                         ""
+                                       (concat ": " block-title)))
+                ;; the 'latex backend shouldnt matter.. it returns a string with no fancy stuff
+                ;; so its usable for both html and latex
+                ;; the \n is added because of a bug in org,
+                ;; the following line errors out:
+                ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]" 'latex t)
+                ;; the following doesnt error out:
+                ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]\n" 'latex t)
+                ;; so the newline is there for now
+                :data-after (org-export-string-as (concat citation "\n") 'latex t))
         (funcall fn attribute element property)))))
 (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 

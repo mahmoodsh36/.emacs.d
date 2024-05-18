@@ -91,7 +91,18 @@ img {
     margin: 5px;
 }
 .math-block:before {
-    content: attr(data-blocktype);
+    content: attr(data-before);
     font-weight: bold;
     font-style: italic;
+}
+.math-block:after {
+    content: attr(data-after);
+    font-weight: bold;
+    font-style: italic;
+}
+
+
+a {
+    color: rgb(217, 70, 91);
+    text-decoration: none;
 }

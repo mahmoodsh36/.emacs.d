@@ -405,4 +405,10 @@ prompt the user for a coding system."
     (insert (make-string current-indentation ? ))
     (evil-insert 0)))
 
+(defun is-point-at-some-bol (pos)
+  "whether POS points at the beginning of some line"
+  (save-excursion
+    (goto-char pos)
+    (equal (point) (pos-bol))))
+
 (provide 'setup-utils)
