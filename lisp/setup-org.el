@@ -449,7 +449,8 @@
                (parent-start (org-element-begin parent))
                (citation-contents (buffer-substring-no-properties citation-start
                                                                   citation-end))
-               (to-insert (format " :source %s" citation-contents)))
+               ;; if we dont place the double quotes org fails to parse the citation properly in the header
+               (to-insert (format " :source \"%s\"" citation-contents)))
           (setq position parent-end)
           (when (and (equal (org-element-type parent) 'special-block)
                      (is-point-at-some-bol citation-start))
@@ -470,6 +471,40 @@
                                 (org-element-map (org-element-parse-buffer) 'citation 'identity))))
           (setq citations nil)))))
   (add-to-list 'org-export-before-processing-functions 'my-org-replace-citations)
+
+  ;; remove the title that org inserts into exports by default
+  (defun my-org-html--build-meta-info-hook (out)
+    (let ((inhibit-message t))
+      (replace-regexp-in-string "<title>.*?</title>" "" out)))
+  (advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
+
+  ;; export some blocks with class=math-block so they get styled accordingly
+  (defun my-org-export-read-attribute-hook (fn attribute element &optional property)
+    (when (equal attribute :attr_html)
+      (let ((block-type (org-element-property :type element))
+            (block-title (my-block-title element))
+            ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
+            ;; it that way because of the brackets around it
+            (citation (format "%s" (or (org-block-property :source element) ""))))
+        (if (cl-member block-type my-math-blocks :test #'equal)
+            (list :class "math-block"
+                  :data-before (concat (pcase block-type
+                                         ("my_example" "example")
+                                         (_ block-type))
+                                       (if (string-empty-p block-title)
+                                           ""
+                                         (concat ": " block-title)))
+                  ;; the 'latex backend shouldnt matter.. it returns a string with no fancy stuff
+                  ;; so its usable for both html and latex
+                  ;; the \n is added because of a bug in org,
+                  ;; the following line errors out:
+                  ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]" 'latex t)
+                  ;; the following doesnt error out:
+                  ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]\n" 'latex t)
+                  ;; so the newline is there for now
+                  :data-after (org-export-string-as (concat citation "\n") 'latex t))
+          (funcall fn attribute element property)))))
+  (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
   )
 
@@ -1004,39 +1039,5 @@
   (let ((org-export-before-processing-functions (cons 'org-remove-headlines
                                                       org-export-before-processing-functions)))
     (my-org-to-html t)))
-
-;; remove the title that org inserts into exports by default
-(defun my-org-html--build-meta-info-hook (out)
-  (let ((inhibit-message t))
-    (replace-regexp-in-string "<title>.*?</title>" "" out)))
-(advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
-
-;; export some blocks with class=math-block so they get styled accordingly
-(defun my-org-export-read-attribute-hook (fn attribute element &optional property)
-  (when (equal attribute :attr_html)
-    (let ((block-type (org-element-property :type element))
-          (block-title (my-block-title element))
-          ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
-          ;; it that way because of the brackets around it
-          (citation (format "%s" (or (org-block-property :source element) ""))))
-      (if (cl-member block-type my-math-blocks :test #'equal)
-          (list :class "math-block"
-                :data-before (concat (pcase block-type
-                                       ("my_example" "example")
-                                       (_ block-type))
-                                     (if (string-empty-p block-title)
-                                         ""
-                                       (concat ": " block-title)))
-                ;; the 'latex backend shouldnt matter.. it returns a string with no fancy stuff
-                ;; so its usable for both html and latex
-                ;; the \n is added because of a bug in org,
-                ;; the following line errors out:
-                ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]" 'latex t)
-                ;; the following doesnt error out:
-                ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]\n" 'latex t)
-                ;; so the newline is there for now
-                :data-after (org-export-string-as (concat citation "\n") 'latex t))
-        (funcall fn attribute element property)))))
-(advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
 (provide 'setup-org)
