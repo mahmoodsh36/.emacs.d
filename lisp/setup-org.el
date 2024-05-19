@@ -483,9 +483,7 @@
     (when (equal attribute :attr_html)
       (let ((block-type (org-element-property :type element))
             (block-title (my-block-title element))
-            ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
-            ;; it that way because of the brackets around it
-            (citation (format "%s" (or (org-block-property :source element) ""))))
+            (citation (get-block-source element)))
         (if (cl-member block-type my-math-blocks :test #'equal)
             (list :class "math-block"
                   :data-before (concat (pcase block-type
@@ -502,9 +500,48 @@
                   ;; the following doesnt error out:
                   ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]\n" 'latex t)
                   ;; so the newline is there for now
-                  :data-after (org-export-string-as (concat citation "\n") 'latex t))
+                  :data-after citation)
           (funcall fn attribute element property)))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
+
+;; handle some custom blocks i've defined
+  (defun my-org-latex-special-block-advice (fn special-block contents info)
+    (let ((type (org-element-property :type special-block)))
+      (if (member type my-math-blocks)
+          (progn
+            (when (equal type "my_example")
+              (setq type "example"))
+            (let ((title (my-block-title special-block))
+                  (dependency (org-block-property :on special-block))
+                  (citation (get-block-source special-block))
+                  (label (org-block-property :name special-block)))
+              (when (not label)
+                (setq label (generate-random-string 7)))
+              (if dependency
+                  (progn
+                    (when (not (string-search "[" dependency)) ;; if its a link without the brackets
+                      (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
+                    (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
+                (when (org-block-property :on-prev special-block)
+                  (setq title (format "%s -> %s" title "previous block"))))
+              (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+                              (if (string-empty-p citation) "" (format "[%s]" citation)))
+                      contents
+                      (format "\\end{myenv}"))))
+        (funcall fn special-block contents info))))
+  (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
+
+  ;; enforce some default keywords for all org buffers (in a hacky way)
+  (defun my-org-collect-keywords-advice (orig-func &rest args)
+    (let ((old-buffer (current-buffer)))
+      (with-temp-buffer
+        (insert-buffer-substring old-buffer)
+        (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n#+setupfile: ~/brain/private.org\n")
+        (apply orig-func args))))
+  (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
+
+  ;; temporary workaround for captions breaking latex export
+  (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
 
   )
 
@@ -730,18 +767,6 @@
                  "* %?\nentered on %U\n %i\n %a"))
   )
 
-;; enforce some default keywords for all org buffers (in a hacky way)
-(defun my-org-collect-keywords-advice (orig-func &rest args)
-  (let ((old-buffer (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring old-buffer)
-      (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n#+setupfile: ~/brain/private.org\n")
-      (apply orig-func args))))
-(advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
-
-;; temporary workaround for captions breaking latex export
-(advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
-
 (defmacro with-file-as-current-buffer (file &rest body)
   (let ((present-buffer (gensym))
         (result (gensym)))
@@ -924,41 +949,6 @@
       (org-block-property :title block)
       ""))
 
-;; handle some custom blocks i've defined
-(defun my-org-latex-special-block-advice (fn special-block contents info)
-  (let ((type (org-element-property :type special-block)))
-    (if (member type my-math-blocks)
-        (progn
-          (let ((title (my-block-title special-block))
-                (dependency (org-block-property :on special-block))
-                (citation (org-block-citation-string special-block))
-                (label (org-block-property :name special-block)))
-            (when (not label)
-              (setq label (generate-random-string 7)))
-            (if dependency
-                (progn
-                  (when (not (string-search "[" dependency)) ;; if its a link without the brackets
-                    (setq dependency (format "-> [[%s]]" dependency)))
-                  (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
-              (when (org-block-property :on-prev special-block)
-                (setq title (format "%s -> %s" title "previous block"))))
-            ;; delete the citation, we insert it ourselves later
-            (when citation
-              (setq contents
-                    (with-temp-buffer
-                      (insert contents)
-                      (goto-char (point-max))
-                      (previous-line)
-                      (goto-char (pos-bol))
-                      (kill-line)
-                      (buffer-string))))
-            (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
-                            (if citation (format "[%s]" citation) ""))
-                    contents
-                    (format "\\end{myenv}"))))
-      (funcall fn special-block contents info))))
-(advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
-
 (defun org-block-citation-string (&optional block)
   (save-excursion
     (let* ((block (or block (org-element-at-point)))
@@ -1039,5 +1029,11 @@
   (let ((org-export-before-processing-functions (cons 'org-remove-headlines
                                                       org-export-before-processing-functions)))
     (my-org-to-html t)))
+
+(defun get-block-source (block)
+  ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
+  ;; it that way because of the brackets around it
+  (let ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
+    (org-export-string-as (concat original-citation-str "\n") 'latex t)))
 
 (provide 'setup-org)

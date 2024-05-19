@@ -117,6 +117,8 @@
          (lambda () (interactive) (find-file "~/work/nixos/configuration.nix")))
 (led-kbd "f c"
          (lambda () (interactive) (find-file "~/.emacs.d/common.sty")))
+(led-kbd "f o"
+         (lambda () (interactive) (find-file (from-emacsd "lisp/setup-org.el"))))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
