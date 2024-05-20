@@ -70,10 +70,6 @@
 % \usepackage{cleveref}
 \usepackage{expl3}
 
-% https://www.draketo.de/anderes/latex-fonts.html
-% \usepackage{libris}    % a nice, almost handwritten calligraphic look
-% \renewcommand{\familydefault}{\sfdefault}
-
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
   \usepackage{pdftexcmds}
@@ -86,10 +82,6 @@
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
 
-  % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
-  % \usepackage{mathptmx}
-  % \usepackage[utf8]{inputenc}
-
   % \usepackage[no-math]{fontspec}
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -101,65 +93,9 @@
   % good looking, symbols are like handwritten
   \setmainfont{GFS Neohellenic}
   \setmathfont{GFS Neohellenic Math}
-
-  % i think thisis similar to one above
-  % \setmainfont{FiraGO}
-  % \setmathfont{FiraMath-Regular}
-
-  % even more handwritten-like... but i gotta get it first
-  % \setmainfont{NagwaTKText}
-  % \setmathfont{NagwaTKMath-Regular.otf}
-
-  % https://tex.stackexchange.com/questions/59702/suggest-a-nice-font-family-for-my-basic-latex-template-text-and-math
-  % \usepackage{mathptmx}
-  % \usepackage{mathpazo} % or option osf
-  % \usepackage{newpxmath}
-  % \usepackage{times}
-  % \usepackage{stix}
-  % \usepackage{pxfonts}
-  % \usepackage{fontspec}
-  % \usepackage{newpxtext,newpxmath}
-  % \usepackage{txfonts}
-  % \usepackage{mathptmx}
-  % \usepackage{txfonts}
-  % \usepackage[T1]{fontenc}
-  % \usepackage{newtxtext,newtxmath}
-
-  % \setmainfont{TeX Gyre Pagella}
-  %\setmathfont{TeX Gyre Pagella Math}
-  % \setmathfont{TeX Gyre Termes Math}
-  %\setmathfont{STIX}
-  % \setmainfont{GFS Bodoni}
-  % \setmathfont{Asana Math}
-
-  % \setmainfont{Latin Modern Roman}
-  % \setmathfont[range=\mathup/{latin,Latin}]{TeX Gyre Heros}
-  % \defaultfontfeatures{Ligatures={TeX}}
-  % \setmainfont{CMU Serif}
-  % \setsansfont{CMU Sans Serif}
-  % \setmathfont{Latin Modern Math}
-
-  % \newcommand\brm[1]{\symbf{#1}} % this one symbf from unicode-math works with all symbols, so far (requires lualatex)
-  % \else
-  % \newcommand\brm[1]{\bm{\mathrm{#1}}} % \bv isnt universal
 \fi
 % \newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
 \newcommand\brm[1]{\symbf{#1}}
-
-% \usepackage{mathpazo} % does loading it with kpfonts work?
-% \usepackage{kpfonts} % better(?) looking fonts, although misses some important chars such as the hyphen
-
-% \usepackage[utopia,expert]{mathdesign}
-% \usepackage{venturis}
-
-% \usepackage{ebgaramond-maths}
-
-
-% \setmainlanguage{english}
-% \setotherlanguage{greek}
-% \newfontfamily\greekfont{GFS Artemisia}[
-% Scale=MatchUppercase
-% ]
 
 % get \varv from the txfonts package
 \DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts
@@ -320,6 +256,7 @@
 \newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
 \newcommand{\scomp}[1]{\overline{#1}} % set complement
 \DeclarePairedDelimiter\tupl{(}{)}
+\newcommand\softmax{\refdef[blk:blk-softmax]{\operatorname{softmax}}}
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
@@ -327,7 +264,7 @@
 \newcommand{\prodtens}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
 \newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
 % products but instead of writing "1 x 1" we write something like \myprod{1}{1}
-\newcommand{\mprodmat}[1]{\impop[blk:def-prodmat]{#1}}
+\newcommand{\prodmat}[1]{\impop[blk:def-prodmat]{#1}}
 \newcommand{\prodcart}{\refdef[blk:def-cart-prod]{\times}} % cartesian product
 
 % to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
@@ -370,7 +307,7 @@
 \def\fullouterjoin{\mathbin{\ojoin\mkern-5.8mu\bowtie\mkern-5.8mu\ojoin}}
 
 % some symbols for machine learning
-\DeclareMathOperator{\actfunc}{\refdef[blk:20230503T000820]{\phi}} % to denote activation functions
+\DeclareMathOperator{\actfunc}{\mathnormal{\refdef[blk:20230503T000820]{\phi}}} % to denote activation functions
 
 % lst
 \definecolor{Brown}{cmyk}{0,0.81,1,0.60}
@@ -572,16 +509,6 @@
 % norm macro, https://tex.stackexchange.com/questions/107186/how-to-write-norm-which-adjusts-its-size
 \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
 
-% others i found here https://tex.stackexchange.com/questions/471532/alternatives-to-the-physics-package
-% \DeclarePairedDelimiter{\bra}{\langle}{\rvert}%
-% \DeclarePairedDelimiter{\ket}{\lvert}{\rangle}%
-% \DeclarePairedDelimiterX\innerp[2]{\langle}{\rangle}{#1\delimsize\vert\mathopen{}#2}%
-% \DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\delimsize\vert\mathopen{}#2}%
-% \DeclarePairedDelimiterX\braketOP[3]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2\,\delimsize\vert\,\mathopen{}#3}%
-% \DeclarePairedDelimiterX\ketbra[2]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#2}%
-% \DeclarePairedDelimiterX\outerp[2]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#2}%
-% \DeclarePairedDelimiterX\projector[1]{\lvert}{\rvert}{#1\delimsize\rangle\!\delimsize\langle#1}%
-
 % dot above minus (for monus etc), https://tex.stackexchange.com/questions/114188/special-character-dot-over-dash
 \makeatletter
 \newcommand{\dotminus}{\mathbin{\text{\@dotminus}}}
@@ -620,6 +547,8 @@
 \NewDocumentCommand\duspace{o}{\refdef[blk:def-dual-space]{\IfNoValueTF{#1}{V'}{#1'}}}
 \newcommand{\linfuncsfromto}{\refdef[blk:not-linear-func-from-to]{\mathcal{L}}} % linear functions from one vector space onto another
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
+\newcommand\transpose[1]{{#1}^\intercal}
+\newcommand\tensor[1]{\refdef[blk:def-tensor-inf]{\ptvct{#1}}}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
@@ -686,23 +615,6 @@
   % arc=0pt,
   }
 \makeatother
-
-% \newtcbtheorem[auto counter]{definition}{Definition}{
-%   lower separated=false,
-%   colback=white!80!gray,
-%   colframe=white, fonttitle=\bfseries,
-%   colbacktitle=white!50!gray,
-%   coltitle=black,
-%   enhanced,
-%   boxed title style={colframe=black},
-%   attach boxed title to top left={xshift=0.5cm,yshift=-2mm},
-% }{def}
-% \newtcbtheorem[auto counter]{theorem}{theorem}{}{}
-% \newtcbtheorem[auto counter]{problem}{problem}{}{}
-% \newtcbtheorem[auto counter]{proposition}{proposition}{}{}
-% \newtcbtheorem[auto counter]{notation}{notation}{}{}
-% \newtcbtheorem[auto counter]{solution}{solution}{}{}
-% \newtcbtheorem[auto counter]{my_example}{example}{}{}
 
 % used for function definitions, https://tex.stackexchange.com/questions/32019/dynamically-size-arrow-mapsto-in-function-definition
 \newcommand\phantomarrow[2]{%
