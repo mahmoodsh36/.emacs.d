@@ -587,12 +587,10 @@
             ;; :files ("*.el" "extensions" "*.jl" "*.toml" "extensions/*"))
   :config
   (setq julia-snail-terminal-type :eat)
-  (setq julia-snail-extensions '(repl-history formatter ob-julia))
+  (setq julia-snail-extensions '(repl-history formatter ob-julia)) ;; why is this not getting set on startup?
   (setq julia-snail/ob-julia-mirror-output-in-repl t)
   (setq julia-snail/ob-julia-capture-io nil)
   (add-hook 'julia-mode-hook 'julia-snail-mode))
-(with-eval-after-load 'julia-snail
-  (setq julia-snail-extensions '(repl-history formatter ob-julia))) ;; why is this not getting set on startup?
 
 ;; vertico config
 (use-package vertico
@@ -943,7 +941,7 @@
 (use-package org-tanglesync)
 
 ;; make using julia's language server easier with eglot.
-(use-package eglot-jl)
+;; (use-package eglot-jl)
 
 (use-package command-log-mode)
 

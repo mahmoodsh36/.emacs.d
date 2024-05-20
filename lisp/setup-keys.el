@@ -258,7 +258,9 @@
 (led-kbd "l d" 'sly-documentation-lookup :keymaps '(lisp-mode-map sly-mrepl-mode-map))
 
 ;; julia
-(led-kbd "s j" 'julia-snail)
+(led-kbd "s j" (lambda () (interactive)
+                 (setq julia-snail-extensions '(repl-history formatter ob-julia))
+                 (julia-snail)))
 
 ;; python
 (led-kbd "s p" 'run-python)
