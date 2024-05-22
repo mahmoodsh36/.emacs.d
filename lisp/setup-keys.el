@@ -457,7 +457,7 @@
                  (interactive)
                  (let ((notmuch-search-oldest-first nil))
                    (notmuch-search "tag:new"))))
-(led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name))) ;; reload file
+(led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name) (recenter))) ;; reload file
 (led-kbd "; t" (lambda () (interactive) (today-entry "THOUGHT")))
 (led-kbd "; e" (lambda () (interactive) (today-entry "FEELING")))
 

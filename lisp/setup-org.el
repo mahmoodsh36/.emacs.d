@@ -523,7 +523,7 @@
                       (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
                     (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
                 (when (org-block-property :on-prev special-block)
-                  (setq title (format "%s -> %s" title "previous block"))))
+                  (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
               (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
                               (if (string-empty-p citation) "" (format "[%s]" citation)))
                       contents
@@ -542,7 +542,6 @@
 
   ;; temporary workaround for captions breaking latex export
   (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
-
   )
 
 ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's

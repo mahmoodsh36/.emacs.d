@@ -10,8 +10,6 @@
               ("C-h ." . eldoc))
   :hook ((eglot-managed-mode . my/eglot-eldoc-settings))
   :config
-  (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (add-hook 'c-mode-hook #'eglot-ensure)
   ;; some inline hints
   (add-hook 'eglot-managed-mode-hook 'eglot-inlay-hints-mode)
   ;; (add-to-list 'eglot-server-programs
@@ -25,9 +23,19 @@
   )
 
 (with-eval-after-load 'eglot
+  (add-hook 'c-mode-hook #'eglot-ensure)
+
+  ;; for python
+  (add-hook 'python-mode-hook #'eglot-ensure)
   (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
   (setq-default eglot-workspace-configuration
                 '((:pylsp . (:configurationSources ["flake8"] :plugins (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t))))))
+
+  ;; for typescript
+  (add-to-list 'eglot-server-programs
+               '((typescript-mode) "typescript-language-server" "--stdio"))
+  (add-hook 'tsx-ts-mode #'eglot-ensure)
+
 
   ;; disable the minibuffer hinting, distracting
   ;; (add-hook 'eglot-managed-mode-hook (lambda () (eldoc-mode -1)))

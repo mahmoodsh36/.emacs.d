@@ -960,4 +960,13 @@
 ;; hmmm, could it be useful?
 (use-package citar)
 
+;; adds stuff from node_modules to path
+(use-package add-node-modules-path
+  :config
+  (eval-after-load 'js-mode
+    '(add-hook 'js-mode-hook #'add-node-modules-path)))
+
+;; auto treesitter grammar and mode setup
+(use-package treesit-auto)
+
 (provide 'setup-packages)
