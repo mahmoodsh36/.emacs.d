@@ -257,15 +257,17 @@
 \newcommand{\scomp}[1]{\overline{#1}} % set complement
 \DeclarePairedDelimiter\tupl{(}{)}
 \newcommand\softmax{\refdef[blk:blk-softmax]{\operatorname{softmax}}}
+\newcommand\powset{\refdef[blk:def-pow-set]{\mathcal{P}}}
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
-\newcommand{\proddot}[2]{#1 \refdef[blk:def-dot]{\cdot} #2} % dot product
+\newcommand{\proddot}[2]{#1 \refdef[blk:def-proddot]{\cdot} #2} % dot product
 \newcommand{\prodtens}{\refdef[blk:def-tensor-prod]{\,\otimes\,}} % tensor product
 \newcommand{\prodvs}{\refdef[blk:def-vs-prod]{\times}} % vector space product
-% products but instead of writing "1 x 1" we write something like \myprod{1}{1}
-\newcommand{\prodmat}[1]{\impop[blk:def-prodmat]{#1}}
 \newcommand{\prodcart}{\refdef[blk:def-cart-prod]{\times}} % cartesian product
+% products but instead of writing "1 x 1" we write something like \myprod{1}{1}
+\newcommand{\mprodmat}[1]{\impop[blk:def-prodmat]{#1}}
+\newcommand{\mproddot}[1]{\impop[blk:def-proddot]{#1}} % dot product
 
 % to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
 \makeatletter
@@ -547,7 +549,7 @@
 \NewDocumentCommand\duspace{o}{\refdef[blk:def-dual-space]{\IfNoValueTF{#1}{V'}{#1'}}}
 \newcommand{\linfuncsfromto}{\refdef[blk:not-linear-func-from-to]{\mathcal{L}}} % linear functions from one vector space onto another
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
-\newcommand\transpose[1]{{#1}^\intercal}
+\newcommand\transpose[1]{{#1}^{\refdef[blk:def-transpose]{\intercal}}}
 \newcommand\tensor[1]{\refdef[blk:def-tensor-inf]{\ptvct{#1}}}
 
 \ExplSyntaxOn
