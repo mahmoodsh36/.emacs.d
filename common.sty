@@ -212,9 +212,7 @@
 % some needed operators to not lose my sanity
 \DeclareMathOperator{\spn}{span}
 \DeclareMathOperator{\dom}{dom}
-\DeclareMathOperator{\ran}{range}
-\DeclareMathOperator{\rng}{range}
-\DeclareMathOperator{\range}{rng}
+\DeclareMathOperator{\range}{range}
 \DeclareMathOperator{\img}{Im}
 \DeclareMathOperator{\adj}{adj}
 \DeclareMathOperator{\Var}{Var}
@@ -287,6 +285,9 @@
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
 \NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
 \newcommand{\fordset}{\omega} % the set of all finite ordinals
+\newcommand{\compW}{\refdef[blk:not-comp-W]{W}}
+\newcommand{\compK}{\refdef[blk:not-comp-K]{K}}
+\newcommand{\compTot}{\refdef[blk:def-comp-Tot]{\operatorname{Tot}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
