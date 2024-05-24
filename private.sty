@@ -1,0 +1,31 @@
+% configs for usage in "private" notes
+
+% reduce margins (if not beamer)
+\makeatletter%
+\@ifclassloaded{beamer}%
+  {}%
+  {\usepackage[margin=0.2in]{geometry}}%
+\makeatother%
+
+\ifLuaTeX
+  % \setmainfont{Linux Libertine O}
+  % \setmainfont{XITS}
+  % \setmathfont{XITS Math}
+
+  % good looking, symbols are more handwritten-like
+  \setmainfont{GFS Neohellenic}
+  \setmathfont{GFS Neohellenic Math}
+
+  % needed for some of the mathastext fonts below
+  \usepackage[T1]{fontenc}
+
+  % cursive 1
+%   \usepackage[default]{frcursive}
+%   \usepackage[eulergreek,noplusnominus,noequal,nohbar,%
+% nolessnomore,noasterisk]{mathastext}
+
+  % cursive 2, favorite
+  \usepackage{aurical}
+  \renewcommand{\rmdefault}{AuriocusKalligraphicus}
+  \usepackage[symbolgreek]{mathastext}
+\fi

@@ -260,9 +260,9 @@
   (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file)
   ;; enable latex previews everywhere possible and use a custom preamble
   (setq org-latex-preview-live '(block inline edit-special))
-  ;; [border=2pt] argument to documentclass may be desired but not for inline previews...
-  (setq org-latex-preview-preamble "\\documentclass{standalone}")
-  (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")) ;; use my ~/.emacs.d/common.sty, its already in setup.org though
+  ;; for previews use private.sty
+  (setq org-latex-preview-preamble "\\documentclass{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
+  (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")) ;; use my ~/.emacs.d/common.sty
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
@@ -317,26 +317,6 @@
                                                 (:session . "none")
                                                 (:results . "replace")
                                                 (:hlines . "yes"))))
-
-  (setq org-publish-project-alist
-        '(("orgfiles"
-           :base-directory "~/brain/notes/"
-           :base-extension "org"
-           :publishing-directory "~/publish/"
-           :publishing-function org-html-publish-to-html
-           ;; :exclude "PrivatePage.org" ;; regexp
-           :headline-levels 3
-           :section-numbers nil
-           :with-toc nil
-           :recursive t
-           :html-preamble t)
-          ("images"
-           :base-directory "~/brain/"
-           :base-extension "jpg\\|gif\\|png\\|webp\\|jpeg\\|svg"
-           :publishing-directory "~/publish/"
-           :recursive t
-           :publishing-function org-publish-attachment)
-          ("website" :components ("orgfiles" "images"))))
 
   ;; also make org-special-edit respect tree-sitter modes
   (dolist (mapping major-mode-remap-alist)
@@ -394,6 +374,7 @@
   (add-to-list 'org-export-before-processing-functions 'my-export-newlines)
 
   ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
+
   (defun my-org-link-advice (fn link desc info)
     "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'. also we need to handle links to static files, copy those over to the html dir and link to them properly."
     (let* ((link-path (org-element-property :path link))

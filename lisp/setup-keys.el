@@ -114,7 +114,7 @@
 (led-kbd "f h" (lambda () (interactive) (search-open-file "./" ".*")))
 
 (led-kbd "f n"
-         (lambda () (interactive) (find-file "~/work/nixos/configuration.nix")))
+         (lambda () (interactive) (find-file "~/work/nixos/desktop.nix")))
 (led-kbd "f c"
          (lambda () (interactive) (find-file "~/.emacs.d/common.sty")))
 (led-kbd "f o"
