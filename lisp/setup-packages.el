@@ -88,7 +88,6 @@
   (corfu-auto-delay 0.1) ;; never set it to 0, makes emacs very laggy and hogs cpu
   ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
   ;; (corfu-separator " ")
-  blk
   (corfu-count 10)
   (corfu-indexed-mode t)
   (corfu-echo-mode t) ;; display brief documentation in echo area
