@@ -402,7 +402,7 @@
 ;; (led-kbd "r F" #'my-notes-open-1)
 (led-kbd "r f" #'blk-find)
 (led-kbd "r F" #'blk-find-with-ivy)
-(global-set-key (kbd "<f6>") #'my-notes-open)
+(global-set-key (kbd "<f6>") #'blk-find)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))
 (led-kbd "r c i" (lambda () (interactive) (org-capture nil "i")))

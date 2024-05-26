@@ -88,6 +88,7 @@
   (corfu-auto-delay 0.1) ;; never set it to 0, makes emacs very laggy and hogs cpu
   ;; (corfu-separator ?_) ;; set to orderless separator, if not using space
   ;; (corfu-separator " ")
+  blk
   (corfu-count 10)
   (corfu-indexed-mode t)
   (corfu-echo-mode t) ;; display brief documentation in echo area
@@ -99,9 +100,10 @@
   :config
   (unbind-key "RET" corfu-map)
   (unbind-key "TAB" corfu-map)
-  (define-key corfu-map [tab] nil)
-  (define-key corfu-map "\t" nil)
-  (bind-key "C-TAB" #'corfu-complete corfu-map) ;; why does this not work
+  ;; to unbind tab completiuon
+  ;; (define-key corfu-map [tab] nil)
+  ;; (define-key corfu-map "\t" nil)
+  ;; (bind-key "C-TAB" #'corfu-complete corfu-map) ;; why does this not work
   (bind-key "M-TAB" #'corfu-complete corfu-map)
   ;; (define-key corfu-map "\M-q" #'corfu-quick-complete)
   ;; (define-key corfu-map "\M-q" #'corfu-quick-insert)
