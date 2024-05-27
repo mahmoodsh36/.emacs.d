@@ -1,7 +1,7 @@
 \makeatletter%
 \@ifclassloaded{beamer}%
   {\usetheme{Antibes}}%
-  {}%
+  {\usepackage{enumitem}}% enumitem doesnt work with beamer so only load it if we arent using beamer
 \makeatother%
 \usepackage{amsmath}
 \usepackage{amsfonts}

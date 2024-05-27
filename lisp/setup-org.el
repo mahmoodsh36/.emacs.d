@@ -986,7 +986,7 @@
              (buffer-string))
            (format "<h1 class=\"main-title\">%s</h1>%s"
                    title
-                   (if desc "<span class=\"desc\">%s</span>" ""))))
+                   (if desc (format "<span class=\"desc\">%s</span>" desc) ""))))
          (org-html-preamble-format (list (list "en" my-preamble))))
     (message "writing to %s" outfile)
     (when heading
