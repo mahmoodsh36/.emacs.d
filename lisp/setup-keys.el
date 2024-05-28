@@ -261,6 +261,7 @@
 (led-kbd "s j" (lambda () (interactive)
                  (setq julia-snail-extensions '(repl-history formatter ob-julia))
                  (julia-snail)))
+(led-kbd "l s" 'julia-snail-send-line :keymaps 'julia-mode-map)
 
 ;; python
 (led-kbd "s p" 'run-python)
@@ -460,6 +461,7 @@
 (led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name) (recenter))) ;; reload file
 (led-kbd "; t" (lambda () (interactive) (today-entry "THOUGHT")))
 (led-kbd "; e" (lambda () (interactive) (today-entry "FEELING")))
+(led-kbd "; q" (lambda () (interactive) (today-entry "QUESTION")))
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 
