@@ -8,8 +8,8 @@
 
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
-(require 'setup-constants)
 (require 'setup-utils)
+(require 'setup-constants)
 (require 'setup-android)
 (require 'setup-elpaca)
 (require 'setup-other)
@@ -282,6 +282,7 @@
 (require 'setup-dired)
 (require 'setup-eglot)
 (require 'setup-blk)
+(require 'my-bibtex)
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
