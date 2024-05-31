@@ -81,7 +81,7 @@
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
 \fi
-\newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
+% \newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
 
 % get \varv from the txfonts package
 \DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts
@@ -242,6 +242,8 @@
 \DeclarePairedDelimiter\tupl{(}{)}
 \newcommand\softmax{\refdef[blk:blk-softmax]{\operatorname{softmax}}}
 \newcommand\powset{\refdef[blk:def-pow-set]{\mathcal{P}}}
+\newcommand\sigmoid{\refdef[blk:def-sigmoid]{\operatorname{\sigma}}}
+\newcommand\data{\mathcal{D}}
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
