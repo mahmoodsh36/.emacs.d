@@ -12,6 +12,8 @@
   (not (is-android-system))
   "whether latex previews for org mode are enabled for the current session")
 
+(defvar org-export-restrict t)
+
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
   (interactive)
@@ -367,7 +369,7 @@
     (let ((inhibit-message t))
       (goto-char (point-min))
       (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
-      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.)\n" "\\1.\n\n") ;; insert newlines after lines ending with .)
+      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.)\n" "\\1.\n\n") ;; insert newlines after lines ending with ".)"
       ;; (goto-char (point-min))
       ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
       ))
@@ -485,7 +487,7 @@
           (funcall fn attribute element property)))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
-;; handle some custom blocks i've defined
+  ;; handle some custom blocks i've defined
   (defun my-org-latex-special-block-advice (fn special-block contents info)
     (let ((type (org-element-property :type special-block)))
       (if (member type my-math-blocks)
@@ -810,9 +812,11 @@
         (setq exceptions (push file exceptions))))))
 
 (defun list-org-files-to-export ()
-  (let* ((grep-results (grep-org-dir *notes-dir* "#\\+export_section"))
-         (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
-    files-to-export))
+  (if org-export-restrict
+      (let* ((grep-results (grep-org-dir *notes-dir* "#\\+export_section"))
+             (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
+        files-to-export)
+    (directory-files *notes-dir* t ".*\\.org")))
 
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
@@ -830,7 +834,9 @@
 (defun org-get-keyword (kw)
   (cadar (org-collect-keywords (list kw))))
 (defun should-export-org-file (file)
-  (org-export-dir-name file))
+  (if org-export-restrict
+      (org-export-dir-name file)
+    t))
 (defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
   (car
@@ -929,24 +935,24 @@
       (org-block-property :title block)
       ""))
 
-(defun org-block-citation-string (&optional block)
-  (save-excursion
-    (let* ((block (or block (org-element-at-point)))
-           (end (org-element-property :end block)))
-      (goto-char (1- end))
-      (previous-line)
-      (goto-char (pos-eol))
-      (let* ((context
-              (org-element-lineage
-               (org-element-context)
-               '(citation citation-reference)
-               t))
-             (type (org-element-type context))
-             (value (org-element-property :value context)))
-        (when context
-          (let ((contents (buffer-substring (org-element-begin context)
-                                            (org-element-end context))))
-            (org-export-string-as contents 'latex t)))))))
+;; (defun org-block-citation-string (&optional block)
+;;   (save-excursion
+;;     (let* ((block (or block (org-element-at-point)))
+;;            (end (org-element-property :end block)))
+;;       (goto-char (1- end))
+;;       (previous-line)
+;;       (goto-char (pos-eol))
+;;       (let* ((context
+;;               (org-element-lineage
+;;                (org-element-context)
+;;                '(citation citation-reference)
+;;                t))
+;;              (type (org-element-type context))
+;;              (value (org-element-property :value context)))
+;;         (when context
+;;           (let ((contents (buffer-substring (org-element-begin context)
+;;                                             (org-element-end context))))
+;;             (org-export-string-as contents 'latex t)))))))
 
 (defun html-out-file (title)
   (let ((inhibit-message t))

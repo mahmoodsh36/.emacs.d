@@ -60,9 +60,9 @@
 ;; formats the buffer before saving
 ;; (add-hook 'before-save-hook 'tide-format-before-save)
 ;; if you use typescript-mode
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
 ;; if you use treesitter based typescript-ts-mode (emacs 29+)
-(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+;; (add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
 
 ;; side tree
 (use-package treemacs
@@ -724,13 +724,13 @@
 (when (not (is-android-system))
   (use-package org-pdftools))
 
-(use-package hyperbole
-  :ensure (hyperbole :fetcher github :repo "rswgnu/hyperbole")
-  :config
-  (hyperbole-mode 1)
-  ;; it overrides the M-return key for vertico :/
-  (unbind-key "M-<return>" hyperbole-mode-map)
-  (unbind-key "M-RET" hyperbole-mode-map))
+;; (use-package hyperbole
+;;   :ensure (hyperbole :fetcher github :repo "rswgnu/hyperbole")
+;;   :config
+;;   (hyperbole-mode 1)
+;;   ;; it overrides the M-return key for vertico :/
+;;   (unbind-key "M-<return>" hyperbole-mode-map)
+;;   (unbind-key "M-RET" hyperbole-mode-map))
 
 (use-package denote
   :ensure ( :fetcher github :repo "protesilaos/denote")  ;; :ref "55dcf23"

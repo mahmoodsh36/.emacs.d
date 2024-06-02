@@ -12,7 +12,7 @@
 (defconst *bibtex-file* (from-brain "bib.bib"))
 
 ;; where my html exports go to, for my blog or whatever
-(defconst *static-html-dir* (getenv "BLOG_DIR"))
+(defconst *static-html-dir* (concat (getenv "BLOG_DIR") "/"))
 (defconst *html-static-route* "/")
 (ignore-errors (mkdir *static-html-dir*)) ;; ensure it exists
 
