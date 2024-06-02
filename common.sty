@@ -1,7 +1,8 @@
 \makeatletter%
 \@ifclassloaded{beamer}%
   {\usetheme{Antibes}}%
-  {\usepackage{enumitem}}% enumitem doesnt work with beamer so only load it if we arent using beamer
+  {\usepackage{enumitem}
+   \usepackage[margin=0.2in]{geometry}}% enumitem doesnt work with beamer so only load it if we arent using beamer
 \makeatother%
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -77,11 +78,15 @@
   \let\pdffilemoddate\pdf@filemoddate
   \makeatother
 
+  % to fix some errors with unicode-math where some symbols cannot be found
+  % \renewcommand\DeclareMathOperator\newcommand
+  % \renewcommand\operatorname[1]{\,#1\,}
+
   % graphdrawing library is only available to luatex
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
 \fi
-% \newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
+\newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
 
 % get \varv from the txfonts package
 \DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts
@@ -223,12 +228,13 @@
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
 \newcommand{\textand}{\mathbin{\smallspace\text{and}\smallspace}}
 \newcommand{\textnot}{\text{ not }}
-\newcommand{\textor}{\mathbin{\text{or}}}
-\newcommand{\textif}{\mathbin{\textbf{ if }}}
-\newcommand{\textiff}{\mathbin{\textbf{ iff }}}
-\newcommand{\textthen}{\mathbin{\textbf{ then }}}
-\newcommand{\textgoto}{\mathbin{\textbf{ goto }}}
-\newcommand{\textelse}{\mathbin{\textbf{ else }}}
+\newcommand{\textop}[1]{\relax\ifmmode\mathop{\text{#1}}\else\text{#1}\fi} % https://tex.stackexchange.com/questions/8047/spacing-around-text-in-mathmode
+\newcommand{\textor}{\textop{or}}
+\newcommand{\textif}{\textop{if}}
+\newcommand{\textiff}{\textop{iff}}
+\newcommand{\textthen}{\textop{then}}
+\newcommand{\textgoto}{\textop{goto}}
+\newcommand{\textelse}{\textop{else}}
 \DeclareMathOperator{\graph}{graph}
 \newcommand{\angled}[1]{\langle #1 \rangle}
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
@@ -503,7 +509,7 @@
 \delimitershortfall-1sp
 \newcommand\abs[1]{\left|#1\right|}
 % norm macro, https://tex.stackexchange.com/questions/107186/how-to-write-norm-which-adjusts-its-size
-\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\newcommand{\norm}[2][2]{{\lVert{#2}\rVert}_{#1}}
 
 % dot above minus (for monus etc), https://tex.stackexchange.com/questions/114188/special-character-dot-over-dash
 \makeatletter
@@ -567,6 +573,7 @@
 \makeatletter
 \newtcolorbox{myboxwithcaption}[4][]{
   enhanced jigsaw,
+  breakable,
   colback=white!80!gray,
   colframe=white, fonttitle=\bfseries,
   colbacktitle=white!50!gray,
@@ -591,6 +598,7 @@
   }}
 \newtcolorbox{myboxnocaption}[3][]{
   enhanced jigsaw,
+  breakable,
   colback=white!80!gray,
   colframe=white, fonttitle=\bfseries,
   colbacktitle=white!50!gray,
