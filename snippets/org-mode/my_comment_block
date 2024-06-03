@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: my comment block
+# key: zb
+# --
+#+begin_my_comment
+$0
+#+end_my_comment

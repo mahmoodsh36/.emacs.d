@@ -471,6 +471,7 @@
             (list :class "math-block"
                   :data-before (concat (pcase block-type
                                          ("my_example" "example")
+                                         ("my_comment" "comment")
                                          (_ block-type))
                                        (if (string-empty-p block-title)
                                            ""
@@ -492,8 +493,10 @@
     (let ((type (org-element-property :type special-block)))
       (if (member type my-math-blocks)
           (progn
-            (when (equal type "my_example")
-              (setq type "example"))
+            (setq (pcase type
+                    ("my_example" "example")
+                    ("my_comment" "comment")
+                    (_ type)))
             (let ((title (my-block-title special-block))
                   (dependency (org-block-property :on special-block))
                   (citation (get-block-source special-block))
@@ -924,6 +927,7 @@
         "task"
         "thought"
         "my_example"
+        "my_comment"
         "question"
         "lemma"
         "note"
