@@ -27,6 +27,7 @@
 
   ;; for python
   (add-hook 'python-mode-hook #'eglot-ensure)
+  (add-hook 'python-ts-mode-hook #'eglot-ensure)
   (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
   (setq-default eglot-workspace-configuration
                 '((:pylsp . (:configurationSources ["flake8"] :plugins (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t))))))

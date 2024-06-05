@@ -394,7 +394,8 @@
 (setq denote-templates
       '((note . "#+title: ")
         (memo . "* Some heading")))
-(led-kbd "r n" #'denote-create-note)
+;; (led-kbd "r n" #'denote-create-note)
+(led-kbd "r n" #'new-note-file)
 (led-kbd "r N" #'denote-type)
 ;; (led-kbd "r f" #'denote-open-or-create)
 ;; (led-kbd "r f" #'my-notes-open-by-title)

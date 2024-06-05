@@ -874,8 +874,8 @@
              (funcall fn elm))))))))
 
 (defun notes-execute-marked-src-block (rgx)
-  (map-org-dir-elements rgx *notes-dir* 'src-block
-                        (lambda ()
+  (map-org-dir-elements *notes-dir* rgx 'src-block
+                        (lambda (_)
                           (message "running code block in file %s" (buffer-file-name))
                           (org-ctrl-c-ctrl-c))))
 
@@ -1025,5 +1025,16 @@
   ;; it that way because of the brackets around it
   (let ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
     (org-export-string-as (concat original-citation-str "\n") 'latex t)))
+
+(defun current-unix-timestamp ()
+  (time-to-seconds (current-time)))
+
+(defun new-note-file ()
+  (interactive)
+  (let ((my-timestamp (current-unix-timestamp)))
+    (find-file (from-notes (format "%s.org" my-timestamp)))
+    (yas-expand-snippet (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
+                                my-timestamp (format-time-string (cdr org-time-stamp-formats))))
+    (evil-insert 0)))
 
 (provide 'setup-org)

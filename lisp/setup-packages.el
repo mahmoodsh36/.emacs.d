@@ -970,4 +970,7 @@
 ;; auto treesitter grammar and mode setup
 (use-package treesit-auto)
 
+;; library for working with time stamps easily
+(use-package ts)
+
 (provide 'setup-packages)

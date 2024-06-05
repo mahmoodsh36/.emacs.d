@@ -97,6 +97,10 @@
   (from-brain (concat "out/" filename)))
 (defalias 'cached-file 'from-cache)
 
+(defun from-notes (filename)
+  "return `filename', prefixed by the path to the notes dir `*notes-dir*'"
+  (file-truename (join-path *notes-dir* filename)))
+
 ;; clean up ob-jupyter source block output
 ;; from henrik lissner
 (defun my/org-babel-jupyter-strip-ansi-escapes-block ()
