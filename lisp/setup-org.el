@@ -493,10 +493,10 @@
     (let ((type (org-element-property :type special-block)))
       (if (member type my-math-blocks)
           (progn
-            (setq (pcase type
-                    ("my_example" "example")
-                    ("my_comment" "comment")
-                    (_ type)))
+            (setq type (pcase type
+                         ("my_example" "example")
+                         ("my_comment" "comment")
+                         (_ type)))
             (let ((title (my-block-title special-block))
                   (dependency (org-block-property :on special-block))
                   (citation (get-block-source special-block))

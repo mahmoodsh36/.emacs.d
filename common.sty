@@ -79,14 +79,14 @@
   \makeatother
 
   % to fix some errors with unicode-math where some symbols cannot be found
-  % \renewcommand\DeclareMathOperator\newcommand
-  % \renewcommand\operatorname[1]{\,#1\,}
+  \renewcommand\DeclareMathOperator\newcommand
+  \renewcommand\operatorname[1]{\,#1\,}
 
   % graphdrawing library is only available to luatex
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
 \fi
-\newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
+% \newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
 
 % get \varv from the txfonts package
 \DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts
