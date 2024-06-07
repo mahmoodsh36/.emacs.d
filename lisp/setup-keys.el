@@ -27,7 +27,7 @@
 ;;                       (interactive)
 ;;                       (kill-all-buffers)
 ;;                       (switch-to-buffer "*scratch*")))
-(led-kbd "b s" 'switch-to-buffer)
+(led-kbd "b s" 'consult-buffer)
 (led-kbd "b b" 'bookmark-jump)
 (led-kbd "x" 'eval-defun  :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map))
 (led-kbd "s g" 'deadgrep)

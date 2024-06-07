@@ -1034,7 +1034,7 @@
   (let ((my-timestamp (current-unix-timestamp)))
     (find-file (from-notes (format "%s.org" my-timestamp)))
     (yas-expand-snippet (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
-                                my-timestamp (format-time-string (cdr org-time-stamp-formats))))
+                                (format-time-string (cdr org-time-stamp-formats)) my-timestamp))
     (evil-insert 0)))
 
 (provide 'setup-org)

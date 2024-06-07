@@ -250,6 +250,8 @@
 \newcommand\powset{\refdef[blk:def-pow-set]{\mathcal{P}}}
 \newcommand\sigmoid{\refdef[blk:def-sigmoid]{\operatorname{\sigma}}}
 \newcommand\data{\mathcal{D}}
+\newcommand{\textfalse}{\textop{false}}
+\newcommand{\texttrue}{\textop{false}}
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
@@ -277,6 +279,7 @@
 \newcommand{\turingreduceo}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_1}} #2}
 \newcommand{\turingreducem}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_m}} #2}
 \newcommand{\turingreduce}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le}} #2}
+\newcommand{\turingreducep}[2]{#1 \operatorname{\refdef[blk:def-poly-reduc]{\le_p}} #2}
 \DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{L}}
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
 \NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
@@ -286,6 +289,7 @@
 \newcommand{\compKo}{\refdef[blk:not-comp-K0]{K0}}
 \newcommand{\compTot}{\refdef[blk:def-comp-Tot]{Tot}} % set of total computable functions
 \newcommand{\compRE}{\refdef[blk:def-recur-enum]{RE}} % set of recursively enumerable sets
+\newcommand{\compcoRE}{\refdef[blk:def-corecur-enum]{\operatorname{co-RE}}}
 \newcommand{\compR}{\refdef[blk:def-recur-enum]{R}} % set of recursive sets
 \newcommand{\bigo}{\refdef[blk:def-bigo]{O}} % big o
 \newcommand{\turmach}{\refdef[blk:def-tur]{\mathscr{M}}} % turing machine
@@ -555,6 +559,7 @@
 \newcommand{\bilinfuncsfromto}{\refdef[blk:def-bi-functional]{\mathcal{B}}} % bilinear functions from one vector space onto another
 \newcommand\transpose[1]{{#1}^{\refdef[blk:def-transpose]{\intercal}}}
 \newcommand\tensor[1]{\refdef[blk:def-tensor-inf]{\ptvct{#1}}}
+\newcommand\cntinfty{\refdef[blk:20240523T095610]{\aleph_0}} % \refdef[blk:20240523T095610]{countable infinity}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
