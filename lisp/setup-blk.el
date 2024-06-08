@@ -59,6 +59,9 @@
 
   ;; enable cache for more responsivity
   (setq blk-use-cache t)
+  ;; increase the update interval so we dont get frequent lags (should be fixed in the future)
+  ;; (setq blk-cache-update-interval 20)
+  (setq blk-cache-update-interval 1000000) ;; dont ever update it, i'll update it manually when i need
 
   ;; enable group search (group things together)
   (setq blk-enable-groups t)
