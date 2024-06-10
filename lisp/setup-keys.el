@@ -463,8 +463,13 @@
 (led-kbd "; t" (lambda () (interactive) (today-entry "THOUGHT")))
 (led-kbd "; e" (lambda () (interactive) (today-entry "FEELING")))
 (led-kbd "; q" (lambda () (interactive) (today-entry "QUESTION")))
+(led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
+
+;; keys for yasnippet
+(general-define-key :states '(insert normal) :keymaps 'override "C-SPC" #'my-yas-insert)
+(general-define-key :states '(insert normal) :keymaps 'override "M-SPC" #'yas-next-field)
 
 ;; annoyingly some modes dont handle it newline indentation properly..
 ;; (general-define-key :states 'normal :keymaps 'prog-mode-hook "o" 'my-insert-newline-same-indentation)

@@ -296,6 +296,9 @@
 \newcommand{\turmach}{\refdef[blk:def-tur]{\mathscr{M}}} % turing machine
 \newcommand{\polylangs}{\refdef[blk:def-polylang]{\brm{P}}} % \refdef[blk:20240308T125435]{polynomial time decidable languages}
 \newcommand{\npolylangs}{\refdef[blk:def-np]{\brm{NP}}}
+% aliases for the 2 commands above
+\newcommand{\compP}{\polylangs}
+\newcommand{\compNP}{\npolylangs}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -398,6 +401,7 @@
 % \newtheorem{thought}{thought}
 \newenvironment*{dummy}{}{}
 \newenvironment{any}{}{}
+\newenvironment{literal}{}{}
 
 % the following snippet auto resizes images to fit properly
 % Determine if the image is too wide for the page.
@@ -630,20 +634,9 @@
   }
 \makeatother
 
-% used for function definitions, https://tex.stackexchange.com/questions/32019/dynamically-size-arrow-mapsto-in-function-definition
-\newcommand\phantomarrow[2]{%
-  \setbox0=\hbox{$\displaystyle #1\to$}%
-  \hbox to \wd0{%
-    $#2\mapstochar
-     \cleaders\hbox{$\mkern-1mu\relbar\mkern-3mu$}\hfill
-     \mkern-7mu\rightarrow$}%
-  \,}
 % function definition with domain and codomain and variable and value
 \newcommand{\funcdcv}[5]{%
-  \begin{align*}
-    #1 \colon & #2 \to #3\\
-    &\phantomarrow{#2}{#4} #5
-  \end{align*}
+  #1 \colon #2 \to #3 = #4 \mapsto #5
 }
 % function definition with domain and codomain
 \newcommand{\funcdc}[3]{%

@@ -248,6 +248,10 @@
     (yas-activate-extra-mode 'latex-mode))
   (add-hook 'org-mode-hook #'my-org-latex-yas)
 
+  ;; unbind yasnippet from tab
+  (define-key yas-minor-mode-map [(tab)] nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+
   ;; some snippets i dont wanna create files for
   (yas-define-snippets
    'latex-mode

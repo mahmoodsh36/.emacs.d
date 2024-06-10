@@ -14,19 +14,6 @@
   (add-hook 'org-mode-hook #'org-transclusion-mode)
   (add-to-list 'org-transclusion-after-add-functions 'org-latex-preview))
 
-;; (defun my-consult-completing-read (prompt table &rest whatever)
-;;   (consult--read
-;;    table
-;;    :prompt prompt
-;;    :sort nil
-;;    :require-match t
-;;    :history '(:input blk-find-history)
-;;    :state (consult--jump-state)
-;;    :annotate (consult--line-prefix)
-;;    :category 'consult-location
-;;    :lookup (lambda (selected &rest _) selected)
-;;    :add-history (thing-at-point 'symbol)))
-
 (defun blk-find-with-consult ()
   (interactive)
   (let ((completing-read-function 'my-consult-completing-read))
