@@ -191,7 +191,9 @@
 
 % alternative to \hyperref to refer to a symbols definition/source using blk
 \newcommand{\refdef}[2][]{%
+  \special{dvisvgm:raw <g data-ref='#1'>}
   \textcolor{orange}{\hyperref[#1]{#2}}
+  \special{dvisvgm:raw </g>}
 }
 \newcommand{\defvar}[2]{% define a variable, \defvar{id/name}{symbol}, like lexical bindings but maybe extend it to highest block
   \refdef[#1]{#2}

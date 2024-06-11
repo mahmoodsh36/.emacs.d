@@ -133,6 +133,7 @@
 (led-kbd "m a" #'play-artist)
 ;; play album by artist name + album name
 (led-kbd "m b" #'play-album)
+(led-kbd "m B" #'play-album-1)
 ;; play album
 ;; (led-kbd "m B" #'play-album-2)
 ;; open music table file

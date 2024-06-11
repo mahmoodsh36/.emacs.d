@@ -415,4 +415,10 @@ prompt the user for a coding system."
     (goto-char pos)
     (equal (point) (pos-bol))))
 
+;; unadvice something https://emacs.stackexchange.com/questions/24657/unadvise-a-function-remove-all-advice-from-it
+(defun my-unadvice (sym)
+  "Remove all advices from symbol SYM."
+  (interactive "aFunction symbol: ")
+  (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
+
 (provide 'setup-utils)

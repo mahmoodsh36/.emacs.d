@@ -288,6 +288,7 @@
   (setq org-use-property-inheritance t)
   ;; dont override my labels
   (setq org-latex-prefer-user-labels t)
+  (setq org-html-prefer-user-labels t)
   ;; dont let org handle subscripts lol
   (setq org-export-with-sub-superscripts nil)
   (require 'ox-html)
@@ -391,9 +392,10 @@
                 (if blk-result
                     (let* ((blk-filepath (plist-get blk-result :filepath))
                            (html-filename (file-name-nondirectory (org-file-html-out-file blk-filepath)))
-                           (html-link (format "<a href=\"%s%s\">%s</a>"
+                           (html-link (format "<a href=\"%s%s#%s\">%s</a>"
                                               *html-static-route*
                                               html-filename
+                                              link-path
                                               (or desc link-path))))
                       html-link)
                   (format "%s" (or desc link-path))))
@@ -827,6 +829,8 @@
 
 (defun export-all-org-files-to-html ()
   (interactive)
+  (map-org-dir-elements *notes-dir* ":forexport:" 'headline
+                        (lambda (_) (org-export-heading-html)))
   (export-all-org-files :html-p t))
 
 (defun export-current-buffer (&rest kw)
@@ -1009,14 +1013,14 @@
     (copy-directory "ltx" *static-html-dir* t)))
 
 ;; causes org to hang for some reason
-(defun org-remove-headlines (backend)
+(defun org-remove-forexport-headlines (backend)
   "Remove headlines with :notitle: tag."
   (org-map-entries (lambda () (delete-region (pos-bol) (pos-eol)))
-                   "notitle"))
+                   "forexport"))
 (defun org-export-heading-html ()
   (interactive)
   ;; temoporarily add org-remove-headlines because otherwise it causes some issues
-  (let ((org-export-before-processing-functions (cons 'org-remove-headlines
+  (let ((org-export-before-processing-functions (cons 'org-remove-forexport-headlines
                                                       org-export-before-processing-functions)))
     (my-org-to-html t)))
 

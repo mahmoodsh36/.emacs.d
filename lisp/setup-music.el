@@ -18,6 +18,26 @@
       (call-process "play_dir_as_album.sh" nil 0 nil
                     (join-path *music-dir* chosen-album))
       (message "playing album %s" chosen-album))))
+(defun play-album-1 ()
+  (interactive)
+  (let ((album-titles
+         (apply
+          #'cl-concatenate
+          (list*
+           'list
+           (mapcar
+            (lambda (dir)
+              (mapcar (lambda (album-title)
+                        (concat (file-name-nondirectory dir) "/" album-title))
+                      (directory-files dir)))
+            (cl-remove-if-not
+             #'file-directory-p
+             (directory-files *music-dir* t "^[^.].*$")))))))
+    (let ((chosen-album (completing-read "pick album: " album-titles)))
+      (message (join-path *music-dir* chosen-album))
+      (call-process "mympv.sh" nil 0 nil
+                    (join-path *music-dir* chosen-album))
+      (message "playing album %s" chosen-album))))
 ;; (defun play-album-2 ()
 ;;   (interactive)
 ;;   (let ((album-titles
