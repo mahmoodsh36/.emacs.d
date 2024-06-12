@@ -18,8 +18,7 @@
     (async-shell-command (format "kill -9 %s" picked-pid))))
 
 (defun submit-for-single-cand ()
-  (message "GOT %s" vertico--total)
-  (when (= 1 vertico--total)
+  (when (and (= 1 vertico--total) (equal (vertico--candidate) (car vertico--input)))
     ;; (2) exit if only a single candidate
     (vertico-exit)))
 
@@ -34,9 +33,10 @@
                    (lambda ()
                      ;; (1) adjust completion style to achieve desired matching
                      (add-hook 'post-command-hook 'submit-for-single-cand t t))
-                 (funcall fn (or prompt "Choose a snippet: ")
-                          templates
-                          #'yas--template-key)))
+                 (let ((completion-styles '(basic)))
+                   (funcall fn (or prompt "Choose a snippet: ")
+                            templates
+                            #'yas--template-key))))
              yas-prompt-functions)))
 
 (defun my-yas-insert ()
