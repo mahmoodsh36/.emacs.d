@@ -71,14 +71,16 @@
 \usepackage{expl3}
 
 % times new roman-like font
-\usepackage{newtxtext, newtxmath}
+% \usepackage{newtxtext, newtxmath}
+
+\usepackage{eulervm}
 
 % change the font used for operators, to prevent some errors when a custom font is used. https://tex.stackexchange.com/questions/219417/how-to-change-the-default-font-of-math-operators
-% \DeclareSymbolFont{euleroperators}{U}{eur}{m}{n}
-% \SetSymbolFont{euleroperators}{bold}{U}{eur}{b}{n}
-% \makeatletter
-% \renewcommand{\operator@font}{\mathgroup\symeuleroperators}
-% \makeatother
+\DeclareSymbolFont{euleroperators}{U}{eur}{m}{n}
+\SetSymbolFont{euleroperators}{bold}{U}{eur}{b}{n}
+\makeatletter
+\renewcommand{\operator@font}{\mathgroup\symeuleroperators}
+\makeatother
 
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
