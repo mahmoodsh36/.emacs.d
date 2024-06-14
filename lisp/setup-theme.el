@@ -68,6 +68,8 @@
   (font-lock-add-keywords 'org-mode '(("\\\\\\[.*?\\\\]" 0 font-lock-string-face))) ;; to highlight display math
   (font-lock-add-keywords 'org-mode '(("\\\\(.*?\\\\)" 0 font-lock-string-face))) ;; to highlight inline math
 
+  (font-lock-add-keywords 'org-mode '(("<<<.*?>>>" 0 font-lock-keyword-face)))
+
   (defun my-latex-env-fontlock (bound)
     "depends on blk and auctex, for highlighting latex blocks."
     (let* ((origin-point (point))

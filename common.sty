@@ -70,6 +70,16 @@
 % \usepackage{cleveref}
 \usepackage{expl3}
 
+% times new roman-like font
+\usepackage{newtxtext, newtxmath}
+
+% change the font used for operators, to prevent some errors when a custom font is used. https://tex.stackexchange.com/questions/219417/how-to-change-the-default-font-of-math-operators
+% \DeclareSymbolFont{euleroperators}{U}{eur}{m}{n}
+% \SetSymbolFont{euleroperators}{bold}{U}{eur}{b}{n}
+% \makeatletter
+% \renewcommand{\operator@font}{\mathgroup\symeuleroperators}
+% \makeatother
+
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
   \usepackage{pdftexcmds}
@@ -79,14 +89,14 @@
   \makeatother
 
   % to fix some errors with unicode-math where some symbols cannot be found
-  \renewcommand\DeclareMathOperator\newcommand
-  \renewcommand\operatorname[1]{\,#1\,}
+  % \renewcommand\DeclareMathOperator\newcommand
+  % \renewcommand\operatorname[1]{\,#1\,}
 
   % graphdrawing library is only available to luatex
   \usetikzlibrary{graphdrawing}
   \usegdlibrary{force, trees, layered}
 \fi
-% \newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
+\newcommand\brm[1]{\bm{\mathrm{#1}}} % this doesnt work with unicode-math
 
 % get \varv from the txfonts package
 \DeclareSymbolFont{matha}{OML}{txmi}{m}{it}% txfonts

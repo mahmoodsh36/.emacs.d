@@ -7,22 +7,29 @@
   {\usepackage[margin=0.2in]{geometry}}%
 \makeatother%
 
+% use eulervm font
+% \usepackage{eulervm}
+% these font settings work very well atleast
+% \usepackage{fontspec}
+% \usepackage{txfonts}
+
 \ifLuaTeX
   % to fix some errors with unicode-math where some symbols cannot be found
   % \renewcommand\DeclareMathOperator\newcommand
   % \renewcommand\operatorname[1]{\,#1\,}
 
-  \usepackage[utf8]{inputenc}
-  \usepackage{unicode-math}
-  \newcommand\brm[1]{\symbf{#1}}
+  % \usepackage[utf8]{inputenc}
+  % \usepackage{unicode-math}
+  % \newcommand\brm[1]{\symbf{#1}}
 
   % \setmainfont{Linux Libertine O}
   % \setmainfont{XITS}
   % \setmathfont{XITS Math}
+  % \setmainfont{TeX Gyre Pagella}
 
   % good looking, symbols are more handwritten-like
-  \setmainfont{GFS Neohellenic}
-  \setmathfont{GFS Neohellenic Math}
+  % \setmainfont{GFS Neohellenic}
+  % \setmathfont{GFS Neohellenic Math}
 
   % needed for some of the mathastext fonts below
   % \usepackage[T1]{fontenc}
