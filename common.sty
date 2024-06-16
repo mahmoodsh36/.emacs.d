@@ -70,17 +70,19 @@
 % \usepackage{cleveref}
 \usepackage{expl3}
 
-% times new roman-like font
-% \usepackage{newtxtext, newtxmath}
+% \usepackage{euler}
 
-\usepackage{eulervm}
+% \usepackage[math]{anttor}
+% \usepackage[T1]{fontenc}
+
+\usepackage{txfonts}
 
 % change the font used for operators, to prevent some errors when a custom font is used. https://tex.stackexchange.com/questions/219417/how-to-change-the-default-font-of-math-operators
-\DeclareSymbolFont{euleroperators}{U}{eur}{m}{n}
-\SetSymbolFont{euleroperators}{bold}{U}{eur}{b}{n}
-\makeatletter
-\renewcommand{\operator@font}{\mathgroup\symeuleroperators}
-\makeatother
+% \DeclareSymbolFont{euleroperators}{U}{eur}{m}{n}
+% \SetSymbolFont{euleroperators}{bold}{U}{eur}{b}{n}
+% \makeatletter
+% \renewcommand{\operator@font}{\mathgroup\symeuleroperators}
+% \makeatother
 
 \ifLuaTeX
   % needed fror lualatex to work with svgs  https://tex.stackexchange.com/questions/158571/includesvg-does-not-detect-svg-file/158612#158612
@@ -313,6 +315,7 @@
 % aliases for the 2 commands above
 \newcommand{\compP}{\polylangs}
 \newcommand{\compNP}{\npolylangs}
+\newcommand{\compSTP}{\refdef{STP}} % set of total computable functions
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
