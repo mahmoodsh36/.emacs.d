@@ -70,12 +70,8 @@
 % \usepackage{cleveref}
 \usepackage{expl3}
 
-% \usepackage{euler}
-
-% \usepackage[math]{anttor}
-% \usepackage[T1]{fontenc}
-
-\usepackage{txfonts}
+% these work smoothly, unlike other fonts
+\usepackage{newtxtext,newtxmath}
 
 % change the font used for operators, to prevent some errors when a custom font is used. https://tex.stackexchange.com/questions/219417/how-to-change-the-default-font-of-math-operators
 % \DeclareSymbolFont{euleroperators}{U}{eur}{m}{n}
@@ -236,7 +232,7 @@
 \newcommand{\?}{\stackrel{?}{=}}
 \newcommand{\cmark}{\text{\ding{51}}}
 \newcommand{\xmark}{\text{\ding{55}}}
-\renewcommand\Pr{\operatorname{\mathbb{P}}} % for probability function symbol
+\renewcommand\Pr{\operatorname{\brm{P}}} % for probability function symbol
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
