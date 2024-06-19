@@ -10,9 +10,10 @@
 ;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
 (use-package org-transclusion
   :after (org)
-  :config
-  (add-hook 'org-mode-hook #'org-transclusion-mode)
-  (add-to-list 'org-transclusion-after-add-functions 'org-latex-preview))
+  ;; :config
+  ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
+  ;; (add-to-list 'org-transclusion-after-add-functions 'org-latex-preview)
+  )
 
 (defun blk-find-with-consult ()
   (interactive)

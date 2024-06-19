@@ -599,6 +599,9 @@
   (setq julia-snail-executable "LD_LIBRARY_PATH=/run/opengl-driver/lib/ julia")
   )
 
+;; has a julia repl that uses comint, ~inferior-julia~
+;; (use-package julia-mode)
+
 ;; vertico config
 (use-package vertico
   :config
@@ -979,5 +982,11 @@
 
 ;; library for working with time stamps easily
 (use-package ts)
+
+;; from github readme: isend-mode is an Emacs extension allowing interaction with code interpreters in ansi-term/term or vterm buffers. Some language-specific modes (e.g. python.el) already provide similar features; isend-mode does the same in a language-agnostic way.
+(use-package isend-mode)
+
+;; for popups
+(use-package popper)
 
 (provide 'setup-packages)

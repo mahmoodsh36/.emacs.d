@@ -281,6 +281,13 @@
 ;; elisp
 (led-kbd "c" 'eval-buffer :keymaps 'emacs-lisp-mode-map)
 
+;; julia
+(led-kbd "x" 'julia-snail-send-dwim :keymaps 'julia-mode-map)
+(led-kbd "l x w" 'julia-snail-send-dwim :keymaps 'julia-mode-map)
+(led-kbd "l x l" 'julia-snail-send-line :keymaps 'julia-mode-map)
+(led-kbd "l x r" 'julia-snail-send-region :keymaps 'julia-mode-map)
+(led-kbd "l x b" 'julia-snail-send-buffer-file :keymaps 'julia-mode-map)
+
 ;; other keybinds
 (general-define-key :states 'normal :keymaps 'override "C-S-k" 'kill-whole-line)
 ;; (general-define-key :keymaps 'override "m-ret"

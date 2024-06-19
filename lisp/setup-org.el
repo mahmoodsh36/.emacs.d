@@ -166,7 +166,7 @@
   ;; disable images from being scaled/their dimensions being changed
   ;; (setq org-latex-image-default-width "2.0")
   ;; preserve all line breaks when exporting
-  ;; (setq org-export-preserve-breaks t)
+  (setq org-export-preserve-breaks t)
   ;; indent headings properly
   ;; (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-todo-keywords
@@ -811,7 +811,9 @@
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
   (let ((exceptions))
-    (let ((files-to-export (list-org-files-to-export)))
+    (let ((files-to-export (list-org-files-to-export))
+          ;; i need my transclusions present when exporting
+          (org-mode-hook (cons 'org-transclusion-mode org-mode-hook)))
       (dolist (file files-to-export)
         (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
         (setq exceptions (push file exceptions))))))

@@ -323,7 +323,7 @@
             ))
 
 ;; disable repeat-mode
-(repeat-mode -1)
+;; (repeat-mode -1)
 
 ;; enable flyspell (spell checking)
 (dolist (hook '(text-mode-hook))
