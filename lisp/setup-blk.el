@@ -56,23 +56,34 @@
   (setq blk-enable-groups t)
 
   ;; add the :defines pattern
-  (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
+  ;; (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
+  ;;   (add-to-list pattern-table (list :title "definition"
+  ;;                                    :glob "*.org"
+  ;;                                    :anchor-regex "(:defines)\\s+[^:]+"
+  ;;                                    :title-function 'blk-value-after-space-upto-colon
+  ;;                                    :extract-id-function 'blk-org-id-at-point))
+  ;;   ;; (add-to-list pattern-table (list :title "definition"
+  ;;   ;;                                  :glob "*.org"
+  ;;   ;;                                  :anchor-regex "(:defines)\\s+[^:]+"
+  ;;   ;;                                  :title-function 'blk-value-after-space-upto-colon
+  ;;   ;;                                  :extract-id-function 'blk-org-id-at-point))
+  ;;   )
+  ;; (setq blk-patterns blk-rg-patterns)
+
+  ;; add the :defines pattern
+  (dolist (pattern-table '(blk-emacs-patterns))
     (add-to-list pattern-table (list :title "definition"
                                      :glob "*.org"
-                                     :anchor-regex "(:defines)\\s+[^:]+"
+                                     :anchor-regex "\\(:defines\\)\s+[^:]+"
                                      :title-function 'blk-value-after-space-upto-colon
-                                     :extract-id-function 'blk-org-id-at-point))
-    ;; (add-to-list pattern-table (list :title "definition"
-    ;;                                  :glob "*.org"
-    ;;                                  :anchor-regex "(:defines)\\s+[^:]+"
-    ;;                                  :title-function 'blk-value-after-space-upto-colon
-    ;;                                  :extract-id-function 'blk-org-id-at-point))
-    )
-  (setq blk-patterns blk-rg-patterns)
+                                     :extract-id-function 'blk-org-id-at-point)))
+  (setq blk-patterns blk-emacs-patterns)
+  (setq blk-grepper 'blk-grepper-emacs)
 
   (add-hook 'text-mode-hook #'blk-enable-completion)
   )
 
+;; i dont think this is useful
 (defun my-lob-reload ()
   (interactive)
   (let ((added))

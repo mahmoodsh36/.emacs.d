@@ -84,7 +84,7 @@
 (add-to-list 'savehist-additional-variables 'command-history)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple
-;;(global-visual-line-mode)
+(global-visual-line-mode) ;; has performance consequences
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
@@ -348,7 +348,8 @@
 (add-hook 'find-file-hook #'conditional-disable-modes)
 
 ;; execute some python blocks when a python repl starts
-(add-hook 'inferior-python-mode-hook (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
+(add-hook 'inferior-python-mode-hook
+          (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
 
 ;; transparency
 ;; (set-frame-parameter nil 'alpha-background 90)

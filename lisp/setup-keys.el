@@ -17,7 +17,7 @@
 (led-kbd "d j" 'dired-jump)
 (led-kbd "f s" 'sudo-find-file)
 (led-kbd *leader-key* #'execute-extended-command)
-(led-kbd "b k" 'kill-this-buffer)
+(led-kbd "b k" #'kill-current-buffer)
 ;; if we manually kill the buffer it doesnt save eshell command history
 (led-kbd "b k" (lambda () (interactive) (run-this-in-eshell "exit")) :keymaps 'eshell-mode-map)
 (led-kbd "b k" 'sly-quit-lisp :keymaps 'sly-repl-mode)
