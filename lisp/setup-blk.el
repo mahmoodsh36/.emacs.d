@@ -45,13 +45,6 @@
   ;; allow for recursive grep
   ;; (setq blk-search-recursively t)
 
-  ;; enable cache for more responsivity
-  (setq blk-use-cache t)
-  ;; increase the update interval so we dont get frequent lags (should be fixed in the future)
-  ;; (setq blk-cache-update-interval 20)
-  (setq blk-cache-update-interval 1000000) ;; dont ever update it, i'll update it manually when i need
-  (blk-update-cache)
-
   ;; enable group search (group things together)
   (setq blk-enable-groups t)
 
@@ -74,13 +67,20 @@
   (dolist (pattern-table '(blk-emacs-patterns))
     (add-to-list pattern-table (list :title "definition"
                                      :glob "*.org"
-                                     :anchor-regex "\\(:defines\\)\s+[^:]+"
+                                     :anchor-regex "\\(:defines\\)\s+[^:\n]+"
                                      :title-function 'blk-value-after-space-upto-colon
                                      :extract-id-function 'blk-org-id-at-point)))
   (setq blk-patterns blk-emacs-patterns)
   (setq blk-grepper 'blk-grepper-emacs)
 
   (add-hook 'text-mode-hook #'blk-enable-completion)
+
+  ;; enable cache for more responsivity
+  (setq blk-use-cache t)
+  ;; increase the update interval so we dont get frequent lags (should be fixed in the future)
+  ;; (setq blk-cache-update-interval 20)
+  (setq blk-cache-update-interval 1000000) ;; dont ever update it, i'll update it manually when i need
+  (blk-update-cache)
   )
 
 ;; i dont think this is useful

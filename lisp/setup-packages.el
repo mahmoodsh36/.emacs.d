@@ -990,7 +990,7 @@
 (use-package popper)
 
 ;; for nushell scripts
-(use-package nushell-mode)
+;; (use-package nushell-mode)
 
 ;; (use-package el-easydraw
 ;;   :ensure ( :host github :repo "misohena/el-easydraw"))
