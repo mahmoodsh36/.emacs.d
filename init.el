@@ -49,7 +49,7 @@
   (modify-syntax-entry ?_ "w"))
 ;;(add-hook 'text-mode-hook 'underscore-part-of-word-hook)
 ;; highlight current line, slows down buffer redisplay, causes cpu spikes like linum-relative
-;; (global-hl-line-mode)
+(global-hl-line-mode)
 ;; reload file automatically
 (global-auto-revert-mode t)
 ;; enable all disabled commands
@@ -84,7 +84,7 @@
 (add-to-list 'savehist-additional-variables 'command-history)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple
-(global-visual-line-mode) ;; has performance consequences
+;; (global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp

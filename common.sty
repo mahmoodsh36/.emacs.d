@@ -264,9 +264,9 @@
 \newcommand\data{\mathcal{D}}
 \newcommand{\textfalse}{\textop{false}}
 \newcommand{\texttrue}{\textop{false}}
-\newcommand{\seqconvto}[3]{\lim_{#2 \to \infty} #1 = #3} % convergence of a sequnece to a number, first arg is the sequence name (e.g. a_n), second is the sequence index (e.g. n), third is the value it converges to.
-\newcommand{\seq}[2]{(#1_{#2})} % sequence notation, first arg is sequence name, second is the indexing variable
-\newcommand{\seqelm}[2]{(#1_{#2})} % get a specific element of a sequence by its index, first arg is the sequence, second is the element's index
+\newcommand{\seqconvto}[3]{\refdef[blk:def-seq-conv]{\lim_{#2 \to \infty} #1 = #3}} % convergence of a sequnece to a number, first arg is the sequence name (e.g. a_n), second is the sequence index (e.g. n), third is the value it converges to.
+\newcommand{\seq}[2]{\refdef[blk:def-seq]{(#1_{#2})}} % sequence notation, first arg is sequence name, second is the indexing variable
+\newcommand{\seqelm}[2]{\refdef[blk:def-seq]{(#1_{#2})}} % get a specific element of a sequence by its index, first arg is the sequence, second is the element's index
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
