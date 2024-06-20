@@ -501,7 +501,9 @@
   (add-hook 'mhtml-mode-hook 'emmet-mode)
   (add-hook 'web-mode-hook 'emmet-mode))
 
-(use-package eat)
+(use-package eat
+  :config
+  (setq eat-shell *shell-program*))
 
 ;; relative line numbers, really slows buffer redisplay down, can cause cpu spikes even when simply navigating code buffers
 ;; (use-package linum-relative

@@ -1000,9 +1000,11 @@
            (with-temp-buffer
              (insert-file-contents (from-emacsd "preamble.html"))
              (buffer-string))
-           (format "<h1 class=\"main-title\">%s</h1>%s"
-                   title
-                   (if desc (format "<span class=\"desc\">%s</span>" desc) ""))))
+           (if (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal)))
+               (format "<h1 class=\"main-title\">%s</h1>%s"
+                       title
+                       (if desc (format "<span class=\"desc\">%s</span>" desc) ""))
+             "")))
          (org-html-preamble-format (list (list "en" my-preamble))))
     (message "writing to %s" outfile)
     (when heading
@@ -1014,17 +1016,16 @@
     (copy-file (from-emacsd "main.css") *static-html-dir* t)
     (copy-directory "ltx" *static-html-dir* t)))
 
-;; causes org to hang for some reason
-(defun org-remove-forexport-headlines (backend)
-  "Remove headlines with :notitle: tag."
-  (org-map-entries (lambda () (delete-region (pos-bol) (pos-eol)))
-                   "forexport"))
+;; (defun org-remove-forexport-headlines (backend)
+;;   "Remove headlines with :notitle: tag."
+;;   (org-map-entries (lambda () (delete-region (pos-bol) (pos-eol)))
+;;                    "forexport"))
 (defun org-export-heading-html ()
   (interactive)
   ;; temoporarily add org-remove-headlines because otherwise it causes some issues
-  (let ((org-export-before-processing-functions (cons 'org-remove-forexport-headlines
-                                                      org-export-before-processing-functions)))
-    (my-org-to-html t)))
+  ;; (let ((org-export-before-processing-functions (cons 'org-remove-forexport-headlines
+  ;;                                                     org-export-before-processing-functions)))
+  (my-org-to-html t))
 
 (defun get-block-source (block)
   ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
@@ -1042,5 +1043,35 @@
     (yas-expand-snippet (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
                                 (format-time-string (cdr org-time-stamp-formats)) my-timestamp))
     (evil-insert 0)))
+
+(defun org-set-file-option (option value)
+  "Set or update a file-level OPTION to VALUE after the :PROPERTIES: drawer if it exists, otherwise at the top of the file."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((case-fold-search t)) ;; ensure case-insensitive search
+      ;; check for the :PROPERTIES: drawer
+      (if (re-search-forward "^:PROPERTIES:" nil t)
+          (progn
+            (re-search-forward "^:END:" nil t)
+            (forward-line)
+            ;; insert the option after the :PROPERTIES: drawer
+            (if (re-search-forward (concat "^#\\+" option ":") nil t)
+                (progn
+                  (beginning-of-line)
+                  (kill-line)
+                  (insert (concat "#+" option ": " value)))
+              (insert (concat "#+" option ": " value "\n"))))
+        ;; if no :PROPERTIES: drawer, insert at the beginning
+        (goto-char (point-min))
+        (if (re-search-forward (concat "^#\\+" option ":") nil t)
+            (progn
+              (beginning-of-line)
+              (kill-line)
+              (insert (concat "#+" option ": " value)))
+          ;; insert at the top after initial comments or blank lines
+          (goto-char (point-min))
+          (while (or (looking-at "^#") (looking-at "^$"))
+            (forward-line))
+          (insert (concat "#+" option ": " value "\n")))))))
 
 (provide 'setup-org)

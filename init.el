@@ -140,6 +140,8 @@
 ;;   (setq-local comint-process-echoes t))
 ;; (add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
 
+(setq shell-file-name *shell-program*)
+
 ;; "smooth" scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don"t accelerate scrolling

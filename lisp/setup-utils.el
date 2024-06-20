@@ -265,7 +265,7 @@ this function doesnt create the buffer itself, it merely generates the proper na
 (defun term-create-name-incremented ()
   "start a terminal and rename buffer."
   (interactive)
-  (term "zsh")
+  (term *shell-program*)
   (let ((buffer-name (buffer-name-incremented "myterm")))
     (rename-buffer buffer-name t)
     buffer-name))

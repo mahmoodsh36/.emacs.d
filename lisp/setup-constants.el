@@ -21,6 +21,8 @@
 ;;(defconst *leader-key* "<escape>")
 (defconst *leader-key* "<SPC>")
 
+(defconst *shell-program* "zsh")
+
 ;; if i need more recursion depth
 ;; (setq max-lisp-eval-depth 10000)
 
