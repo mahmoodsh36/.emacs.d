@@ -166,7 +166,7 @@
   ;; disable images from being scaled/their dimensions being changed
   ;; (setq org-latex-image-default-width "2.0")
   ;; preserve all line breaks when exporting
-  (setq org-export-preserve-breaks t)
+  ;; (setq org-export-preserve-breaks t)
   ;; indent headings properly
   ;; (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-todo-keywords
@@ -1000,12 +1000,15 @@
            (with-temp-buffer
              (insert-file-contents (from-emacsd "preamble.html"))
              (buffer-string))
-           (if (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal)))
+           (if (or (not heading)
+                   (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal))))
                (format "<h1 class=\"main-title\">%s</h1>%s"
                        title
                        (if desc (format "<span class=\"desc\">%s</span>" desc) ""))
              "")))
          (org-html-preamble-format (list (list "en" my-preamble))))
+    (when heading
+      (message "got %s %s" (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal))) title))
     (message "writing to %s" outfile)
     (when heading
       (org-narrow-to-subtree))
@@ -1016,16 +1019,19 @@
     (copy-file (from-emacsd "main.css") *static-html-dir* t)
     (copy-directory "ltx" *static-html-dir* t)))
 
-;; (defun org-remove-forexport-headlines (backend)
-;;   "Remove headlines with :notitle: tag."
-;;   (org-map-entries (lambda () (delete-region (pos-bol) (pos-eol)))
-;;                    "forexport"))
+(defun org-remove-forexport-headlines (backend)
+  "Remove headlines with :forexport: tag."
+  (org-map-entries (lambda () (delete-region (pos-bol) (pos-eol)))
+                   "forexport"))
 (defun org-export-heading-html ()
   (interactive)
-  ;; temoporarily add org-remove-headlines because otherwise it causes some issues
-  ;; (let ((org-export-before-processing-functions (cons 'org-remove-forexport-headlines
-  ;;                                                     org-export-before-processing-functions)))
-  (my-org-to-html t))
+  ;; temoporarily add org-remove-headlines because otherwise it causes some issues.
+  ;; notice that we have to remove the headline otherwise we'd get two titles since
+  ;; the exporting function inserts the contents of the headline as a title,
+  ;; although the way we're doing it is somewhat hacky..
+  (let ((org-export-before-processing-functions (cons 'org-remove-forexport-headlines
+                                                      org-export-before-processing-functions)))
+    (my-org-to-html t)))
 
 (defun get-block-source (block)
   ;; the use of `format` is because org-babel parses [this link] as a vector because it sees

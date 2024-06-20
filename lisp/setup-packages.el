@@ -877,7 +877,9 @@
 ;; (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
 ;; (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff)))
 
+;; the overlays it places are all over the place..
 (use-package litable
+  :config
   (add-hook 'emacs-lisp-mode-hook #'litable-mode))
 
 ;; allows for defining expressions based on regexp, unlike the builtin prettify-symbols-mode
