@@ -123,16 +123,16 @@
 (use-package cape
   :init
   ;; somehow the value isnt really set but the completions work according to this list lol
-  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
-  ;; (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
+  (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   ;; (add-to-list 'completion-at-point-functions #'cape-history) ;; too intrusive
   (add-to-list 'completion-at-point-functions #'cape-sgml)
   (add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
   ;; (add-to-list 'completion-at-point-functions #'cape-dict)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
   )
@@ -262,6 +262,25 @@
    '(("tm" "`(current-time-string)`" "current Time")
      ))
   )
+
+;; auto expand snippets, https://github.com/joaotavora/yasnippet/issues/998
+(setq my-yas-auto-expand nil)
+(defun toggle-yas-auto-expand ()
+  (interactive)
+  (setq my-yas-auto-expand (not my-yas-auto-expand))
+  (if my-yas-auto-expand
+      (add-to-list 'yas-key-syntaxes 'yas-longest-key-from-whitespace)
+    (setq yas-key-syntaxes (cl-delete 'yas-longest-key-from-whitespace yas-key-syntaxes :test 'equal)))
+  (message "my-yas-auto-expand set to %s" my-yas-auto-expand))
+(defun my-yas-try-expanding-auto-snippets ()
+  (when (and (boundp 'yas-minor-mode)
+             yas-minor-mode
+             my-yas-auto-expand
+             (cl-member this-command '(self-insert-command org-self-insert-command)))
+    ;; (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+    (yas-expand)))
+(add-hook 'post-command-hook #'my-yas-try-expanding-auto-snippets)
+
 
 ;; highlight errors in code
 (use-package flycheck
@@ -998,5 +1017,15 @@
 
 ;; (use-package el-easydraw
 ;;   :ensure ( :host github :repo "misohena/el-easydraw"))
+
+;; (use-package fancy-dabbrev
+;;   :config
+;;   (global-fancy-dabbrev-mode)
+;;   (setq dabbrev-case-distinction nil)
+;;   (setq dabbrev-case-fold-search t)
+;;   (setq dabbrev-case-replace nil))
+
+;; rg.el
+(use-package rg)
 
 (provide 'setup-packages)

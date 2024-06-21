@@ -405,7 +405,7 @@
                    (ext (file-name-extension filename)))
               (message "copying linked static file %s" filename)
               (copy-file link-path (join-path *static-html-dir* filename) t)
-              (if (cl-member ext (list "png" "jpg" "webp" "svg") :test #'equal)
+              (if (cl-member ext (list "png" "jpg" "jpeg" "webp" "svg" "gif") :test #'equal)
                   (format "<img src=\"%s%s\" />"
                           *html-static-route*
                           filename)

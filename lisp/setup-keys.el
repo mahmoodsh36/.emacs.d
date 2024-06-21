@@ -441,14 +441,16 @@
 ;; crashes
 (defun run-from-zsh-history ()
   (interactive)
-  (let ((cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
+  (let* ((vertico-sort-function nil)
+         (cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
     (when cmd
       ;; (start-process-shell-command "shell" nil (format "terminal_with_cmd.sh \"%s; exec zsh -i\"" (shell-quote-argument cmd))))))
       (start-process-shell-command "shell" nil (format "terminal_with_cmd.sh \"%s; exec zsh -i\"" cmd)))))
 
 (defun run-from-zsh-history-with-emacs-term ()
   (interactive)
-  (let ((cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
+  (let* ((vertico-sort-function nil)
+         (cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
     (when cmd
       (new-shell-with-cmd cmd)
       ;; (start-process-shell-command "shell" nil cmd)
@@ -478,6 +480,7 @@
 ;; keys for yasnippet
 (general-define-key :states '(insert normal) :keymaps 'override "C-SPC" #'my-yas-insert)
 (general-define-key :states '(insert normal) :keymaps 'override "M-SPC" #'yas-next-field)
+(general-define-key :states '(insert normal) :keymaps 'override "S-SPC" #'toggle-yas-auto-expand)
 
 ;; annoyingly some modes dont handle it newline indentation properly..
 ;; (general-define-key :states 'normal :keymaps 'prog-mode-hook "o" 'my-insert-newline-same-indentation)
