@@ -126,7 +126,7 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
-  (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
+  ;; (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   ;; (add-to-list 'completion-at-point-functions #'cape-history) ;; too intrusive
@@ -762,19 +762,19 @@
 ;;   (unbind-key "M-<return>" hyperbole-mode-map)
 ;;   (unbind-key "M-RET" hyperbole-mode-map))
 
-(use-package denote
-  :ensure ( :fetcher github :repo "protesilaos/denote")  ;; :ref "55dcf23"
-  :config
-  (setq denote-directory *notes-dir*
-        denote-date-prompt-use-org-read-date t
-        denote-file-type 'org)
-  (add-hook 'dired-mode-hook #'denote-dired-mode)
-  (add-to-list 'denote-file-types
-               '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
-  )
+;; (use-package denote
+;;   :ensure ( :fetcher github :repo "protesilaos/denote")  ;; :ref "55dcf23"
+;;   :config
+;;   (setq denote-directory *notes-dir*
+;;         denote-date-prompt-use-org-read-date t
+;;         denote-file-type 'org)
+;;   (add-hook 'dired-mode-hook #'denote-dired-mode)
+;;   (add-to-list 'denote-file-types
+;;                '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
+;;   )
 
-(use-package denote-menu
-  :ensure (denote-menu :fetcher github :repo "namilus/denote-menu"))
+;; (use-package denote-menu
+;;   :ensure (denote-menu :fetcher github :repo "namilus/denote-menu"))
 ;; (use-package consult-notes)
 ;; (use-package citar-denote)
 ;; (use-package consult-explore)

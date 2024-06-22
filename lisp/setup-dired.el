@@ -76,7 +76,7 @@ Version 2015-07-30"
 
 ;; hide unnecessary stuff
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-(setq dired-hide-details-preserved-columns '(5 6 7)) ;; dont hide some columns (date and size)
+(setq dired-hide-details-preserved-columns '(5 6 7 8)) ;; dont hide some columns (date and size)
 (setq dired-listing-switches "-Al") ;; default is ls -al
 (setq dired-dwim-target t) ;; moving files in a smart way when window is split into 2
 

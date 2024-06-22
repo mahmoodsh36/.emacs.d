@@ -62,10 +62,8 @@
 ;;               (and my-roam-node
 ;;                    (not (equal (org-roam-node-title my-roam-node) "")))))))
 ;; (led-kbd "r n" (lambda () (interactive) (org-roam-capture nil "n")))
-;; (led-kbd "r i" 'denote-insert-link)
 ;; (led-kbd "r i" #'my-notes-insert-link-by-title)
 (led-kbd "r i" #'blk-insert)
-(led-kbd "r m" #'denote-rename-file)
 ;; (led-kbd "r c" 'org-id-get-create)
 (led-kbd "r o" #'blk-open-at-point)
 (led-kbd "r a" #'org-attach :keymaps 'org-mode-map)
@@ -398,14 +396,7 @@
 (led-kbd "s y" #'avy-goto-char)
 (led-kbd "s x" #'save-buffers-kill-terminal)
 
-;; denote
-(setq denote-templates
-      '((note . "#+title: ")
-        (memo . "* Some heading")))
-;; (led-kbd "r n" #'denote-create-note)
 (led-kbd "r n" #'new-note-file)
-(led-kbd "r N" #'denote-type)
-;; (led-kbd "r f" #'denote-open-or-create)
 ;; (led-kbd "r f" #'my-notes-open-by-title)
 ;; (led-kbd "r f" #'my-notes-open-all)
 ;; (led-kbd "r f" #'my-notes-open)

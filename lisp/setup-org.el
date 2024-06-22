@@ -687,13 +687,10 @@
 ;;   (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
 ;;   (lsp))
 
+(defun org-files-with-tag (tag)
+  (grep-org-dir-get-files *notes-dir* (format "#\\+filetags:.*%s.*" tag)))
 (defun my-org-agenda-files ()
-  (denote-files-with-keyword "todo"))
-(defun denote-files-with-keyword (keyword)
-  (cl-remove-if-not
-   (lambda (filepath)
-     (member keyword (denote-extract-keywords-from-path filepath)))
-   (denote-directory-files)))
+  (org-files-with-tag "todo"))
 
 ;; https://github.com/alphapapa/org-ql/blob/master/examples.org
 ;; https://github.com/alphapapa/org-super-agenda
@@ -722,18 +719,6 @@
 
 (setq org-capture-templates (list))
 (with-eval-after-load 'org
-  (add-to-list 'org-capture-templates
-               '("n"
-                 "new note with prompts (with denote.el)"
-                 plain
-                 (file denote-last-path)
-                 (function
-                  (lambda ()
-                    (denote-org-capture-with-prompts :title :keywords)))
-                 :no-save t
-                 :immediate-finish nil
-                 :kill-buffer t
-                 :jump-to-captured t))
   (add-to-list 'org-capture-templates
                '("t"
                  "todo"
@@ -854,12 +839,7 @@
      file
      (org-collect-keywords '("export_section"))))))
 (defun org-file-grab-date (orgfile)
-  (with-file-as-current-buffer
-   orgfile
-   (let ((date (org-get-keyword "date")))
-     (if date
-         (denote-parse-date date)
-       (current-time)))))
+  (timestamp-to-time (string-to-number (file-name-nondirectory orgfile))))
 (defun org-file-grab-keyword (orgfile kw)
   (with-file-as-current-buffer
    orgfile
@@ -889,6 +869,12 @@
   (blk-grep blk-grepper
             (list (list :anchor-regex regex :src-id-function 'identity :glob "*.org"))
             (list dir)))
+(defun grep-org-dir-get-files (dir regex)
+  (mapcar (lambda (entry) (plist-get entry :filepath))
+          (grep-org-dir dir regex)))
+
+(defun list-note-files ()
+  (directory-files *notes-dir* t ".*\\.org"))
 
 (defun my-org-ql-agenda ()
   (interactive)
@@ -1042,15 +1028,24 @@
 (defun current-unix-timestamp ()
   (time-to-seconds (current-time)))
 
+(defun my-time-format (mydate)
+  (format-time-string (cdr org-time-stamp-formats) mydate))
+
+(defun timestamp-to-time (timestamp)
+  (seconds-to-time (truncate timestamp)))
+
+(defun date-to-timestamp (mydate)
+  (time-to-seconds mydate))
+
 (defun new-note-file ()
   (interactive)
   (let ((my-timestamp (current-unix-timestamp)))
     (find-file (from-notes (format "%s.org" my-timestamp)))
     (yas-expand-snippet (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
-                                (format-time-string (cdr org-time-stamp-formats)) my-timestamp))
+                                (my-time-format (timestamp-to-time my-timestamp)) my-timestamp))
     (evil-insert 0)))
 
-(defun org-set-file-option (option value)
+(defun org-set-keyword (option value)
   "Set or update a file-level OPTION to VALUE after the :PROPERTIES: drawer if it exists, otherwise at the top of the file."
   (save-excursion
     (goto-char (point-min))
