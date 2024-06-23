@@ -138,7 +138,7 @@
 (led-kbd "m f"
          (lambda ()
            (interactive)
-           (find-file "/home/mahmooz/brain/notes/20231010T211129--music-table__music.org")))
+           (find-file (plist-get (car (blk-find-by-id "tbl-albums")) :filepath))))
 ;; open artist's last.fm page
 (led-kbd "m l" #'open-lastfm-page)
 

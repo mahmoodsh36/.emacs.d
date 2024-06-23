@@ -303,10 +303,11 @@
 ;; modern API for working with files/dirs
 (use-package f)
 
-;; display available keybindings
+;; display available keybindings, i think its builtin now
 (use-package which-key
   :config
-  (which-key-mode 1))
+  (which-key-mode 1)
+  (setq which-key-allow-evil-operators t))
 
 ;; small flash when evaluating a sexp
 ;; (use-package eval-sexp-fu)
