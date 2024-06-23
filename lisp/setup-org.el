@@ -12,7 +12,8 @@
   (not (is-android-system))
   "whether latex previews for org mode are enabled for the current session")
 
-(defvar org-export-restrict t)
+;; whether to export an org mode file
+(setq should-export-org-file-function #'should-export-org-file)
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
@@ -387,7 +388,7 @@
                               ("denote" (denote-get-path-by-id link-path))
                               (_ nil))))
       (if denote-filepath ;; if indeed a blk/denote link
-          (if (should-export-org-file denote-filepath)
+          (if (funcall should-export-org-file-function denote-filepath)
               (let ((blk-result (car (blk-find-by-id link-path))))
                 (if blk-result
                     (let* ((blk-filepath (plist-get blk-result :filepath))
@@ -784,17 +785,17 @@
         (push node exceptions)
         (let ((nodes (files-linked-from-org-file node)))
           (dolist (other-node nodes)
-            (when (should-export-org-file other-node) ;; to avoid jumping to nodes that arent for exporting anyway
+            (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
               (when other-node (message (format "exporter jumping to: %s" other-node)))
               (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw))))))
-        (when (and node (should-export-org-file node))
+        (when (and node (funcall should-export-org-file-function node))
           (message (format "exporting: %s" node))
           (apply #'export-org-file node kw))
         exceptions)
     exceptions))
 
 (defun export-all-org-files (&rest kw)
-  "export all org mode files using `export-org-file', use `should-export-org-file' to check whether a file should be exported"
+  "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
   (let ((exceptions))
     (let ((files-to-export (list-org-files-to-export))
           ;; i need my transclusions present when exporting
@@ -804,21 +805,22 @@
         (setq exceptions (push file exceptions))))))
 
 (defun list-org-files-to-export ()
-  (if org-export-restrict
-      (let* ((grep-results (grep-org-dir *notes-dir* "#\\+export_section"))
-             (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
-        files-to-export)
-    (directory-files *notes-dir* t ".*\\.org")))
+  ;; (let* ((grep-results (grep-org-dir *notes-dir* "#\\+export_section"))
+  ;;        (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
+  ;;   files-to-export)
+  (list-note-files))
 
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
-  (export-all-org-files :html-p t :pdf-p t))
+  (let ((should-export-org-file-function #'should-export-org-file))
+    (export-all-org-files :html-p t :pdf-p t)))
 
 (defun export-all-org-files-to-html ()
   (interactive)
   (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                         (lambda (_) (org-export-heading-html)))
-  (export-all-org-files :html-p t))
+  (let ((should-export-org-file-function #'should-export-org-file))
+    (export-all-org-files :html-p t)))
 
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
@@ -828,9 +830,7 @@
 (defun org-get-keyword (kw)
   (cadar (org-collect-keywords (list kw))))
 (defun should-export-org-file (file)
-  (if org-export-restrict
-      (org-export-dir-name file)
-    t))
+  (org-export-dir-name file)) ;; why am i returning dir name?
 (defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
   (car
@@ -874,7 +874,8 @@
           (grep-org-dir dir regex)))
 
 (defun list-note-files ()
-  (directory-files *notes-dir* t ".*\\.org"))
+  (append (directory-files *notes-dir* t ".*\\.org")
+          (directory-files (from-brain "daily") t ".*\\.org")))
 
 (defun my-org-ql-agenda ()
   (interactive)
@@ -1034,7 +1035,7 @@
 (defun timestamp-to-time (timestamp)
   (seconds-to-time (truncate timestamp)))
 
-(defun date-to-timestamp (mydate)
+(defun time-to-timestamp (mydate)
   (time-to-seconds mydate))
 
 (defun new-note-file ()

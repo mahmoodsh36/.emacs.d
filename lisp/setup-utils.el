@@ -421,4 +421,7 @@ prompt the user for a coding system."
   (interactive "aFunction symbol: ")
   (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
 
+(defun file-for-blk-id (blk-id)
+  (plist-get (car (blk-find-by-id blk-id)) :filepath))
+
 (provide 'setup-utils)
