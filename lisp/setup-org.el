@@ -167,7 +167,7 @@
   ;; disable images from being scaled/their dimensions being changed
   ;; (setq org-latex-image-default-width "2.0")
   ;; preserve all line breaks when exporting
-  ;; (setq org-export-preserve-breaks t)
+  (setq org-export-preserve-breaks t)
   ;; indent headings properly
   ;; (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-todo-keywords
@@ -783,14 +783,14 @@
   (if (and node (not (cl-find node exceptions :test #'string=)))
       (progn
         (push node exceptions)
-        (let ((nodes (files-linked-from-org-file node)))
-          (dolist (other-node nodes)
-            (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
-              (when other-node (message (format "exporter jumping to: %s" other-node)))
-              (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw))))))
         (when (and node (funcall should-export-org-file-function node))
           (message (format "exporting: %s" node))
-          (apply #'export-org-file node kw))
+          (apply #'export-org-file node kw)
+          (let ((nodes (files-linked-from-org-file node)))
+            (dolist (other-node nodes)
+              (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
+                (when other-node (message (format "exporter jumping to: %s" other-node)))
+                (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw)))))))
         exceptions)
     exceptions))
 
@@ -805,9 +805,6 @@
         (setq exceptions (push file exceptions))))))
 
 (defun list-org-files-to-export ()
-  ;; (let* ((grep-results (grep-org-dir *notes-dir* "#\\+export_section"))
-  ;;        (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
-  ;;   files-to-export)
   (list-note-files))
 
 (defun export-all-org-files-to-html-and-pdf ()
@@ -838,12 +835,30 @@
     (with-file-as-current-buffer
      file
      (org-collect-keywords '("export_section"))))))
-(defun org-file-grab-date (orgfile)
+(defun org-file-grab-time (orgfile)
   (timestamp-to-time (string-to-number (file-name-nondirectory orgfile))))
 (defun org-file-grab-keyword (orgfile kw)
   (with-file-as-current-buffer
    orgfile
    (org-get-keyword kw)))
+
+;; list files to be exported for a specific section, defined by their #+export_section
+;; (defun list-export-candidates (section)
+;;   (cl-remove-if-not
+;;    (lambda (file)
+;;      (equal (org-file-grab-keyword file "export_section") section))
+;;    (list-org-files-to-export)))
+(defun list-section-export-candidates (section)
+  (let* ((grep-results (grep-org-dir *notes-dir* (format "#\\+export_section: %s" section)))
+         (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
+    files-to-export))
+
+(defun sort-org-files-by-time (candidate-files)
+  (cl-sort
+   candidate-files
+   (lambda (file1 file2)
+     (not (time-less-p (org-file-grab-time file1)
+                       (org-file-grab-time file2))))))
 
 (defun map-org-dir-elements (dir regex elm-type fn)
   "look for lines containing `regex' that contain an org element of type `elm-type', run `fn' at the point where the element is"
