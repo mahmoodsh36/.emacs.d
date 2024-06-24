@@ -22,6 +22,7 @@ html, body {
     margin: auto;
     width: fit-content;
     display: block;
+    text-align: center;
 }
 
 .navbar {
@@ -31,6 +32,7 @@ html, body {
     justify-content: space-evenly;
     font-size: 19px;
     padding: 10px;
+    align-items: center;
 }
 
 
@@ -116,14 +118,8 @@ a {
 }
 
 #darkModeToggle {
-    position: sticky;
-    font-size: 2rem;
-    cursor: pointer;
-    top: 1px;
-    height: 0px;
-    text-align: right;
-    margin-right: 30px;
-    z-index: 1;
+  font-size: 25px;
+  cursor: pointer;
 }
 
 :root.dark .org-latex {
