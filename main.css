@@ -3,7 +3,7 @@
   color-scheme: light dark;
   --primary-color: light-dark(#333, #888);
   --primary-background: light-dark(#fff8e8, #121212);
-  --secondary-background: light-dark(#999888, #323232);
+  --secondary-background: light-dark(#d1d9d9, #222223);
 }
 
 html, body {
@@ -124,4 +124,8 @@ a {
     text-align: right;
     margin-right: 30px;
     z-index: 1;
+}
+
+:root.dark .org-latex {
+  filter: invert(70%) sepia(10%) saturate(300%) hue-rotate(86deg) brightness(118%) contrast(119%);
 }
