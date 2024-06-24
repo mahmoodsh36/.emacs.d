@@ -15,7 +15,7 @@ function ensureScheme(desiredScheme) {
   }
 
   document.documentElement.style.setProperty("color-scheme", desiredScheme);
-  document.documentElement.className = desiredScheme; // for :root.dark to worth
+  document.documentElement.className = desiredScheme; // for :root.dark to work
 
   currentTheme = desiredScheme;
 }
