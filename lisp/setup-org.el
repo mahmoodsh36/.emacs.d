@@ -378,7 +378,6 @@
   (add-to-list 'org-export-before-processing-functions 'my-export-newlines)
 
   ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
-
   (defun my-org-link-advice (fn link desc info)
     "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'. also we need to handle links to static files, copy those over to the html dir and link to them properly."
     (let* ((link-path (org-element-property :path link))
@@ -530,21 +529,16 @@
   (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
   ;; temporary workaround for captions breaking latex export
-  (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
+  ;; (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
   )
 
-;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's
+;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
 (defun ox-latex-disable-svg-handling ()
   (interactive)
   (setf (org-export-backend-feature-implementations (org-export-get-backend 'latex))
         (cl-remove-if (lambda (entry)
                         (equal (car entry) 'svg))
                       (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
-
-;; run some python code from my org notes on shell startup
-;; (add-hook 'python-shell-first-prompt-hook (lambda () (execute-files "python-code")))
-;; i need those in library of babel on startup too
-;; (lob-reload)
 
 (defun org-babel-fold-all-latex-src-blocks ()
   "toggle visibility of org-babel latex src blocks"
@@ -1091,5 +1085,9 @@
           (while (or (looking-at "^#") (looking-at "^$"))
             (forward-line))
           (insert (concat "#+" option ": " value "\n")))))))
+
+;; execute some python blocks when a python repl starts
+(add-hook 'inferior-python-mode-hook
+          (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
 
 (provide 'setup-org)

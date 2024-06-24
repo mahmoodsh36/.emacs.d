@@ -353,10 +353,6 @@
       )))
 (add-hook 'find-file-hook #'conditional-disable-modes)
 
-;; execute some python blocks when a python repl starts
-(add-hook 'inferior-python-mode-hook
-          (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
-
 ;; transparency
 ;; (set-frame-parameter nil 'alpha-background 90)
 ;; (add-to-list 'default-frame-alist '(alpha-background . 90))
