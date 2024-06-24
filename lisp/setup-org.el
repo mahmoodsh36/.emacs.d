@@ -1019,6 +1019,7 @@
     (when heading
       (widen))
     (copy-file (from-emacsd "main.css") *static-html-dir* t)
+    (copy-file (from-emacsd "darkmode.js") *static-html-dir* t)
     (copy-directory "ltx" *static-html-dir* t)))
 
 (defun org-remove-forexport-headlines (backend)
