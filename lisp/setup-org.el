@@ -268,8 +268,6 @@
   (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")) ;; use my ~/.emacs.d/common.sty
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
-  ;; not sure why org-mode 9.7-pre dev branch doesnt respect global visual line mode so imma add this for now
-  (add-hook 'org-mode-hook 'visual-line-mode)
   ;; dont export headlines with tags
   (setq org-export-with-tags nil)
   ;; allow characters as list modifiers in org mode
@@ -469,36 +467,29 @@
       (let ((block-type (org-element-property :type element))
             (block-title (my-block-title element))
             (citation (get-block-source element)))
-        (if (cl-member block-type my-math-blocks :test #'equal)
-            (list :class "math-block"
-                  :data-before (concat (pcase block-type
-                                         ("my_example" "example")
-                                         ("my_comment" "comment")
-                                         (_ block-type))
-                                       (if (string-empty-p block-title)
-                                           ""
-                                         (concat ": " block-title)))
-                  ;; the 'latex backend shouldnt matter.. it returns a string with no fancy stuff
-                  ;; so its usable for both html and latex
-                  ;; the \n is added because of a bug in org,
-                  ;; the following line errors out:
-                  ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]" 'latex t)
-                  ;; the following doesnt error out:
-                  ;; (org-export-string-as "[cite:@sipser_comp_2012 definition 1.5]\n" 'latex t)
-                  ;; so the newline is there for now
-                  :data-after citation)
-          (funcall fn attribute element property)))))
+        (if (or (not (equal (org-element-type element) 'special-block))
+                (cl-member block-type special-blocks-not-for-handling :test #'equal))
+            (funcall fn attribute element property)
+          (list :class (format "math-block %s" block-type)
+                :data-before (concat (pcase block-type
+                                       ("my_example" "example")
+                                       ("my_comment" "comment")
+                                       (_ block-type))
+                                     (if (string-empty-p block-title)
+                                         ""
+                                       (concat ": " block-title)))
+                :data-after citation)))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
   ;; handle some custom blocks i've defined
   (defun my-org-latex-special-block-advice (fn special-block contents info)
-    (let ((type (org-element-property :type special-block)))
-      (if (member type my-math-blocks)
+    (let ((block-type (org-element-property :type special-block)))
+      (if (member block-type special-blocks-not-for-handling)
           (progn
-            (setq type (pcase type
-                         ("my_example" "example")
-                         ("my_comment" "comment")
-                         (_ type)))
+            (setq block-type (pcase block-type
+                               ("my_example" "example")
+                               ("my_comment" "comment")
+                               (_ block-type)))
             (let ((title (my-block-title special-block))
                   (dependency (org-block-property :on special-block))
                   (citation (get-block-source special-block))
@@ -509,10 +500,11 @@
                   (progn
                     (when (not (string-search "[" dependency)) ;; if its a link without the brackets
                       (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
+
                     (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
                 (when (org-block-property :on-prev special-block)
                   (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
-              (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+              (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
                               (if (string-empty-p citation) "" (format "[%s]" citation)))
                       contents
                       (format "\\end{myenv}"))))
@@ -895,24 +887,26 @@
               (mapcar 'car (org-babel-parse-header-arguments
                             (org-element-property :parameters block))))))
 
-(defconst my-math-blocks
-  (list "definition"
-        "theorem"
-        "problem"
-        "subproblem"
-        "proposition"
-        "notation"
-        "solution"
-        "corollary"
-        "task"
-        "thought"
-        "my_example"
-        "my_comment"
-        "question"
-        "lemma"
-        "note"
-        "result"
-        "claim"))
+;; (defconst my-math-blocks
+;;   (list "definition"
+;;         "theorem"
+;;         "problem"
+;;         "subproblem"
+;;         "proposition"
+;;         "notation"
+;;         "solution"
+;;         "corollary"
+;;         "task"
+;;         "thought"
+;;         "my_example"
+;;         "my_comment"
+;;         "question"
+;;         "lemma"
+;;         "note"
+;;         "result"
+;;         "claim"))
+(defconst special-blocks-not-for-handling
+  (list "dummy"))
 
 (defun my-block-title (block)
   (or (org-block-property :defines block)
@@ -1004,14 +998,16 @@
   ;; notice that we have to remove the headline otherwise we'd get two titles since
   ;; the exporting function inserts the contents of the headline as a title,
   ;; although the way we're doing it is somewhat hacky..
-  (let ((org-export-before-processing-functions (cons 'org-remove-forexport-headlines
-                                                      org-export-before-processing-functions)))
+  (let ((org-export-before-processing-functions
+         (cons 'org-remove-forexport-headlines
+               org-export-before-processing-functions)))
     (my-org-to-html t)))
 
 (defun get-block-source (block)
   ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
   ;; it that way because of the brackets around it
   (let ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
+    ;; the newline is there (maybe temporarily) that prevents an error that happens otherwise
     (org-export-string-as (concat original-citation-str "\n") 'latex t)))
 
 (defun current-unix-timestamp ()
@@ -1030,8 +1026,9 @@
   (interactive)
   (let ((my-timestamp (current-unix-timestamp)))
     (find-file (from-notes (format "%s.org" my-timestamp)))
-    (yas-expand-snippet (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
-                                (my-time-format (timestamp-to-time my-timestamp)) my-timestamp))
+    (yas-expand-snippet
+     (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
+             (my-time-format (timestamp-to-time my-timestamp)) my-timestamp))
     (evil-insert 0)))
 
 (defun org-set-keyword (option value)

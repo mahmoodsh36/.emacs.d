@@ -95,11 +95,14 @@
   (font-lock-add-keywords 'org-mode (list (list 'my-latex-env-fontlock 0 'font-lock-string-face)))
   )
 
+(defvar my-current-theme nil)
+(add-to-list 'savehist-additional-variables 'my-current-theme)
 (defun switch-to-theme (theme)
   "remove current theme, switch to another"
   (when (car custom-enabled-themes)
     (disable-theme (car custom-enabled-themes)))
   (load-theme theme t)
+  (setq my-current-theme theme)
   (clear-face 'org-block)
   (clear-face 'org-block-begin-line)
   (clear-face 'org-block-end-line)

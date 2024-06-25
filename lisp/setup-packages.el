@@ -589,9 +589,9 @@
 
 ;; some packages that i use are to replicate evil functionality
 ;; ;; highlight text inside common delimiters
-(use-package expand-region
-  :config
-  (global-set-key (kbd "C-;") 'er/expand-region))
+;; (use-package expand-region
+;;   :config
+;;   (global-set-key (kbd "C-;") 'er/expand-region))
 
 ;; center buffer
 (use-package olivetti)
@@ -601,12 +601,12 @@
   :ensure (prism :fetcher github :repo "alphapapa/prism.el"))
 
 ;; its great but it uses alot of cpu especially when the gif has a fast timer
-(use-package org-inline-anim
-  :config
-  (add-hook 'org-mode-hook #'org-inline-anim-mode)
-  ;; (add-hook 'org-mode-hook #'org-inline-anim-animate-all)
-  (setq org-inline-anim-loop t)
-  (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
+;; (use-package org-inline-anim
+;;   :config
+;;   (add-hook 'org-mode-hook #'org-inline-anim-mode)
+;;   ;; (add-hook 'org-mode-hook #'org-inline-anim-animate-all)
+;;   (setq org-inline-anim-loop t)
+;;   (add-hook 'org-babel-after-execute-hook 'org-inline-anim-animate))
 
 (use-package julia-snail
   :ensure ( :fetcher github

@@ -86,9 +86,12 @@
 (add-to-list 'savehist-additional-variables 'regexp-search-ring)
 (add-to-list 'savehist-additional-variables 'kill-ring)
 (add-to-list 'savehist-additional-variables 'command-history)
+(add-to-list 'savehist-additional-variables 'compile-command)
+(add-to-list 'savehist-additional-variables 'compile-history)
+(setq savehist-save-minibuffer-history t)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple
-;; (global-visual-line-mode)
+(global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
@@ -134,6 +137,7 @@
 (setq large-file-warning-threshold nil)
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
+(which-key-mode)
 
 ;; for M-x term
 ;; (setq explicit-shell-file-name "zsh")
@@ -155,7 +159,7 @@
 (setq auto-window-vscroll nil)
 
 ;; start server
-;; (server-start)
+(server-start)
 
 ;; eshell configs
 ;; make the cursor stay at the prompt when scrolling
@@ -293,9 +297,9 @@
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
           (lambda ()
-            (with-eval-after-load-all
-             '(evil general)
-             (require 'setup-keys)) ;; load setup-org.el
+             (require 'setup-keys) ;; load setup-org.el
+            ;; (with-eval-after-load-all
+             ;; '(evil general)
             (when (file-exists-p persp-state-default-file)
               (persp-state-load persp-state-default-file)
               (persp-switch "main"))
@@ -312,7 +316,8 @@
             ;; (switch-to-theme 'ef-melissa-dark)
 
             ;; (switch-to-light-theme)
-            (switch-to-dark-theme)
+            ;; (switch-to-dark-theme)
+            (switch-to-theme my-current-theme)
             ;; (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)

@@ -257,19 +257,13 @@
 ;; common lisp/sly
 (led-kbd "l d" 'sly-documentation-lookup :keymaps '(lisp-mode-map sly-mrepl-mode-map))
 
-;; julia
-(led-kbd "s j" (lambda () (interactive)
-                 (setq julia-snail-extensions '(repl-history formatter ob-julia))
-                 (julia-snail)))
-(led-kbd "l s" 'julia-snail-send-line :keymaps 'julia-mode-map)
-
 ;; python
 (led-kbd "s p" 'run-python)
 (led-kbd "x" 'python-shell-send-defun :keymaps 'python-ts-mode-map)
-(led-kbd "l x" 'python-shell-send-defun :keymaps 'python-ts-mode-map)
-(led-kbd "l t" 'python-shell-send-statement :keymaps 'python-ts-mode-map)
-(led-kbd "c" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
-(led-kbd "l b" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
+(led-kbd "l x f" 'python-shell-send-defun :keymaps 'python-ts-mode-map)
+(led-kbd "l x l" 'python-shell-send-statement :keymaps 'python-ts-mode-map)
+(led-kbd "l x b" 'python-shell-send-buffer :keymaps 'python-ts-mode-map)
+(led-kbd "l x r" 'python-shell-send-region :keymaps 'python-ts-mode-map)
 
 ;; general keys for programming languages i guess
 (led-kbd "l f" 'apheleia-format-buffer :keymaps 'prog-mode-map)
@@ -286,6 +280,9 @@
 (led-kbd "l x l" 'julia-snail-send-line :keymaps 'julia-mode-map)
 (led-kbd "l x r" 'julia-snail-send-region :keymaps 'julia-mode-map)
 (led-kbd "l x b" 'julia-snail-send-buffer-file :keymaps 'julia-mode-map)
+(led-kbd "s j" (lambda () (interactive)
+                 (setq julia-snail-extensions '(repl-history formatter ob-julia))
+                 (julia-snail)))
 
 ;; other keybinds
 (general-define-key :states 'normal :keymaps 'override "C-S-k" 'kill-whole-line)
