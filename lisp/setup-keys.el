@@ -138,7 +138,7 @@
 (led-kbd "m f"
          (lambda ()
            (interactive)
-           (find-file (plist-get (car (blk-find-by-id "tbl-albums")) :filepath))))
+           (blk-open-by-id "tbl-albums")))
 ;; open artist's last.fm page
 (led-kbd "m l" #'open-lastfm-page)
 
@@ -204,7 +204,8 @@
 (led-kbd "a J" #'org-clock-in-last)
 (led-kbd "a k" #'org-clock-out)
 (led-kbd "a b" #'org-clock-cancel)
-(led-kbd "a p" #'org-clock-display :keymaps 'org-mode-map)
+(led-kbd "a p" #'org-capture)
+;; (led-kbd "a p" #'org-clock-display :keymaps 'org-mode-map)
 (led-kbd "a t" (lambda () (interactive) (org-capture nil "t")))
 (led-kbd "a c" #'org-todo :keymaps 'org-mode-map)
 (led-kbd "a C" (lambda () (interactive) (execute-kbd-macro "C-- 1 C-c C-t")) :keymaps 'org-mode-map) ;; modify recurring task "forever", this doesnt work
@@ -461,9 +462,10 @@
                  (let ((notmuch-search-oldest-first nil))
                    (notmuch-search "tag:new"))))
 (led-kbd "; r" (lambda () (interactive) (find-alternate-file buffer-file-name) (recenter))) ;; reload file
-(led-kbd "; t" (lambda () (interactive) (today-entry "THOUGHT")))
-(led-kbd "; e" (lambda () (interactive) (today-entry "FEELING")))
-(led-kbd "; q" (lambda () (interactive) (today-entry "QUESTION")))
+(led-kbd "; t" (lambda () (interactive) (org-capture nil "o"))) ;; thought
+(led-kbd "; e" (lambda () (interactive) (org-capture nil "f"))) ;; feeling
+(led-kbd "; q" (lambda () (interactive) (org-capture nil "q"))) ;; question
+(led-kbd "; d" (lambda () (interactive) (org-capture nil "i"))) ;; idea
 (led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
@@ -472,6 +474,8 @@
 (general-define-key :states '(insert normal) :keymaps 'override "C-SPC" #'my-yas-insert)
 (general-define-key :states '(insert normal) :keymaps 'override "M-SPC" #'yas-next-field)
 (general-define-key :states '(insert normal) :keymaps 'override "S-SPC" #'toggle-yas-auto-expand)
+
+(led-kbd "; i" #'imenu)
 
 ;; annoyingly some modes dont handle it newline indentation properly..
 ;; (general-define-key :states 'normal :keymaps 'prog-mode-hook "o" 'my-insert-newline-same-indentation)

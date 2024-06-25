@@ -424,4 +424,7 @@ prompt the user for a coding system."
 (defun file-for-blk-id (blk-id)
   (plist-get (car (blk-find-by-id blk-id)) :filepath))
 
+(defun blk-open-by-id (blk-id)
+  (find-file (plist-get (car (blk-find-by-id blk-id)) :filepath)))
+
 (provide 'setup-utils)

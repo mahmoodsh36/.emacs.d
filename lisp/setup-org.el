@@ -712,28 +712,6 @@
            )))
     (org-agenda nil "a")))
 
-(setq org-capture-templates (list))
-(with-eval-after-load 'org
-  (add-to-list 'org-capture-templates
-               '("t"
-                 "todo"
-                 entry
-                 (file "/home/mahmooz/brain/notes/20240204T953231--agenda__todo.org")
-                 "* TODO %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               '("i"
-                 "idea"
-                 entry
-                 (file "/home/mahmooz/brain/notes/20221106T180410--ideas.org")
-                 "* %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               '("q"
-                 "question"
-                 entry
-                 (file "/home/mahmooz/brain/notes/20240226T224954--questions.org")
-                 "* %?\nentered on %U\n %i\n %a"))
-  )
-
 (defmacro with-file-as-current-buffer (file &rest body)
   (let ((present-buffer (gensym))
         (result (gensym)))

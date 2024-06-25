@@ -2,30 +2,16 @@
     ;; (push "/home/mahmooz/work/blk/" load-path)
     (use-package blk
       :after (org org-transclusion)
-      :load-path "/home/mahmooz/work/blk/")
+      :load-path "/home/mahmooz/work/blk/"
+      :config
+      (my-blk-config))
   (use-package blk
     :after (org org-transclusion)
-    :ensure ( :host github :repo "mahmoodsheikh36/blk")))
+    :ensure ( :host github :repo "mahmoodsheikh36/blk")
+    :config
+    (my-blk-config)))
 
-;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
-(use-package org-transclusion
-  :after (org)
-  ;; :config
-  ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
-  ;; (add-to-list 'org-transclusion-after-add-functions 'org-latex-preview)
-  )
-
-(defun blk-find-with-consult ()
-  (interactive)
-  (let ((completing-read-function 'my-consult-completing-read))
-    (call-interactively 'blk-find)))
-
-(defun blk-find-with-ivy ()
-  (interactive)
-  (let ((completing-read-function 'ivy-completing-read))
-    (call-interactively 'blk-find)))
-
-(with-eval-after-load 'blk
+(defun my-blk-config ()
   ;; (defvar blk-find-history nil)
 
   ;; (setq blk-grepper blk-grepper-grep)
@@ -37,7 +23,8 @@
         (list (from-brain "notes")))
 
   ;; org-transclusion integration
-  (blk-configure-org-transclusion)
+  (with-eval-after-load 'org-transclusion
+    (blk-configure-org-transclusion))
 
   ;; use auctex
   (setq blk-tex-env-at-point-function 'blk-auctex-env-at-point-bounds)
@@ -81,7 +68,60 @@
   ;; (setq blk-cache-update-interval 20)
   (setq blk-cache-update-interval 1000000) ;; dont ever update it, i'll update it manually when i need
   (blk-update-cache)
+
+  (with-eval-after-load 'org
+    (setq org-capture-templates (list))
+    (add-to-list 'org-capture-templates
+                 `("t"
+                   "todo"
+                   entry
+                   (file ,(file-for-blk-id "agenda"))
+                   "* TODO %?\nentered on %U\n %i\n %a"))
+    (add-to-list 'org-capture-templates
+                 `("i"
+                   "idea"
+                   entry
+                   (file ,(file-for-blk-id "ideas"))
+                   "* IDEA %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+    (add-to-list 'org-capture-templates
+                 `("q"
+                   "question"
+                   entry
+                   (file ,(file-for-blk-id "questions"))
+                   "* QUESTION %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+    (add-to-list 'org-capture-templates
+                 `("f"
+                   "feeling"
+                   entry
+                   (file ,(file-for-blk-id "feelings"))
+                   "* FEELING %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+    (add-to-list 'org-capture-templates
+                 `("o"
+                   "thought"
+                   entry
+                   (file ,(file-for-blk-id "thoughts"))
+                   "* THOUGHT %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+    )
   )
+
+;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
+(use-package org-transclusion
+  :after (org)
+  ;; :config
+  ;; (add-hook 'org-mode-hook #'org-transclusion-mode)
+  ;; (add-to-list 'org-transclusion-after-add-functions 'org-latex-preview)
+  )
+
+(defun blk-find-with-consult ()
+  (interactive)
+  (let ((completing-read-function 'my-consult-completing-read))
+    (call-interactively 'blk-find)))
+
+(defun blk-find-with-ivy ()
+  (interactive)
+  (let ((completing-read-function 'ivy-completing-read))
+    (call-interactively 'blk-find)))
+
 
 ;; i dont think this is useful
 (defun my-lob-reload ()
@@ -245,7 +285,6 @@ block but are passed literally to the \"example-block\"."
                       (let ((result (car (blk-find-by-id id))))
                         (when result
                           (progn
-                            (message "hi")
                             (find-file (plist-get result :filepath))
                             (goto-char (plist-get result :position))
                             (let ((info (org-babel-get-src-block-info t)))
