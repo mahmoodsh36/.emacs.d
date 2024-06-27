@@ -33,7 +33,8 @@
                    (lambda ()
                      ;; (1) adjust completion style to achieve desired matching
                      (add-hook 'post-command-hook 'submit-for-single-cand t t))
-                 (let ((completion-styles '(basic)))
+                 (let ((completion-styles '(basic))
+                       (completion-ignore-case nil))
                    (funcall fn (or prompt "Choose a snippet: ")
                             templates
                             #'yas--template-key))))

@@ -618,6 +618,7 @@
   (setq julia-snail/ob-julia-mirror-output-in-repl t)
   (setq julia-snail/ob-julia-capture-io nil)
   (add-hook 'julia-mode-hook 'julia-snail-mode)
+  ;; (setq julia-snail-executable (join-path (getenv "WORK_DIR") "myjulia" "myjulia.sh"))
   (setq julia-snail-executable "LD_LIBRARY_PATH=/run/opengl-driver/lib/ julia")
   )
 

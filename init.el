@@ -297,9 +297,9 @@
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
           (lambda ()
-             (require 'setup-keys) ;; load setup-org.el
+            (require 'setup-keys) ;; load setup-org.el
             ;; (with-eval-after-load-all
-             ;; '(evil general)
+            ;; '(evil general)
             (when (file-exists-p persp-state-default-file)
               (persp-state-load persp-state-default-file)
               (persp-switch "main"))
