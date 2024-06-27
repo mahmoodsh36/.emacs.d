@@ -2,7 +2,9 @@
 
 ;; tecosaur's org-mode version
 (use-package org
-  :ensure ( :remotes ("tecosaur" :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev")
+  :ensure ( :remotes ("tecosaur"
+                      :repo "https://git.tecosaur.net/tec/org-mode.git"
+                      :branch "dev")
             :files (:defaults "etc")))
 
 (use-package org-contrib
@@ -162,10 +164,6 @@
 
   ;; allow usage of #+BIND in latex exports
   (setq org-export-allow-bind-keywords t)
-  ;; decrease image size in latex exports
-  ;; (setq org-latex-image-default-scale "2.0")
-  ;; disable images from being scaled/their dimensions being changed
-  ;; (setq org-latex-image-default-width "2.0")
   ;; preserve all line breaks when exporting
   (setq org-export-preserve-breaks t)
   ;; indent headings properly
@@ -194,20 +192,9 @@
           (:results . "value")))
   ;; use unique id's to identify headers, better than using names cuz names could change
   (setq org-id-link-to-org-use-id 'use-existing)
-  ;; creation dates for TODOs
-  ;; (defun my/log-todo-creation-date (&rest ignore)
-  ;;   "Log TODO creation time in the property drawer under the key 'CREATED'."
-  ;;   (when (and (org-get-todo-state)
-  ;;              (not (org-entry-get nil "CREATED")))
-  ;;     (org-entry-put nil "CREATED" (format-time-string (cdr org-time-stamp-formats)))))
-  ;; (add-hook 'org-after-todo-state-change-hook #'my/log-todo-creation-date)
   ;; src block indentation / editing / syntax highlighting
   (setq org-src-window-setup 'current-window
         org-src-strip-leading-and-trailing-blank-lines t)
-  ;; to make gifs work
-  ;; (setq org-format-latex-header (string-replace "{article}" "[tikz]{standalone}" org-format-latex-header))
-  ;; (setq org-format-latex-header (string-replace "\\usepackage[usenames]{color}" "" org-format-latex-header))
-  ;; (setq org-format-latex-header "\\documentclass[tikz]{standalone}")
   ;; make org babel use dvisvgm instead of inkscape for pdf->svg, way faster and has many more advtanges over inkscape
   (setq org-babel-latex-pdf-svg-process "dvisvgm --pdf %f -o %O")
   (setq org-babel-latex-preamble (lambda (_) "\\documentclass[preview]{article}"))
@@ -324,26 +311,6 @@
   (dolist (mapping major-mode-remap-alist)
     (let ((lang-name (car (split-string (symbol-name (car mapping)) "\\-"))))
       (add-to-list 'org-src-lang-modes (cons lang-name (concat lang-name "-ts")))))
-
-  ;; centered latex previews in org https://www.reddit.com/r/emacs/comments/15vt0du/centering_latex_previews_in_org97/
-  ;; (defun my/org-latex-preview-center (ov)
-  ;;   (save-excursion
-  ;;     (goto-char (overlay-start ov))
-  ;;     (when-let* ((elem (org-element-context))
-  ;;                 ((or (eq (org-element-type elem) 'latex-environment)
-  ;;                      (string-match-p
-  ;;                       "^\\\\\\[" (org-element-property :value elem))))
-  ;;                 (img (overlay-get ov 'display))
-  ;;                 (width (car-safe (image-display-size img)))
-  ;;                 (offset (floor (- (window-max-chars-per-line) width) 2))
-  ;;                 ((> offset 0)))
-  ;;       (overlay-put ov 'before-string
-  ;;                    (propertize
-  ;;                     (make-string offset ?\ )
-  ;;                     'face (org-latex-preview--face-around
-  ;;                            (overlay-start ov) (overlay-end ov)))))))
-  ;; (add-hook 'org-latex-preview-overlay-update-functions
-  ;;           #'my/org-latex-preview-center)
 
   (setq ;; org-agenda-time-grid
         ;; org-agenda-include-diary t
@@ -806,12 +773,6 @@
    orgfile
    (org-get-keyword kw)))
 
-;; list files to be exported for a specific section, defined by their #+export_section
-;; (defun list-export-candidates (section)
-;;   (cl-remove-if-not
-;;    (lambda (file)
-;;      (equal (org-file-grab-keyword file "export_section") section))
-;;    (list-org-files-to-export)))
 (defun list-section-export-candidates (section)
   (let* ((grep-results (grep-org-dir *notes-dir* (format "#\\+export_section: %s" section)))
          (files-to-export (mapcar (lambda (result) (plist-get result :filepath)) grep-results)))
@@ -887,50 +848,10 @@
               (mapcar 'car (org-babel-parse-header-arguments
                             (org-element-property :parameters block))))))
 
-;; (defconst my-math-blocks
-;;   (list "definition"
-;;         "theorem"
-;;         "problem"
-;;         "subproblem"
-;;         "proposition"
-;;         "notation"
-;;         "solution"
-;;         "corollary"
-;;         "task"
-;;         "thought"
-;;         "my_example"
-;;         "my_comment"
-;;         "question"
-;;         "lemma"
-;;         "note"
-;;         "result"
-;;         "claim"))
-(defconst special-blocks-not-for-handling
-  (list "dummy"))
-
 (defun my-block-title (block)
   (or (org-block-property :defines block)
       (org-block-property :title block)
       ""))
-
-;; (defun org-block-citation-string (&optional block)
-;;   (save-excursion
-;;     (let* ((block (or block (org-element-at-point)))
-;;            (end (org-element-property :end block)))
-;;       (goto-char (1- end))
-;;       (previous-line)
-;;       (goto-char (pos-eol))
-;;       (let* ((context
-;;               (org-element-lineage
-;;                (org-element-context)
-;;                '(citation citation-reference)
-;;                t))
-;;              (type (org-element-type context))
-;;              (value (org-element-property :value context)))
-;;         (when context
-;;           (let ((contents (buffer-substring (org-element-begin context)
-;;                                             (org-element-end context))))
-;;             (org-export-string-as contents 'latex t)))))))
 
 (defun html-out-file (title)
   (let ((inhibit-message t))
