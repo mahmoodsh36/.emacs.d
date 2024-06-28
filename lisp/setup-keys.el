@@ -280,9 +280,14 @@
 (led-kbd "l x l" 'julia-snail-send-line :keymaps 'julia-mode-map)
 (led-kbd "l x r" 'julia-snail-send-region :keymaps 'julia-mode-map)
 (led-kbd "l x b" 'julia-snail-send-buffer-file :keymaps 'julia-mode-map)
-(led-kbd "s j" (lambda () (interactive)
-                 (setq julia-snail-extensions '(repl-history formatter ob-julia))
-                 (julia-snail)))
+(led-kbd "s j"
+         (lambda () (interactive)
+           (setq )
+           (let ((julia-snail-extensions '(repl-history formatter ob-julia))
+                 (julia-snail-executable (join-path (getenv "WORK_DIR")
+                                                    "myjulia"
+                                                    "myjulia.sh")))
+             (julia-snail))))
 
 ;; other keybinds
 (general-define-key :states 'normal :keymaps 'override "C-S-k" 'kill-whole-line)

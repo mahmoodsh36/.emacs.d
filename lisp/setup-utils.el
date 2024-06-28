@@ -103,24 +103,24 @@
 
 ;; clean up ob-jupyter source block output
 ;; from henrik lissner
-(defun my/org-babel-jupyter-strip-ansi-escapes-block ()
-  (when (string-match-p "^jupyter-"
-                        (nth 0 (org-babel-get-src-block-info)))
-    (unless (or
-             ;; ...but not while Emacs is exporting an org buffer (where
-             ;; `org-display-inline-images' can be awfully slow).
-             (bound-and-true-p org-export-current-backend)
-             ;; ...and not while tangling org buffers (which happens in a temp
-             ;; buffer where `buffer-file-name' is nil).
-             (string-match-p "^ \\*temp" (buffer-name)))
-      (save-excursion
-        (when-let* ((beg (org-babel-where-is-src-block-result))
-                    (end (progn (goto-char beg)
-                                (forward-line)
-                                (org-babel-result-end))))
-          (ansi-color-apply-on-region (min beg end) (max beg end)))))))
-(add-hook 'org-babel-after-execute-hook
-          #'my/org-babel-jupyter-strip-ansi-escapes-block)
+;; (defun my/org-babel-jupyter-strip-ansi-escapes-block ()
+;;   (when (string-match-p "^jupyter-"
+;;                         (nth 0 (org-babel-get-src-block-info)))
+;;     (unless (or
+;;              ;; ...but not while Emacs is exporting an org buffer (where
+;;              ;; `org-display-inline-images' can be awfully slow).
+;;              (bound-and-true-p org-export-current-backend)
+;;              ;; ...and not while tangling org buffers (which happens in a temp
+;;              ;; buffer where `buffer-file-name' is nil).
+;;              (string-match-p "^ \\*temp" (buffer-name)))
+;;       (save-excursion
+;;         (when-let* ((beg (org-babel-where-is-src-block-result))
+;;                     (end (progn (goto-char beg)
+;;                                 (forward-line)
+;;                                 (org-babel-result-end))))
+;;           (ansi-color-apply-on-region (min beg end) (max beg end)))))))
+;; (add-hook 'org-babel-after-execute-hook
+;;           #'my/org-babel-jupyter-strip-ansi-escapes-block)
 
 (defun led (key-str)
   "return the keybinding `key-str', which is taken as a string, prefixed by the leader key defined in '*leader-key*'"

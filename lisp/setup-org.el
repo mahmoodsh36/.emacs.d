@@ -119,11 +119,12 @@
   ;; show images when opening a file.
   (setq org-startup-with-inline-images t)
   ;; show images after evaluating code blocks.
-  (add-hook 'org-babel-after-execute-hook (lambda ()
-                                            (clear-image-cache)
-                                            (org-redisplay-inline-images)
-                                            (org-latex-preview)
-                                            ))
+  ;; causes an error with (org-babel-ref-resolve "src-rm-quotes") in [[blk:1716750134][blk julia]].
+  ;; (add-hook 'org-babel-after-execute-hook (lambda ()
+  ;;                                           (clear-image-cache)
+  ;;                                           (org-redisplay-inline-images)
+  ;;                                           (org-latex-preview)
+  ;;                                           ))
   ;; disable prompt when executing code block in org mode
   (setq org-confirm-babel-evaluate nil)
   (setq org-link-elisp-confirm-function nil)
@@ -277,10 +278,12 @@
   (setq org-html-prefer-user-labels t)
   ;; dont let org handle subscripts lol
   (setq org-export-with-sub-superscripts nil)
+  ;; why truncate lines?
+  (setq org-startup-truncated nil)
   (require 'ox-html)
   ;; set to 1.0 to avoid some images being cut off, although that still happens, but less often
   ;; (plist-put org-html-latex-image-options :page-width nil)
-  ;; (plist-put org-latex-preview-appearance-options :page-width nil)
+  (plist-put org-latex-preview-appearance-options :page-width 0.85)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
   ;; display inline tramp images in org mode (and other remote image links)
@@ -427,6 +430,10 @@
     (let ((inhibit-message t))
       (replace-regexp-in-string "<title>.*?</title>" "" out)))
   (advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
+
+  (defvar special-blocks-not-for-handling
+    (list "dummy"
+          "literal"))
 
   ;; export some blocks with class=math-block so they get styled accordingly
   (defun my-org-export-read-attribute-hook (fn attribute element &optional property)

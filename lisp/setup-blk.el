@@ -20,7 +20,8 @@
   ;; (setq blk-patterns blk-emacs-patterns)
 
   (setq blk-directories
-        (list (from-brain "notes")))
+        (list (from-brain "notes")
+              (from-brain "daily")))
 
   ;; org-transclusion integration
   (with-eval-after-load 'org-transclusion

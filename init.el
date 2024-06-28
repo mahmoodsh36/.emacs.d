@@ -91,7 +91,7 @@
 (setq savehist-save-minibuffer-history t)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple
-(global-visual-line-mode)
+;; (global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
@@ -103,7 +103,7 @@
 (set-face-background 'glyphless-char "red")
 ;; change newline character
 ;;(setf (elt (car (cdr (cdr (assoc 'newline-mark whitespace-display-mappings)))) 0) ?⤸)
-(global-whitespace-mode)
+(global-whitespace-mode) ;; for functions to act on visual lines rather than actual lines
 ;; relative line numbers
 ;; (add-hook 'prog-mode-hook
 ;;           (lambda ()
@@ -239,6 +239,7 @@
         (toml "https://github.com/tree-sitter/tree-sitter-toml")
         (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
         (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+        (julia . "https://github.com/tree-sitter/tree-sitter-julia")
         (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 ;; install those grammars

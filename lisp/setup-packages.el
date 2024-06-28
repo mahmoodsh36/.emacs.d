@@ -523,7 +523,7 @@
 
 (use-package eat
   :config
-  (setq eat-shell *shell-program*))
+  (setq eat-shell "nu"))
 
 ;; relative line numbers, really slows buffer redisplay down, can cause cpu spikes even when simply navigating code buffers
 ;; (use-package linum-relative
@@ -618,8 +618,7 @@
   (setq julia-snail/ob-julia-mirror-output-in-repl t)
   (setq julia-snail/ob-julia-capture-io nil)
   (add-hook 'julia-mode-hook 'julia-snail-mode)
-  ;; (setq julia-snail-executable (join-path (getenv "WORK_DIR") "myjulia" "myjulia.sh"))
-  (setq julia-snail-executable "LD_LIBRARY_PATH=/run/opengl-driver/lib/ julia")
+  ;; (setq julia-snail-executable "LD_LIBRARY_PATH=/run/opengl-driver/lib/ julia")
   )
 
 ;; has a julia repl that uses comint, ~inferior-julia~
@@ -1029,5 +1028,14 @@
 
 ;; rg.el
 (use-package rg)
+
+;; (use-package phscroll
+;;   :ensure ( :host github :repo "misohena/phscroll")
+;;   :config
+;;   (setq org-startup-truncated nil)
+;;   (with-eval-after-load 'org
+;;     (require 'org-phscroll)))
+
+;; (use-package ligature)
 
 (provide 'setup-packages)
