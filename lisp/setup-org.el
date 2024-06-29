@@ -252,6 +252,7 @@
   ;; enable latex previews everywhere possible and use a custom preamble
   (setq org-latex-preview-live '(block inline edit-special))
   ;; for previews use private.sty
+  ;; (setq org-latex-preview-preamble "\\documentclass[ignorerest=true,varwidth=true,float=true,crop=true,preview=true,multi=true]{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
   (setq org-latex-preview-preamble "\\documentclass{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
   (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")) ;; use my ~/.emacs.d/common.sty
   ;; export to html using dvisvgm
@@ -283,7 +284,7 @@
   (require 'ox-html)
   ;; set to 1.0 to avoid some images being cut off, although that still happens, but less often
   ;; (plist-put org-html-latex-image-options :page-width nil)
-  (plist-put org-latex-preview-appearance-options :page-width 0.85)
+  ;; (plist-put org-latex-preview-appearance-options :page-width 0.8)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
   ;; display inline tramp images in org mode (and other remote image links)
@@ -993,4 +994,43 @@
 (add-hook 'inferior-python-mode-hook
           (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
 
+(with-eval-after-load 'org
+  (setq org-capture-templates (list))
+  (add-to-list 'org-capture-templates
+               `("t"
+                 "todo"
+                 entry
+                 (file ,(file-for-blk-id "agenda"))
+                 "* TODO %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               `("i"
+                 "idea"
+                 entry
+                 (file ,(file-for-blk-id "ideas"))
+                 "* IDEA %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               `("q"
+                 "question"
+                 entry
+                 (file ,(file-for-blk-id "questions"))
+                 "* QUESTION %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               `("f"
+                 "feeling"
+                 entry
+                 (file ,(file-for-blk-id "feelings"))
+                 "* FEELING %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               `("o"
+                 "thought"
+                 entry
+                 (file ,(file-for-blk-id "thoughts"))
+                 "* THOUGHT %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+  (add-to-list 'org-capture-templates
+               `("n"
+                 "note"
+                 entry
+                 (file ,(file-for-blk-id "notes"))
+                 "* NOTE %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+  )
 (provide 'setup-org)

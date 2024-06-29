@@ -436,7 +436,7 @@
 (defun run-from-zsh-history ()
   (interactive)
   (let* ((vertico-sort-function nil)
-         (cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
+         (cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -s -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
     (when cmd
       ;; (start-process-shell-command "shell" nil (format "terminal_with_cmd.sh \"%s; exec zsh -i\"" (shell-quote-argument cmd))))))
       (start-process-shell-command "shell" nil (format "terminal_with_cmd.sh \"%s; exec zsh -i\"" cmd)))))
@@ -444,7 +444,7 @@
 (defun run-from-zsh-history-with-emacs-term ()
   (interactive)
   (let* ((vertico-sort-function nil)
-         (cmd (completing-read "command" (split-string (shell-command-to-string "cat ~/brain/zsh_history | grep -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
+         (cmd (completing-read "command" (split-string (shell-command-to-string-no-stderr "cat ~/brain/zsh_history | grep -s -v '; exit$' | tac | cut -d ';' -f2-") "\n"))))
     (when cmd
       (new-shell-with-cmd cmd)
       ;; (start-process-shell-command "shell" nil cmd)
@@ -468,7 +468,8 @@
 (led-kbd "; e" (lambda () (interactive) (org-capture nil "f"))) ;; feeling
 (led-kbd "; q" (lambda () (interactive) (org-capture nil "q"))) ;; question
 (led-kbd "; d" (lambda () (interactive) (org-capture nil "i"))) ;; idea
-(led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
+(led-kbd "; t" (lambda () (interactive) (org-capture nil "o"))) ;; thought
+(led-kbd "; n" (lambda () (interactive) (org-capture nil "n"))) ;; note
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
 
@@ -481,5 +482,32 @@
 
 ;; annoyingly some modes dont handle it newline indentation properly..
 ;; (general-define-key :states 'normal :keymaps 'prog-mode-hook "o" 'my-insert-newline-same-indentation)
+
+;; set of common tasks that i need to run
+(defvar my-sys-commands
+  (list '(:cmd "cp --delete ~/brain $HOME_SERVER_ADDR:/home/mahmooz/ -e 'ssh -i ~/brain/keys/hetzner1'" :title "sync brain to $HOME_SERVER_ADDR")
+        '(:cmd "$WORK_DIR/nixos/upgrade.sh" :title "upgrade nixos")
+        '(:cmd "c ~/brain/; export_notes_html.el; c ~/work/blog; git commit -a -m 'reexport'; git push" :title "reexport blog")))
+
+(defun my-sys-prompt ()
+  (interactive)
+  (let ((vertico-sort-function nil)
+        (completion-extra-properties
+          '(:annotation-function
+            (lambda (k)
+              (let ((command))
+                (dolist (other-command my-sys-commands)
+                  (when (equal (plist-get other-command :title) k)
+                    (setq command other-command)))
+                (format "\t%s" (plist-get command :cmd)))))))
+    (let ((chosen-title (completing-read "task: " (mapcar (lambda (sys-command) (plist-get sys-command :title)) my-sys-commands))))
+      (let ((command))
+        (dolist (other-command my-sys-commands)
+          (when (equal (plist-get other-command :title) chosen-title)
+            (setq command other-command)))
+        (when command
+          (new-shell-with-cmd (plist-get command :cmd)))))))
+
+(led-kbd "; k" #'my-sys-prompt)
 
 (provide 'setup-keys)
