@@ -69,6 +69,47 @@
   ;; (setq blk-cache-update-interval 20)
   (setq blk-cache-update-interval 1000000) ;; dont ever update it, i'll update it manually when i need
   (blk-update-cache)
+
+  (with-eval-after-load
+   'org-agenda
+   (setq org-capture-templates (list))
+   (add-to-list 'org-capture-templates
+                `("t"
+                  "todo"
+                  entry
+                  (file ,(file-for-blk-id "agenda"))
+                  "* TODO %?\nentered on %U\n %i\n %a"))
+   (add-to-list 'org-capture-templates
+                `("i"
+                  "idea"
+                  entry
+                  (file ,(file-for-blk-id "ideas"))
+                  "* IDEA %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+   (add-to-list 'org-capture-templates
+                `("q"
+                  "question"
+                  entry
+                  (file ,(file-for-blk-id "questions"))
+                  "* QUESTION %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+   (add-to-list 'org-capture-templates
+                `("f"
+                  "feeling"
+                  entry
+                  (file ,(file-for-blk-id "feelings"))
+                  "* FEELING %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+   (add-to-list 'org-capture-templates
+                `("o"
+                  "thought"
+                  entry
+                  (file ,(file-for-blk-id "thoughts"))
+                  "* THOUGHT %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+   (add-to-list 'org-capture-templates
+                `("n"
+                  "note"
+                  entry
+                  (file ,(file-for-blk-id "notes"))
+                  "* NOTE %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+   )
   )
 
 ;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..

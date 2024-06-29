@@ -510,4 +510,6 @@
 
 (led-kbd "; k" #'my-sys-prompt)
 
+(evil-set-initial-state 'org-agenda-mode 'normal)
+
 (provide 'setup-keys)

@@ -497,6 +497,7 @@
 
   ;; temporary workaround for captions breaking latex export
   ;; (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
+
   )
 
 ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
@@ -994,43 +995,4 @@
 (add-hook 'inferior-python-mode-hook
           (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
 
-(with-eval-after-load 'org
-  (setq org-capture-templates (list))
-  (add-to-list 'org-capture-templates
-               `("t"
-                 "todo"
-                 entry
-                 (file ,(file-for-blk-id "agenda"))
-                 "* TODO %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               `("i"
-                 "idea"
-                 entry
-                 (file ,(file-for-blk-id "ideas"))
-                 "* IDEA %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               `("q"
-                 "question"
-                 entry
-                 (file ,(file-for-blk-id "questions"))
-                 "* QUESTION %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               `("f"
-                 "feeling"
-                 entry
-                 (file ,(file-for-blk-id "feelings"))
-                 "* FEELING %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               `("o"
-                 "thought"
-                 entry
-                 (file ,(file-for-blk-id "thoughts"))
-                 "* THOUGHT %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
-  (add-to-list 'org-capture-templates
-               `("n"
-                 "note"
-                 entry
-                 (file ,(file-for-blk-id "notes"))
-                 "* NOTE %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
-  )
 (provide 'setup-org)
