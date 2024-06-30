@@ -860,16 +860,18 @@
 
 (defun org-block-property (property block)
   "example: #+begin_myblock :myproperty whatever-value"
-  (or (org-element-property property block)
-      ;; use format because sometimes org-babel-parse-header-arguments parses links as a vector, not as a string
-      (format "%s"
-              (alist-get
-               property
-               (org-babel-parse-header-arguments
-                (org-element-property :parameters block))))
-      (member property
-              (mapcar 'car (org-babel-parse-header-arguments
-                            (org-element-property :parameters block))))))
+  (let ((result
+         (or (org-element-property property block)
+             ;; use format because sometimes org-babel-parse-header-arguments parses links as a vector, not as a string
+             (alist-get
+              property
+              (org-babel-parse-header-arguments
+               (org-element-property :parameters block)))
+             (member property
+                     (mapcar 'car (org-babel-parse-header-arguments
+                                   (org-element-property :parameters block)))))))
+    (when result
+      (format "%s" result))))
 
 (defun my-block-title (block)
   (or (org-block-property :defines block)
