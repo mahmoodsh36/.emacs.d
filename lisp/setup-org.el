@@ -460,7 +460,8 @@
   (defun my-org-latex-special-block-advice (fn special-block contents info)
     (let ((block-type (org-element-property :type special-block)))
       (if (member block-type special-blocks-not-for-handling)
-          (progn
+          (funcall fn special-block contents info)
+        (progn
             (setq block-type (pcase block-type
                                ("my_example" "example")
                                ("my_comment" "comment")
@@ -482,8 +483,7 @@
               (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
                               (if (string-empty-p citation) "" (format "[%s]" citation)))
                       contents
-                      (format "\\end{myenv}"))))
-        (funcall fn special-block contents info))))
+                      (format "\\end{myenv}")))))))
   (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
 
   ;; enforce some default keywords for all org buffers (in a hacky way)
@@ -759,6 +759,18 @@
   (let ((should-export-org-file-function #'should-export-org-file))
     (export-all-org-files :html-p t)))
 
+(defun export-all-math-org-files-to-html ()
+  (interactive)
+  (map-org-dir-elements *notes-dir* ":forexport:" 'headline
+                        (lambda (_) (org-export-heading-html)))
+  (let ((should-export-org-file-function
+         (lambda (orgfile)
+           (with-file-as-current-buffer orgfile
+            (or (cl-find "math" (org-get-tags) :test 'equal)
+                (cl-find "cs" (org-get-tags) :test 'equal)))))
+        (*static-html-dir* (expand-file-name "~/work/test/")))
+    (export-all-org-files :html-p t)))
+
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
   (interactive)
@@ -849,10 +861,12 @@
 (defun org-block-property (property block)
   "example: #+begin_myblock :myproperty whatever-value"
   (or (org-element-property property block)
-      (alist-get
-       property
-       (org-babel-parse-header-arguments
-        (org-element-property :parameters block)))
+      ;; use format because sometimes org-babel-parse-header-arguments parses links as a vector, not as a string
+      (format "%s"
+              (alist-get
+               property
+               (org-babel-parse-header-arguments
+                (org-element-property :parameters block))))
       (member property
               (mapcar 'car (org-babel-parse-header-arguments
                             (org-element-property :parameters block))))))
@@ -967,7 +981,8 @@
     (goto-char (point-min))
     (let ((case-fold-search t)) ;; ensure case-insensitive search
       ;; check for the :PROPERTIES: drawer
-      (if (re-search-forward "^:PROPERTIES:" nil t)
+      (if (and (is-substring (substring-no-properties (buffer-string) 0 9) ":PROPERTIES:")
+               (re-search-forward "^:PROPERTIES:" nil t))
           (progn
             (re-search-forward "^:END:" nil t)
             (forward-line)

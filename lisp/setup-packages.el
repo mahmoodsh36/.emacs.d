@@ -827,8 +827,7 @@
 ;;   (global-orglink-mode))
 
 ;; hmmmm??
-(use-package pulsar)
-(use-package ace-link)
+;; (use-package pulsar)
 (use-package literate-calc-mode)
 ;; (use-package bm) ;; visual bookmarks, is this useful for evil?
 ;; (use-package lispy) ? is this needed for lispyville?
@@ -844,35 +843,35 @@
 ;;      c-w
 ;;      (escape insert)
 ;;      (additional-movement normal visual motion))))
-(use-package lentic)
+;; (use-package lentic)
 (use-package org-download)
 ;; (use-package visual-regexp-steroids
 ;;   :ensure ( :host github :repo "benma/visual-regexp-steroids"))
 (use-package browse-kill-ring)
-(use-package vundo)
+;; (use-package vundo)
 ;; (use-package polymode)
-(use-package tldr)
+;; (use-package tldr)
 ;; (use-package emacs-fancy-compilation)
 ;; (use-package dired-k)
-(use-package racket-mode)
-(use-package clojure-mode)
+;; (use-package racket-mode)
+;; (use-package clojure-mode)
 ;; (use-package cider)
 ;; (use-package quack) ;; for racket and scheme
 ;; (use-package geiser) ;; for racket and scheme
 ;; (use-package org-ai)
 ;; (use-package gptel)
 ;; (use-package ellama)
-(use-package fasd)
-(use-package aweshell
-  :ensure ( :host github :repo "manateelazycat/aweshell"))
-(use-package full-ack)
+;; (use-package fasd)
+;; (use-package aweshell
+;;   :ensure ( :host github :repo "manateelazycat/aweshell"))
+;; (use-package full-ack)
 ;; (use-package ack-el)
-(use-package ansible)
-(use-package emms)
-(use-package fireplace)
-(use-package ledger-mode)
-(use-package wttrin)
-(use-package ace-link)
+;; (use-package ansible)
+;; (use-package emms)
+;; (use-package fireplace)
+;; (use-package ledger-mode)
+;; (use-package wttrin)
+;; (use-package ace-link)
 
 ;;(use-package emacs-webkit
 ;;  :ensure ( :fetcher github :repo "akirakyle/emacs-webkit"))

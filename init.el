@@ -318,7 +318,8 @@
 
             ;; (switch-to-light-theme)
             ;; (switch-to-dark-theme)
-            (switch-to-theme my-current-theme)
+            (when my-current-theme
+              (switch-to-theme my-current-theme))
             ;; (switch-to-theme 'ef-autumn)
             ;; (switch-to-theme 'poet-dark)
             ;; (switch-to-theme 'modus-operandi-tinted)
