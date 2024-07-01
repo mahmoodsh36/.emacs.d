@@ -373,7 +373,9 @@
             (let* ((filename (file-name-nondirectory link-path))
                    (ext (file-name-extension filename)))
               (message "copying linked static file %s" filename)
-              (copy-file link-path (join-path *static-html-dir* filename) t)
+              (condition-case nil
+                  (copy-file link-path (join-path *static-html-dir* filename) t)
+                (error (message "failed to copy file %s" filename)))
               (if (cl-member ext (list "png" "jpg" "jpeg" "webp" "svg" "gif") :test #'equal)
                   (format "<img src=\"%s%s\" />"
                           *html-static-route*
