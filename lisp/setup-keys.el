@@ -282,7 +282,6 @@
 (led-kbd "l x b" 'julia-snail-send-buffer-file :keymaps 'julia-mode-map)
 (led-kbd "s j"
          (lambda () (interactive)
-           (setq )
            (let ((julia-snail-extensions '(repl-history formatter ob-julia))
                  (julia-snail-executable (join-path (getenv "WORK_DIR")
                                                     "myjulia"

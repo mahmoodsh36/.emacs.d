@@ -50,14 +50,7 @@
                       :background 'unspecified
                       :inherit 'unspecified))
 
-(with-eval-after-load-all '(org ol)
-  ;; to get rid of the fontification done by org, its horrible.., this also gets rid of some lag, i think..
-  ;; (defun org-fontify-meta-lines-and-blocks (_)
-  ;;   )
-  (defun org-set-font-lock-defaults ()
-      )
-  ;; (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 '(highlight :foreground 'inherit :background "black"))))
-
+(defun my-org-fontification ()
   (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face))) ;; #+keyword
   (font-lock-add-keywords 'org-mode '(("\s:\\([a-zA-Z]+\\)[\s\n]" 0 font-lock-keyword-face))) ;; :keyword
   (font-lock-add-keywords 'org-mode (list (list org-link-any-re 0 'font-lock-keyword-face))) ;; [[link]]
@@ -92,8 +85,17 @@
             t)
         (progn (goto-char (1+ origin-point))
                nil))))
-  (font-lock-add-keywords 'org-mode (list (list 'my-latex-env-fontlock 0 'font-lock-string-face)))
-  )
+  (font-lock-add-keywords 'org-mode (list (list 'my-latex-env-fontlock 0 'font-lock-string-face))))
+
+;; to get rid of the fontification done by org, its horrible.., this also gets rid of some lag, i think..
+(defconst use-my-org-fontification t)
+(with-eval-after-load-all
+ '(org ol)
+ (when use-my-org-fontification
+   (defun org-set-font-lock-defaults ()
+     )
+   (my-org-fontification))
+ )
 
 (defvar my-current-theme nil)
 (add-to-list 'savehist-additional-variables 'my-current-theme)
@@ -120,13 +122,6 @@
   ;; (set-face-attribute 'whitespace-newline nil :background nil)
   ;; (global-org-modern-mode)
   ;; (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode)
-  (set-themed-pdf t))
-
-(defun switch-to-tango-theme ()
-  "switch to dark theme"
-  (interactive)
-  (switch-to-theme 'tango)
-  (set-face-background hl-line-face "PeachPuff3")
   (set-themed-pdf t))
 
 (defun switch-to-gruvbox-light-theme ()

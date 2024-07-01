@@ -768,14 +768,14 @@
 
 (defun export-all-math-org-files-to-html ()
   (interactive)
-  (map-org-dir-elements *notes-dir* ":forexport:" 'headline
-                        (lambda (_) (org-export-heading-html)))
   (let ((should-export-org-file-function
          (lambda (orgfile)
            (with-file-as-current-buffer orgfile
             (or (cl-find "math" (org-get-tags) :test 'equal)
                 (cl-find "cs" (org-get-tags) :test 'equal)))))
         (*static-html-dir* (expand-file-name "~/work/test/")))
+    (map-org-dir-elements *notes-dir* ":forexport:" 'headline
+                          (lambda (_) (org-export-heading-html)))
     (export-all-org-files :html-p t)))
 
 (defun export-current-buffer (&rest kw)
