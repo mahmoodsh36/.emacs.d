@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: any block
-# key: anyblock
-# --
-#+begin_any
-$0
-#+end_any
