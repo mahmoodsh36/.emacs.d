@@ -396,26 +396,29 @@
                (citation-end (1- (+ position (org-element-end citation))))
                (parent (progn
                          (save-excursion
-                           (goto-char citation-start)
-                           (next-line)
-                           (org-element-at-point))))
-               (parent-end (org-element-end parent))
-               (parent-start (org-element-begin parent))
+                           (goto-char citation-end)
+                           (when (not (equal (point-max) (point)))
+                             (forward-char)
+                             (org-element-at-point)))))
                (citation-contents (buffer-substring-no-properties citation-start
                                                                   citation-end))
                ;; if we dont place the double quotes org fails to parse the citation properly in the header
                (to-insert (format " :source \"%s\"" citation-contents)))
-          (setq position parent-end)
-          (when (and (equal (org-element-type parent) 'special-block)
-                     (is-point-at-some-bol citation-start))
-            (goto-char parent-start)
-            (when (string-match-p "#\\+name:" (thing-at-point 'line 'no-properties)) ;; if we are at #+name, we need to move forward one line
-              (forward-line))
-            (end-of-line)
-            (insert to-insert)
-            (setq citation-start (+ citation-start (length to-insert)))
-            (setq citation-end (+ citation-end (length to-insert)))
-            (kill-region citation-start citation-end)))
+          (when parent
+            (let* ((parent-end (org-element-end parent))
+                   (parent-start (org-element-begin parent))
+                   (position parent-end))
+              (when (and (equal (org-element-type parent) 'special-block)
+                         (is-point-at-some-bol citation-start))
+                (goto-char parent-start)
+                (when (string-match-p "#\\+name:" (thing-at-point 'line 'no-properties)) ;; if we are at #+name, we need to move forward one line
+                  (forward-line))
+                (end-of-line)
+                (insert to-insert)
+                (setq citation-start (+ citation-start (length to-insert)))
+                (setq citation-end (+ citation-end (length to-insert)))
+                (kill-region citation-start citation-end))))
+          (setq position citation-end))
         (if (<= position (buffer-size))
             (let ((original-buffer-substring
                    (buffer-substring position
