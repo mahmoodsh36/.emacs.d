@@ -378,7 +378,6 @@
   (defun my-org-replace-citations (&optional export-backend)
     "blocks whose last line is a citation, remove that citation to the block's :source keyword"
     (interactive)
-    (message "got export-backend %s" export-backend)
     (let ((position 1)
           (citations (org-element-map (org-element-parse-buffer) 'citation 'identity)))
       (while citations
@@ -1047,17 +1046,14 @@
     (dolist (book-org-file book-org-files)
       (blk-with-file-as-current-buffer
        book-org-file
-       (let ((book-title (org-get-keyword "book_title"))
-             (file-identifier (org-get-keyword "identifier"))
-             (book-year (org-get-keyword "book_year"))
-             (book-author (org-get-keyword "book_author"))
-             (book-main-file (org-get-keyword "book_main_file")))
-         (push (list :title book-title
-                     :identifier file-identifier
-                     :author book-author
-                     :year book-year
-                     :file book-main-file)
-               books))))
+       (push (list :title (org-get-keyword "book_title")
+                   :identifier (org-get-keyword "identifier")
+                   :author (org-get-keyword "book_author")
+                   :year (org-get-keyword "book_year")
+                   :file (org-get-keyword "book_main_file")
+                   :book-source-url (org-get-keyword "book_source_url")
+                   :bibtex-entry-name (org-get-keyword "bibtex_entry_name"))
+             books)))
     books))
 (defun book-prompt ()
   (interactive)
@@ -1072,5 +1068,32 @@
                           book))
                   (list-books)))))
     (find-file (plist-get (cdr option) :file))))
+
+(defun generate-bib-file ()
+  (interactive)
+  (let ((books (list-books)))
+    (with-temp-file (from-brain "auto.bib")
+      (dolist (book books)
+        (let ((title (plist-get book :title))
+              (year (plist-get book :year))
+              (first-author (string-trim (car (string-split (plist-get book :author) ",")))))
+          (insert
+           (format "@book{%s,
+  author = {%s},
+  title = {%s},
+  year = %s,
+  file = {%s},
+  url = {%s}
+}"
+                   (or (plist-get book :bibtex-entry-name)
+                       (downcase (string-join (append (split-string title " ")
+                                                      (split-string first-author " ")
+                                                      (list year))
+                                              "_")))
+                   (plist-get book :author)
+                   (plist-get book :title)
+                   (plist-get book :year)
+                   (plist-get book :file)
+                   (plist-get book :book-source-url))))))))
 
 (provide 'setup-org)
