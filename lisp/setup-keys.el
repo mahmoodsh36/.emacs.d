@@ -511,4 +511,7 @@
 
 (evil-set-initial-state 'org-agenda-mode 'normal)
 
+(led-kbd "; o" #'book-prompt)
+(led-kbd "; O" #'new-book-note-file)
+
 (provide 'setup-keys)

@@ -977,12 +977,21 @@
 (defun time-to-timestamp (mydate)
   (time-to-seconds mydate))
 
+;; functions to create new files (like org-capture)
 (defun new-note-file ()
   (interactive)
   (let ((my-timestamp (current-unix-timestamp)))
     (find-file (from-notes (format "%s.org" my-timestamp)))
     (yas-expand-snippet
      (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n$0"
+             (my-time-format (timestamp-to-time my-timestamp)) my-timestamp))
+    (evil-insert 0)))
+(defun new-book-note-file ()
+  (interactive)
+  (let ((my-timestamp (current-unix-timestamp)))
+    (find-file (from-notes (format "%s.org" my-timestamp)))
+    (yas-expand-snippet
+     (format "#+title: $1\n#+filetags: $2\n#+date: %s\n#+identifier: %s\n#+book_title: \n#+book_author: \n#+book_year: \n#+book_main_file: \n#+book_source_url: \n$0"
              (my-time-format (timestamp-to-time my-timestamp)) my-timestamp))
     (evil-insert 0)))
 
@@ -1038,9 +1047,30 @@
     (dolist (book-org-file book-org-files)
       (blk-with-file-as-current-buffer
        book-org-file
-       (let ((book-title (org-get-keyword "book_title")))
-         (when book-title
-           (push book-title books)))))
+       (let ((book-title (org-get-keyword "book_title"))
+             (file-identifier (org-get-keyword "identifier"))
+             (book-year (org-get-keyword "book_year"))
+             (book-author (org-get-keyword "book_author"))
+             (book-main-file (org-get-keyword "book_main_file")))
+         (push (list :title book-title
+                     :identifier file-identifier
+                     :author book-author
+                     :year book-year
+                     :file book-main-file)
+               books))))
     books))
+(defun book-prompt ()
+  (interactive)
+  (let ((option (completing-read-cons
+                 "book"
+                 (mapcar
+                  (lambda (book)
+                    (cons (format "%s - %s - %s"
+                                  (plist-get book :title)
+                                  (plist-get book :author)
+                                  (plist-get book :year))
+                          book))
+                  (list-books)))))
+    (find-file (plist-get (cdr option) :file))))
 
 (provide 'setup-org)
