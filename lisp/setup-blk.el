@@ -130,20 +130,17 @@
   (let ((completing-read-function 'ivy-completing-read))
     (call-interactively 'blk-find)))
 
-
 ;; i dont think this is useful
 (defun my-lob-reload ()
   (interactive)
   (let ((added))
     (map-org-dir-elements
      *notes-dir*
-     "name:"
+     " :lob"
      'src-block
      (lambda (_)
        (let ((filename (buffer-file-name)))
-         (when (not (cl-member filename added :test 'equal))
-           (org-babel-lob-ingest filename)
-           (push filename added)))))))
+         (org-babel-lob-ingest filename))))))
 
 ;; this is a bad idea, but i copied the function and modified it to work with blk, since there's really no other sane way to go about it (for now atleast..)
 (defun org-babel-expand-noweb-references (&optional info parent-buffer)

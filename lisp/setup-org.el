@@ -334,18 +334,6 @@
              )))
           ))
 
-
-  ;; insert a blank line between everything in latex exports
-  (defun my-export-newlines (_)
-    (let ((inhibit-message t))
-      (goto-char (point-min))
-      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
-      (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.)\n" "\\1.\n\n") ;; insert newlines after lines ending with ".)"
-      ;; (goto-char (point-min))
-      ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
-      ))
-  (add-to-list 'org-export-before-processing-functions 'my-export-newlines)
-
   ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
   (defun my-org-link-advice (fn link desc info)
     "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'. also we need to handle links to static files, copy those over to the html dir and link to them properly."
@@ -390,6 +378,7 @@
   (defun my-org-replace-citations (&optional export-backend)
     "blocks whose last line is a citation, remove that citation to the block's :source keyword"
     (interactive)
+    (message "got export-backend %s" export-backend)
     (let ((position 1)
           (citations (org-element-map (org-element-parse-buffer) 'citation 'identity)))
       (while citations
@@ -504,6 +493,19 @@
   ;; (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
 
   )
+
+;; insert a blank line between everything in exports
+(defun my-export-newlines (_)
+  (let ((inhibit-message t))
+    (goto-char (point-min))
+    ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\n" "\\1.\n\n") ;; newline after all lines that dont start with # or \, this is impractical as it affects code blocks
+    (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
+    (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.)\n" "\\1.\n\n") ;; insert newlines after lines ending with ".)"
+    ;; (goto-char (point-min))
+    ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
+    ))
+;; (with-eval-after-load 'org
+;;   (add-to-list 'org-export-before-processing-functions 'my-export-newlines))
 
 ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
 (defun ox-latex-disable-svg-handling ()
@@ -1018,5 +1020,27 @@
 ;; execute some python blocks when a python repl starts
 (add-hook 'inferior-python-mode-hook
           (lambda () (notes-execute-marked-src-block (regexp-quote ":python-repl"))))
+
+(defun blk-grep-list-files (regex)
+  (mapcar
+   (lambda (entry) (plist-get entry :filepath))
+   (blk-grep blk-grepper
+             (list (list :anchor-regex regex :src-id-function 'identity :glob "*.org"))
+             blk-directories)))
+
+(defun list-book-org-files ()
+  ;; (org-files-with-tag "book")
+  (blk-grep-list-files "book_title:"))
+
+(defun list-books ()
+  (let ((book-org-files (list-book-org-files))
+        (books))
+    (dolist (book-org-file book-org-files)
+      (blk-with-file-as-current-buffer
+       book-org-file
+       (let ((book-title (org-get-keyword "book_title")))
+         (when book-title
+           (push book-title books)))))
+    books))
 
 (provide 'setup-org)

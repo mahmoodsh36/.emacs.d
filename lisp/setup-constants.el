@@ -2,7 +2,7 @@
 (defconst *brain-dir*
   (or (getenv "BRAIN_DIR")
       (file-truename "~/brain")))
-(defconst *notes-dir* (concat *brain-dir* "/notes/"))
+(defconst *notes-dir* (concat *brain-dir* "/notes"))
 
 ;; used in my elisp scripts for launching mpv
 (defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
