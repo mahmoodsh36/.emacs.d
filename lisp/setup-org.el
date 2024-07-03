@@ -449,6 +449,48 @@
                 :data-after citation)))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
+  ;; overwrite the function to add the data-language attribute to the code blocks
+  (defun org-html-src-block (src-block _contents info)
+  "Transcode a SRC-BLOCK element from Org to HTML.
+CONTENTS holds the contents of the item.  INFO is a plist holding
+contextual information."
+  (if (org-export-read-attribute :attr_html src-block :textarea)
+      (org-html--textarea-block src-block)
+    (let* ((lang (org-element-property :language src-block))
+	   (code (org-html-format-code src-block info))
+	   (label (let ((lbl (org-html--reference src-block info t)))
+		    (if lbl (format " id=\"%s\"" lbl) "")))
+	   (klipsify  (and  (plist-get info :html-klipsify-src)
+                            (member lang '("javascript" "js"
+					   "ruby" "scheme" "clojure" "php" "html")))))
+      (format "<div class=\"org-src-container\" data-language=\"%s\">\n%s%s\n</div>"
+              (org-element-property :language src-block)
+	      ;; Build caption.
+	      (let ((caption (org-export-get-caption src-block)))
+		(if (not caption) ""
+		  (let ((listing-number
+			 (format
+			  "<span class=\"listing-number\">%s </span>"
+			  (format
+			   (org-html--translate "Listing %d:" info)
+			   (org-export-get-ordinal
+			    src-block info nil #'org-html--has-caption-p)))))
+		    (format "<label class=\"org-src-name\">%s%s</label>"
+			    listing-number
+			    (org-trim (org-export-data caption info))))))
+	      ;; Contents.
+	      (if klipsify
+		  (format "<pre><code class=\"src src-%s\" %s%s>%s</code></pre>"
+			  lang ; lang being nil is OK.
+			  label
+			  (if (string= lang "html")
+			      " data-editor-type=\"html\""
+			    "")
+			  code)
+		(format "<pre class=\"src src-%s\"%s>%s</pre>"
+                        ;; Lang being nil is OK.
+                        lang label code))))))
+
   ;; handle some custom blocks i've defined
   (defun my-org-latex-special-block-advice (fn special-block contents info)
     (let ((block-type (org-element-property :type special-block)))

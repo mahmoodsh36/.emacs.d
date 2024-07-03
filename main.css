@@ -126,5 +126,34 @@ a {
 }
 
 :root.dark .org-latex {
-  filter: invert(70%) sepia(10%) saturate(300%) hue-rotate(86deg) brightness(118%) contrast(119%);
+    filter: invert(70%) sepia(10%) saturate(300%) hue-rotate(86deg) brightness(118%) contrast(119%);
+}
+
+/* code block styling */
+.org-src-container {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+.org-src-container::before, .org-src-container::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+.org-src-container::before {
+    content: 'Code';
+    left: 20px;
+    background-color: #f5f5f5;
+    padding: 0 5px;
+}
+.org-src-container::after {
+    content: attr(data-language);
+    right: 20px;
+    background-color: #f5f5f5;
+    padding: 0 5px;
 }
