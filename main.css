@@ -88,10 +88,9 @@ img {
 }
 
 /* make src blocks horizontally scrollable */
-.org-src-container, pre.example {
+pre {
     overflow-x: auto;
 }
-
 
 /* block styling */
 .math-block {
@@ -135,6 +134,7 @@ a {
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 20px;
+    padding-bottom: 0px;
     margin: 20px 0;
     font-family: 'Courier New', Courier, monospace;
 }
