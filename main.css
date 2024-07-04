@@ -152,7 +152,7 @@ a {
 }
 .org-src-container::after {
     content: attr(data-language);
-    left: 90%;
+    left: 85%;
     bottom: 100%;
     background-color: #f5f5f5;
 }
