@@ -55,7 +55,7 @@
   (enable-latex-previews))
 
 ;; bibliography file (i use one global one for everything)
-(setq org-cite-global-bibliography '("~/brain/bib.bib"))
+(setq org-cite-global-bibliography (list (from-brain "bib.bib") (from-brain "auto.bib")))
 
 (defun get-latex-cache-dir-path ()
   "return the path for the directory that contains the compiled pdf latex documents"
@@ -1100,7 +1100,7 @@ contextual information."
 (defun book-prompt ()
   (interactive)
   (let ((option (completing-read-cons
-                 "book"
+                 "book: "
                  (mapcar
                   (lambda (book)
                     (cons (format "%s - %s - %s"
@@ -1126,7 +1126,8 @@ contextual information."
   year = %s,
   file = {%s},
   url = {%s}
-}"
+}
+"
                    (or (plist-get book :bibtex-entry-name)
                        (downcase (string-join (append (split-string title " ")
                                                       (split-string first-author " ")

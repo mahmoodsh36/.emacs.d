@@ -4,6 +4,7 @@
 (led-kbd "d a" (lambda () (interactive) (dired "~/data/")))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (led-kbd "d b" (lambda () (interactive) (dired *brain-dir*)))
+(led-kbd "d n" (lambda () (interactive) (dired *notes-dir*)))
 (led-kbd "d r" (lambda () (interactive) (dired (from-brain "/resources"))))
 (led-kbd "d h" (lambda () (interactive) (dired "~/")))
 (led-kbd "d p" (lambda () (interactive) (dired "~/p/")))
