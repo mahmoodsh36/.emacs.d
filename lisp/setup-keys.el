@@ -218,7 +218,11 @@
 (led-kbd "s v" 'yas-visit-snippet-file)
 (led-kbd "s h" 'yas-insert-snippet)
 (led-kbd "s a" 'dictionary-search)
-(led-kbd "r s" 'org-cite-insert :keymaps 'org-mode-map)
+(led-kbd "r s" (lambda ()
+                 (interactive)
+                 (generate-bib-file)
+                 (call-interactively 'org-cite-insert))
+         :keymaps 'org-mode-map)
 ;; key to clear the screen in eshell
 (defun run-this-in-eshell (cmd)
   "runs the command 'cmd' in eshell."
