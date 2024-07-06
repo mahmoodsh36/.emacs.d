@@ -15,7 +15,7 @@
 (require 'setup-other)
 
 ;; set tab size to 2 spaces except 4 for python
-(setq-default tab-width 2
+(setq-default ;tab-width 2
               js-indent-level 2
               c-basic-offset 2
               indent-tabs-mode nil
@@ -88,6 +88,7 @@
 (add-to-list 'savehist-additional-variables 'command-history)
 (add-to-list 'savehist-additional-variables 'compile-command)
 (add-to-list 'savehist-additional-variables 'compile-history)
+(add-to-list 'savehist-additional-variables 'blk-hist)
 (setq savehist-save-minibuffer-history t)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple

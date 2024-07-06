@@ -52,7 +52,7 @@
 
 (defun my-org-fontification ()
   (font-lock-add-keywords 'org-mode '(("^#\\+[^\s\n:]*" 0 font-lock-keyword-face))) ;; #+keyword
-  (font-lock-add-keywords 'org-mode '(("\s:\\([a-zA-Z]+\\)[\s\n]" 0 font-lock-keyword-face))) ;; :keyword
+  (font-lock-add-keywords 'org-mode '(("\s\\(:[a-zA-Z]+\\)" 1 font-lock-keyword-face))) ;; :keyword
   (font-lock-add-keywords 'org-mode (list (list org-link-any-re 0 'font-lock-keyword-face))) ;; [[link]]
   (font-lock-add-keywords 'org-mode '(("\\[cite[^\\[]+\\]" 0 font-lock-keyword-face))) ;; [cite..]
   ;; (setq-default font-lock-multiline t) ;; needed for the following regex to work

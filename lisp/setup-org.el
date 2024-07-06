@@ -612,9 +612,9 @@ contextual information."
     (if (not (file-exists-p todays-file))
         (progn
           (find-file todays-file)
-          (end-of-buffer)
-          (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d"))))
-    (find-file todays-file)))
+          (goto-char (point-max))
+          (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d")))
+      (find-file todays-file))))
 
 (defun today-entry (&optional todo-keyword)
   "insert an entry for today, an action/todo/whatever and clock in"
@@ -827,7 +827,10 @@ contextual information."
   (apply #'export-org-file buffer-file-name kw))
 
 (defun org-get-keyword (kw)
-  (cadar (org-collect-keywords (list kw))))
+  (let ((value (cadar (org-collect-keywords (list kw)))))
+    (if (string-prefix-p "(" value)
+        (eval (car (read-from-string value)))
+      value)))
 (defun should-export-org-file (file)
   (org-export-dir-name file)) ;; why am i returning dir name?
 (defun org-export-dir-name (file)

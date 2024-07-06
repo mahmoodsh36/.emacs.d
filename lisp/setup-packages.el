@@ -22,6 +22,12 @@
     ;; (setq auto-mode-alist (cons '("\\.tex$" . latex-mode) auto-mode-alist))
   ))
 
+;; has issues with transient versions/elpaca, build seems to fail on android
+(when (not (is-android-system))
+  (use-package transient) ;; to avoid issues with magit we have to grab transient too
+  (use-package magit))
+  ;; :ensure ( :host github :repo "magit/magit"))
+
 ;; makes binding keys less painful
 (use-package general)
 
@@ -455,11 +461,6 @@
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1)
   (setq keyfreq-file (from-brain "emacs_keyfreq")))
-
-;; has issues with transient versions/elpaca, build seems to fail on android
-(when (not (is-android-system))
-  (use-package magit))
-  ;; :ensure ( :host github :repo "magit/magit"))
 
 ;; need the "global" package for gtags binary
 ;; (use-package ggtags
