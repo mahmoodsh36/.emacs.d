@@ -134,7 +134,7 @@ a {
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 20px;
-    padding-bottom: 0px;
+    padding-top: 40px;
     margin: 20px 0;
     font-family: 'Courier New', Courier, monospace;
 }
@@ -142,17 +142,16 @@ a {
     content: '';
     font-size: 0.9em;
     color: #555;
-    position: sticky;
+    position: absolute;
     padding: 0 5px;
+    top: 20px;
+    background-color: #f5f5f5;
 }
 .org-src-container::before {
-    content: 'Code';
-    background-color: #f5f5f5;
-    left: 0;
+    content: 'code';
+    left: 20px;
 }
 .org-src-container::after {
     content: attr(data-language);
-    left: 85%;
-    bottom: 100%;
-    background-color: #f5f5f5;
+    right: 20px;
 }
