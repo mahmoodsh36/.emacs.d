@@ -446,7 +446,9 @@
                                      (if (string-empty-p block-title)
                                          ""
                                        (concat ": " block-title)))
-                :data-after citation)))))
+                ;; dont export :source if it is just a path to a local file (starts with forward slash)
+                :data-after (when (not (string-prefix-p "/" citation))
+                              citation))))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
   ;; overwrite the function to add the data-language attribute to the code blocks
@@ -773,9 +775,9 @@ contextual information."
         (push node exceptions)
         (when (and node (funcall should-export-org-file-function node))
           (message (format "exporting: %s" node))
-          (condition-case nil
+          ;; (condition-case nil
               (apply #'export-org-file node kw)
-            (error (message "failed to export %s" node)))
+            ;; (error (message "failed to export %s" node)))
           (let ((nodes (files-linked-from-org-file node)))
             (dolist (other-node nodes)
               (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
@@ -1007,7 +1009,7 @@ contextual information."
   ;; it that way because of the brackets around it
   (let ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
     ;; the newline is there (maybe temporarily) that prevents an error that happens otherwise
-    (org-export-string-as (concat original-citation-str "\n") 'latex t)))
+    (org-export-string-as original-citation-str 'latex t)))
 
 (defun current-unix-timestamp ()
   (time-to-seconds (current-time)))
