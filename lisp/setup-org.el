@@ -949,7 +949,8 @@ contextual information."
 (defun my-org-to-html (&optional heading)
   (interactive)
   ;; so that org mode places the latex previews in the specified dir
-  (plist-put org-html-latex-image-options :image-dir "ltx")
+  ;; (plist-put org-html-latex-image-options :image-dir "ltx")
+  (plist-put org-html-latex-image-options :inline '(svg svg-embed))
   (plist-put org-html-latex-image-options :page-width nil)
 
   ;; disable some stuff that is enabled by default in html exporting
@@ -985,9 +986,9 @@ contextual information."
       nil nil nil nil nil nil)
     (when heading
       (widen))
+    ;; (copy-directory "ltx" *static-html-dir* t)
     (copy-file (from-emacsd "main.css") *static-html-dir* t)
-    (copy-file (from-emacsd "darkmode.js") *static-html-dir* t)
-    (copy-directory "ltx" *static-html-dir* t)))
+    (copy-file (from-emacsd "darkmode.js") *static-html-dir* t)))
 
 (defun org-remove-forexport-headlines (backend)
   "Remove headlines with :forexport: tag."

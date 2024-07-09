@@ -294,7 +294,6 @@
 (require 'setup-dired)
 (require 'setup-eglot)
 (require 'setup-blk)
-(require 'my-bibtex)
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook

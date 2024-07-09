@@ -830,6 +830,7 @@
 ;; hmmmm??
 ;; (use-package pulsar)
 (use-package literate-calc-mode)
+;; (use-package visual-regexp)
 ;; (use-package bm) ;; visual bookmarks, is this useful for evil?
 ;; (use-package lispy) ? is this needed for lispyville?
 ;; (use-package lispyville

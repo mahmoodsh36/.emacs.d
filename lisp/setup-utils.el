@@ -427,4 +427,14 @@ prompt the user for a coding system."
 (defun blk-open-by-id (blk-id)
   (find-file (plist-get (car (blk-find-by-id blk-id)) :filepath)))
 
+(defun parse-bibtex-buffer ()
+  (let ((entries))
+    (bibtex-map-entries
+     (lambda (key beg end)
+       (let ((text (buffer-substring-no-properties beg end)))
+         (goto-char beg)
+         (let ((entry (bibtex-parse-entry)))
+           (push entry entries)))))
+    entries))
+
 (provide 'setup-utils)
