@@ -649,7 +649,7 @@
   :config
   (setq read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t)
-  (setq completion-styles '(orderless basic flex)
+  (setq completion-styles '(orderless basic) ;; flex is really slow so i removed it
         orderless-component-separator #'orderless-escapable-split-on-space
         completion-category-overrides '((file (styles basic partial-completion)))
         )
