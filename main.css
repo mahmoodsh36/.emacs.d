@@ -84,7 +84,7 @@ img {
 
 /* org inserts inline height value, override that, it causes problems with big latex previews on smaller screens where the previews take more height than they need because their width was decreased (using max-width: 100%) but their height wasnt */
 /* .org-latex { */
-.equation-container svg {
+.equation-container svg, .org-latex-block {
     height: 100% !important;
 }
 

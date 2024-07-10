@@ -261,8 +261,8 @@
   (setq org-export-with-tags nil)
   ;; allow characters as list modifiers in org mode
   (setq org-list-allow-alphabetical t)
-  ;; also number equations
-  (setq org-latex-preview-numbered t)
+  ;; dont show equation numbers, they sometimes mess up the preview by causing it to be cut off
+  (setq org-latex-preview-numbered nil)
   ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
   (setq org-latex-compiler "lualatex")
   ;; make org-agenda open up in the current window
