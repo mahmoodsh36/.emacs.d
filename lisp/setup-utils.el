@@ -147,10 +147,15 @@
 
 (defun join-path (&rest paths)
   "join file paths using a forward slash"
-  (let ((mypath (car paths)))
-    (dolist (path (cdr paths))
-      (setq mypath (concat mypath "/" path)))
-    mypath))
+  (let ((main (car paths)))
+    (dolist (other (cdr paths))
+      (setq main (concat main
+                         (if (or (string-prefix-p "/" other)
+                                 (string-suffix-p "/" main))
+                             ""
+                           "/")
+                         other)))
+    (string-replace "//" "/" main)))
 
 (defun kill-all-buffers ()
   "kill all buffers excluding internal buffers (buffers starting with a space)"
