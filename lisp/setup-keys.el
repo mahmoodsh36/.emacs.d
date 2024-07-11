@@ -519,4 +519,6 @@
 (led-kbd "; o" #'book-prompt)
 (led-kbd "; O" #'new-book-note-file)
 
+(led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
+
 (provide 'setup-keys)

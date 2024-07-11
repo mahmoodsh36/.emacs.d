@@ -775,9 +775,9 @@ contextual information."
         (push node exceptions)
         (when (and node (funcall should-export-org-file-function node))
           (message (format "exporting: %s" node))
-          ;; (condition-case nil
+          (condition-case nil
               (apply #'export-org-file node kw)
-            ;; (error (message "failed to export %s" node)))
+            (error (message "failed to export %s" node)))
           (let ((nodes (files-linked-from-org-file node)))
             (dolist (other-node nodes)
               (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
