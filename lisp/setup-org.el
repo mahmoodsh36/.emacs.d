@@ -1002,7 +1002,7 @@ contextual information."
              (html-file (alist-get org-file org-file-to-html-file-alist)))
         (when (funcall should-export-org-file-function org-file)
           (when (not html-file)
-            (setq html-file (org-file-grab-keyword org-file "title"))
+            (setq html-file (html-out-file (org-file-grab-keyword org-file "title")))
             (push (cons org-file html-file) org-file-to-html-file-alist))
           (plist-put entry :filepath html-file)
           (push entry new-data))))
