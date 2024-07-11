@@ -809,7 +809,8 @@ contextual information."
   (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                         (lambda (_) (org-export-heading-html)))
   (let ((should-export-org-file-function #'should-export-org-file))
-    (export-all-org-files :html-p t)))
+    (export-all-org-files :html-p t)
+    (generate-and-save-website-search-data)))
 
 (defun export-all-math-org-files-to-html ()
   (interactive)
@@ -963,8 +964,8 @@ contextual information."
          (org-html-head (concat
                          (format "<title>%s</title>" title)
                          (with-temp-buffer
-                          (insert-file-contents (from-emacsd "head.html"))
-                          (buffer-string))))
+                           (insert-file-contents (from-emacsd "head.html"))
+                           (buffer-string))))
          (my-preamble
           (concat
            (with-temp-buffer
@@ -976,7 +977,8 @@ contextual information."
                        title
                        (if desc (format "<span class=\"desc\">%s</span>" desc) ""))
              "")))
-         (org-html-preamble-format (list (list "en" my-preamble))))
+         (org-html-preamble-format (list (list "en" my-preamble)))
+         (search-data))
     (when heading
       (message "got %s %s" (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal))) title))
     (message "writing to %s" outfile)
@@ -988,7 +990,27 @@ contextual information."
       (widen))
     ;; (copy-directory "ltx" *static-html-dir* t)
     (copy-file (from-emacsd "main.css") *static-html-dir* t)
+    (copy-file (from-emacsd "main.js") *static-html-dir* t)
     (copy-file (from-emacsd "darkmode.js") *static-html-dir* t)))
+
+(defun generate-website-search-data ()
+  (let ((data (blk-collect-all))
+        (new-data)
+        (org-file-to-html-file-alist))
+    (dolist (entry data)
+      (let* ((org-file (plist-get entry :filepath))
+             (html-file (alist-get org-file org-file-to-html-file-alist)))
+        (when (funcall should-export-org-file-function org-file)
+          (when (not html-file)
+            (setq html-file (org-file-grab-keyword org-file "title"))
+            (push (cons org-file html-file) org-file-to-html-file-alist))
+          (plist-put entry :filepath html-file)
+          (push entry new-data))))
+    new-data))
+(defun generate-and-save-website-search-data ()
+  (with-temp-file
+      (join-path *static-html-dir* "search.json")
+    (insert (json-encode-array (generate-website-search-data)))))
 
 (defun org-remove-forexport-headlines (backend)
   "Remove headlines with :forexport: tag."

@@ -201,7 +201,7 @@
 
 % alternative to \hyperref to refer to a symbols definition/source using blk
 \newcommand{\refdef}[2][]{%
-  \special{dvisvgm:raw <g data-ref='#1'>}
+  \special{dvisvgm:raw <g data-ref='#1' class='math-button'>}
   \textcolor{orange}{\hyperref[#1]{#2}}
   \special{dvisvgm:raw </g>}
 }

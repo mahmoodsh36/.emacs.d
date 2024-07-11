@@ -1039,4 +1039,6 @@
 
 ;; (use-package ligature)
 
+;; (use-package org-pandoc-import)
+
 (provide 'setup-packages)
