@@ -101,6 +101,9 @@
   "return `filename', prefixed by the path to the notes dir `*notes-dir*'"
   (file-truename (join-path *notes-dir* filename)))
 
+(defun from-template (filename)
+  (file-truename (join-path *template-html-dir* filename)))
+
 ;; clean up ob-jupyter source block output
 ;; from henrik lissner
 ;; (defun my/org-babel-jupyter-strip-ansi-escapes-block ()

@@ -288,7 +288,7 @@
 
 % to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
 \makeatletter
-\NewDocumentCommand{\impop}{O{}O{.}m}{#3\checknextarg{#2}}
+\NewDocumentCommand{\impop}{O{}O{\mathrel{\refdef[#1]{\otimes}}}m}{#3\checknextarg{#2}}
 \newcommand{\checknextarg}[1]{\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
 \newcommand{\gobblenextarg}[2]{#1#2\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
 \makeatother

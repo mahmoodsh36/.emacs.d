@@ -15,6 +15,8 @@
 (defconst *static-html-dir* (concat (getenv "BLOG_DIR") "/"))
 (defconst *html-static-route* "/")
 (ignore-errors (mkdir *static-html-dir*)) ;; ensure it exists
+;; where "template" html files go
+(defconst *template-html-dir* (join-path (getenv "WORK_DIR") "template"))
 
 ;;(defconst *leader-key* "C-z");;"SPC")
 ;; (global-set-key (kbd "<SPC>") (make-sparse-keymap))

@@ -810,7 +810,15 @@ contextual information."
                         (lambda (_) (org-export-heading-html)))
   (let ((should-export-org-file-function #'should-export-org-file))
     (export-all-org-files :html-p t)
-    (generate-and-save-website-search-data)))
+    (generate-and-save-website-search-data)
+    (with-temp-buffer
+      (insert "#+title: search\n")
+      (insert "#+begin_export html\n")
+      (insert-file-contents (from-template "search.html"))
+      (goto-char (point-max))
+      (insert "\n#+end_export")
+      (org-mode)
+      (my-org-to-html))))
 
 (defun export-all-math-org-files-to-html ()
   (interactive)
@@ -835,7 +843,13 @@ contextual information."
         (eval (car (read-from-string value)))
       value)))
 (defun should-export-org-file (file)
-  (org-export-dir-name file)) ;; why am i returning dir name?
+  (let ((to-export (org-babel-ref-resolve (format "%s:tbl-notes-to-export" (file-for-blk-id "tbl-notes-to-export")))))
+    (or (org-export-dir-name file) ;; why am i returning dir name? because it is decided by #+export_section
+        (cl-find-if
+         (lambda (entry)
+           (and (equal (car entry) (file-name-nondirectory file))
+                (cl-member (caddr entry) (list "t" "yes" "y") :test 'equal)))
+         to-export))))
 (defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
   (car
@@ -915,17 +929,18 @@ contextual information."
                     (:todo t :name "other"))))
 
 (defun org-block-property (property block)
-  "example: #+begin_myblock :myproperty whatever-value"
+  "example: #+begin_myblock :myproperty whatever-value, notice that this function disables evaluation when it parses the headers"
   (let ((result
          (or (org-element-property property block)
-             ;; use format because sometimes org-babel-parse-header-arguments parses links as a vector, not as a string
              (alist-get
               property
               (org-babel-parse-header-arguments
-               (org-element-property :parameters block)))
+               (org-element-property :parameters block)
+               t))
              (member property
                      (mapcar 'car (org-babel-parse-header-arguments
-                                   (org-element-property :parameters block)))))))
+                                   (org-element-property :parameters block)
+                                   t))))))
     (when result
       (format "%s" result))))
 
@@ -964,12 +979,12 @@ contextual information."
          (org-html-head (concat
                          (format "<title>%s</title>" title)
                          (with-temp-buffer
-                           (insert-file-contents (from-emacsd "head.html"))
+                           (insert-file-contents (from-template "head.html"))
                            (buffer-string))))
          (my-preamble
           (concat
            (with-temp-buffer
-             (insert-file-contents (from-emacsd "preamble.html"))
+             (insert-file-contents (from-template "preamble.html"))
              (buffer-string))
            (if (or (not heading)
                    (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal))))
@@ -979,8 +994,6 @@ contextual information."
              "")))
          (org-html-preamble-format (list (list "en" my-preamble)))
          (search-data))
-    (when heading
-      (message "got %s %s" (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal))) title))
     (message "writing to %s" outfile)
     (when heading
       (org-narrow-to-subtree))
@@ -989,9 +1002,8 @@ contextual information."
     (when heading
       (widen))
     ;; (copy-directory "ltx" *static-html-dir* t)
-    (copy-file (from-emacsd "main.css") *static-html-dir* t)
-    (copy-file (from-emacsd "main.js") *static-html-dir* t)
-    (copy-file (from-emacsd "darkmode.js") *static-html-dir* t)))
+    (dolist (filepath (directory-files (join-path *template-html-dir* "static") t "html\\|css\\|js"))
+      (copy-file filepath *static-html-dir* t))))
 
 (defun generate-website-search-data ()
   (let ((data (blk-collect-all))
@@ -999,15 +1011,18 @@ contextual information."
         (org-file-to-html-file-alist))
     (dolist (entry data)
       (let* ((org-file (plist-get entry :filepath))
-             (html-file (alist-get org-file org-file-to-html-file-alist)))
+             (html-file (alist-get org-file org-file-to-html-file-alist))
+             (entry-id (blk-extract-id entry)))
+        (plist-put entry :id entry-id)
         (when (funcall should-export-org-file-function org-file)
           (when (not html-file)
             (setq html-file (html-out-file (org-file-grab-keyword org-file "title")))
             (push (cons org-file html-file) org-file-to-html-file-alist))
-          (plist-put entry :filepath html-file)
+          (plist-put entry :filepath (file-name-nondirectory html-file))
           (push entry new-data))))
     new-data))
 (defun generate-and-save-website-search-data ()
+  (interactive)
   (with-temp-file
       (join-path *static-html-dir* "search.json")
     (insert (json-encode-array (generate-website-search-data)))))
@@ -1030,7 +1045,8 @@ contextual information."
 (defun get-block-source (block)
   ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
   ;; it that way because of the brackets around it
-  (let ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
+
+  (let* ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
     ;; the newline is there (maybe temporarily) that prevents an error that happens otherwise
     (org-export-string-as original-citation-str 'latex t)))
 
