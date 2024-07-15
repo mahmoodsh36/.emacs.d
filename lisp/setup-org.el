@@ -206,14 +206,14 @@
   ;; disable org-mode's mathjax because my blog's code uses another version
   (setq org-html-mathjax-template "")
   (setq org-html-mathjax-options '())
-  (setq org-babel-default-header-args:latex
-        '((:results . "file graphics")
-          (:exports . "results")
-          ;; (:fit . t)
-          ;; (:imagemagick . t)
-          ;; (:eval . "no-export")
-          (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
-          ))
+  ;; (setq org-babel-default-header-args:latex
+  ;;       '((:results . "file graphics")
+  ;;         (:exports . "results")
+  ;;         ;; (:fit . t)
+  ;;         ;; (:imagemagick . t)
+  ;;         ;; (:eval . "no-export")
+  ;;         (:headers . ("\\usepackage{\\string~/.emacs.d/common}"))
+  ;;         ))
   ;; make org export deeply nested headlines as headlines still
   (setq org-export-headline-levels 20)
   ;; workaround to make yasnippet expand after dollar sign in org mode
@@ -344,7 +344,7 @@
                               ("denote" (denote-get-path-by-id link-path))
                               (_ nil))))
       (if denote-filepath ;; if indeed a blk/denote link
-          (if (funcall should-export-org-file-function denote-filepath)
+          (if (funcall should-export-org-file-function denote-filepath export-data-cache)
               (let ((blk-result (car (blk-find-by-id link-path))))
                 (if blk-result
                     (let* ((blk-filepath (plist-get blk-result :filepath))
@@ -438,17 +438,20 @@
         (if (or (not (equal (org-element-type element) 'special-block))
                 (cl-member block-type special-blocks-not-for-handling :test #'equal))
             (funcall fn attribute element property)
-          (list :class (format "math-block %s" block-type)
-                :data-before (concat (pcase block-type
-                                       ("my_example" "example")
-                                       ("my_comment" "comment")
-                                       (_ block-type))
-                                     (if (string-empty-p block-title)
-                                         ""
-                                       (concat ": " block-title)))
-                ;; dont export :source if it is just a path to a local file (starts with forward slash)
-                :data-after (when (not (string-prefix-p "/" citation))
-                              citation))))))
+          (append
+           (list :class (format "math-block")
+                 :data-before (concat (pcase block-type
+                                        ("my_example" "example")
+                                        ("my_comment" "comment")
+                                        (_ block-type))
+                                      (if (string-empty-p block-title)
+                                          ""
+                                        (concat ": " block-title)))
+                 ;; dont export :source if it is just a path to a local file (starts with forward slash)
+                 :data-after (when (not (string-prefix-p "/" citation))
+                               citation)
+                 :id (org-block-property :name element))
+           (funcall fn attribute element property))))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
   ;; overwrite the function to add the data-language attribute to the code blocks
@@ -532,8 +535,9 @@ contextual information."
         (apply orig-func args))))
   (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
-  ;; temporary workaround for captions breaking latex export
-  ;; (advice-add 'org-export-get-caption :filter-return (lambda (_) nil))
+  (defun my-special-block-filter (data backend channel)
+    (setq a data))
+  (add-to-list 'org-export-filter-special-block-functions 'my-special-block-filter)
 
   )
 
@@ -768,49 +772,53 @@ contextual information."
                           (_ nil))))
           filepath))))))
 
-(defun export-node-recursively (node exceptions &rest kw)
+(defun export-node-recursively (node exceptions file-data &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
   (if (and node (not (cl-find node exceptions :test #'string=)))
       (progn
         (push node exceptions)
-        (when (and node (funcall should-export-org-file-function node))
+        (when (and node (funcall should-export-org-file-function node file-data))
           (message (format "exporting: %s" node))
           (condition-case nil
               (apply #'export-org-file node kw)
             (error (message "failed to export %s" node)))
           (let ((nodes (files-linked-from-org-file node)))
             (dolist (other-node nodes)
-              (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
+              (when (funcall should-export-org-file-function other-node file-data) ;; to avoid jumping to nodes that arent for exporting anyway
                 (when other-node (message (format "exporter jumping to: %s" other-node)))
-                (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw)))))))
+                (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions file-data) kw)))))))
         exceptions)
     exceptions))
 
-(defun export-all-org-files (&rest kw)
+;; do we really need "recursive exporting"?
+(defun export-all-org-files (file-data &rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
   (let ((exceptions))
     (let ((files-to-export (list-org-files-to-export))
           ;; i need my transclusions present when exporting
           (org-mode-hook (cons 'org-transclusion-mode org-mode-hook)))
       (dolist (file files-to-export)
-        (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
+        (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions file-data) kw)))
         (setq exceptions (push file exceptions))))))
 
 (defun list-org-files-to-export ()
-  (list-note-files))
+  (reverse (list-note-files)))
 
 (defun export-all-org-files-to-html-and-pdf ()
   (interactive)
   (let ((should-export-org-file-function #'should-export-org-file))
     (export-all-org-files :html-p t :pdf-p t)))
 
+(setq export-data-cache nil) ;; hacky, used in some advices above (for links), i should find another way.
 (defun export-all-org-files-to-html ()
   (interactive)
   (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                         (lambda (_) (org-export-heading-html)))
-  (let ((should-export-org-file-function #'should-export-org-file))
-    (export-all-org-files :html-p t)
-    (generate-and-save-website-search-data)
+  (let ((should-export-org-file-function #'should-export-org-file)
+        (file-data (get-export-data)))
+    (setq export-data-cache file-data)
+    (export-all-org-files file-data :html-p t)
+    (generate-and-save-website-search-data file-data)
     (with-temp-buffer
       (insert "#+title: search\n")
       (insert "#+begin_export html\n")
@@ -842,14 +850,13 @@ contextual information."
     (if (string-prefix-p "(" value)
         (eval (car (read-from-string value)))
       value)))
-(defun should-export-org-file (file)
-  (let ((to-export (org-babel-ref-resolve (format "%s:tbl-notes-to-export" (file-for-blk-id "tbl-notes-to-export")))))
-    (or (org-export-dir-name file) ;; why am i returning dir name? because it is decided by #+export_section
-        (cl-find-if
-         (lambda (entry)
-           (and (equal (car entry) (file-name-nondirectory file))
-                (cl-member (caddr entry) (list "t" "yes" "y") :test 'equal)))
-         to-export))))
+(defun should-export-org-file (file file-data)
+  (cl-find-if
+   (lambda (entry)
+     (and (equal (file-name-nondirectory (plist-get entry :filepath))
+                 (file-name-nondirectory file))
+          (or (plist-get entry :export-section) (plist-get entry :to-export))))
+   file-data))
 (defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
   (car
@@ -1005,7 +1012,25 @@ contextual information."
     (dolist (filepath (directory-files (join-path *template-html-dir* "static") t "html\\|css\\|js"))
       (copy-file filepath *static-html-dir* t))))
 
-(defun generate-website-search-data ()
+(defun get-export-data ()
+  (let ((to-export (org-babel-ref-resolve (format "%s:tbl-notes-to-export" (file-for-blk-id "tbl-notes-to-export"))))
+        (file-data-cols (org-babel-ref-resolve (format "%s:src-export-data-results" (file-for-blk-id "src-export-data-results"))))
+        (file-data))
+    (dolist (entry file-data-cols)
+      (when (plistp entry)
+        (let ((file-data-entry)
+              (to-export-entry (cl-find-if (lambda (_entry) (equal (car _entry) (file-name-nondirectory (cadddr entry)))) to-export)))
+          (setq file-data-entry (list :to-export (cl-member (caddr to-export-entry)
+                                                            (list "t" "yes" "y")
+                                                            :test 'equal)))
+          (plist-put file-data-entry :title (car entry))
+          (plist-put file-data-entry :filetags (cadr entry))
+          (plist-put file-data-entry :export-section (not (or (equal (caddr entry) "")
+                                                              (equal (caddr entry) "nil"))))
+          (plist-put file-data-entry :filepath (cadddr entry))
+          (push file-data-entry file-data))))
+    file-data))
+(defun generate-website-search-data (file-data)
   (let ((data (blk-collect-all))
         (new-data)
         (org-file-to-html-file-alist))
@@ -1014,18 +1039,18 @@ contextual information."
              (html-file (alist-get org-file org-file-to-html-file-alist))
              (entry-id (blk-extract-id entry)))
         (plist-put entry :id entry-id)
-        (when (funcall should-export-org-file-function org-file)
+        (when (funcall should-export-org-file-function org-file file-data)
           (when (not html-file)
-            (setq html-file (html-out-file (org-file-grab-keyword org-file "title")))
+            (setq html-file (html-out-file (plist-get (cl-find-if (lambda (_entry) (equal (plist-get _entry :filepath) org-file)) file-data) :title)))
             (push (cons org-file html-file) org-file-to-html-file-alist))
           (plist-put entry :filepath (file-name-nondirectory html-file))
           (push entry new-data))))
     new-data))
-(defun generate-and-save-website-search-data ()
+(defun generate-and-save-website-search-data (file-data)
   (interactive)
   (with-temp-file
       (join-path *static-html-dir* "search.json")
-    (insert (json-encode-array (generate-website-search-data)))))
+    (insert (json-encode-array (generate-website-search-data file-data)))))
 
 (defun org-remove-forexport-headlines (backend)
   "Remove headlines with :forexport: tag."
@@ -1043,11 +1068,7 @@ contextual information."
     (my-org-to-html t)))
 
 (defun get-block-source (block)
-  ;; the use of `format` is because org-babel parses [this link] as a vector because it sees
-  ;; it that way because of the brackets around it
-
-  (let* ((original-citation-str (format "%s" (or (org-block-property :source block) ""))))
-    ;; the newline is there (maybe temporarily) that prevents an error that happens otherwise
+  (let* ((original-citation-str (or (org-block-property :source block) "")))
     (org-export-string-as original-citation-str 'latex t)))
 
 (defun current-unix-timestamp ()
