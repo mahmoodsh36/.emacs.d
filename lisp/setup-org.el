@@ -812,11 +812,11 @@ contextual information."
 (setq export-data-cache nil) ;; hacky, used in some advices above (for links), i should find another way.
 (defun export-all-org-files-to-html ()
   (interactive)
-  (map-org-dir-elements *notes-dir* ":forexport:" 'headline
-                        (lambda (_) (org-export-heading-html)))
   (let ((should-export-org-file-function #'should-export-org-file)
         (file-data (get-export-data)))
     (setq export-data-cache file-data)
+    (map-org-dir-elements *notes-dir* ":forexport:" 'headline
+                          (lambda (_) (org-export-heading-html)))
     (export-all-org-files file-data :html-p t)
     (generate-and-save-website-search-data file-data)
     (with-temp-buffer
