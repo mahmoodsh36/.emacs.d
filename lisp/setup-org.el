@@ -540,10 +540,19 @@ contextual information."
     (setq a data))
   (add-to-list 'org-export-filter-special-block-functions 'my-special-block-filter)
 
-  ;; this function sometimees tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
+  ;; this function sometimes tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
   (defun org-latex-preview--failure-callback-advice (orig-func &rest args)
     (ignore-errors (apply orig-func args)))
-  (advice-add #'org-latex-preview--failure-callback :around #'#'org-latex-preview--failure-callback-advice)
+  (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
+
+  ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
+  (defun ox-latex-disable-svg-handling ()
+    (interactive)
+    (setf (org-export-backend-feature-implementations (org-export-get-backend 'latex))
+          (cl-remove-if (lambda (entry)
+                          (equal (car entry) 'svg))
+                        (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
+  ;; (ox-latex-disable-svg-handling)
 
   )
 
@@ -551,22 +560,11 @@ contextual information."
 (defun my-export-newlines (_)
   (let ((inhibit-message t))
     (goto-char (point-min))
-    ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\n" "\\1.\n\n") ;; newline after all lines that dont start with # or \, this is impractical as it affects code blocks
     (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.\n" "\\1.\n\n") ;; insert newlines after lines ending with dot
     (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\)\\.)\n" "\\1.\n\n") ;; insert newlines after lines ending with ".)"
-    ;; (goto-char (point-min))
-    ;; (replace-regexp "\\(^[^#: \\\\]\\{1\\}.*\\):\n" "\\1:\n\n") ;; insert newlines after lines ending with colon
     ))
 ;; (with-eval-after-load 'org
 ;;   (add-to-list 'org-export-before-processing-functions 'my-export-newlines))
-
-;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
-(defun ox-latex-disable-svg-handling ()
-  (interactive)
-  (setf (org-export-backend-feature-implementations (org-export-get-backend 'latex))
-        (cl-remove-if (lambda (entry)
-                        (equal (car entry) 'svg))
-                      (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
 
 (defun org-babel-fold-all-latex-src-blocks ()
   "toggle visibility of org-babel latex src blocks"

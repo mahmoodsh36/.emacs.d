@@ -23,14 +23,15 @@
         (list (from-brain "notes")
               (from-brain "daily")))
 
-  ;; org-transclusion integration
-  (with-eval-after-load 'org-transclusion
-    (blk-configure-org-transclusion)
-    (defun org-transclusion-content-insert-advice (fn keyword-values type content sbuf sbeg send copy)
-      (when (not (string-suffix-p "\n" content))
-        (setq content (format "%s\n" content)))
-      (funcall fn keyword-values type content sbuf sbeg send copy))
-    (advice-add #'org-transclusion-content-insert :around #'org-transclusion-content-insert-advice))
+;; org-transclusion integration
+(with-eval-after-load 'org-transclusion
+  (blk-configure-org-transclusion)
+  (defun org-transclusion-content-insert-advice (fn keyword-values type content sbuf sbeg send copy)
+    (when (not (string-suffix-p "\n" content))
+      (setq content (format "%s\n" content)))
+    (funcall fn keyword-values type content sbuf sbeg send copy))
+  (advice-add #'org-transclusion-content-insert :around #'org-transclusion-content-insert-advice))
+
 
   ;; use auctex
   (setq blk-tex-env-at-point-function 'blk-auctex-env-at-point-bounds)
