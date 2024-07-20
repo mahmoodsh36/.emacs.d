@@ -427,6 +427,7 @@
 
   (defvar special-blocks-not-for-handling
     (list "dummy"
+          "any"
           "literal"))
 
   ;; export some blocks with class=math-block so they get styled accordingly
