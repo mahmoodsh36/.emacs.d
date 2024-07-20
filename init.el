@@ -138,7 +138,7 @@
 (setq large-file-warning-threshold nil)
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
-(which-key-mode)
+;;(which-key-mode)
 
 ;; for M-x term
 ;; (setq explicit-shell-file-name "zsh")

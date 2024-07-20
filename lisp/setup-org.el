@@ -540,6 +540,11 @@ contextual information."
     (setq a data))
   (add-to-list 'org-export-filter-special-block-functions 'my-special-block-filter)
 
+  ;; this function sometimees tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
+  (defun org-latex-preview--failure-callback-advice (orig-func &rest args)
+    (ignore-errors (apply orig-func args)))
+  (advice-add #'org-latex-preview--failure-callback :around #'#'org-latex-preview--failure-callback-advice)
+
   )
 
 ;; insert a blank line between everything in exports

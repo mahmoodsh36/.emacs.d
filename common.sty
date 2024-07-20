@@ -253,8 +253,11 @@
 \newcommand{\angled}[1]{\langle #1 \rangle}
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
 \newcommand{\incr}[1]{#1\texttt{+{}+}} % decrement of a number
+\newcommand{\sucfunc}{\brm{s}} % successor function
+\newcommand{\prefunc}{\brm{p}} % predecessor function (do i need this one?)
 \newcommand{\halt}{\refdef[blk:the-halt]{\operatorname{HALT}}} % operator for the halting problem
 \newcommand{\converges}[1]{\left. #1 \right\downarrow}
+\newcommand{\convergesto}[2]{\left. #1 \right\downarrow=#2}
 \newcommand{\diverges}[1]{\left. #1 \right\uparrow}
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
 \newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
@@ -323,6 +326,7 @@
 \newcommand{\compP}{\polylangs}
 \newcommand{\compNP}{\npolylangs}
 \newcommand{\compSTP}{\refdef{STP}} % set of total computable functions
+\newcommand{\albetstar}[1]{\refdef[blk:def-kleenestar]{{#1}^*}} % kleene closure of an alphabet
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
