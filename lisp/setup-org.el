@@ -407,7 +407,7 @@
                 (insert to-insert)
                 (setq citation-start (+ citation-start (length to-insert)))
                 (setq citation-end (+ citation-end (length to-insert)))
-                (kill-region citation-start citation-end))))
+                (delete-region citation-start citation-end))))
           (setq position citation-end))
         (if (<= position (buffer-size))
             (let ((original-buffer-substring
@@ -797,6 +797,7 @@ contextual information."
 ;; do we really need "recursive exporting"?
 (defun export-all-org-files (file-data &rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
+  (blk-update-cache)
   (let ((exceptions))
     (let ((files-to-export (list-org-files-to-export))
           ;; i need my transclusions present when exporting
@@ -1051,7 +1052,6 @@ contextual information."
           (push entry new-data))))
     new-data))
 (defun generate-and-save-website-search-data (file-data)
-  (interactive)
   (with-temp-file
       (join-path *static-html-dir* "search.json")
     (insert (json-encode-array (generate-website-search-data file-data)))))

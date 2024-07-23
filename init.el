@@ -1,4 +1,4 @@
-(toggle-debug-on-error)
+;; (toggle-debug-on-error)
 ;; disable annoying warnings
 (setq native-comp-async-report-warnings-errors nil)
 ;; disable customization using the interactive interface and remove startup screen
@@ -91,7 +91,7 @@
 (add-to-list 'savehist-additional-variables 'blk-hist)
 (setq savehist-save-minibuffer-history t)
 (setq history-length t) ;; no limit to history length
-;; break long lines into multiple
+;; break long lines into multiple, dont cut-off words
 ;; (global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
@@ -189,8 +189,8 @@
   '(("lambda"  . ?λ)
     ;; ("let" . ?≜)
     ;; ("nil" . (?· (Br . Bl) ?· (Br . Bl) ?∅))
-    ("sqrt" . ?√)
-    ("sum" . (?· (Br . Bl) ?· (Br . Bl) ?∑))
+    ;; ("sqrt" . ?√)
+    ;; ("sum" . (?· (Br . Bl) ?· (Br . Bl) ?∑))
     ;; ("equal" . (?· (Br . Bl) ?· (Br . Bl) ?· (Br . Bl) ?· (Br . Bl) ?≡))
     ;; ("defun" . ?⪮)
     ;; ("<=" . ?≤)
@@ -209,10 +209,10 @@
     ;; ("<=<" . ?↢)
     ;; (">=>" . ?↣)
     ;; ("&&" . ?∧)
-    ("and" . (?· (Br . Bl) ?· (Br . Bl) ?∧))
-    ("or" . (?· (Br . Bl) ?∨))
+    ;; ("and" . (?· (Br . Bl) ?· (Br . Bl) ?∧))
+    ;; ("or" . (?· (Br . Bl) ?∨))
     ;; ("progn" . ?∘)
-    ("not" . (?· (Br . Bl) ?· (Br . Bl) ?¬))
+    ;; ("not" . (?· (Br . Bl) ?· (Br . Bl) ?¬))
     ))
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)

@@ -39,8 +39,8 @@
   ;; allow for recursive grep
   ;; (setq blk-search-recursively t)
 
-  ;; enable group search (group things together)
-  (setq blk-enable-groups t)
+  ;; enable group search (group things together), for now its somewhat slow :(
+  ;; (setq blk-enable-groups t)
 
   ;; add the :defines pattern
   (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
