@@ -256,9 +256,9 @@
 \newcommand{\sucfunc}{\brm{s}} % successor function
 \newcommand{\prefunc}{\brm{p}} % predecessor function (do i need this one?)
 \newcommand{\halt}{\refdef[blk:the-halt]{\operatorname{HALT}}} % operator for the halting problem
-\newcommand{\converges}[1]{\left. #1 \right\downarrow}
+\newcommand{\converges}[1]{#1 \refdef[blk:def-program-conv]{\downarrow}}
 \newcommand{\convergesto}[2]{\left. #1 \right\downarrow=#2}
-\newcommand{\diverges}[1]{\left. #1 \right\uparrow}
+\newcommand{\diverges}[1]{#1 \refdef[blk:def-program-div]{\uparrow}}
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
 \newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
 \newcommand{\scomp}[1]{\overline{#1}} % set complement
@@ -297,11 +297,11 @@
 \makeatother
 
 % some computability symbols
-\DeclareMathOperator{\program}{\refdef[blk:def-algorithm-inf]{\mathscr{P}}} % symbol for a turing program, this may be better off referring blk:def-S-program tho
+\DeclareMathOperator{\program}{\refdef[blk:def-program]{\mathscr{P}}} % symbol for a program
 \DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
 \DeclareMathOperator{\cfunc}{\refdef[blk:not-comp-func]{\psi}} % computable function symbol
 \newcommand{\godelnum}[1]{\left\langle #1 \right\rangle} % godel number notation
-\newcommand{\langS}{\refdef[blk:20240309T094530]{\mathscr{S}}}
+\newcommand{\langS}{\refdef[blk:blk-S-lang]{\mathscr{S}}}
 \newcommand{\turingreduceo}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_1}} #2}
 \newcommand{\turingreducem}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_m}} #2}
 \newcommand{\turingreduce}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le}} #2}
