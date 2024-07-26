@@ -4,8 +4,14 @@
 (use-package org
   :ensure ( :remotes ("tecosaur"
                       :repo "https://git.tecosaur.net/tec/org-mode.git"
-                      :branch "dev")
-            :files (:defaults "etc")))
+                      :branch "dev"
+		      ;; :depth nil ;; clone full repo
+		      ;; :pin t
+                      ;; :ref "2022f1ff5dc1b42b002fbae44b565b0ac10fca42"
+                      )
+            :files (:defaults "etc"))
+  ;; :ref "2022f1ff5" ;; not sure where it needs to be but just to be safe lol
+  )
 
 (use-package org-contrib
   :ensure ( :host github :repo "emacsmirror/org-contrib"))
