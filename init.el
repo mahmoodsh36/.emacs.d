@@ -98,8 +98,8 @@
 ;; use imagemagick for formats like webp
 (setq image-use-external-converter t)
 ;; display white spaces and newlines
-;; (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof)) ;; use this to highlight everything including space
-(setq whitespace-style '(face tabs spaces indentation trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof)) ;; use this to not highlight spaces, works with org better and some themes.. (a fallback)
+(setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark missing-newline-at-eof)) ;; use this to highlight everything including space
+;; (setq whitespace-style '(face tabs spaces indentation trailing space-before-tab newline empty space-after-tab tab-mark newline-mark missing-newline-at-eof)) ;; use this to not highlight spaces, works with org better and some themes.. (a fallback)
 ;; show zero-width characters
 (set-face-background 'glyphless-char "red")
 ;; change newline character
@@ -339,8 +339,8 @@
 ;; (repeat-mode -1)
 
 ;; enable flyspell (spell checking)
-(dolist (hook '(text-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
+;; (dolist (hook '(text-mode-hook))
+;;   (add-hook hook (lambda () (flyspell-mode 1))))
 ;; ;; flyspell buffer when its opened
 ;; (add-hook 'flyspell-mode-hook #'flyspell-buffer)
 

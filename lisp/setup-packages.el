@@ -144,10 +144,10 @@
   )
 
 ;; for some reason ispell completion is enabled in org mode
-(defun remove-ispell-cap ()
-  (interactive)
-  (setq-local completion-at-point-functions (delete 'ispell-completion-at-point completion-at-point-functions)))
-(add-hook 'org-mode-hook #'remove-ispell-cap)
+;; (defun remove-ispell-cap ()
+;;   (interactive)
+;;   (setq-local completion-at-point-functions (delete 'ispell-completion-at-point completion-at-point-functions)))
+;; (add-hook 'org-mode-hook #'remove-ispell-cap)
 
 ;; corfu completion in the minibuffer
 (with-eval-after-load 'corfu
@@ -289,9 +289,9 @@
 
 
 ;; highlight errors in code
-(use-package flycheck
-  :config
-  (global-flycheck-mode))
+;; (use-package flycheck
+;;   :config
+;;   (global-flycheck-mode))
 
 ;; edit multiple instances of a word simulataneously
 ;; (use-package iedit)
@@ -789,8 +789,8 @@
 
 (use-package rg)
 
-(use-package flyspell-correct
-  :bind ("C-;" . flyspell-correct-wrapper))
+;; (use-package flyspell-correct
+;;   :bind ("C-;" . flyspell-correct-wrapper))
 
 ;; (use-package hl-block-mode)
 
@@ -939,7 +939,7 @@
 ;; (use-package consult-lsp)
 (use-package consult-tex)
 (use-package consult-compile-multi)
-(use-package consult-flycheck)
+;; (use-package consult-flycheck)
 
 (use-package consult-bibtex
   :ensure ( :host github :repo "mohkale/consult-bibtex"))
