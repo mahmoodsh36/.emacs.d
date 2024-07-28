@@ -161,9 +161,9 @@
   ;; annoying broken links..
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images
-  ;; (setq org-latex-preview-cache 'temp)
-  ;; (setq org-element-cache-persistent nil)
-  ;; (setq org-element-use-cache nil)
+  (setq org-latex-preview-cache 'temp)
+  (setq org-element-cache-persistent nil)
+  (setq org-element-use-cache nil)
   (setq org-latex-default-packages-alist nil)
 
   ;; enter insert state after invoking org-capture
@@ -1159,7 +1159,8 @@ contextual information."
 
 (defun list-books ()
   (let ((book-org-files (list-book-org-files))
-        (books))
+        (books)
+        (org-startup-with-latex-preview nil))
     (dolist (book-org-file book-org-files)
       (blk-with-file-as-current-buffer
        book-org-file

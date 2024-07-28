@@ -144,10 +144,10 @@
   )
 
 ;; for some reason ispell completion is enabled in org mode
-;; (defun remove-ispell-cap ()
-;;   (interactive)
-;;   (setq-local completion-at-point-functions (delete 'ispell-completion-at-point completion-at-point-functions)))
-;; (add-hook 'org-mode-hook #'remove-ispell-cap)
+(defun remove-ispell-cap ()
+  (interactive)
+  (setq-local completion-at-point-functions (delete 'ispell-completion-at-point completion-at-point-functions)))
+(add-hook 'org-mode-hook #'remove-ispell-cap)
 
 ;; corfu completion in the minibuffer
 (with-eval-after-load 'corfu
