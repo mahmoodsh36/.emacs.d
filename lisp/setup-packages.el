@@ -410,17 +410,17 @@
   )
 
 ;; show hidden elements when cursor is over them like links/markers etc
-(use-package org-appear
-  :after org
-  :config
-  (setq org-appear-autoemphasis t
-        org-appear-autoentities t
-        org-appear-autokeywords t
-        org-appear-autolinks t
-        org-appear-autosubmarkers t
-        ;; org-hide-emphasis-markers t
-        )
-  (add-hook 'org-mode-hook 'org-appear-mode t))
+;; (use-package org-appear
+;;   :after org
+;;   :config
+;;   (setq org-appear-autoemphasis t
+;;         org-appear-autoentities t
+;;         org-appear-autokeywords t
+;;         org-appear-autolinks t
+;;         org-appear-autosubmarkers t
+;;         ;; org-hide-emphasis-markers t
+;;         )
+;;   (add-hook 'org-mode-hook 'org-appear-mode t))
 
 ;; (use-package dape)
 

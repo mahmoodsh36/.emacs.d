@@ -556,8 +556,9 @@
 % absolute value macro, |var|
 \delimitershortfall-1sp
 \newcommand\abs[1]{\left|#1\right|}
-% norm macro, https://tex.stackexchange.com/questions/107186/how-to-write-norm-which-adjusts-its-size
-\newcommand{\norm}[2][2]{{\lVert{#2}\rVert}_{#1}}
+\DeclarePairedDelimiter{\norm}{{\refdef[blk:def-norm]{\Vert}}}{{\refdef[blk:def-norm]{\Vert}}}
+\newcommand{\pnorm}[2][2]{{\refdef[blk:def-pnorm]{\Vert}#2\refdef[blk:def-pnorm]{\Vert}}_{#1}}
+\newcommand{\something}{\,\cdot\,}
 
 % dot above minus (for monus etc), https://tex.stackexchange.com/questions/114188/special-character-dot-over-dash
 \makeatletter
