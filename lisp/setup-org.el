@@ -161,10 +161,10 @@
   ;; annoying broken links..
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images
-  ;; (setq org-latex-preview-cache 'temp)
-  ;; (setq org-element-cache-persistent nil)
-  ;; (setq org-element-use-cache nil)
-  ;; (setq org-latex-default-packages-alist nil)
+  (setq org-latex-preview-cache 'temp)
+  (setq org-element-cache-persistent nil)
+  (setq org-element-use-cache nil)
+  (setq org-latex-default-packages-alist nil)
 
   ;; enter insert state after invoking org-capture
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
@@ -542,14 +542,10 @@ contextual information."
         (apply orig-func args))))
   (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
-  (defun my-special-block-filter (data backend channel)
-    (setq a data))
-  (add-to-list 'org-export-filter-special-block-functions 'my-special-block-filter)
-
   ;; this function sometimes tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
   (defun org-latex-preview--failure-callback-advice (orig-func &rest args)
     (ignore-errors (apply orig-func args)))
-  (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
+  ;; (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
 
   ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
   (defun ox-latex-disable-svg-handling ()
@@ -804,7 +800,8 @@ contextual information."
 (defun export-all-org-files (file-data &rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
   (blk-update-cache)
-  (let ((exceptions))
+  (let ((exceptions)
+        (org-startup-with-latex-preview nil))
     (let ((files-to-export (list-org-files-to-export))
           ;; i need my transclusions present when exporting
           (org-mode-hook (cons 'org-transclusion-mode org-mode-hook)))
@@ -1056,6 +1053,7 @@ contextual information."
             (setq html-file (html-out-file (plist-get (cl-find-if (lambda (_entry) (equal (plist-get _entry :filepath) org-file)) file-data) :title)))
             (push (cons org-file html-file) org-file-to-html-file-alist))
           (plist-put entry :filepath (file-name-nondirectory html-file))
+          (plist-put entry :original-filename (file-name-nondirectory html-file))
           (push entry new-data))))
     new-data))
 (defun generate-and-save-website-search-data (file-data)

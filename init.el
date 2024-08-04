@@ -160,7 +160,7 @@
 (setq auto-window-vscroll nil)
 
 ;; start server
-(server-start)
+;; (server-start)
 
 ;; eshell configs
 ;; make the cursor stay at the prompt when scrolling
@@ -350,7 +350,7 @@
   (unless (any #'derived-mode-p '(org-mode pdf-view-mode image-mode doc-view-mode archive-mode arc-mode jka-compr-mode))
     (when (> (buffer-size) (* 1024 512))
       (message "entering fundamental-mode from %s" major-mode)
-      (flycheck-mode -1)
+      (when (fboundp 'flycheck-mode) (flycheck-mode -1))
       (flyspell-mode -1)
       (font-lock-mode -1)
       (fundamental-mode)
