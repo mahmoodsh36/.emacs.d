@@ -209,7 +209,7 @@
 ;; (led-kbd "a p" #'org-clock-display :keymaps 'org-mode-map)
 (led-kbd "a t" (lambda () (interactive) (org-capture nil "t")))
 (led-kbd "a c" #'org-todo :keymaps 'org-mode-map)
-(led-kbd "a C" (lambda () (interactive) (execute-kbd-macro "C-- 1 C-c C-t")) :keymaps 'org-mode-map) ;; modify recurring task "forever", this doesnt work
+(led-kbd "a C" (lambda () (interactive) (execute-kbd-macro (kbd "C-- 1 C-c C-t"))) :keymaps 'org-mode-map) ;; modify recurring task "forever", this doesnt work
 (led-kbd "" (make-sparse-keymap) :keymaps 'org-agenda-mode-map) ;; needed for the next one
 (led-kbd "a c" #'org-agenda-todo :keymaps 'org-agenda-mode-map)
 (led-kbd "a n" 'today-entry)

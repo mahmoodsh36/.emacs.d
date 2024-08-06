@@ -161,10 +161,10 @@
   ;; annoying broken links..
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images
-  (setq org-latex-preview-cache 'temp)
-  (setq org-element-cache-persistent nil)
-  (setq org-element-use-cache nil)
-  (setq org-latex-default-packages-alist nil)
+  ;; (setq org-latex-preview-cache 'temp)
+  ;; (setq org-element-cache-persistent nil)
+  ;; (setq org-element-use-cache nil)
+  ;; (setq org-latex-default-packages-alist nil)
 
   ;; enter insert state after invoking org-capture
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
@@ -545,7 +545,7 @@ contextual information."
   ;; this function sometimes tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
   (defun org-latex-preview--failure-callback-advice (orig-func &rest args)
     (ignore-errors (apply orig-func args)))
-  ;; (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
+  (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
 
   ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
   (defun ox-latex-disable-svg-handling ()
