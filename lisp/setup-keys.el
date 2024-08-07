@@ -521,4 +521,6 @@
 
 (led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
 
+(general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
+
 (provide 'setup-keys)
