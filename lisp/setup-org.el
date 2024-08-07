@@ -350,7 +350,7 @@
                               ("denote" (denote-get-path-by-id link-path))
                               (_ nil))))
       (if denote-filepath ;; if indeed a blk/denote link
-          (if (funcall should-export-org-file-function denote-filepath export-data-cache)
+          (if (funcall should-export-org-file-function denote-filepath)
               (let ((blk-result (car (blk-find-by-id link-path))))
                 (if blk-result
                     (let* ((blk-filepath (plist-get blk-result :filepath))
@@ -778,26 +778,26 @@ contextual information."
                           (_ nil))))
           filepath))))))
 
-(defun export-node-recursively (node exceptions file-data &rest kw)
+(defun export-node-recursively (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
   (if (and node (not (cl-find node exceptions :test #'string=)))
       (progn
         (push node exceptions)
-        (when (and node (funcall should-export-org-file-function node file-data))
+        (when (and node (funcall should-export-org-file-function node))
           (message (format "exporting: %s" node))
           (condition-case nil
               (apply #'export-org-file node kw)
             (error (message "failed to export %s" node)))
           (let ((nodes (files-linked-from-org-file node)))
             (dolist (other-node nodes)
-              (when (funcall should-export-org-file-function other-node file-data) ;; to avoid jumping to nodes that arent for exporting anyway
+              (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
                 (when other-node (message (format "exporter jumping to: %s" other-node)))
-                (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions file-data) kw)))))))
+                (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw)))))))
         exceptions)
     exceptions))
 
 ;; do we really need "recursive exporting"?
-(defun export-all-org-files (file-data &rest kw)
+(defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
   (blk-update-cache)
   (let ((exceptions)
@@ -806,7 +806,7 @@ contextual information."
           ;; i need my transclusions present when exporting
           (org-mode-hook (cons 'org-transclusion-mode org-mode-hook)))
       (dolist (file files-to-export)
-        (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions file-data) kw)))
+        (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
         (setq exceptions (push file exceptions))))))
 
 (defun list-org-files-to-export ()
@@ -817,16 +817,14 @@ contextual information."
   (let ((should-export-org-file-function #'should-export-org-file))
     (export-all-org-files :html-p t :pdf-p t)))
 
-(setq export-data-cache nil) ;; hacky, used in some advices above (for links), i should find another way.
+;; (setq export-data-cache nil) ;; hacky, used in some advices above (for links), i should find another way.
 (defun export-all-org-files-to-html ()
   (interactive)
-  (let ((should-export-org-file-function #'should-export-org-file)
-        (file-data (get-export-data)))
-    (setq export-data-cache file-data)
+  (let ((should-export-org-file-function #'should-export-org-file))
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
-    (export-all-org-files file-data :html-p t)
-    (generate-and-save-website-search-data file-data)
+    (export-all-org-files :html-p t)
+    (generate-and-save-website-search-data)
     (with-temp-buffer
       (insert "#+title: search\n")
       (insert "#+begin_export html\n")
@@ -858,13 +856,8 @@ contextual information."
     (if (string-prefix-p "(" value)
         (eval (car (read-from-string value)))
       value)))
-(defun should-export-org-file (file file-data)
-  (cl-find-if
-   (lambda (entry)
-     (and (equal (file-name-nondirectory (plist-get entry :filepath))
-                 (file-name-nondirectory file))
-          (or (plist-get entry :export-section) (plist-get entry :to-export))))
-   file-data))
+(defun should-export-org-file (file)
+  (org-file-grab-keyword file "export_section"))
 (defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
   (car
@@ -878,6 +871,10 @@ contextual information."
   (with-file-as-current-buffer
    orgfile
    (org-get-keyword kw)))
+(defun org-file-grab-title (orgfile)
+  (with-file-as-current-buffer
+   orgfile
+   (org-get-title)))
 
 (defun list-section-export-candidates (section)
   (let* ((grep-results (grep-org-dir *notes-dir* (format "#\\+export_section: %s" section)))
@@ -1038,7 +1035,7 @@ contextual information."
           (plist-put file-data-entry :filepath (cadddr entry))
           (push file-data-entry file-data))))
     file-data))
-(defun generate-website-search-data (file-data)
+(defun generate-website-search-data ()
   (let ((data (blk-collect-all))
         (new-data)
         (org-file-to-html-file-alist))
@@ -1048,18 +1045,18 @@ contextual information."
              (html-file (alist-get org-file org-file-to-html-file-alist))
              (entry-id (blk-extract-id entry)))
         (plist-put entry :id entry-id)
-        (when (funcall should-export-org-file-function org-file file-data)
+        (when (funcall should-export-org-file-function org-file)
           (when (not html-file)
-            (setq html-file (html-out-file (plist-get (cl-find-if (lambda (_entry) (equal (plist-get _entry :filepath) org-file)) file-data) :title)))
+            (setq html-file (html-out-file (org-file-grab-title org-file)))
             (push (cons org-file html-file) org-file-to-html-file-alist))
           (plist-put entry :filepath (file-name-nondirectory html-file))
           (plist-put entry :original-filename (file-name-nondirectory html-file))
           (push entry new-data))))
     new-data))
-(defun generate-and-save-website-search-data (file-data)
+(defun generate-and-save-website-search-data ()
   (with-temp-file
       (join-path *static-html-dir* "search.json")
-    (insert (json-encode-array (generate-website-search-data file-data)))))
+    (insert (json-encode-array (generate-website-search-data)))))
 
 (defun org-remove-forexport-headlines (backend)
   "Remove headlines with :forexport: tag."
