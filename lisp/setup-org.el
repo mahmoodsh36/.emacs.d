@@ -743,7 +743,8 @@ contextual information."
 (defmacro with-file-as-current-buffer (file &rest body)
   (let ((present-buffer (gensym))
         (result (gensym)))
-    `(let ((,present-buffer (find-buffer-visiting ,file)))
+    `(let ((,present-buffer (find-buffer-visiting ,file))
+           (org-startup-with-latex-preview nil))
        (save-excursion
          (with-current-buffer (or (find-buffer-visiting ,file) (find-file-noselect ,file))
            (setq ,result (progn ,@body))
@@ -1155,10 +1156,9 @@ contextual information."
 
 (defun list-books ()
   (let ((book-org-files (list-book-org-files))
-        (books)
-        (org-startup-with-latex-preview nil))
+        (books))
     (dolist (book-org-file book-org-files)
-      (blk-with-file-as-current-buffer
+      (with-file-as-current-buffer
        book-org-file
        (push (list :title (org-get-keyword "book_title")
                    :identifier (org-get-keyword "identifier")
@@ -1210,5 +1210,51 @@ contextual information."
                    (plist-get book :year)
                    (plist-get book :file)
                    (plist-get book :book-source-url))))))))
+
+(defun entry-nodes-metadata ()
+  (mapcar
+   (lambda (orgfile)
+     (list :title (org-file-grab-title orgfile)
+           :books (entry-books orgfile)
+           :nodes (entry-children orgfile)))
+   (org-files-with-tag "entry")))
+
+(defun parse-org-list ()
+  (let ((mylist))
+    (while (not (equal (org-element-type (org-element-at-point)) 'plain-list))
+      (forward-line))
+    (let ((stop nil))
+      (while (and (not stop) (cl-member (org-element-type (org-element-at-point)) '(plain-list item)))
+        (forward-char 2)
+        (push (buffer-substring-no-properties
+               (org-element-contents-begin (org-element-at-point))
+               (1- (org-element-contents-end (org-element-at-point))))
+              mylist)
+        (condition-case nil
+            (org-forward-element)
+          (error (setq stop t)))))
+      mylist))
+
+(defun entry-books (orgfile)
+  (with-file-as-current-buffer
+   orgfile
+   (let ((mybooks))
+     (org-element-map (org-element-parse-buffer) 'headline
+       (lambda (elm)
+         (when (is-substring "books" (org-element-property :raw-value elm))
+           (goto-char (org-element-begin elm))
+           (setq mybooks (parse-org-list)))))
+     mybooks)))
+
+(defun entry-children (orgfile)
+  (with-file-as-current-buffer
+   orgfile
+   (let ((mylist))
+     (org-element-map (org-element-parse-buffer) 'headline
+       (lambda (elm)
+         (when (is-substring "nodes" (org-element-property :raw-value elm))
+           (goto-char (org-element-begin elm))
+           (setq mylist (parse-org-list)))))
+     mylist)))
 
 (provide 'setup-org)

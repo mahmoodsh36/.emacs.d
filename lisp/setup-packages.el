@@ -103,7 +103,7 @@
   (corfu-popupinfo-delay (cons 0 0)) ;; dont auto insert when there is an exact match
   ;; (corfu-auto-prefix 2)
   :config
-  ;; (unbind-key "RET" corfu-map)
+  (unbind-key "RET" corfu-map)
   ;; (unbind-key "TAB" corfu-map)
   ;; to unbind tab completiuon
   ;; (define-key corfu-map [tab] nil)
