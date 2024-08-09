@@ -273,7 +273,7 @@
 \newcommand{\textfalse}{\textop{false}}
 \newcommand{\texttrue}{\textop{false}}
 \newcommand{\seqconvto}[3]{\refdef[blk:def-seq-conv]{\lim_{#2 \to \infty} #1 = #3}} % convergence of a sequnece to a number, first arg is the sequence name (e.g. a_n), second is the sequence index (e.g. n), third is the value it converges to.
-\newcommand{\seq}[2]{\refdef[blk:def-seq]{(#1_{#2})}} % sequence notation, first arg is sequence name, second is the indexing variable
+\newcommand{\seq}[2]{\refdef[blk:def-seq]{#1_{#2}}} % sequence notation, first arg is sequence name, second is the indexing variable
 \newcommand{\seqelm}[2]{\refdef[blk:def-seq]{(#1_{#2})}} % get a specific element of a sequence by its index, first arg is the sequence, second is the element's index
 \newcommand{\attn}{\refdef[blk:blk-attention]{\operatorname{Attention}}}
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -283,8 +283,9 @@
 \newcommand{\edgeset}[1][E]{\refdef[blk:def-edge-set]{#1}}
 \renewcommand{\log}{\refdef[blk:def-log]{\operatorname{log}}}
 \renewcommand{\ln}{\refdef[blk:def-ln]{\operatorname{ln}}}
-\renewcommand{\euler}{\refdef[blk:def-euler-num]{\mathscr{e}}}
-\renewcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
+\newcommand{\euler}{\refdef[blk:def-euler-num]{\mathscr{e}}}
+\newcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
+\newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
