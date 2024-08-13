@@ -445,4 +445,7 @@ prompt the user for a coding system."
            (push entry entries)))))
     entries))
 
+(defmacro memoized (seconds &rest body)
+  )
+
 (provide 'setup-utils)

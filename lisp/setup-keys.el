@@ -516,8 +516,17 @@
 
 (evil-set-initial-state 'org-agenda-mode 'normal)
 
-(led-kbd "; o" #'book-prompt)
-(led-kbd "; O" #'new-book-note-file)
+(led-kbd "; o"
+         (lambda ()
+           (interactive)
+           (let ((mybook (book-prompt)))
+             (find-file mybook))))
+(led-kbd "; O"
+         (lambda ()
+           (interactive)
+           (let ((mybook (book-prompt)))
+             (browse-url mybook))))
+;; (led-kbd "; O" #'new-book-note-file)
 
 (led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
 
