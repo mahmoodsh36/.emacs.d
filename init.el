@@ -120,7 +120,7 @@
 ;; (global-highlight-changes-mode)
 ;; ;; remove highlights after save
 ;; (add-hook 'after-save-hook
-;;           '(lambda()
+;;           '(lambda ()
 ;;              (if (boundp 'highlight-changes-mode)
 ;;                  (highlight-changes-remove-highlight (point-min) (point-max)))))
 ;; return propertized strings from completing-read (when theyre passed) [[denote:20240321T195503][alternative completing read]]

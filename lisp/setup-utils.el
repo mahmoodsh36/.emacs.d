@@ -152,12 +152,14 @@
   "join file paths using a forward slash"
   (let ((main (car paths)))
     (dolist (other (cdr paths))
-      (setq main (concat main
-                         (if (or (string-prefix-p "/" other)
-                                 (string-suffix-p "/" main))
-                             ""
-                           "/")
-                         other)))
+      (setq main
+            (concat
+             main
+             (if (or (string-prefix-p "/" other)
+                     (string-suffix-p "/" main))
+                 ""
+               "/")
+             other)))
     (string-replace "//" "/" main)))
 
 (defun kill-all-buffers ()
