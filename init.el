@@ -68,10 +68,12 @@
 ;; restore default status line for pdf mode
 (let ((hooks '(pdf-view-mode-hook doc-view-mode-hook)))
   (dolist (hook hooks)
-    (add-hook hook
-              (lambda ()
-                (interactive)
-                (setq-local mode-line-format (eval (car (get 'mode-line-format 'standard-value))))))))
+    (add-hook
+     hook
+     (lambda ()
+       (interactive)
+       (setq-local mode-line-format
+                   (eval (car (get 'mode-line-format 'standard-value))))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab complete current word

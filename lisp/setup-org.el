@@ -345,12 +345,12 @@
     "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'. also we need to handle links to static files, copy those over to the html dir and link to them properly."
     (let* ((link-path (org-element-property :path link))
            (link-type (org-element-property :type link))
-           (denote-filepath (pcase link-type
+           (filepath (pcase link-type
                               ("blk" (plist-get (car (blk-find-by-id link-path)) :filepath))
                               ("denote" (denote-get-path-by-id link-path))
                               (_ nil))))
-      (if denote-filepath ;; if indeed a blk/denote link
-          (if (funcall should-export-org-file-function denote-filepath)
+      (if filepath ;; if indeed a blk/denote link
+          (if (funcall should-export-org-file-function filepath)
               (let ((blk-result (car (blk-find-by-id link-path))))
                 (if blk-result
                     (let* ((blk-filepath (plist-get blk-result :filepath))
@@ -565,6 +565,18 @@ contextual information."
                       (if (>= org-latex-preview--dvisvgm3-minor-version 2)
                           " -v3 --message='processing page {?pageno}: output written to {?svgfile}'" "")
                       " -o %B-%%9p.svg %f")))
+
+
+  ;; org inserts inline height value, override that, it causes problems with big latex previews on smaller screens where the previews take more height than they need because their width was decreased (using max-width: 100%) but their height wasnt
+  (defun my-latex-preview-filter (transcoded-text backend channel)
+    (setq a transcoded-text)
+    (if (equal backend 'html)
+        (replace-regexp-in-string (regexp-quote "\"height: ")
+                                  "\"max-height: "
+                                  transcoded-text)
+      transcoded-text))
+  (add-to-list 'org-export-filter-latex-environment-functions 'my-latex-preview-filter)
+  (add-to-list 'org-export-filter-latex-fragment-functions 'my-latex-preview-filter)
 
   )
 
@@ -811,28 +823,29 @@ contextual information."
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
   (blk-update-cache)
-  (let ((org-files-to-export)
-        (exceptions)
+  (let ((exceptions)
         (org-startup-with-latex-preview nil)
-        (files-to-export (collect-org-files-to-export))
         (files-to-export-1 (list-org-files-to-export))
         ;; i need my transclusions present when exporting
         (org-mode-hook (cons 'org-transclusion-mode org-mode-hook)))
     (dolist (file files-to-export-1)
       (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
-      (setq exceptions (push file exceptions)))))
+      (setq exceptions (push file exceptions))
+      (message "%s/%s" (length exceptions) (length files-to-export-1)))))
 
 (defun list-org-files-to-export ()
   (reverse (list-note-files)))
 
-(defun export-all-org-files-to-html-and-pdf ()
-  (interactive)
-  (let ((should-export-org-file-function #'should-export-org-file))
-    (export-all-org-files :html-p t :pdf-p t)))
+;; this doesnt do all that is necessary
+;; (defun export-all-org-files-to-html-and-pdf ()
+;;   (interactive)
+;;   (let ((should-export-org-file-function #'should-export-org-file))
+;;     (export-all-org-files :html-p t :pdf-p t)))
 
 (defun export-all-org-files-to-html ()
   (interactive)
-  (let ((should-export-org-file-function #'should-export-org-file))
+  (let ((should-export-org-file-function #'should-export-org-file)
+        (files-to-export (collect-org-files-to-export)))
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
     (export-entries-page)
@@ -864,10 +877,9 @@ contextual information."
         (eval (car (read-from-string value)))
       value)))
 (defun should-export-org-file (file)
-  (or (org-file-grab-keyword file "export_section")
-      (if (boundp 'files-to-export)
-          (cl-member file files-to-export :test #'equal)
-        (cl-member file (collect-org-files-to-export) :test #'equal))))
+  (if (boundp 'files-to-export)
+      (cl-member file files-to-export :test #'equal)
+    (cl-member file (collect-org-files-to-export) :test #'equal)))
 (defun org-export-dir-name (file)
   "whether the current org buffer should be exported"
   (car
@@ -1032,21 +1044,25 @@ contextual information."
   (let ((data (blk-collect-all))
         (new-data)
         (org-file-to-html-file-alist))
-    (dolist (entry data)
-      (let* ((org-startup-with-latex-preview nil)
-             (org-file (plist-get entry :filepath))
-             (html-file (alist-get org-file org-file-to-html-file-alist))
-             (entry-id (blk-extract-id entry)))
-        (plist-put entry :id entry-id)
-        (when (funcall should-export-org-file-function org-file)
-          (when (not html-file)
-            (setq html-file (html-out-file (org-file-grab-title org-file)))
-            (push (cons org-file html-file) org-file-to-html-file-alist))
-          (plist-put entry :filepath (file-name-nondirectory html-file))
-          (plist-put entry :original-filename (file-name-nondirectory html-file))
-          (push entry new-data))))
+    (cl-loop for num from 1
+             for entry in data
+             do (let* ((org-startup-with-latex-preview nil)
+                       (org-file (plist-get entry :filepath))
+                       (html-file (alist-get org-file org-file-to-html-file-alist)))
+                  (message "%s/%s %s" num (length data) (plist-get entry :title))
+                  (when (funcall should-export-org-file-function org-file)
+                    (let ((entry-id (blk-extract-id entry)))
+                      (plist-put entry :id entry-id)
+                      (when (not html-file)
+                        (setq html-file (html-out-file (org-file-grab-title org-file)))
+                        (push (cons org-file html-file) org-file-to-html-file-alist))
+                      (message "%s" html-file)
+                      (plist-put entry :filepath (file-name-nondirectory html-file))
+                      (plist-put entry :original-filename (file-name-nondirectory html-file))
+                      (push entry new-data)))))
     new-data))
 (defun generate-and-save-website-search-data ()
+  (interactive)
   (with-temp-file
       (join-path *static-html-dir* "search.json")
     (insert (json-encode-array (generate-website-search-data)))))
@@ -1210,7 +1226,8 @@ contextual information."
      (list :title (org-file-grab-title orgfile)
            :books (entry-books orgfile)
            :nodes (entry-children orgfile)
-           :image (org-file-grab-keyword orgfile "image")))
+           :image (org-file-grab-keyword orgfile "image")
+           :id (org-file-grab-keyword orgfile "identifier")))
    (org-files-with-tag "entry")))
 
 (defun parse-org-list ()
@@ -1266,18 +1283,20 @@ contextual information."
        myhtml
        (format "
 %s
-<div class=\"card\">
-  <img src=\"%s\" class=\"card-image\" />
+<div class='card math-button' data-ref='blk:%s'>
+  <img src='%s' class='card-image org-latex' />
   <span class='card-title'>%s</span>
-  <span class='card-subtitle'>%s</span>
+  <span class='card-subtitle'></span>
 </div>"
                myhtml
+               (plist-get entry :id)
                (when (plist-get entry :image)
                  (export-static-file
                   (get-latex-preview-svg-by-blk-id
                    (get-blk-id-from-org-link-str (plist-get entry :image)))))
                (plist-get entry :title)
-               (plist-get entry :subtitle))))
+               ;; (plist-get entry :subtitle)
+               )))
     (concat myhtml "</div>")))
 
 (defun export-entries-page ()
@@ -1300,11 +1319,12 @@ contextual information."
   (let ((files-to-export)
         (entries (org-files-with-tag "entry")))
     (dolist (orgfile entries)
+      (push orgfile files-to-export)
       (let ((children (entry-children orgfile)))
         (dolist (child children)
           (let ((blk-entry (car (blk-find-by-id child))))
             (push (plist-get blk-entry :filepath) files-to-export)))))
-    files-to-export))
+    (cl-union files-to-export (org-files-with-tag "export_section"))))
 
 (defun get-latex-preview-svg-by-blk-id (blk-id)
   (let* ((blk-entry (car (blk-find-by-id blk-id)))
@@ -1315,7 +1335,8 @@ contextual information."
      (goto-char position)
      (beginning-of-line)
      (setq position (line-beginning-position))
-     (when (s-prefix-p "#+name:" (org-no-properties (thing-at-point 'line)))
+     (when (s-prefix-p "#+name:"
+                       (org-no-properties (thing-at-point 'line)))
        (forward-line))
      ;; (org-latex-preview)
      (let ((preview-table (org-latex-preview-cache-images (org-element-parse-buffer))))
