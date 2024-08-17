@@ -1230,21 +1230,29 @@ contextual information."
            :id (org-file-grab-keyword orgfile "identifier")))
    (org-files-with-tag "entry")))
 
+(defun point-on-last-line-p ()
+  "Return t if the point is on the last line of the buffer, otherwise nil."
+  (eq (line-number-at-pos) (line-number-at-pos (point-max))))
+
 (defun parse-org-list ()
-  (let ((mylist))
-    (while (not (equal (org-element-type (org-element-at-point)) 'plain-list))
-      (forward-line))
-    (let ((stop nil))
-      (while (and (not stop) (cl-member (org-element-type (org-element-at-point)) '(plain-list item)))
-        (forward-char 2)
-        (push (buffer-substring-no-properties
-               (org-element-contents-begin (org-element-at-point))
-               (1- (org-element-contents-end (org-element-at-point))))
-              mylist)
-        (condition-case nil
-            (org-forward-element)
-          (error (setq stop t)))))
-      mylist))
+  (let ((mylist)
+        (stop))
+    (while (and (not (equal (org-element-type (org-element-at-point)) 'plain-list))
+                (not stop))
+      (forward-line)
+      (when (point-on-last-line-p)
+        (setq stop t)))
+    (while (and (not stop)
+                (cl-member (org-element-type (org-element-at-point)) '(plain-list item)))
+      (forward-char 2)
+      (push (buffer-substring-no-properties
+             (org-element-contents-begin (org-element-at-point))
+             (1- (org-element-contents-end (org-element-at-point))))
+            mylist)
+      (condition-case nil
+          (org-forward-element)
+        (error (setq stop t))))
+    mylist))
 
 (defun entry-books (orgfile)
   (with-file-as-current-buffer
