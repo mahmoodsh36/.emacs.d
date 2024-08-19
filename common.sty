@@ -205,9 +205,13 @@
   \textcolor{orange}{\hyperref[#1]{#2}}
   \special{dvisvgm:raw </g>}
 }
+% define a variable with a given id, 1st arg is id, 2nd is definition, the id should be referrable by \refdef similar to blk id's
 \newcommand{\defvar}[2]{% define a variable, \defvar{id/name}{symbol}, like lexical bindings but maybe extend it to highest block
   \refdef[#1]{#2}
 }
+% define a variable with a given variable name, it should be referred to by \refvar, the variable definition should only be valid for current document and should hold until \vardef is used again
+\newcommand{\vardef}[2]{#2}
+\newcommand{\varref}[2][]{}
 
 % no space before paragraph (is this desired?)
 % \setlength{\parindent}{0pt}

@@ -1131,4 +1131,7 @@
 ;;   (meow-setup)
 ;;   (meow-global-mode 1))
 
+(use-package ob-mongo)
+(use-package inf-mongo)
+
 (provide 'setup-packages)

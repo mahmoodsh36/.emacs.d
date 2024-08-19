@@ -566,7 +566,6 @@ contextual information."
                           " -v3 --message='processing page {?pageno}: output written to {?svgfile}'" "")
                       " -o %B-%%9p.svg %f")))
 
-
   ;; org inserts inline height value, override that, it causes problems with big latex previews on smaller screens where the previews take more height than they need because their width was decreased (using max-width: 100%) but their height wasnt
   (defun my-latex-preview-filter (transcoded-text backend channel)
     (setq a transcoded-text)
@@ -848,7 +847,7 @@ contextual information."
         (files-to-export (collect-org-files-to-export)))
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
-    (export-entries-page)
+    ;; (export-entries-page)
     (export-all-org-files :html-p t)
     (generate-and-save-website-search-data)
     (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
@@ -1289,8 +1288,7 @@ contextual information."
     (dolist (entry entries)
       (setq
        myhtml
-       (format "
-%s
+       (format "%s
 <div class='card math-button' data-ref='blk:%s'>
   <img src='%s' class='card-image org-latex' />
   <span class='card-title'>%s</span>
@@ -1299,19 +1297,17 @@ contextual information."
                myhtml
                (plist-get entry :id)
                (when (plist-get entry :image)
-                 (export-static-file
-                  (get-latex-preview-svg-by-blk-id
-                   (get-blk-id-from-org-link-str (plist-get entry :image)))))
+                 (export-static-file (plist-get entry :image)))
                (plist-get entry :title)
                ;; (plist-get entry :subtitle)
                )))
     (concat myhtml "</div>")))
 
-(defun export-entries-page ()
-  (interactive)
-  (let* ((metadata (entry-nodes-metadata))
-         (myhtml (generate-collage-html metadata)))
-    (export-html-as-org-file "index" myhtml)))
+;; (defun export-entries-page ()
+;;   (interactive)
+;;   (let* ((metadata (entry-nodes-metadata))
+;;          (myhtml (generate-collage-html metadata)))
+;;     (export-html-as-org-file "index" myhtml)))
 
 (defun export-html-as-org-file (title myhtml)
   (with-temp-buffer
@@ -1360,5 +1356,14 @@ contextual information."
          (href (join-path *html-static-route* filename)))
     (copy-file filepath new-filepath t)
     href))
+
+(defun book-collage (book-list)
+  )
+
+(defun parse-string-with-org-element (str)
+  (with-temp-buffer
+    (insert str)
+    (org-mode)
+    (org-element-context)))
 
 (provide 'setup-org)
