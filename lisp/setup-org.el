@@ -767,7 +767,8 @@ contextual information."
     `(let ((,present-buffer (find-buffer-visiting ,file))
            (org-startup-with-latex-preview nil))
        (save-excursion
-         (with-current-buffer (or (find-buffer-visiting ,file) (find-file-noselect ,file))
+         (with-current-buffer (or (find-buffer-visiting ,file)
+                                  (find-file-noselect ,file))
            (setq ,result (progn ,@body))
            (when (not ,present-buffer)
              (kill-buffer (current-buffer)))
@@ -1270,6 +1271,15 @@ contextual information."
     (org-mode)
     (org-element-property :path (org-element-context))))
 
+(defun get-blk-ids-from-org-str (orgstr)
+  (with-temp-buffer
+    (insert orgstr)
+    (org-mode)
+    (org-element-map (org-element-parse-buffer)
+        '(link)
+      (lambda (link-elm)
+        (org-element-property :path link-elm)))))
+
 (defun entry-children (orgfile)
   (with-file-as-current-buffer
    orgfile
@@ -1279,9 +1289,11 @@ contextual information."
          (when (is-substring "nodes" (org-element-property :raw-value elm))
            (goto-char (org-element-begin elm))
            (setq mylist (parse-org-list)))))
-     (mapcar
-      'get-blk-id-from-org-link-str
-      mylist))))
+     (apply
+      #'append
+      (mapcar
+       'get-blk-ids-from-org-str
+       mylist)))))
 
 (defun generate-collage-html (entries)
   (let ((myhtml "<div class=\"collage\">"))
@@ -1292,14 +1304,16 @@ contextual information."
 <div class='card math-button' data-ref='blk:%s'>
   <img src='%s' class='card-image org-latex' />
   <span class='card-title'>%s</span>
-  <span class='card-subtitle'></span>
+  <span class='card-subtitle'>%s</span>
+  <span class='card-subtitle'>%s</span>
 </div>"
                myhtml
                (plist-get entry :id)
                (when (plist-get entry :image)
                  (export-static-file (plist-get entry :image)))
                (plist-get entry :title)
-               ;; (plist-get entry :subtitle)
+               (or (plist-get entry :subtitle) "")
+               (or (plist-get entry :subsubtitle) "")
                )))
     (concat myhtml "</div>")))
 
@@ -1357,8 +1371,27 @@ contextual information."
     (copy-file filepath new-filepath t)
     href))
 
-(defun book-collage (book-list)
-  )
+(defun book-collage (blk-ids)
+  (generate-collage-html
+   (mapcar
+    (lambda (blk-id)
+      (when (is-substring "blk" blk-id)
+        (setq blk-id (get-blk-id-from-org-link-str blk-id)))
+      (let* ((blk-filepath (plist-get (car (blk-find-by-id blk-id)) :filepath))
+             (pdf-filepath (org-file-grab-keyword blk-filepath "book_main_file")))
+        (if pdf-filepath
+            (list :image (cover-from-pdf pdf-filepath)
+                  :title (org-file-grab-keyword blk-filepath "book_title")
+                  :subtitle (org-file-grab-keyword blk-filepath "book_author")
+                  :subsubtitle (org-file-grab-keyword blk-filepath "book_year"))
+          (message "no book_main_file defined for %s" (org-file-grab-keyword blk-filepath "title")))))
+    blk-ids)))
+
+(defun cover-from-pdf (pdf-path)
+  (let ((image-filepath (from-cache (file-name-nondirectory
+                                     (replace-file-extension pdf-path "png")))))
+    (shell-command (format "convert '%s[0]' '%s'" pdf-path image-filepath))
+    image-filepath))
 
 (defun parse-string-with-org-element (str)
   (with-temp-buffer

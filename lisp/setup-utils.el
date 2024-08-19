@@ -253,7 +253,7 @@ and `defcustom' forms reset their default values."
 example usage: (with-eval-after-load-all '(org) (message \"hi\"))"
   (if (eval my-features)
       `(with-eval-after-load (quote ,(car (eval my-features)))
-        (with-eval-after-load-all (quote ,(cdr (eval my-features))) ,@body))
+         (with-eval-after-load-all (quote ,(cdr (eval my-features))) ,@body))
     `(progn ,@body)))
 
 (defun open-devdocs-entry (entry)
@@ -411,10 +411,11 @@ prompt the user for a coding system."
   "Insert a newline with the same indentation as the current line."
   (interactive)
   (end-of-line)
-  (let ((current-indentation (save-excursion
-                               (beginning-of-line)
-                               (skip-chars-forward " \t")
-                               (- (point) (line-beginning-position)))))
+  (let ((current-indentation
+         (save-excursion
+           (beginning-of-line)
+           (skip-chars-forward " \t")
+           (- (point) (line-beginning-position)))))
     (newline)
     (insert (make-string current-indentation ? ))
     (evil-insert 0)))
@@ -449,5 +450,9 @@ prompt the user for a coding system."
 
 (defmacro memoized (seconds &rest body)
   )
+
+(defun replace-file-extension (filepath new-ext)
+  "return FILEPATH with the extension changed to NEW-EXT"
+  (concat (file-name-sans-extension filepath) "." new-ext))
 
 (provide 'setup-utils)
