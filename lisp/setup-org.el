@@ -376,7 +376,7 @@
                           filename)
                 (if (cl-member ext (list "mp4" "mkv") :test #'equal)
                     (format "
-<video muted>
+<video controls muted>
   <source src='%s%s' type='video/%s'>
 your browser does not support the video tag.
 </video>"
