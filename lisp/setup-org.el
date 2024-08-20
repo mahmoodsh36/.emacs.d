@@ -346,9 +346,9 @@
     (let* ((link-path (org-element-property :path link))
            (link-type (org-element-property :type link))
            (filepath (pcase link-type
-                              ("blk" (plist-get (car (blk-find-by-id link-path)) :filepath))
-                              ("denote" (denote-get-path-by-id link-path))
-                              (_ nil))))
+                       ("blk" (plist-get (car (blk-find-by-id link-path)) :filepath))
+                       ("denote" (denote-get-path-by-id link-path))
+                       (_ nil))))
       (if filepath ;; if indeed a blk/denote link
           (if (funcall should-export-org-file-function filepath)
               (let ((blk-result (car (blk-find-by-id link-path))))
@@ -374,10 +374,19 @@
                   (format "<img src=\"%s%s\" />"
                           *html-static-route*
                           filename)
-                (format "<a href=\"%s%s\">%s</a>"
+                (if (cl-member ext (list "mp4" "mkv") :test #'equal)
+                    (format "
+<video muted>
+  <source src='%s%s' type='video/%s'>
+your browser does not support the video tag.
+</video>"
+                            *html-static-route*
+                            filename
+                            ext)
+                  (format "<a href=\"%s%s\">%s</a>"
                           *html-static-route*
                           filename
-                          (or desc link-path))))
+                          (or desc link-path)))))
           (funcall fn link desc info)))))
   (advice-add #'org-html-link :around #'my-org-link-advice)
 
@@ -434,6 +443,7 @@
   (defvar special-blocks-not-for-handling
     (list "dummy"
           "any"
+          "dummy2"
           "literal"))
 
   ;; export some blocks with class=math-block so they get styled accordingly
