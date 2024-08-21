@@ -587,6 +587,11 @@ contextual information."
   (add-to-list 'org-export-filter-latex-environment-functions 'my-latex-preview-filter)
   (add-to-list 'org-export-filter-latex-fragment-functions 'my-latex-preview-filter)
 
+  ;; get rid of the metadata (<meta>) that org mode inserts in html exports
+  (defun my-org-html-meta-tags-default-advice (_)
+    )
+  (advice-add #'org-html-meta-tags-default :filter-return #'my-org-html-meta-tags-default-advice)
+
   )
 
 ;; insert a blank line between everything in exports
@@ -829,7 +834,7 @@ contextual information."
         exceptions)
     exceptions))
 
-;; do we really need "recursive exporting"?
+;; do we really need "recursive exporting"? i think i should keep it as a side feature for specific use cases
 (defun export-all-org-files (&rest kw)
   "export all org mode files using `export-org-file', use `should-export-org-file-function' to check whether a file should be exported"
   (blk-update-cache)
@@ -1025,6 +1030,9 @@ contextual information."
                          (with-temp-buffer
                            (insert-file-contents (from-template "head.html"))
                            (buffer-string))))
+         (date-string
+          (when (org-get-keyword "date")
+            (format-time-string "%Y-%m-%d" (date-to-time (org-get-keyword "date")))))
          (my-preamble
           (concat
            (with-temp-buffer
@@ -1032,9 +1040,10 @@ contextual information."
              (buffer-string))
            (if (or (not heading)
                    (and heading (not (cl-member "notitle" (org-get-tags) :test 'equal))))
-               (format "<h1 class=\"main-title\">%s</h1>%s"
+               (format "<h1 class=\"main-title\">%s</h1>%s%s"
                        title
-                       (if desc (format "<span class=\"desc\">%s</span>" desc) ""))
+                       (if desc (format "<span class=\"desc\">%s</span>" desc) "")
+                       (if date-string (format "<span class='date'>%s</span>" date-string) ""))
              "")))
          (org-html-preamble-format (list (list "en" my-preamble)))
          (search-data))

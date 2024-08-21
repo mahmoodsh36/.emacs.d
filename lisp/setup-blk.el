@@ -32,7 +32,6 @@
     (funcall fn keyword-values type content sbuf sbeg send copy))
   (advice-add #'org-transclusion-content-insert :around #'org-transclusion-content-insert-advice))
 
-
   ;; use auctex
   (setq blk-tex-env-at-point-function 'blk-auctex-env-at-point-bounds)
 
