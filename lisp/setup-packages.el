@@ -1154,4 +1154,8 @@
 ;;   (define-key macrursors-mark-map (kbd ".") #'macrursors-mark-all-sentences)
 ;;   (define-key macrursors-mark-map (kbd "r") #'macrursors-mark-all-lines))
 
+(use-package org-web-tools)
+
+(use-package git-timemachine)
+
 (provide 'setup-packages)

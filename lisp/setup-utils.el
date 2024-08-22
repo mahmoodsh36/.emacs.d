@@ -455,4 +455,21 @@ prompt the user for a coding system."
   "return FILEPATH with the extension changed to NEW-EXT"
   (concat (file-name-sans-extension filepath) "." new-ext))
 
+(defun libxml-parse-html-string (html)
+  (with-temp-buffer
+    (insert html)
+    (libxml-parse-html-region)))
+
+(defun libxml-render-html-string (libxml-format)
+  (with-temp-buffer
+    (dom-print libxml-format)
+    (buffer-string)))
+
+(defun libxml-map-nodes (libxml-node fn)
+  (when libxml-node
+    (funcall fn libxml-node)
+    (when (consp libxml-node) ;; sometimes the node itself is just a string
+      (dolist (node-child (cddr libxml-node)) ;; dom.el also provides dom-children
+        (libxml-map-nodes node-child fn)))))
+
 (provide 'setup-utils)

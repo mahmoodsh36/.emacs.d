@@ -578,7 +578,6 @@ contextual information."
 
   ;; org inserts inline height value, override that, it causes problems with big latex previews on smaller screens where the previews take more height than they need because their width was decreased (using max-width: 100%) but their height wasnt
   (defun my-latex-preview-filter (transcoded-text backend channel)
-    (setq a transcoded-text)
     (if (equal backend 'html)
         (replace-regexp-in-string (regexp-quote "\"height: ")
                                   "\"max-height: "
@@ -591,6 +590,18 @@ contextual information."
   (defun my-org-html-meta-tags-default-advice (_)
     )
   (advice-add #'org-html-meta-tags-default :filter-return #'my-org-html-meta-tags-default-advice)
+
+  ;; this should be used to get rid of the random id's org inserts, and to insert "anchor links"
+  (defun my-org-block-html-export-filter (data backend channel)
+    (let ((node (libxml-parse-html-string data)))
+      (libxml-map-nodes
+       node
+       (lambda (node)
+         ;; (when (is-substring "math-block" (alist-get 'class (dom-attributes node)))
+         ;;   )
+         ))
+      (libxml-render-html-string node)))
+  (add-to-list 'org-export-filter-special-block-functions 'my-org-block-html-export-filter)
 
   )
 
@@ -826,11 +837,12 @@ contextual information."
           (condition-case nil
               (apply #'export-org-file node kw)
             (error (message "failed to export %s" node)))
-          (let ((nodes (files-linked-from-org-file node)))
-            (dolist (other-node nodes)
-              (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
-                (when other-node (message (format "exporter jumping to: %s" other-node)))
-                (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw)))))))
+          ;; (let ((nodes (files-linked-from-org-file node)))
+          ;;   (dolist (other-node nodes)
+          ;;     (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
+          ;;       (when other-node (message (format "exporter jumping to: %s" other-node)))
+          ;;       (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw))))))
+          )
         exceptions)
     exceptions))
 
