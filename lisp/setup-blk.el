@@ -90,12 +90,18 @@
                   entry
                   (file ,(file-for-blk-id "ideas"))
                   "* IDEA %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+   ;; (add-to-list 'org-capture-templates
+   ;;              `("q"
+   ;;                "question"
+   ;;                entry
+   ;;                (file ,(file-for-blk-id "questions"))
+   ;;                "* QUESTION %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
    (add-to-list 'org-capture-templates
                 `("q"
                   "question"
                   entry
                   (file ,(file-for-blk-id "questions"))
-                  "* QUESTION %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
+                  "#+begin_question %(my-time-format (current-time))\n\n#+end_question"))
    (add-to-list 'org-capture-templates
                 `("f"
                   "feeling"

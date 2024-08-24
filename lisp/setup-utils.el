@@ -472,4 +472,7 @@ prompt the user for a coding system."
       (dolist (node-child (cddr libxml-node)) ;; dom.el also provides dom-children
         (libxml-map-nodes node-child fn)))))
 
+(defun libxml-parse-html-string-no-body-or-html (html)
+  (libxml-parse-html-string html))
+
 (provide 'setup-utils)

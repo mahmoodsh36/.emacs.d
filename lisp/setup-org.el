@@ -446,7 +446,7 @@ your browser does not support the video tag.
           "dummy2"
           "literal"))
 
-  ;; export some blocks with class=math-block so they get styled accordingly
+  ;; export some blocks with class=fancy-block so they get styled accordingly
   (defun my-org-export-read-attribute-hook (fn attribute element &optional property)
     (when (equal attribute :attr_html)
       (let ((block-type (org-element-property :type element))
@@ -456,7 +456,7 @@ your browser does not support the video tag.
                 (cl-member block-type special-blocks-not-for-handling :test #'equal))
             (funcall fn attribute element property)
           (append
-           (list :class (format "math-block")
+           (list :class (format "fancy-block")
                  :data-before (concat (pcase block-type
                                         ("my_example" "example")
                                         ("my_comment" "comment")
@@ -592,16 +592,41 @@ contextual information."
   (advice-add #'org-html-meta-tags-default :filter-return #'my-org-html-meta-tags-default-advice)
 
   ;; this should be used to get rid of the random id's org inserts, and to insert "anchor links"
-  (defun my-org-block-html-export-filter (data backend channel)
-    (let ((node (libxml-parse-html-string data)))
+  (defun my-org-html-export-filter (data backend channel)
+    (message "got %s" data)
+    (let ((html (libxml-parse-html-string data))
+          (done))
       (libxml-map-nodes
-       node
+       html
        (lambda (node)
-         ;; (when (is-substring "math-block" (alist-get 'class (dom-attributes node)))
-         ;;   )
-         ))
-      (libxml-render-html-string node)))
-  (add-to-list 'org-export-filter-special-block-functions 'my-org-block-html-export-filter)
+         ;; 'done' is needed because without it we may handle the same node multiple times..
+         (when (and (consp node)
+                    (not (cl-find node done)))
+           (let ((class (dom-attr node 'class))
+                 ;; (class (alist-get 'class (cadr node)))
+                 (link-node (copy-tree '(a ((href . "#header1") (class . "copy-btn") (onclick . "copyToHeader(this)")) "hello" (i ((data-feather . "link")) ""))))
+                 (before-node (copy-tree `(div ((class . "fancy-before")) ,(dom-attr node 'data-before))))
+                 (after-node (copy-tree `(div ((class . "fancy-after")) ,(dom-attr node 'data-after))))
+                 (parent (dom-parent html node))
+                 (container (copy-tree '(div ((class . "fancy-container")) ""))))
+             (when (and class (is-substring "fancy-block" class))
+               ;; (setcdr (last (dom-children parent)) (cons (copy-tree container) nil))
+               (dom-remove-node parent node)
+               (dom-append-child parent container)
+               (dom-append-child container link-node)
+               (dom-append-child container before-node)
+               (dom-append-child container node)
+               (dom-append-child container after-node)
+               (push node done)
+               )))))
+      ;; we need to check if done because if we didnt handle any fancy-block
+      ;; then 'data' might've been just a string, and we'd be turning it
+      ;; into an entire html document by parsing and rerendering it which
+      ;; may give undesirable results
+      (if done
+          (libxml-render-html-string html)
+        data)))
+  ;; (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
 
   )
 
@@ -1332,7 +1357,7 @@ contextual information."
       (setq
        myhtml
        (format "%s
-<div class='card math-button' data-ref='blk:%s'>
+<div class='card fancy-button' data-ref='blk:%s'>
   <img src='%s' class='card-image org-latex' />
   <span class='card-title'>%s</span>
   <span class='card-subtitle'>%s</span>

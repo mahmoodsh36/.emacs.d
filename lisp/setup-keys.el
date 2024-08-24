@@ -472,7 +472,6 @@
 (led-kbd "; e" (lambda () (interactive) (org-capture nil "f"))) ;; feeling
 (led-kbd "; q" (lambda () (interactive) (org-capture nil "q"))) ;; question
 (led-kbd "; d" (lambda () (interactive) (org-capture nil "i"))) ;; idea
-(led-kbd "; t" (lambda () (interactive) (org-capture nil "o"))) ;; thought
 (led-kbd "; n" (lambda () (interactive) (org-capture nil "n"))) ;; note
 
 (global-set-key (kbd "C-;") #'flyspell-correct-wrapper)
