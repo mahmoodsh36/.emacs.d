@@ -23,14 +23,14 @@
         (list (from-brain "notes")
               (from-brain "daily")))
 
-;; org-transclusion integration
-(with-eval-after-load 'org-transclusion
-  (blk-configure-org-transclusion)
-  (defun org-transclusion-content-insert-advice (fn keyword-values type content sbuf sbeg send copy)
-    (when (not (string-suffix-p "\n" content))
-      (setq content (format "%s\n" content)))
-    (funcall fn keyword-values type content sbuf sbeg send copy))
-  (advice-add #'org-transclusion-content-insert :around #'org-transclusion-content-insert-advice))
+  ;; org-transclusion integration
+  (with-eval-after-load 'org-transclusion
+    (blk-configure-org-transclusion)
+    (defun org-transclusion-content-insert-advice (fn keyword-values type content sbuf sbeg send copy)
+      (when (not (string-suffix-p "\n" content))
+        (setq content (format "%s\n" content)))
+      (funcall fn keyword-values type content sbuf sbeg send copy))
+    (advice-add #'org-transclusion-content-insert :around #'org-transclusion-content-insert-advice))
 
   ;; use auctex
   (setq blk-tex-env-at-point-function 'blk-auctex-env-at-point-bounds)
@@ -39,7 +39,7 @@
   ;; (setq blk-search-recursively t)
 
   ;; enable group search (group things together), for now its somewhat slow :(
-  ;; (setq blk-enable-groups t)
+  (setq blk-enable-groups t)
 
   ;; add the :defines pattern
   (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))

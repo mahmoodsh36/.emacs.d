@@ -593,7 +593,14 @@ contextual information."
 
   ;; this should be used to get rid of the random id's org inserts, and to insert "anchor links"
   (defun my-org-html-export-filter (data backend channel)
-    (message "got %s" data)
+    ;; org-latex-preivew (for now, should be fixed i think by teco) inserts
+    ;; the string <?xml version='1.0' encoding='UTF-8'?> into the html
+    ;; which dom.el renders as nil, we need to get rid of those, otherwise
+    ;; we're gonna get unwanted results in the rendered html output
+    (setq data (replace-regexp-in-string
+                (regexp-quote "<?xml version='1.0' encoding='UTF-8'?>")
+                ""
+                data))
     (let ((html (libxml-parse-html-string data))
           (done))
       (libxml-map-nodes
@@ -604,15 +611,17 @@ contextual information."
                     (not (cl-find node done)))
            (let ((class (dom-attr node 'class))
                  ;; (class (alist-get 'class (cadr node)))
-                 (link-node (copy-tree '(a ((href . "#header1") (class . "copy-btn") (onclick . "copyToHeader(this)")) "hello" (i ((data-feather . "link")) ""))))
+                 (link-node (copy-tree '(a ((href . "#header1") (class . "copy-btn") (onclick . "copyToHeader(this)")) (i ((data-feather . "link") (class . "feather-16")) ""))))
                  (before-node (copy-tree `(div ((class . "fancy-before")) ,(dom-attr node 'data-before))))
                  (after-node (copy-tree `(div ((class . "fancy-after")) ,(dom-attr node 'data-after))))
                  (parent (dom-parent html node))
                  (container (copy-tree '(div ((class . "fancy-container")) ""))))
              (when (and class (is-substring "fancy-block" class))
                ;; (setcdr (last (dom-children parent)) (cons (copy-tree container) nil))
+               ;; replace the block with a fancy-container
+               (dom-add-child-before parent container node)
                (dom-remove-node parent node)
-               (dom-append-child parent container)
+               ;; insert children to fancy-container (ncluding the block itself (node))
                (dom-append-child container link-node)
                (dom-append-child container before-node)
                (dom-append-child container node)
@@ -626,7 +635,7 @@ contextual information."
       (if done
           (libxml-render-html-string html)
         data)))
-  ;; (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
+  (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
 
   )
 
