@@ -94,7 +94,9 @@
     (start-process-shell-command
      "latex"
      "latex"
-     (format "%s && %s" cmd cmd))))
+     ;; (format "%s && %s" cmd cmd)
+     cmd
+     )))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -611,7 +613,7 @@ contextual information."
                     (not (cl-find node done)))
            (let ((class (dom-attr node 'class))
                  ;; (class (alist-get 'class (cadr node)))
-                 (link-node (copy-tree '(a ((href . "#header1") (class . "copy-btn") (onclick . "copyToHeader(this)")) (i ((data-feather . "link") (class . "feather-16")) ""))))
+                 (link-node (copy-tree `(a ((href . ,(format "#%s" (dom-attr node 'id))) (class . "copy-btn") (onclick . "copyAnchor(this)")) (i ((data-feather . "link") (class . "feather-16")) ""))))
                  (before-node (copy-tree `(div ((class . "fancy-before")) ,(dom-attr node 'data-before))))
                  (after-node (copy-tree `(div ((class . "fancy-after")) ,(dom-attr node 'data-after))))
                  (parent (dom-parent html node))
