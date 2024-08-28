@@ -965,6 +965,9 @@
   ;; change the directory to store the sent mail
   (setq message-directory (from-brain "mail/"))
   (setq notmuch-search-oldest-first nil)
+  ;; (setq notmuch-search-result-format
+  ;;       '(("date" . "%12s ") ("count" . "%-6s ") ("authors" . "%-20s ")
+  ;;         ("subject" . "%s ") ("tags" . "(%s)")))
   )
 
 ;; convert emacs regexes to other engine regexes and backwards
