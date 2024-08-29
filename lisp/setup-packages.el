@@ -1006,7 +1006,12 @@
     '(add-hook 'js-mode-hook #'add-node-modules-path)))
 
 ;; auto treesitter grammar and mode setup
-(use-package treesit-auto)
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 ;; library for working with time stamps easily
 (use-package ts)
@@ -1135,7 +1140,9 @@
 ;;   (meow-global-mode 1))
 
 (use-package ob-mongo)
-(use-package inf-mongo)
+(use-package inf-mongo
+  :config
+  (setq inf-mongo-command "mongosh"))
 
 ;; (use-package macrursors
 ;;   :config
