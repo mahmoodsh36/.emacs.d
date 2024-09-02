@@ -219,44 +219,6 @@
 ;; convert back to text when cursor is over the symbol
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
-(setq treesit-language-source-alist
-      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-        (c "https://github.com/tree-sitter/tree-sitter-c")
-        (cmake "https://github.com/uyha/tree-sitter-cmake")
-        (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-        (css "https://github.com/tree-sitter/tree-sitter-css")
-        (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-        (go "https://github.com/tree-sitter/tree-sitter-go")
-        (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
-        (html "https://github.com/tree-sitter/tree-sitter-html")
-        (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-        (json "https://github.com/tree-sitter/tree-sitter-json")
-        (lua "https://github.com/Azganoth/tree-sitter-lua")
-        (make "https://github.com/alemuller/tree-sitter-make")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-        (python "https://github.com/tree-sitter/tree-sitter-python")
-        (r "https://github.com/r-lib/tree-sitter-r")
-        (rust "https://github.com/tree-sitter/tree-sitter-rust")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-        (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-        (julia . "https://github.com/tree-sitter/tree-sitter-julia")
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-
-;; install those grammars
-;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
-
-;; remap some modes to their tree-sitter alternatives, tree-sitter isnt used by default, yet
-(dolist (mapping '((python-mode . python-ts-mode)
-                   (css-mode . css-ts-mode)
-                   (js-mode . js-ts-mode)
-                   (typescript-mode . tsx-ts-mode)
-                   (json-mode . json-ts-mode)
-                   (yaml-mode . yaml-ts-mode)))
-  (add-to-list 'major-mode-remap-alist mapping))
-
 ;; persistent comint history
 ;; https://oleksandrmanzyuk.wordpress.com/2011/10/23/a-persistent-command-history-in-emacs/
 (defun comint-write-history-on-exit (process event)

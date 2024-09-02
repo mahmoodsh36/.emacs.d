@@ -179,6 +179,7 @@
   ;; (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-todo-keywords
         '("TODO(t!)"
+          "TOD2(T!)"
           "GO(g@)";
           "WAIT(w@)"
           "REVIEW(r!)"
@@ -435,6 +436,12 @@ your browser does not support the video tag.
                                 (org-element-map (org-element-parse-buffer) 'citation 'identity))))
           (setq citations nil)))))
   (add-to-list 'org-export-before-processing-functions 'my-org-replace-citations)
+
+  (defun my-org-preprocess (&optional export-backend)
+    (save-excursion
+      (goto-char (point-min))
+      (replace-regexp "#\\+caption: \\(.*\\)" "\\1")))
+  (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
 
   ;; remove the title that org inserts into exports by default
   (defun my-org-html--build-meta-info-hook (out)

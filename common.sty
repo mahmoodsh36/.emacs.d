@@ -604,7 +604,8 @@
 \newcommand{\rnumset}{\refdef[blk:def-reals-set]{\mathbb{R}}} % for the set of real numbers
 \newcommand{\cnumset}{\refdef[blk:def-complex-set]{\mathbb{C}}} % for the set of complex numbers
 \newcommand{\qnumset}{\refdef[blk:def-rational-set]{\mathbb{Q}}} % for the set of rational numbers
-\newcommand{\znumset}{\mathbb{Z}} % for the set of integers
+\newcommand{\znumset}{\refef{\mathbb{Z}}} % for the set of integers
+\newcommand{\zpnumset}{\refdef{\mathbb{Z}^+}} % for the set of positive integers
 \newcommand{\nnumset}{\refdef[blk:def-natural-set-inf]{\mathbb{N}}} % for the set of naturals
 \newcommand{\vsfield}{\refdef[blk:def-F]{\mathbb{F}}} % for the "field" of a vector space which may stand for R or C (reals or complex nums)
 \NewDocumentCommand\vecspace{o}{\refdef[blk:not-vector-space]{\IfNoValueTF{#1}{V}{#1}}} % to denote some vector space V

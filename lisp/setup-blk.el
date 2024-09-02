@@ -118,7 +118,8 @@
                 `("n"
                   "note"
                   entry
-                  (file ,(file-for-blk-id "notes"))
+                  ;; (file ,(file-for-blk-id "notes"))
+                  (file "1719616928.083083")
                   "* NOTE %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
    )
   )
