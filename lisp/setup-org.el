@@ -437,6 +437,7 @@ your browser does not support the video tag.
           (setq citations nil)))))
   (add-to-list 'org-export-before-processing-functions 'my-org-replace-citations)
 
+  ;; temporary hack because captions dont get exported to html by ox-html
   (defun my-org-preprocess (&optional export-backend)
     (save-excursion
       (goto-char (point-min))

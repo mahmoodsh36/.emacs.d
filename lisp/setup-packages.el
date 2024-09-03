@@ -1139,7 +1139,9 @@
 ;;   (meow-setup)
 ;;   (meow-global-mode 1))
 
-(use-package ob-mongo)
+(use-package ob-mongo
+  :config
+  (setq ob-mongo:default-mongo-executable "mongosh"))
 (use-package inf-mongo
   :config
   (setq inf-mongo-command "mongosh"))
