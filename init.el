@@ -339,21 +339,3 @@
 (require 'erc-log)
 (setq erc-log-channels-directory (from-brain "erc"))
 (setq erc-save-buffer-on-part t)
-
-;; save all messages
-(defun message-save-advice (&rest args)
-  (when (and args (car args))
-    (let ((mystr (apply 'format args))
-          (messages-file (from-brain "emacs-messages"))
-          (inhibit-message t)
-          (save-silently t)
-          (message-log-max 0)
-          (recursive-call t))
-      (with-temp-buffer
-        (insert mystr)
-        (insert "\n")
-        (append-to-file (point-min)
-                        (point-max)
-                        messages-file)))))
-
-(advice-add 'message :before 'message-save-advice)
