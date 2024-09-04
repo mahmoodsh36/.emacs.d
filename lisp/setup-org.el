@@ -407,7 +407,10 @@ your browser does not support the video tag.
                            (goto-char citation-end)
                            (when (not (equal (point-max) (point)))
                              (forward-char)
-                             (org-element-at-point)))))
+                             (when (string-prefix-p
+                                    "#+end_"
+                                    (substring-no-properties (thing-at-point 'line)))
+                               (org-element-at-point))))))
                (citation-contents (buffer-substring-no-properties citation-start
                                                                   citation-end))
                ;; if we dont place the double quotes org fails to parse the citation properly in the header
