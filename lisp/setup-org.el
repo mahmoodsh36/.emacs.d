@@ -647,6 +647,7 @@ contextual information."
           (libxml-render-html-string html)
         data)))
   (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
+  ;; (add-to-list 'org-export-filter-final-output-functions 'my-org-html-export-filter)
 
   )
 

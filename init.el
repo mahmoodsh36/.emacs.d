@@ -341,7 +341,7 @@
 (setq erc-save-buffer-on-part t)
 
 ;; save all messages
-(defun message-save-advice (fn &rest args)
+(defun message-save-advice (&rest args)
   (when (and args (car args))
     (let ((mystr (apply 'format args))
           (messages-file (from-brain "emacs-messages"))
@@ -352,11 +352,8 @@
       (with-temp-buffer
         (insert mystr)
         (insert "\n")
-        (append-to-file (point-min) (point-max) messages-file))))
-  (when (boundp 'recursive-call)
-    (setq message-log-max 1000000)
-    (setq save-silently nil)
-    (setq inhibit-message nil)
-    (apply fn args)))
+        (append-to-file (point-min)
+                        (point-max)
+                        messages-file)))))
 
-(advice-add 'message :around 'message-save-advice)
+(advice-add 'message :before 'message-save-advice)
