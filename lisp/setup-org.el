@@ -454,29 +454,31 @@ your browser does not support the video tag.
   (advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
 
   (defvar special-blocks-not-for-handling
-    (list "dummy"
+    (list ;; "dummy"
           "any"
-          "dummy2"
+          ;; "dummy2"
           "literal"))
 
   ;; export some blocks with class=fancy-block so they get styled accordingly
   (defun my-org-export-read-attribute-hook (fn attribute element &optional property)
     (when (equal attribute :attr_html)
-      (let ((block-type (org-element-property :type element))
-            (block-title (my-block-title element))
-            (citation (get-block-source element)))
+      (let* ((block-type (org-element-property :type element))
+             (block-title (my-block-title element))
+             (citation (get-block-source element))
+             (block-type-str
+              (pcase block-type
+                ("dummy" "")
+                ("dummy2" "")
+                ("my_example" "example: ")
+                ("my_comment" "comment: ")
+                (_ (format "%s: " block-type)))))
         (if (or (not (equal (org-element-type element) 'special-block))
                 (cl-member block-type special-blocks-not-for-handling :test #'equal))
             (funcall fn attribute element property)
           (append
            (list :class (format "fancy-block")
-                 :data-before (concat (pcase block-type
-                                        ("my_example" "example")
-                                        ("my_comment" "comment")
-                                        (_ block-type))
-                                      (if (string-empty-p block-title)
-                                          ""
-                                        (concat ": " block-title)))
+                 :data-before (concat block-type-str
+                                      block-title)
                  ;; dont export :source if it is just a path to a local file (starts with forward slash)
                  :data-after (when (not (string-prefix-p "/" citation))
                                citation)
@@ -838,7 +840,7 @@ contextual information."
 
 (defmacro with-file-as-current-buffer (file &rest body)
   (let ((present-buffer (gensym))
-        (result (gensym)))
+        (result))
     `(let ((,present-buffer (find-buffer-visiting ,file))
            (org-startup-with-latex-preview nil))
        (save-excursion
@@ -848,6 +850,14 @@ contextual information."
            (when (not ,present-buffer)
              (kill-buffer (current-buffer)))
            ,result)))))
+
+(defmacro with-file-as-current-buffer-faster (file &rest body)
+  `(let ((buf (get-buffer-create " myhidden1"))
+         (org-startup-with-latex-preview nil))
+     (with-current-buffer buf
+       (erase-buffer)
+       (insert-file-contents ,file)
+       (progn ,@body))))
 
 (defun export-org-file (file &rest kw)
   "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
@@ -947,8 +957,27 @@ contextual information."
   (interactive)
   (apply #'export-org-file buffer-file-name kw))
 
+(defun custom-org-collect-keywords (keywords)
+  "Collect values of KEYWORDS from the current Org buffer.
+KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
+  (let (collected)
+    (save-excursion
+      (goto-char (point-min))
+      ;; Iterate over each keyword
+      (dolist (kw keywords)
+        (when (re-search-forward (format "^#\\+%s: \\(.*\\)$" (regexp-quote kw)) nil t)
+          (push (cons kw (match-string 1)) collected))))
+    ;; Return the collected keyword-value pairs
+    collected))
+
+;; this seems to be slower, i think it may be parsing the whole buffer as an org buffer regardless
 (defun org-get-keyword (kw)
   (let ((value (cadar (org-collect-keywords (list kw)))))
+    (if (string-prefix-p "(" value)
+        (eval (car (read-from-string value)))
+      value)))
+(defun org-get-keyword-faster (kw)
+  (let ((value (cdar (custom-org-collect-keywords (list kw)))))
     (if (string-prefix-p "(" value)
         (eval (car (read-from-string value)))
       value)))
@@ -1246,15 +1275,15 @@ contextual information."
   (let ((book-org-files (list-book-org-files))
         (books))
     (dolist (book-org-file book-org-files)
-      (with-file-as-current-buffer
+      (with-file-as-current-buffer-faster
        book-org-file
-       (push (list :title (org-get-keyword "book_title")
-                   :identifier (org-get-keyword "identifier")
-                   :author (org-get-keyword "book_author")
-                   :year (org-get-keyword "book_year")
-                   :file (org-get-keyword "book_main_file")
-                   :book-source-url (org-get-keyword "book_source_url")
-                   :bibtex-entry-name (org-get-keyword "bibtex_entry_name"))
+       (push (list :title (org-get-keyword-faster "book_title")
+                   :identifier (org-get-keyword-faster "identifier")
+                   :author (org-get-keyword-faster "book_author")
+                   :year (org-get-keyword-faster "book_year")
+                   :file (org-get-keyword-faster "book_main_file")
+                   :book-source-url (org-get-keyword-faster "book_source_url")
+                   :bibtex-entry-name (org-get-keyword-faster "bibtex_entry_name"))
              books)))
     books))
 (defun book-prompt ()
