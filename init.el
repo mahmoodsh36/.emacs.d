@@ -94,7 +94,7 @@
 (setq savehist-save-minibuffer-history t)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple, dont cut-off words
-;; (global-visual-line-mode)
+(global-visual-line-mode)
 ;; stop the annoying warnings from org mode cache
 (setq warning-minimum-level :emergency)
 ;; use imagemagick for formats like webp
