@@ -1,11 +1,7 @@
-;; (set-face-attribute 'default nil :family "Comic Sans ms" :height 120)
-;; (set-face-attribute 'default nil :family "Cascadia Code" :height 130)
-;; (set-face-attribute 'default nil :family "Iosevka" :height 130)
-;; (set-face-attribute 'default nil :family "Monaco" :height 120)
 (ignore-errors
-  (set-face-attribute 'default nil :font "inconsolata" :weight 'normal :height 130)
-  (set-face-attribute 'fixed-pitch nil :font "inconsolata" :weight 'normal :height 130)
-  (set-face-attribute 'variable-pitch nil :font "inconsolata" :weight 'normal :height 1.3)
+  (set-face-attribute 'default nil :font "Monaspace Radon Var" :weight 'normal :height 120)
+  (set-face-attribute 'fixed-pitch nil :font "Monaspace Krypton Var" :weight 'normal :height 120)
+  (set-face-attribute 'variable-pitch nil :font "Monaspace Neon Var" :weight 'normal :height 1.2)
   ;; this font makes hebrew text unreadable, gotta disable it
   (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
   )
