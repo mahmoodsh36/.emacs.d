@@ -861,7 +861,6 @@
 ;; (use-package quack) ;; for racket and scheme
 ;; (use-package geiser) ;; for racket and scheme
 ;; (use-package org-ai)
-;; (use-package gptel)
 ;; (use-package ellama)
 ;; (use-package fasd)
 ;; (use-package aweshell
@@ -1169,5 +1168,7 @@
 (use-package org-web-tools)
 
 (use-package git-timemachine)
+
+(use-package gptel)
 
 (provide 'setup-packages)

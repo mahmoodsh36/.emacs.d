@@ -4,6 +4,8 @@
       (file-truename "~/brain")))
 (defconst *notes-dir* (concat *brain-dir* "/notes"))
 
+(defconst *data-dir* (file-truename "~/data"))
+
 ;; used in my elisp scripts for launching mpv
 (defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
 

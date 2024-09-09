@@ -1,4 +1,4 @@
-#+options: toc:nil creator:nil timestamp:nil validate:nil
+#+options: creator:nil timestamp:nil validate:nil
 # #+latex_class: article
 # #+latex_class_options: [a4paper,12pt]
 # #+latex_header: \usepackage{\string~/.emacs.d/common}

@@ -104,6 +104,10 @@
 (defun from-template (filename)
   (file-truename (join-path *template-html-dir* filename)))
 
+(defun from-data (filename)
+  "return `filename', prefixed by the path to the brain dir"
+  (file-truename (join-path *data-dir* filename)))
+
 ;; clean up ob-jupyter source block output
 ;; from henrik lissner
 ;; (defun my/org-babel-jupyter-strip-ansi-escapes-block ()
