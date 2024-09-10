@@ -811,7 +811,7 @@ block but are passed literally to the \"example-block\"."
                             (plist-get result :filepath)
                             (goto-char (plist-get result :position))
                             (let ((info (org-babel-get-src-block-info t)))
-                             (expand-body info)))))
+                              (expand-body info)))))
 		        ;; All Noweb references were cached in a previous
 		        ;; run.  Yet, ID is not in cache (see the above
 		        ;; condition).  Process missing reference in
@@ -1310,9 +1310,10 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                          (with-temp-buffer
                            (insert-file-contents (from-template "head.html"))
                            (buffer-string))))
+         (date-string-original (or (org-get-keyword "actual_date") (org-get-keyword "date")))
          (date-string
-          (when (org-get-keyword "date")
-            (format-time-string "%Y-%m-%d" (date-to-time (org-get-keyword "date")))))
+          (when date-string-original
+            (format-time-string "%Y-%m-%d" (date-to-time date-string-original))))
          (my-preamble
           (concat
            (with-temp-buffer

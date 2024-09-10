@@ -192,6 +192,10 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "[k" 'org-babel-previous-src-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "]o" 'org-next-block)
       (general-define-key :states 'normal :keymaps 'org-mode-map "[o" 'org-previous-block)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "]l" 'org-next-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "[l" 'org-previous-link)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "]e" 'org-forward-element)
+      (general-define-key :states 'normal :keymaps 'org-mode-map "[e" 'org-backward-element)
 
       ;; general keys for programming
       (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
@@ -213,35 +217,52 @@
 
   (use-package evil-extra-operator)
 
+  (defun evil-textobj-tree-sitter-get-textobj-func (group &optional query)
+    "Create a textobj function from `GROUP'.
+You can pass in multiple groups as a list. The first available group will be picked.
+
+Optionally, `QUERY' can be passed as an alist mapping `major-mode' to tree-sitter queries.
+If `QUERY' doesn't contain the current `major-mode', default queries will be used."
+    (when evil-textobj-tree-sitter--evil-available
+      (let* ((groups (if (eq (type-of group) 'string)
+                         (list group)
+                       group))
+             (interned-groups (mapcar #'intern groups)))
+        (lambda (count &rest unused)
+          (let ((range (evil-textobj-tree-sitter--range count interned-groups query)))
+            (if range
+                (evil-range (car range) (cdr range))
+              (evil-textobj-tree-sitter--message-not-found groups)))))))
+
+
+  ;; more text objects can be found at https://github.com/nvim-treesitter/nvim-treesitter-textobjects#built-in-textobjects
   (use-package evil-textobj-tree-sitter
     :config
     ;; bind `function.outer`(entire function block) to `f` for use in things like `vaf`, `yaf`
-    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-    ;; bind `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
-    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+    (let ((mylist `(("f" . "function")
+                    ("c" . "class"))))
+      (dolist (entry mylist)
+        (let ((key (car entry))
+              (object (cdr entry)))
+          (message "doing %s %s" key object)
+          ;; e.g.: `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
+          (define-key evil-outer-text-objects-map key (evil-textobj-tree-sitter-get-textobj-func (format "%s.outer" object)))
+          (define-key evil-inner-text-objects-map key (evil-textobj-tree-sitter-get-textobj-func (format "%s.inner" object)))
+          ;; e.g.: goto start of next function
+          (define-key
+           evil-normal-state-map (kbd (format "]%s" key))
+           (lambda ()
+             (interactive)
+             (evil-textobj-tree-sitter-goto-textobj (format "%s.outer" object))))
+          ;; e.g.: goto start of next function
+          (define-key
+           evil-normal-state-map (kbd (format "[%s" key))
+           (lambda ()
+             (interactive)
+             (evil-textobj-tree-sitter-goto-textobj (format "%s.outer" object) t))))))
     ;; you can also bind multiple items and we will match the first one we can find
     (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
     (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.inner" "loop.inner")))
-    ;; goto start of next function
-    (define-key evil-normal-state-map (kbd "]f")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer")))
-    ;; goto start of previous function
-    (define-key evil-normal-state-map (kbd "[f")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t)))
-    ;; goto end of next function
-    (define-key evil-normal-state-map (kbd "]F")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer" nil t)))
-    ;; goto end of previous function
-    (define-key evil-normal-state-map (kbd "[F")
-                (lambda ()
-                  (interactive)
-                  (evil-textobj-tree-sitter-goto-textobj "function.outer" t t)))
     )
 
   ;; make org roam insert link after cursor in evil mode
