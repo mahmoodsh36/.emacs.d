@@ -54,7 +54,9 @@
     ;;                                  :title-function 'blk-value-after-space-upto-colon
     ;;                                  :extract-id-function 'blk-org-id-at-point))
     )
-  (setq blk-patterns blk-rg-patterns)
+  ;; (setq blk-patterns blk-rg-patterns)
+  ;; (setq blk-grepper blk-grepper-rg)
+  ;; (setq blk-grepper blk-grepper-grep)
 
   ;; add the :defines pattern for the emacs grepper
   ;; (dolist (pattern-table '(blk-emacs-patterns))
@@ -121,6 +123,47 @@
                   (file ,(file-for-blk-id "notes!"))
                   "* NOTE %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
    )
+
+  ;; overwrite it to handle attachments inserted by org-transclusion
+  ;; unfinished
+  (defun org-attach-expand-links (_)
+    "Expand links in current buffer.
+It is meant to be added to `org-export-before-parsing-hook'."
+    (save-excursion
+      (while (re-search-forward "attachment:" nil t)
+        (let* ((link (org-element-context))
+               ;; (val (get-text-property
+               ;;       0
+               ;;       'org-transclusion-type
+               ;;       (buffer-substring
+               ;;        (org-element-begin link)
+               ;;        (org-element-end link))))
+               (orig-link
+                (plist-get
+                 (get-text-property
+                  0
+                  'org-transclusion-orig-keyword
+                  (buffer-substring
+                   (org-element-begin link)
+                   (org-element-end link))) :link))
+               (src-file (if (and orig-link (string-prefix-p "[[blk:" orig-link))
+                             (plist-get (car (blk-find-by-id (substring orig-link 6 -2))) :filepath)
+                           buffer-file-name)))
+          (when (and (org-element-type-p link 'link)
+                     (string-equal "attachment"
+                                   (org-element-property :type link)))
+            (let* ((description (and (org-element-contents-begin link)
+                                     (buffer-substring-no-properties
+                                      (org-element-contents-begin link)
+                                      (org-element-contents-end link))))
+                   (file (org-element-property :path link))
+                   (new-link (org-link-make-string
+                              (concat "file:" (with-file-as-current-buffer src-file (org-attach-expand file)))
+                              description)))
+              (goto-char (org-element-end link))
+              (skip-chars-backward " \t")
+              (delete-region (org-element-begin link) (point))
+              (insert new-link)))))))
   )
 
 ;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..

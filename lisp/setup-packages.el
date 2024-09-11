@@ -1046,8 +1046,6 @@
 
 ;; (use-package ligature)
 
-;; (use-package org-pandoc-import)
-
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
@@ -1170,5 +1168,11 @@
 (use-package git-timemachine)
 
 (use-package gptel)
+
+;; convert other formats to org using pandoc
+(use-package org-pandoc-import
+  :elpaca (:host github
+                 :repo "tecosaur/org-pandoc-import"
+                 :files ("*.el" "filters" "preprocessors")))
 
 (provide 'setup-packages)
