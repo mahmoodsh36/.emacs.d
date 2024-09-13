@@ -34,9 +34,10 @@
 
   ;; for typescript
   (add-to-list 'eglot-server-programs
-               '((typescript-mode) "typescript-language-server" "--stdio"))
-  (add-hook 'tsx-ts-mode #'eglot-ensure)
-
+               '(((typescript-mode)
+                  (js-mode)
+                  (js-ts-mode))
+                 "typescript-language-server" "--stdio"))
 
   ;; disable the minibuffer hinting, distracting
   ;; (add-hook 'eglot-managed-mode-hook (lambda () (eldoc-mode -1)))

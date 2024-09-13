@@ -487,7 +487,8 @@ your browser does not support the video tag.
                  ;; dont export :source if it is just a path to a local file (starts with forward slash)
                  :data-after (when (not (string-prefix-p "/" citation))
                                citation)
-                 :id (org-block-property :name element))
+                 :id (org-block-property :name element)
+                 :data-id (org-block-property :name element))
            (funcall fn attribute element property))))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
@@ -612,53 +613,52 @@ contextual information."
   (advice-add #'org-html-meta-tags-default :filter-return #'my-org-html-meta-tags-default-advice)
 
   ;; this should be used to get rid of the random id's org inserts, and to insert "anchor links"
-  (defun my-org-html-export-filter (data backend channel)
-    ;; org-latex-preivew (for now, should be fixed i think by teco) inserts
-    ;; the string <?xml version='1.0' encoding='UTF-8'?> into the html
-    ;; which dom.el renders as nil, we need to get rid of those, otherwise
-    ;; we're gonna get unwanted results in the rendered html output
-    (setq data (replace-regexp-in-string
-                (regexp-quote "<?xml version='1.0' encoding='UTF-8'?>")
-                ""
-                data))
-    (let ((html (libxml-parse-html-string data))
-          (done))
-      (libxml-map-nodes
-       html
-       (lambda (node)
-         ;; 'done' is needed because without it we may handle the same node multiple times..
-         (when (and (consp node)
-                    (not (cl-find node done)))
-           (let ((class (dom-attr node 'class))
-                 ;; (class (alist-get 'class (cadr node)))
-                 (link-node (copy-tree `(a ((href . ,(format "#%s" (dom-attr node 'id))) (class . "copy-btn") (onclick . "copyAnchor(this)")) (i ((data-feather . "link") (class . "feather-16")) ""))))
-                 (before-node (copy-tree `(div ((class . "fancy-before")) ,(dom-attr node 'data-before))))
-                 (after-node (copy-tree `(div ((class . "fancy-after")) ,(dom-attr node 'data-after))))
-                 (parent (dom-parent html node))
-                 (container (copy-tree '(div ((class . "fancy-container")) ""))))
-             (when (and class (is-substring "fancy-block" class))
-               ;; (setcdr (last (dom-children parent)) (cons (copy-tree container) nil))
-               ;; replace the block with a fancy-container
-               (dom-add-child-before parent container node)
-               (dom-remove-node parent node)
-               ;; insert children to fancy-container (ncluding the block itself (node))
-               (when (dom-attr node 'id)
-                 (dom-append-child container link-node))
-               (dom-append-child container before-node)
-               (dom-append-child container node)
-               (dom-append-child container after-node)
-               (push node done)
-               )))))
-      ;; we need to check if done because if we didnt handle any fancy-block
-      ;; then 'data' might've been just a string, and we'd be turning it
-      ;; into an entire html document by parsing and rerendering it which
-      ;; may give undesirable results
-      (if done
-          (libxml-render-html-string html)
-        data)))
-  (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
+  ;; (defun my-org-html-export-filter (data backend channel)
+  ;;   ;; org-latex-preivew (for now, should be fixed i think by teco) inserts
+  ;;   ;; the string <?xml version='1.0' encoding='UTF-8'?> into the html
+  ;;   ;; which dom.el renders as nil, we need to get rid of those, otherwise
+  ;;   ;; we're gonna get unwanted results in the rendered html output
+  ;;   (setq data (replace-regexp-in-string
+  ;;               (regexp-quote "<?xml version='1.0' encoding='UTF-8'?>")
+  ;;               ""
+  ;;               data))
+  ;;   (let ((html (libxml-parse-html-string data))
+  ;;         (done))
+  ;;     (libxml-map-nodes
+  ;;      html
+  ;;      (lambda (node)
+  ;;        ;; 'done' is needed because without it we may handle the same node multiple times..
+  ;;        (when (and (consp node)
+  ;;                   (not (cl-find node done)))
+  ;;          (let ((class (dom-attr node 'class))
+  ;;                ;; (class (alist-get 'class (cadr node)))
+  ;;                (link-node (copy-tree `(a ((href . ,(format "#%s" (dom-attr node 'id))) (class . "copy-btn") (onclick . "copyAnchor(this)")) (i ((data-feather . "link") (class . "feather-16")) ""))))
+  ;;                (before-node (copy-tree `(div ((class . "fancy-before")) ,(dom-attr node 'data-before))))
+  ;;                (after-node (copy-tree `(div ((class . "fancy-after")) ,(dom-attr node 'data-after))))
+  ;;                (parent (dom-parent html node))
+  ;;                (container (copy-tree '(div ((class . "fancy-container")) ""))))
+  ;;            (when (and class (is-substring "fancy-block" class))
+  ;;              ;; (setcdr (last (dom-children parent)) (cons (copy-tree container) nil))
+  ;;              ;; replace the block with a fancy-container
+  ;;              (dom-add-child-before parent container node)
+  ;;              (dom-remove-node parent node)
+  ;;              ;; insert children to fancy-container (ncluding the block itself (node))
+  ;;              (when (dom-attr node 'id)
+  ;;                (dom-append-child container link-node))
+  ;;              (dom-append-child container before-node)
+  ;;              (dom-append-child container node)
+  ;;              (dom-append-child container after-node)
+  ;;              (push node done)
+  ;;              )))))
+  ;;     ;; we need to check if done because if we didnt handle any fancy-block
+  ;;     ;; then 'data' might've been just a string, and we'd be turning it
+  ;;     ;; into an entire html document by parsing and rerendering it which
+  ;;     ;; may give undesirable results
+  ;;     (if done
+  ;;         (libxml-render-html-string html)
+  ;;       data)))
+  ;; (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
   ;; (add-to-list 'org-export-filter-final-output-functions 'my-org-html-export-filter)
-
 
   ;; this is a bad idea, but i copied the function and modified it to work with blk, since there's really no other sane way to go about it (for now atleast..)
   (defun org-babel-expand-noweb-references (&optional info parent-buffer)
