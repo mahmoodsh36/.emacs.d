@@ -134,4 +134,54 @@ Version 2015-07-30"
               (add-to-history 'file-name-history filename)
               filename))
 
+;; when moving a file, auto rename it if the target contains a file with the same name
+;; (defun my/dired-rename-auto-rename (orig-fn &optional arg)
+;;   "Rename current file or all marked (or next ARG) files, automatically renaming if needed."
+;;   (let* ((files (dired-get-marked-files))
+;;          (target (read-file-name "Rename to: " (dired-dwim-target-directory)))
+;;          (target (if (file-directory-p target)
+;;                      (concat (file-name-as-directory target)
+;;                              (file-name-nondirectory (car files)))
+;;                    target)))
+;;     (if (file-exists-p target)
+;;         (setq target (dired-unique-filename target)))
+;;     ;; Perform the rename
+;;     (rename-file (car files) target)
+;;     ;; Refresh dired buffer after renaming
+;;     (dired-revert)))
+;; (defun dired-unique-filename (filename)
+;;   "Generate a unique filename by appending numbers to FILENAME."
+;;   (let ((base (file-name-sans-extension filename))
+;;         (ext (file-name-extension filename t))
+;;         (counter 1))
+;;     (while (file-exists-p filename)
+;;       (setq filename (format "%s_%d%s" base counter ext))
+;;       (setq counter (1+ counter)))
+;;     filename))
+;; (advice-add 'dired-do-rename :around #'my/dired-rename-auto-rename)
+(defun my/dired-auto-rename-file (&optional arg)
+  "Rename current file or all marked (or next ARG) files, automatically renaming if needed."
+  (interactive "P")
+  (let* ((files (dired-get-marked-files))
+         (target (read-file-name "Rename to: " (dired-dwim-target-directory)))
+         (target (if (file-directory-p target)
+                     (concat (file-name-as-directory target)
+                             (file-name-nondirectory (car files)))
+                   target)))
+    (if (file-exists-p target)
+        (setq target (dired-unique-filename target)))
+    ;; Perform the rename
+    (rename-file (car files) target)
+    ;; Refresh dired buffer after renaming
+    (dired-revert)))
+(defun dired-unique-filename (filename)
+  "Generate a unique filename by appending numbers to FILENAME."
+  (let ((base (file-name-sans-extension filename))
+        (ext (file-name-extension filename t))
+        (counter 1))
+    (while (file-exists-p filename)
+      (setq filename (format "%s_%d%s" base counter ext))
+      (setq counter (1+ counter)))
+    filename))
+
 (provide 'setup-dired)

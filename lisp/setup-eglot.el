@@ -12,8 +12,6 @@
   :config
   ;; some inline hints
   (add-hook 'eglot-managed-mode-hook 'eglot-inlay-hints-mode)
-  ;; (add-to-list 'eglot-server-programs
-  ;;              '(python-mode . ("ruff-lsp")))
   (defun my/eglot-eldoc-settings ()
     (setq eldoc-documentation-strategy
           'eldoc-documentation-compose-eagerly))
@@ -25,24 +23,25 @@
 (with-eval-after-load 'eglot
   (add-hook 'c-mode-hook #'eglot-ensure)
 
-  ;; for python
-  (add-hook 'python-mode-hook #'eglot-ensure)
-  (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
   (setq-default eglot-workspace-configuration
                 '((:pylsp . (:configurationSources ["flake8"] :plugins (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t))))))
 
-  ;; for typescript
-  (add-to-list 'eglot-server-programs
-               '(((typescript-mode)
-                  (js-mode)
-                  (js-ts-mode))
-                 "typescript-language-server" "--stdio"))
+  (add-hook 'prog-mode-hook #'eglot-ensure)
 
   ;; disable the minibuffer hinting, distracting
   ;; (add-hook 'eglot-managed-mode-hook (lambda () (eldoc-mode -1)))
   (setq eldoc-echo-area-prefer-doc-buffer t
         eldoc-echo-area-use-multiline-p nil)
+
+  ;; https://www.reddit.com/r/emacs/comments/106oq11/eglot_flymake_eldoc/
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              ;; Show flymake diagnostics first.
+              (setq eldoc-documentation-functions
+                    (cons #'flymake-eldoc-function
+                          (remove #'flymake-eldoc-function eldoc-documentation-functions)))
+              ;; Show all eldoc feedback.
+              (setq eldoc-documentation-strategy #'eldoc-documentation-compose)))
   )
 
 (provide 'setup-eglot)

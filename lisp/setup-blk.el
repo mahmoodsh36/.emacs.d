@@ -47,7 +47,8 @@
                                      :glob "*.org"
                                      :anchor-regex "(:defines)\\s+[^:]+"
                                      :title-function 'blk-value-after-space-upto-colon
-                                     :extract-id-function 'blk-org-id-at-point))
+                                     :extract-id-function 'blk-org-id-at-point
+                                     :src-id-function 'blk-org-id-value))
     ;; (add-to-list pattern-table (list :title "definition"
     ;;                                  :glob "*.org"
     ;;                                  :anchor-regex "(:defines)\\s+[^:]+"

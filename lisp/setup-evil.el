@@ -198,8 +198,8 @@
       (general-define-key :states 'normal :keymaps 'org-mode-map "[e" 'org-backward-element)
 
       ;; general keys for programming
-      (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'next-error)
-      (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'previous-error)))
+      (general-define-key :states '(normal) :keymaps 'prog-mode-map "] r" 'flymake-goto-next-error)
+      (general-define-key :states '(normal) :keymaps 'prog-mode-map "[ r" 'flymake-goto-prev-error)))
 
   ;; evil mode multiple cursors
   (use-package evil-mc

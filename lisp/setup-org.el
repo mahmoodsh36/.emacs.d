@@ -23,6 +23,9 @@
 ;; whether to export an org mode file
 (setq should-export-org-file-function #'should-export-org-file)
 
+;; TODO: implement functionality for exporting subgraphs of specific depths
+(defconst export-graph-depth 2)
+
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
   (interactive)
@@ -77,7 +80,7 @@
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
-    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
+    ;; (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
     (if is-beamer
         (org-export-to-file 'beamer outfile
           nil nil nil nil nil nil)
@@ -308,19 +311,21 @@
   ;; make org not evaluate code blocks on exporting
   ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
   ;; (add-to-list 'org-babel-default-inline-header-args '(:eval . "no-export"))
-  (setq org-babel-default-header-args '((:exports . "both")
-                                        (:eval . "no-export")
-                                        (:session . "none")
-                                        (:results . "replace")
-                                        (:cache . "no")
-                                        (:noweb . "no")
-                                        (:hlines . "no")
-                                        (:tangle . "no")))
-  (setq org-babel-default-inline-header-args '(((:exports . "both")
-                                                (:eval . "no-export")
-                                                (:session . "none")
-                                                (:results . "replace")
-                                                (:hlines . "yes"))))
+  (setq org-babel-default-header-args
+        '((:exports . "both")
+          (:eval . "no-export")
+          (:session . "none")
+          (:results . "replace")
+          (:cache . "no")
+          (:noweb . "no")
+          (:hlines . "no")
+          (:tangle . "no")))
+  (setq org-babel-default-inline-header-args
+        '(((:exports . "results")
+           (:eval . "no-export")
+           (:session . "none")
+           (:results . "replace")
+           (:hlines . "yes"))))
 
   ;; also make org-special-edit respect tree-sitter modes
   (dolist (mapping major-mode-remap-alist)

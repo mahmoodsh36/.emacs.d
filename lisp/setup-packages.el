@@ -1175,4 +1175,6 @@
                  :repo "tecosaur/org-pandoc-import"
                  :files ("*.el" "filters" "preprocessors")))
 
+(use-package elsa)
+
 (provide 'setup-packages)
