@@ -288,9 +288,10 @@
 (led-kbd "s j"
          (lambda () (interactive)
            (let ((julia-snail-extensions '(repl-history formatter ob-julia))
-                 (julia-snail-executable (join-path (getenv "WORK_DIR")
-                                                    "myjulia"
-                                                    "myjulia.sh")))
+                 ;; (julia-snail-executable (join-path (getenv "WORK_DIR")
+                 ;;                                    "myjulia"
+                 ;;                                    "myjulia.sh"))
+                 )
              (julia-snail))))
 
 ;; other keybinds

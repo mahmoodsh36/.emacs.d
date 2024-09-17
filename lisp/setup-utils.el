@@ -319,9 +319,11 @@ if a buffer is not file and not dired, copy value of `default-directory'."
                  (if (equal (length $result) 0)
                      (progn default-directory )
                    (progn $result))))
-           (if (buffer-file-name)
-               (buffer-file-name)
-             (expand-file-name default-directory)))))
+           (if (equal major-mode 'notmuch-show-mode)
+               (org-notmuch-store-link)
+             (if (buffer-file-name)
+                 (buffer-file-name)
+               (expand-file-name default-directory))))))
     (kill-new
      (if DirPathOnlyQ
          (progn

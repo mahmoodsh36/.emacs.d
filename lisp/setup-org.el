@@ -14,7 +14,10 @@
   )
 
 (use-package org-contrib
-  :ensure ( :host github :repo "emacsmirror/org-contrib"))
+  :ensure ( :type git :host sourcehut :repo "bzg/org-contrib"))
+
+;; org-notmuch.el from an old org-contrib
+(require 'org-notmuch)
 
 (defvar *latex-previews-enabled-p*
   (not (is-android-system))
@@ -298,7 +301,7 @@
   (require 'ox-html)
   ;; set to 1.0 to avoid some images being cut off, although that still happens, but less often
   ;; (plist-put org-html-latex-image-options :page-width nil)
-  ;; (plist-put org-latex-preview-appearance-options :page-width 0.8)
+  ;; (plist-put org-latex-preview-appearance-options :page-width 0.6)
   ;; lower the debounce value
   ;; (setq org-latex-preview-live-debounce 0.25)
   ;; display inline tramp images in org mode (and other remote image links)
@@ -1301,7 +1304,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   ;; so that org mode places the latex previews in the specified dir
   ;; (plist-put org-html-latex-image-options :image-dir "ltx")
   (plist-put org-html-latex-image-options :inline '(svg svg-embed))
-  ;; (plist-put org-html-latex-image-options :page-width nil)
+  (plist-put org-html-latex-image-options :page-width 0.6)
 
   ;; disable some stuff that is enabled by default in html exporting
   (let* ((title (if heading (car (last (org-get-outline-path t))) (org-get-title)))
