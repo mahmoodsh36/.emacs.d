@@ -424,11 +424,6 @@
 ;; (led-kbd "r c t" (lambda () (interactive) (org-capture nil "t")))
 
 ;; dired keys
-(defun my-xdg-open-file ()
-  "in dired, open the file named on this line."
-  (interactive)
-  (let* ((file (if (derived-mode-p 'dired-mode) (dired-get-filename nil t) buffer-file-name)))
-    (call-process "xdg-open" nil 0 nil file)))
 (led-kbd "s ." 'my-xdg-open-file)
 
 ;; pdf tools keys, make j,k navigation update the location bookmarked (hey atleast it works)
@@ -531,7 +526,7 @@
          (lambda ()
            (interactive)
            (let ((mybook (book-prompt)))
-             (browse-url mybook))))
+             (my-xdg-open-file mybook))))
 ;; (led-kbd "; O" #'new-book-note-file)
 
 (led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))

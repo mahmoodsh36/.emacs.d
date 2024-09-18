@@ -17,7 +17,8 @@
   :ensure ( :type git :host sourcehut :repo "bzg/org-contrib"))
 
 ;; org-notmuch.el from an old org-contrib
-(require 'org-notmuch)
+(with-eval-after-load 'org
+  (require 'org-notmuch))
 
 (defvar *latex-previews-enabled-p*
   (not (is-android-system))

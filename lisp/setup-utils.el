@@ -481,4 +481,14 @@ prompt the user for a coding system."
 (defun libxml-parse-html-string-no-body-or-html (html)
   (libxml-parse-html-string html))
 
+(defun my-xdg-open-file (&optional file)
+  "in dired, open the file named on this line."
+  (interactive)
+  (let ((file (if file
+                  file
+                (if (derived-mode-p 'dired-mode)
+                    (dired-get-filename nil t)
+                  buffer-file-name))))
+    (call-process "xdg-open" nil 0 nil file)))
+
 (provide 'setup-utils)
