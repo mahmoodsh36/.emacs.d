@@ -84,7 +84,7 @@
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
-    ;; (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
+    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
     (if is-beamer
         (org-export-to-file 'beamer outfile
           nil nil nil nil nil nil)
@@ -121,7 +121,7 @@
         (find-file pdf-file)
       (message "pdf file hasnt been generated"))))
 
-(with-eval-after-load 'org
+(with-eval-after-load-all '(org ox)
   (require 'org-attach)
   (require 'ox-beamer)
   ;; save the clock history across sessions
@@ -596,7 +596,7 @@ contextual information."
           (cl-remove-if (lambda (entry)
                           (equal (car entry) 'svg))
                         (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
-  ;; (ox-latex-disable-svg-handling)
+  (ox-latex-disable-svg-handling)
 
   ;; modified it to remove --bbox=preview, to prevent long latex previews from getting cut off
   (plist-put (alist-get 'dvisvgm org-latex-preview-process-alist)
