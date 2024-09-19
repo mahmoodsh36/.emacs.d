@@ -156,6 +156,7 @@
      (shell . t)
      (sql . t)
      (julia . t)
+     (js . t)
      ;; (mathematica . t)
      ;; (wolfram . t)
      (lua . t)))
