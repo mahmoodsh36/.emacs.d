@@ -596,7 +596,7 @@ contextual information."
           (cl-remove-if (lambda (entry)
                           (equal (car entry) 'svg))
                         (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
-  (ox-latex-disable-svg-handling)
+  ;; (ox-latex-disable-svg-handling)
 
   ;; modified it to remove --bbox=preview, to prevent long latex previews from getting cut off
   (plist-put (alist-get 'dvisvgm org-latex-preview-process-alist)
