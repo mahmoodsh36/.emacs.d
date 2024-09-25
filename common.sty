@@ -531,8 +531,10 @@
   \mkern-7mu\raisebox{-3.81pt}[\p@][\p@]{$\mathord\mathchar"017E$}$}
 
 % points to distinguish them from vectors (they are essentially the same thing but still)
-\newcommand{\ptvct}[1]{\refdef[blk:def-vec]{\brm{#1}}}
-\newcommand{\vct}[1]{\refdef[blk:def-vec]{\vect{#1}}}
+\newcommand{\ptvct}[1]{\refdef[blk:def-vec]{\brm{#1}}} % for a vector representing a point
+\newcommand{\vct}[1]{\refdef[blk:def-vec]{\vect{#1}}} % for a "vector with direction"
+\newcommand{\ptvctv}[1]{\begin{pmatrix} #1 \end{pmatrix}}
+\newcommand{\vctv}[1]{\begin{bmatrix} #1 \end{bmatrix}}
 \newcommand{\mat}[1]{\refdef[blk:def-matrix]{\brm{#1}}} % to denote matrix
 \newcommand{\idmat}{\refdef[blk:def-id-mat]{\mat{I}}} % to denote matrix
 % Insert a matrix. Usage: \matr{a & b \\ c & d} or \matr[<vertical spacing>]{a & b \\ c & d}, https://paulwintz.com/latex-macros/

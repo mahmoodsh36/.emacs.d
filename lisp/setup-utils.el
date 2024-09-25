@@ -260,10 +260,10 @@ example usage: (with-eval-after-load-all '(org) (message \"hi\"))"
          (with-eval-after-load-all (quote ,(cdr (eval my-features))) ,@body))
     `(progn ,@body)))
 
-(defun open-devdocs-entry (entry)
+(defun open-devdocs-entry (entry &optional initial-input)
   "simple function to open the devdocs reference for a specific manual/library/whatever the package accepts, by its name"
   (let ((devdocs-current-docs (list entry)))
-    (devdocs-lookup)))
+    (devdocs-lookup nil initial-input)))
 
 (defun buffer-name-incremented (name)
   "generate a name for a buffer named NAME, if such a buffer already exists use NAME but append
@@ -489,6 +489,6 @@ prompt the user for a coding system."
                 (if (derived-mode-p 'dired-mode)
                     (dired-get-filename nil t)
                   buffer-file-name))))
-    (call-process "xdg-open" nil 0 nil file)))
+    (call-process-shell-command (format "open.sh %s || xdg-open %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0)))
 
 (provide 'setup-utils)

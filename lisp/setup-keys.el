@@ -291,6 +291,7 @@
                  ;; (julia-snail-executable (join-path (getenv "WORK_DIR")
                  ;;                                    "myjulia"
                  ;;                                    "myjulia.sh"))
+                 (julia-snail-executable "LD_LIBRARY_PATH=/run/opengl-driver/lib/ julia")
                  )
              (julia-snail))))
 

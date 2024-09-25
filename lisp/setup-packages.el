@@ -1167,6 +1167,8 @@
 
 (use-package git-timemachine)
 
+(use-package org-timeblock)
+
 (use-package gptel)
 
 ;; convert other formats to org using pandoc
@@ -1176,5 +1178,7 @@
                  :files ("*.el" "filters" "preprocessors")))
 
 (use-package elsa)
+
+(use-package puni)
 
 (provide 'setup-packages)

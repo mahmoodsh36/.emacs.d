@@ -854,7 +854,76 @@ block but are passed literally to the \"example-block\"."
                    expansion)))))
          body t t 2))))
 
+  ;; code for centering LaTeX previews -- a terrible idea
+  (add-hook 'org-latex-preview-open-functions
+            (defun my/org-latex-preview-uncenter (ov)
+              ;; (overlay-put ov 'justify (overlay-get ov 'before-string))
+              (overlay-put ov 'before-string nil)))
+  (add-hook 'org-latex-preview-close-functions
+            (defun my/org-latex-preview-recenter (ov)
+              (overlay-put ov 'before-string (overlay-get ov 'justify))
+              ;; (overlay-put ov 'justify nil)
+              ))
 
+  ;; (defun my/org-latex-preview-center (ov)
+  ;;   (message "hello there")
+  ;;   (save-excursion
+  ;;     (goto-char (overlay-start ov))
+  ;;     (when-let* ((elem (org-element-context))
+  ;;                 ((or (eq (org-element-type elem) 'latex-environment)
+  ;;                      (string-match-p "^\\\\\\[" (org-element-property :value elem))))
+  ;;                 (img (overlay-get ov 'display))
+  ;;                 (prop `(space :align-to (- center (0.55 . ,img))))
+  ;;                 (justify (propertize " " 'display prop 'face 'default)))
+  ;;       (overlay-put ov 'justify justify)
+  ;;       (overlay-put ov 'before-string (overlay-get ov 'justify)))))
+
+  ;; (add-hook 'org-latex-preview-overlay-update-functions
+  ;;           #'my/org-latex-preview-center)
+
+  )
+
+;; code for centering LaTeX preview
+(use-package org-latex-preview
+  :ensure nil
+  :after org-latex-preview
+  :config
+  (defun my/org-latex-preview-uncenter (ov)
+    (overlay-put ov 'before-string nil))
+  (defun my/org-latex-preview-recenter (ov)
+    (overlay-put ov 'before-string (overlay-get ov 'justify)))
+  (defun my/org-latex-preview-center (ov)
+    (save-excursion
+      (goto-char (overlay-start ov))
+      (when-let* ((elem (org-element-context))
+                  ((or (eq (org-element-type elem) 'latex-environment)
+                       (string-match-p "^\\\\\\[" (org-element-property :value elem))))
+                  (img (overlay-get ov 'display))
+                  (prop `(space :align-to (- center (0.55 . ,img))))
+                  (justify (propertize " " 'display prop 'face 'default)))
+        (overlay-put ov 'justify justify)
+        (overlay-put ov 'before-string (overlay-get ov 'justify)))))
+  (define-minor-mode org-latex-preview-center-mode
+    "Center equations previewed with `org-latex-preview'."
+    :global nil
+    (if org-latex-preview-center-mode
+        (progn
+          (add-hook 'org-latex-preview-overlay-open-functions
+                    #'my/org-latex-preview-uncenter nil :local)
+          (add-hook 'org-latex-preview-overlay-close-functions
+                    #'my/org-latex-preview-recenter nil :local)
+          (add-hook 'org-latex-preview-overlay-update-functions
+                    #'my/org-latex-preview-center nil :local)
+          )
+      (remove-hook 'org-latex-preview-overlay-close-functions
+                    #'my/org-latex-preview-recenter)
+      (remove-hook 'org-latex-preview-overlay-update-functions
+                    #'my/org-latex-preview-center)
+      (remove-hook 'org-latex-preview-overlay-open-functions
+                   #'my/org-latex-preview-uncenter)))
+  (add-hook 'org-mode-hook 'org-latex-preview-center-mode)
+  ;; do we really want this following line?
+  (add-to-list 'org-latex-preview-overlay-update-functions 'my/org-latex-preview-center)
   )
 
 ;; insert a blank line between everything in exports
