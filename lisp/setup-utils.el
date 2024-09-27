@@ -489,6 +489,8 @@ prompt the user for a coding system."
                 (if (derived-mode-p 'dired-mode)
                     (dired-get-filename nil t)
                   buffer-file-name))))
-    (call-process-shell-command (format "open.sh %s || xdg-open %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0)))
+    (if (locate-file "open.sh" exec-path)
+        (call-process-shell-command (format "open.sh %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0)
+      (call-process-shell-command (format "xdg-open %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0))))
 
 (provide 'setup-utils)

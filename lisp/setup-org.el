@@ -672,187 +672,279 @@ contextual information."
   ;; (add-to-list 'org-export-filter-final-output-functions 'my-org-html-export-filter)
 
   ;; this is a bad idea, but i copied the function and modified it to work with blk, since there's really no other sane way to go about it (for now atleast..)
-  (defun org-babel-expand-noweb-references (&optional info parent-buffer)
-    "Expand Noweb references in the body of the current source code block.
+;;   (defun org-babel-expand-noweb-references (&optional info parent-buffer)
+;;     "Expand Noweb references in the body of the current source code block.
 
-When optional argument INFO is non-nil, use the block defined by INFO
-instead.
+;; When optional argument INFO is non-nil, use the block defined by INFO
+;; instead.
 
-The block is assumed to be located in PARENT-BUFFER or current buffer
-\(when PARENT-BUFFER is nil).
+;; The block is assumed to be located in PARENT-BUFFER or current buffer
+;; \(when PARENT-BUFFER is nil).
 
-For example the following reference would be replaced with the
-body of the source-code block named `example-block'.
+;; For example the following reference would be replaced with the
+;; body of the source-code block named `example-block'.
 
-<<example-block>>
+;; <<example-block>>
 
-Note that any text preceding the <<foo>> construct on a line will
-be interposed between the lines of the replacement text.  So for
-example if <<foo>> is placed behind a comment, then the entire
-replacement text will also be commented.
+;; Note that any text preceding the <<foo>> construct on a line will
+;; be interposed between the lines of the replacement text.  So for
+;; example if <<foo>> is placed behind a comment, then the entire
+;; replacement text will also be commented.
 
-This function must be called from inside of the buffer containing
-the source-code block which holds BODY.
+;; This function must be called from inside of the buffer containing
+;; the source-code block which holds BODY.
 
-In addition the following syntax can be used to insert the
-results of evaluating the source-code block named `example-block'.
+;; In addition the following syntax can be used to insert the
+;; results of evaluating the source-code block named `example-block'.
 
-<<example-block()>>
+;; <<example-block()>>
 
-Any optional arguments can be passed to example-block by placing
-the arguments inside the parenthesis following the convention
-defined by `org-babel-lob'.  For example
+;; Any optional arguments can be passed to example-block by placing
+;; the arguments inside the parenthesis following the convention
+;; defined by `org-babel-lob'.  For example
 
-<<example-block(a=9)>>
+;; <<example-block(a=9)>>
 
-would set the value of argument \"a\" equal to \"9\".  Note that
-these arguments are not evaluated in the current source-code
-block but are passed literally to the \"example-block\"."
-    (let* ((parent-buffer (or parent-buffer (current-buffer)))
-	   (info (or info (org-babel-get-src-block-info 'no-eval)))
-           (lang (nth 0 info))
-           (body (nth 1 info))
-	   (comment (string= "noweb" (cdr (assq :comments (nth 2 info)))))
-           (noweb-prefix (let ((v (assq :noweb-prefix (nth 2 info))))
-                           (or (not v)
-                               (and (org-not-nil (cdr v))
-                                    (not (equal (cdr v) "no"))))))
-	   (noweb-re (format "\\(.*?\\)\\(%s\\)"
-			     (with-current-buffer parent-buffer
-			       (org-babel-noweb-wrap)))))
-      (unless (equal (cons parent-buffer
-                           (with-current-buffer parent-buffer
-                             (buffer-chars-modified-tick)))
-                     org-babel-expand-noweb-references--cache-buffer)
-        (setq org-babel-expand-noweb-references--cache nil
-              org-babel-expand-noweb-references--cache-buffer
-              (cons parent-buffer
-                    (with-current-buffer parent-buffer
-                      (buffer-chars-modified-tick)))))
-      (cl-macrolet ((c-wrap
-	              (s)
-	              ;; Comment string S, according to LANG mode.  Return new
-	              ;; string.
-	              `(unless org-babel-tangle-uncomment-comments
-	                 (with-temp-buffer
-		           (funcall (org-src-get-lang-mode lang))
-		           (comment-region (point)
-				           (progn (insert ,s) (point)))
-		           (org-trim (buffer-string)))))
-	            (expand-body
-	              (i)
-	              ;; Expand body of code represented by block info I.
-	              `(let ((b (if (org-babel-noweb-p (nth 2 ,i) :eval)
-			            (org-babel-expand-noweb-references ,i)
-		                  (nth 1 ,i))))
-	                 (if (not comment) b
-		           (let ((cs (org-babel-tangle-comment-links ,i)))
-		             (concat (c-wrap (car cs)) "\n"
-			             b "\n"
-			             (c-wrap (cadr cs)))))))
-	            (expand-references
-	              (ref)
-	              `(pcase (gethash ,ref org-babel-expand-noweb-references--cache)
-	                 (`(,last . ,previous)
-	                  ;; Ignore separator for last block.
-	                  (let ((strings (list (expand-body last))))
-		            (dolist (i previous)
-		              (let ((parameters (nth 2 i)))
-		                ;; Since we're operating in reverse order, first
-		                ;; push separator, then body.
-		                (push (or (cdr (assq :noweb-sep parameters)) "\n")
-			              strings)
-		                (push (expand-body i) strings)))
-		            (mapconcat #'identity strings "")))
-	                 ;; Raise an error about missing reference, or return the
-	                 ;; empty string.
-	                 ((guard (or org-babel-noweb-error-all-langs
-			             (member lang org-babel-noweb-error-langs)))
-	                  (error "Cannot resolve %s (see `org-babel-noweb-error-langs')"
-		                 (org-babel-noweb-wrap ,ref)))
-	                 (_ ""))))
-        (replace-regexp-in-string
-         noweb-re
-         (lambda (m)
-           (with-current-buffer parent-buffer
-	     (save-match-data
-	       (let* ((prefix (match-string 1 m))
-		      (id (match-string 3 m))
-		      (evaluate (string-match-p "(.*)" id))
-		      (expansion
-		       (cond
-		        (evaluate
-                         (prog1
-		             (let ((raw (org-babel-ref-resolve id)))
-		               (if (stringp raw) raw (format "%S" raw)))
-                           ;; Evaluation can potentially modify the buffer
-		           ;; and invalidate the cache: reset it.
-                           (unless (equal org-babel-expand-noweb-references--cache-buffer
-                                          (cons parent-buffer
-                                                (buffer-chars-modified-tick)))
-		             (setq org-babel-expand-noweb-references--cache nil
-                                   org-babel-expand-noweb-references--cache-buffer
-                                   (cons parent-buffer
-                                         (with-current-buffer parent-buffer
-                                           (buffer-chars-modified-tick)))))))
-                        ;; Already cached.
-                        ((and (hash-table-p org-babel-expand-noweb-references--cache)
-                              (gethash id org-babel-expand-noweb-references--cache))
-                         (expand-references id))
-		        ;; Return the contents of headlines literally.
-		        ((org-babel-ref-goto-headline-id id)
-		         (org-babel-ref-headline-body))
-		        ;; Look for a source block named SOURCE-NAME.  If
-		        ;; found, assume it is unique; do not look after
-		        ;; `:noweb-ref' header argument.
-		        ((org-with-point-at 1
-		           (let ((r (org-babel-named-src-block-regexp-for-name id)))
-			     (and (re-search-forward r nil t)
-			          (not (org-in-commented-heading-p))
-                                  (let ((info (org-babel-get-src-block-info t)))
-                                    (unless (hash-table-p org-babel-expand-noweb-references--cache)
-                                      (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal)))
-                                    (push info (gethash id  org-babel-expand-noweb-references--cache))
-			            (expand-body info))))))
-		        ;; Retrieve from the Library of Babel.
-		        ((nth 2 (assoc-string id org-babel-library-of-babel)))
-                        ((blk-find-by-id id)
-                         (let ((result (car (blk-find-by-id id))))
+;; would set the value of argument \"a\" equal to \"9\".  Note that
+;; these arguments are not evaluated in the current source-code
+;; block but are passed literally to the \"example-block\"."
+;;     (let* ((parent-buffer (or parent-buffer (current-buffer)))
+;; 	   (info (or info (org-babel-get-src-block-info 'no-eval)))
+;;            (lang (nth 0 info))
+;;            (body (nth 1 info))
+;; 	   (comment (string= "noweb" (cdr (assq :comments (nth 2 info)))))
+;;            (noweb-prefix (let ((v (assq :noweb-prefix (nth 2 info))))
+;;                            (or (not v)
+;;                                (and (org-not-nil (cdr v))
+;;                                     (not (equal (cdr v) "no"))))))
+;; 	   (noweb-re (format "\\(.*?\\)\\(%s\\)"
+;; 			     (with-current-buffer parent-buffer
+;; 			       (org-babel-noweb-wrap)))))
+;;       (unless (equal (cons parent-buffer
+;;                            (with-current-buffer parent-buffer
+;;                              (buffer-chars-modified-tick)))
+;;                      org-babel-expand-noweb-references--cache-buffer)
+;;         (setq org-babel-expand-noweb-references--cache nil
+;;               org-babel-expand-noweb-references--cache-buffer
+;;               (cons parent-buffer
+;;                     (with-current-buffer parent-buffer
+;;                       (buffer-chars-modified-tick)))))
+;;       (cl-macrolet ((c-wrap
+;; 	              (s)
+;; 	              ;; Comment string S, according to LANG mode.  Return new
+;; 	              ;; string.
+;; 	              `(unless org-babel-tangle-uncomment-comments
+;; 	                 (with-temp-buffer
+;; 		           (funcall (org-src-get-lang-mode lang))
+;; 		           (comment-region (point)
+;; 				           (progn (insert ,s) (point)))
+;; 		           (org-trim (buffer-string)))))
+;; 	            (expand-body
+;; 	              (i)
+;; 	              ;; Expand body of code represented by block info I.
+;; 	              `(let ((b (if (org-babel-noweb-p (nth 2 ,i) :eval)
+;; 			            (org-babel-expand-noweb-references ,i)
+;; 		                  (nth 1 ,i))))
+;; 	                 (if (not comment) b
+;; 		           (let ((cs (org-babel-tangle-comment-links ,i)))
+;; 		             (concat (c-wrap (car cs)) "\n"
+;; 			             b "\n"
+;; 			             (c-wrap (cadr cs)))))))
+;; 	            (expand-references
+;; 	              (ref)
+;; 	              `(pcase (gethash ,ref org-babel-expand-noweb-references--cache)
+;; 	                 (`(,last . ,previous)
+;; 	                  ;; Ignore separator for last block.
+;; 	                  (let ((strings (list (expand-body last))))
+;; 		            (dolist (i previous)
+;; 		              (let ((parameters (nth 2 i)))
+;; 		                ;; Since we're operating in reverse order, first
+;; 		                ;; push separator, then body.
+;; 		                (push (or (cdr (assq :noweb-sep parameters)) "\n")
+;; 			              strings)
+;; 		                (push (expand-body i) strings)))
+;; 		            (mapconcat #'identity strings "")))
+;; 	                 ;; Raise an error about missing reference, or return the
+;; 	                 ;; empty string.
+;; 	                 ((guard (or org-babel-noweb-error-all-langs
+;; 			             (member lang org-babel-noweb-error-langs)))
+;; 	                  (error "Cannot resolve %s (see `org-babel-noweb-error-langs')"
+;; 		                 (org-babel-noweb-wrap ,ref)))
+;; 	                 (_ ""))))
+;;         (replace-regexp-in-string
+;;          noweb-re
+;;          (lambda (m)
+;;            (with-current-buffer parent-buffer
+;; 	     (save-match-data
+;; 	       (let* ((prefix (match-string 1 m))
+;; 		      (id (match-string 3 m))
+;; 		      (evaluate (string-match-p "(.*)" id))
+;; 		      (expansion
+;; 		       (cond
+;; 		        (evaluate
+;;                          (prog1
+;; 		             (let ((raw (org-babel-ref-resolve id)))
+;; 		               (if (stringp raw) raw (format "%S" raw)))
+;;                            ;; Evaluation can potentially modify the buffer
+;; 		           ;; and invalidate the cache: reset it.
+;;                            (unless (equal org-babel-expand-noweb-references--cache-buffer
+;;                                           (cons parent-buffer
+;;                                                 (buffer-chars-modified-tick)))
+;; 		             (setq org-babel-expand-noweb-references--cache nil
+;;                                    org-babel-expand-noweb-references--cache-buffer
+;;                                    (cons parent-buffer
+;;                                          (with-current-buffer parent-buffer
+;;                                            (buffer-chars-modified-tick)))))))
+;;                         ;; Already cached.
+;;                         ((and (hash-table-p org-babel-expand-noweb-references--cache)
+;;                               (gethash id org-babel-expand-noweb-references--cache))
+;;                          (expand-references id))
+;; 		        ;; Return the contents of headlines literally.
+;; 		        ((org-babel-ref-goto-headline-id id)
+;; 		         (org-babel-ref-headline-body))
+;; 		        ;; Look for a source block named SOURCE-NAME.  If
+;; 		        ;; found, assume it is unique; do not look after
+;; 		        ;; `:noweb-ref' header argument.
+;; 		        ((org-with-point-at 1
+;; 		           (let ((r (org-babel-named-src-block-regexp-for-name id)))
+;; 			     (and (re-search-forward r nil t)
+;; 			          (not (org-in-commented-heading-p))
+;;                                   (let ((info (org-babel-get-src-block-info t)))
+;;                                     (unless (hash-table-p org-babel-expand-noweb-references--cache)
+;;                                       (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal)))
+;;                                     (push info (gethash id  org-babel-expand-noweb-references--cache))
+;; 			            (expand-body info))))))
+;; 		        ;; Retrieve from the Library of Babel.
+;; 		        ((nth 2 (assoc-string id org-babel-library-of-babel)))
+;;                         ((blk-find-by-id id)
+;;                          (let ((result (car (blk-find-by-id id))))
+;;                            (blk-with-file-as-current-buffer
+;;                             (plist-get result :filepath)
+;;                             (goto-char (plist-get result :position))
+;;                             (let ((info (org-babel-get-src-block-info t)))
+;;                               (expand-body info)))))
+;; 		        ;; All Noweb references were cached in a previous
+;; 		        ;; run.  Yet, ID is not in cache (see the above
+;; 		        ;; condition).  Process missing reference in
+;; 		        ;; `expand-references'.
+;; 		        ((and (hash-table-p org-babel-expand-noweb-references--cache)
+;;                               (gethash 'buffer-processed org-babel-expand-noweb-references--cache))
+;; 		         (expand-references id))
+;; 		        ;; Though luck.  We go into the long process of
+;; 		        ;; checking each source block and expand those
+;; 		        ;; with a matching Noweb reference.  Since we're
+;; 		        ;; going to visit all source blocks in the
+;; 		        ;; document, cache information about them as well.
+;; 		        (t
+;; 		         (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal))
+;; 		         (org-with-wide-buffer
+;; 		          (org-babel-map-src-blocks nil
+;; 			    (if (org-in-commented-heading-p)
+;; 			        (org-forward-heading-same-level nil t)
+;; 			      (let* ((info (org-babel-get-src-block-info t))
+;; 				     (ref (cdr (assq :noweb-ref (nth 2 info)))))
+;; 			        (push info (gethash ref org-babel-expand-noweb-references--cache))))))
+;;                          (puthash 'buffer-processed t org-babel-expand-noweb-references--cache)
+;; 		         (expand-references id)))))
+;; 	         ;; Interpose PREFIX between every line.
+;;                  (if noweb-prefix
+;; 		     (mapconcat #'identity
+;; 			        (split-string expansion "[\n\r]")
+;; 			        (concat "\n" prefix))
+;;                    expansion)))))
+;;          body t t 2))))
+  (defun org-babel-ref-resolve (ref)
+    "Resolve the reference REF and return its value."
+    (save-window-excursion
+      (with-current-buffer (or org-babel-exp-reference-buffer (current-buffer))
+        (save-excursion
+          (let ((case-fold-search t)
+                args new-refere new-header-args new-referent split-file split-ref
+                index contents)
+            ;; if ref is indexed grab the indices -- beware nested indices
+            (when (and (string-match "\\[\\([^\\[]*\\)\\]$" ref)
+                       (let ((str (substring ref 0 (match-beginning 0))))
+                         (= (cl-count ?\( str) (cl-count ?\) str))))
+              (if (> (length (match-string 1 ref)) 0)
+                  (setq index (match-string 1 ref))
+                (setq contents t))
+              (setq ref (substring ref 0 (match-beginning 0))))
+            ;; assign any arguments to pass to source block
+            (when (string-match
+                   "^\\(.+?\\)\\(\\[\\(.*\\)\\]\\|\\(\\)\\)(\\(.*\\))$" ref)
+              (setq new-refere      (match-string 1 ref))
+              (setq new-header-args (match-string 3 ref))
+              (setq new-referent    (match-string 5 ref))
+              (when (> (length new-refere) 0)
+                (when (> (length new-referent) 0)
+                  (setq args (mapcar (lambda (ref) (cons :var ref))
+                                     (org-babel-ref-split-args new-referent))))
+                (when (> (length new-header-args) 0)
+                  (setq args (append (org-babel-parse-header-arguments
+                                      new-header-args)
+                                     args)))
+                (setq ref new-refere)))
+            (when (string-match "^\\(.+\\):\\(.+\\)$" ref)
+              (setq split-file (match-string 1 ref))
+              (setq split-ref (match-string 2 ref))
+              (when (file-exists-p split-file)
+                (find-file split-file)
+                (setq ref split-ref)))
+            (org-with-wide-buffer
+             (goto-char (point-min))
+             (let* ((params (append args '((:results . "none"))))
+                    (regexp (org-babel-named-data-regexp-for-name ref))
+                    (result
+                     (catch :found
+                       ;; Check for code blocks or named data.
+                       (while (re-search-forward regexp nil t)
+                         ;; Ignore COMMENTed headings and orphaned
+                         ;; affiliated keywords.
+                         (unless (org-in-commented-heading-p)
+                           (let ((e (org-element-at-point)))
+                             (when (equal (org-element-property :name e) ref)
+                               (goto-char
+                                (org-element-post-affiliated e))
+                               (pcase (org-element-type e)
+                                 (`babel-call
+                                  (throw :found
+                                         (org-babel-execute-src-block
+                                          nil (org-babel-lob-get-info e) params)))
+                                 ((and `src-block (guard (not contents)))
+                                  (throw :found
+                                         (org-babel-execute-src-block
+                                          nil nil
+                                          (and
+                                           (not org-babel-update-intermediate)
+                                           params))))
+                                 ((and (let v (org-babel-read-element e))
+                                       (guard v))
+                                  (throw :found v))
+                                 (_ (error "Reference not found")))))))
+                       ;; Check for local or global headlines by ID.
+                       (when (org-babel-ref-goto-headline-id ref)
+                         (throw :found (org-babel-ref-headline-body)))
+                       ;; blk
+                       (when (blk-find-by-id ref)
+                         (let ((result (car (blk-find-by-id ref))))
                            (blk-with-file-as-current-buffer
                             (plist-get result :filepath)
                             (goto-char (plist-get result :position))
                             (let ((info (org-babel-get-src-block-info t)))
-                              (expand-body info)))))
-		        ;; All Noweb references were cached in a previous
-		        ;; run.  Yet, ID is not in cache (see the above
-		        ;; condition).  Process missing reference in
-		        ;; `expand-references'.
-		        ((and (hash-table-p org-babel-expand-noweb-references--cache)
-                              (gethash 'buffer-processed org-babel-expand-noweb-references--cache))
-		         (expand-references id))
-		        ;; Though luck.  We go into the long process of
-		        ;; checking each source block and expand those
-		        ;; with a matching Noweb reference.  Since we're
-		        ;; going to visit all source blocks in the
-		        ;; document, cache information about them as well.
-		        (t
-		         (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal))
-		         (org-with-wide-buffer
-		          (org-babel-map-src-blocks nil
-			    (if (org-in-commented-heading-p)
-			        (org-forward-heading-same-level nil t)
-			      (let* ((info (org-babel-get-src-block-info t))
-				     (ref (cdr (assq :noweb-ref (nth 2 info)))))
-			        (push info (gethash ref org-babel-expand-noweb-references--cache))))))
-                         (puthash 'buffer-processed t org-babel-expand-noweb-references--cache)
-		         (expand-references id)))))
-	         ;; Interpose PREFIX between every line.
-                 (if noweb-prefix
-		     (mapconcat #'identity
-			        (split-string expansion "[\n\r]")
-			        (concat "\n" prefix))
-                   expansion)))))
-         body t t 2))))
+                              (throw :found
+                                     (org-babel-execute-src-block nil info params))))))
+                       ;; Check the Library of Babel.
+                       (let ((info (cdr (assq (intern ref)
+                                              org-babel-library-of-babel))))
+                         (when info
+                           (throw :found
+                                  (org-babel-execute-src-block nil info params))))
+                       (error "Reference `%s' not found in this buffer" ref))))
+               (cond
+                ((and result (symbolp result)) (format "%S" result))
+                ((and index (listp result))
+                 (org-babel-ref-index-list index result))
+                (t result)))))))))
 
   ;; code for centering LaTeX previews -- a terrible idea
   (add-hook 'org-latex-preview-open-functions

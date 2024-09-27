@@ -169,7 +169,7 @@
 (setq eshell-scroll-to-bottom-on-input t)
 ;; file to store aliases automatically to
 (setq eshell-aliases-file (from-brain "eshell_aliases"))
-(defun eshell-cd-and-ls (&rest args)           ; all but first ignored
+(defun eshell-cd-and-ls (&rest args) ; all but first ignored
   "cd into directory and list its contents"
   (interactive "P")
   (let ((path (car args)))
