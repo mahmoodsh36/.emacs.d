@@ -1868,4 +1868,22 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-mode)
     (org-element-context)))
 
+(defun storage-path-for-current-org-buffer ()
+  (let* ((myid (save-excursion (goto-char 0) (search-forward "identifier:") (blk-org-id-at-point nil)))
+         (mypath (when myid (join-path (file-truename *data-dir*) "forbrain" myid))))
+    (when myid
+      (when (not (file-exists-p mypath))
+        (mkdir mypath))
+      mypath)))
+
+(defun list-for-current-org-buffer ()
+  "return `filename', prefixed by the path to the brain dir"
+  (let ((mydir (storage-path-for-current-org-buffer)))
+    (when mydir
+      (directory-files mydir))))
+
+(defun open-storage-dir-for-current-org-buffer ()
+  (interactive)
+  (find-file (storage-path-for-current-org-buffer)))
+
 (provide 'setup-org)
