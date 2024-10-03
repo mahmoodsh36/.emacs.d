@@ -21,10 +21,11 @@
   )
 
 (with-eval-after-load 'eglot
-  (add-hook 'c-mode-hook #'eglot-ensure)
+  ;; (add-hook 'c-mode-hook #'eglot-ensure)
 
-  (setq-default eglot-workspace-configuration
-                '((:pylsp . (:configurationSources ["flake8"] :plugins (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t))))))
+  (setq-default
+   eglot-workspace-configuration
+   '((:pylsp . (:configurationSources ["flake8"] :plugins (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t))))))
 
   (add-hook 'prog-mode-hook #'eglot-ensure)
 

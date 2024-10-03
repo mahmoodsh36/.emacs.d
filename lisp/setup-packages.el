@@ -684,8 +684,7 @@
 (use-package pyvenv)
 
 (use-package combobulate
-  :ensure
-  (combobulate :type git :host github :repo "mickeynp/combobulate")
+  :ensure (combobulate :type git :host github :repo "mickeynp/combobulate")
   :hook
   ((python-ts-mode . combobulate-mode)
    (js-ts-mode . combobulate-mode)

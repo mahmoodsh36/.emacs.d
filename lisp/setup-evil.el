@@ -244,7 +244,6 @@ If `QUERY' doesn't contain the current `major-mode', default queries will be use
       (dolist (entry mylist)
         (let ((key (car entry))
               (object (cdr entry)))
-          (message "doing %s %s" key object)
           ;; e.g.: `function.inner`(function block without name and args) to `f` for use in things like `vif`, `yif`
           (define-key evil-outer-text-objects-map key (evil-textobj-tree-sitter-get-textobj-func (format "%s.outer" object)))
           (define-key evil-inner-text-objects-map key (evil-textobj-tree-sitter-get-textobj-func (format "%s.inner" object)))
