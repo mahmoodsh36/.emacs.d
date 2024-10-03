@@ -712,3 +712,11 @@
 \newcommand{\funcv}[2]{%
   #1 \mapsto #2
 }
+
+% physics notations
+\NewDocumentCommand\force{o}{\IfNoValueTF{#1}{\vct{F}}{#1}}
+\NewDocumentCommand\pstn{o}{\IfNoValueTF{#1}{\ptvct{r}}{#1}}
+\NewDocumentCommand\vlcty{o}{\IfNoValueTF{#1}{\vct{v}}{#1}}
+\NewDocumentCommand\aclrn{o}{\IfNoValueTF{#1}{\vct{a}}{#1}}
+\NewDocumentCommand\tim{o}{\IfNoValueTF{#1}{t}{#1}}
+\NewDocumentCommand\Gconst{}{G}
