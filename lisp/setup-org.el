@@ -477,7 +477,7 @@ your browser does not support the video tag.
     (when (equal attribute :attr_html)
       (let* ((block-type (org-element-property :type element))
              (block-title (my-block-title element))
-             (citation (get-block-source element))
+             (citation (org-block-property :source element))
              (block-type-str
               (pcase block-type
                 ("dummy" "")
@@ -496,8 +496,8 @@ your browser does not support the video tag.
                                'html
                                t)
                  ;; dont export :source if it is just a path to a local file (starts with forward slash)
-                 :data-after (when (not (string-prefix-p "/" citation))
-                               citation)
+                 :data-after (when (and citation (not (string-prefix-p "/" citation)))
+                               (org-export-string-as citation org-export-current-backend t))
                  :id (org-block-property :name element)
                  :data-id (org-block-property :name element))
            (funcall fn attribute element property))))))
@@ -557,7 +557,7 @@ contextual information."
                                (_ block-type)))
             (let ((title (my-block-title special-block))
                   (dependency (org-block-property :on special-block))
-                  (citation (get-block-source special-block))
+                  (citation (org-block-property :source block))
                   (label (org-block-property :name special-block)))
               (when (not label)
                 ;; (setq label (generate-random-string 7)))
@@ -571,7 +571,7 @@ contextual information."
                 (when (org-block-property :on-prev special-block)
                   (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
               (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
-                              (if (string-empty-p citation) "" (format "[%s]" citation)))
+                              (if citation (format "[%s]" (org-export-string-as citation 'latex t)) ""))
                       contents
                       (format "\\end{myenv}")))))))
   (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
@@ -1551,10 +1551,6 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                org-export-before-processing-functions)))
     (my-org-to-html t)))
 
-(defun get-block-source (block)
-  (let* ((original-citation-str (or (org-block-property :source block) "")))
-    (org-export-string-as original-citation-str 'latex t)))
-
 (defun current-unix-timestamp ()
   (time-to-seconds (current-time)))
 
@@ -1771,7 +1767,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
        myhtml
        (format "%s
 <div class='card fancy-button' data-ref='blk:%s'>
-  <img src='%s' class='card-image org-latex' />
+  <img src='%s' class='card-image' />
   <span class='card-title'>%s</span>
   <span class='card-subtitle'>%s</span>
   <span class='card-subtitle'>%s</span>
