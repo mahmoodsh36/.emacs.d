@@ -371,10 +371,14 @@
                 (if blk-result
                     (let* ((blk-filepath (plist-get blk-result :filepath))
                            (html-filename (file-name-nondirectory (org-file-html-out-file blk-filepath)))
-                           (html-link (format "<a href=\"%s%s#%s\">%s</a>"
+                           (html-link (format "<a href=\"%s%s%s\">%s</a>"
                                               *html-static-route*
                                               html-filename
-                                              link-path
+                                              ;; if its a link to a file, dont append #<anchor>
+                                              (if (eq (plist-get (plist-get blk-result :matched-pattern) :shared-name)
+                                                      'blk-org-file-rule)
+                                                  ""
+                                                (format "#%s" link-path))
                                               (or desc link-path))))
                       html-link)
                   (format "%s" (or desc link-path))))

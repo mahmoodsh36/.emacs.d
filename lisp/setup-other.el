@@ -55,4 +55,7 @@
         (yas-expand-snippet yas--current-template (car where) (cdr where))
       (yas--message 1 "No snippets can be inserted here!"))))
 
+;; yuck extension for eww
+(add-to-list 'auto-mode-alist '("\\.yuck\\'" . lisp-mode))
+
 (provide 'setup-other)
