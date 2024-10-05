@@ -561,7 +561,7 @@ contextual information."
                                (_ block-type)))
             (let ((title (my-block-title special-block))
                   (dependency (org-block-property :on special-block))
-                  (citation (org-block-property :source block))
+                  (citation (org-block-property :source special-block))
                   (label (org-block-property :name special-block)))
               (when (not label)
                 ;; (setq label (generate-random-string 7)))
