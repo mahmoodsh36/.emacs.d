@@ -215,6 +215,8 @@
 (led-kbd "a c" #'org-agenda-todo :keymaps 'org-agenda-mode-map)
 (led-kbd "a n" 'today-entry)
 (led-kbd "a o" 'open-todays-file)
+(led-kbd "a <" 'open-prev-file)
+(led-kbd "a >" 'open-next-file)
 (led-kbd "s n" 'yas-new-snippet)
 (led-kbd "s v" 'yas-visit-snippet-file)
 (led-kbd "s h" 'yas-insert-snippet)

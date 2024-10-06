@@ -5,8 +5,8 @@
   :ensure ( :remotes ("tecosaur"
                       :repo "https://git.tecosaur.net/tec/org-mode.git"
                       :branch "dev"
-		      ;; :depth nil ;; clone full repo
-		      ;; :pin t
+                      ;; :depth nil ;; clone full repo
+                      ;; :pin t
                       ;; :ref "2022f1ff5dc1b42b002fbae44b565b0ac10fca42"
                       )
             :files (:defaults "etc"))
@@ -1092,6 +1092,26 @@ contextual information."
           (insert (format-time-string "#+filetags: :daily:\n#+title: %Y-%m-%d")))
       (find-file todays-file))))
 
+(defun open-prev-file ()
+  "open the file of the day previous to the current file's day. if current file isnt a daily org file, open yesterday's daily file."
+  (interactive)
+  (let* ((current-files-date (condition-case nil
+                                 (date-to-time (file-name-base buffer-file-name))
+                               (error (current-time))))
+         (prev-time-str (format-time-string "%Y-%m-%d" (time-subtract current-files-date (days-to-time 1))))
+         (prev-file (format-time-string (from-brain (format "/daily/%s.org" prev-time-str)))))
+    (find-file prev-file)))
+
+(defun open-next-file ()
+  "similar to `open-prev-file', except it opens the file for the day after."
+  (interactive)
+  (let* ((current-files-date (condition-case nil
+                                 (date-to-time (file-name-base buffer-file-name))
+                               (error (current-time))))
+         (next-time-str (format-time-string "%Y-%m-%d" (time-add current-files-date (days-to-time 1))))
+         (next-file (format-time-string (from-brain (format "/daily/%s.org" next-time-str)))))
+    (find-file next-file)))
+
 (defun today-entry (&optional todo-keyword)
   "insert an entry for today, an action/todo/whatever and clock in"
   (interactive)
@@ -1396,10 +1416,13 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
              (funcall fn elm))))))))
 
 (defun notes-execute-marked-src-block (rgx)
-  (map-org-dir-elements *notes-dir* rgx 'src-block
-                        (lambda (_)
-                          (message "running code block in file %s" (buffer-file-name))
-                          (org-ctrl-c-ctrl-c))))
+  (map-org-dir-elements
+   *notes-dir*
+   rgx
+   'src-block
+   (lambda (_)
+     (message "running code block in file %s" (buffer-file-name))
+     (org-ctrl-c-ctrl-c))))
 
 (defun grep-org-dir (dir regex)
   (blk-grep blk-grepper
