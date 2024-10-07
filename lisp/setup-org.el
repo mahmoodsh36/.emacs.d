@@ -27,7 +27,7 @@
 ;; whether to export an org mode file
 (setq should-export-org-file-function #'should-export-org-file)
 
-;; TODO: implement functionality for exporting subgraphs of specific depths
+;; 0 means export only the nodes themselves, i means nodes with a distance of at most 'i' links from each node we have
 (defconst export-graph-depth 2)
 
 (defun enable-latex-previews ()
@@ -594,15 +594,6 @@ contextual information."
     (ignore-errors (apply orig-func args)))
   (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
 
-  ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
-  (defun ox-latex-disable-svg-handling ()
-    (interactive)
-    (setf (org-export-backend-feature-implementations (org-export-get-backend 'latex))
-          (cl-remove-if (lambda (entry)
-                          (equal (car entry) 'svg))
-                        (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
-  ;; (ox-latex-disable-svg-handling)
-
   ;; modified it to remove --bbox=preview, to prevent long latex previews from getting cut off
   (plist-put (alist-get 'dvisvgm org-latex-preview-process-alist)
              :image-converter
@@ -977,6 +968,25 @@ contextual information."
   ;; (add-hook 'org-latex-preview-overlay-update-functions
   ;;           #'my/org-latex-preview-center)
 
+  ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
+  ;; (defun my-ox-latex-disable-svg-handling ()
+  ;;   (interactive)
+  ;;   (setf (org-export-backend-feature-implementations (org-export-get-backend 'latex))
+  ;;         (cl-remove-if (lambda (entry)
+  ;;                         (equal (car entry) 'svg))
+  ;;                       (org-export-backend-feature-implementations (org-export-get-backend 'latex)))))
+  ;; (my-ox-latex-disable-svg-handling)
+  (defun my-org-latex-export-filter-remove-svg (data backend channel)
+    ;; org-latex-preivew (for now, should be fixed i think by teco) inserts
+    ;; the string <?xml version='1.0' encoding='UTF-8'?> into the html
+    ;; which dom.el renders as nil, we need to get rid of those, otherwise
+    ;; we're gonna get unwanted results in the rendered html output
+    (replace-regexp-in-string
+     (regexp-quote "\\usepackage[inkscapelatex=false]{svg}")
+     ""
+     data))
+  (add-to-list 'org-export-filter-final-output-functions 'my-org-latex-export-filter-remove-svg)
+
   )
 
 ;; code for centering LaTeX preview
@@ -1272,7 +1282,7 @@ contextual information."
                           (_ nil))))
           filepath))))))
 
-(defun export-node-recursively (node exceptions &rest kw)
+(defun export-node (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
   (if (and node (not (cl-find node exceptions :test #'string=)))
       (progn
@@ -1282,11 +1292,12 @@ contextual information."
           (condition-case nil
               (apply #'export-org-file node kw)
             (error (message "failed to export %s" node)))
-          ;; (let ((nodes (files-linked-from-org-file node)))
-          ;;   (dolist (other-node nodes)
-          ;;     (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
-          ;;       (when other-node (message (format "exporter jumping to: %s" other-node)))
-          ;;       (setf exceptions (apply #'export-node-recursively (nconc (list other-node exceptions) kw))))))
+          ;; (when (< depth export-graph-depth)
+          ;;   (let ((nodes (files-linked-from-org-file node)))
+          ;;     (dolist (other-node nodes)
+          ;;       (when (funcall should-export-org-file-function other-node) ;; to avoid jumping to nodes that arent for exporting anyway
+          ;;         (when other-node (message (format "exporter jumping to: %s" other-node)))
+          ;;         (setf exceptions (apply #'export-node (nconc (list other-node exceptions (1+ depth)) kw)))))))
           )
         exceptions)
     exceptions))
@@ -1301,7 +1312,7 @@ contextual information."
         ;; i need my transclusions present when exporting
         (org-mode-hook (cons 'org-transclusion-mode org-mode-hook)))
     (dolist (file files-to-export-1)
-      (setq exceptions (apply #'export-node-recursively (nconc (list file exceptions) kw)))
+      (setq exceptions (apply #'export-node (nconc (list file exceptions) kw)))
       (setq exceptions (push file exceptions))
       (message "%s/%s" (length exceptions) (length files-to-export-1)))))
 
@@ -1834,7 +1845,19 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
         (dolist (child children)
           (let ((blk-entry (car (blk-find-by-id child))))
             (push (plist-get blk-entry :filepath) files-to-export)))))
-    (cl-union files-to-export (org-files-with-tag "export_section"))))
+    (setq files-to-export (cl-union files-to-export (org-files-with-tag "export_section")))
+    (dolist (file-to-export files-to-export)
+      (setq files-to-export (cl-union files-to-export (org-files-connected-to-org-file file-to-export export-graph-depth) :test 'equal)))
+    files-to-export))
+
+(cl-defun org-files-connected-to-org-file (org-file &optional (depth 1))
+  (when (> depth 0)
+    (let ((nodes (files-linked-from-org-file org-file)))
+      (let ((connected-files))
+        (dolist (node nodes)
+          (when (not (cl-find node (cl-union connected-files (list org-file) :test 'equal) :test 'equal))
+            (setq connected-files (cl-union (cons node connected-files) (org-files-connected-to-org-file node (1- depth)) :test #'equal))))
+        connected-files))))
 
 (defun get-latex-preview-svg-by-blk-id (blk-id)
   (let* ((blk-entry (car (blk-find-by-id blk-id)))
