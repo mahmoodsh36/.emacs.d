@@ -1,8 +1,11 @@
 \makeatletter%
 \@ifclassloaded{beamer}%
   {\usetheme{Antibes}}%
-  {\usepackage{enumitem}
-   \usepackage[margin=0.2in]{geometry}}% enumitem doesnt work with beamer so only load it if we arent using beamer
+  {
+    \usepackage{enumitem}% enumitem doesnt work with beamer so only load it if we arent using beamer
+    \usepackage[margin=0.2in]{geometry}
+    \usepackage{hyperref} % hyperref is loaded by default in beamer, if we load it we get "option clash" error
+  }
 \makeatother%
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -66,7 +69,6 @@
 \usepackage{svg}
 \usepackage{biblatex}
 \addbibresource{\string~/brain/bib.bib}
-\usepackage{hyperref}
 % \usepackage{cleveref}
 \usepackage{expl3}
 
