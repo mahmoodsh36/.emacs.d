@@ -1180,4 +1180,6 @@
 
 (use-package puni)
 
+(use-package punpun-themes)
+
 (provide 'setup-packages)
