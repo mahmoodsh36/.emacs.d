@@ -21,7 +21,6 @@
 \usepackage{listings}
 \usepackage[most,listings]{tcolorbox}
 \usepackage{forest}
-\usepackage{adjustbox}
 \usepackage{tikz-3dplot}
 \usepackage{mathtools}
 \usepackage{pgfplots}
@@ -71,6 +70,9 @@
 \addbibresource{\string~/brain/bib.bib}
 % \usepackage{cleveref}
 \usepackage{expl3}
+\usepackage{multicol}
+\usepackage{siunitx}
+\usepackage[Export]{adjustbox}
 
 % these work smoothly, unlike other fonts
 % \usepackage{newtxtext,newtxmath}
@@ -313,7 +315,7 @@
 \newcommand{\gobblenextarg}[2]{#1#2\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
 \makeatother
 
-% some computability symbols
+% some computability/toc symbols
 \DeclareMathOperator{\program}{\refdef[blk:def-program]{\mathscr{P}}} % symbol for a program
 \DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
 \DeclareMathOperator{\cfunc}{\refdef[blk:not-comp-func]{\psi}} % computable function symbol
@@ -354,6 +356,10 @@
 \newcommand{\litoh}{\refdef[blk:def-bigo]{\mathscr{o}}}
 \newcommand{\litth}{\refdef[blk:def-bigo]{\theta}}
 \newcommand{\litom}{\refdef[blk:def-bigo]{\omega}}
+\newcommand{\langconcat}{\mathrel{\refdef[blk:def-langconcat]{\cdot}}} % matrix product
+\newcommand{\emptytrans}{\refdef[blk:blk:1704361386]{\varepsilon}}
+\newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
+\newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
