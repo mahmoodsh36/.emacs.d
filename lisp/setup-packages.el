@@ -11,15 +11,14 @@
               :build (:not elpaca--compile-info) ;; Make will take care of this step
               :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
               :version (lambda (_) (require 'tex-site) AUCTeX-version))
-    ;;:hook
-    ;; (LaTeX-mode . turn-on-prettify-symbols-mode)
-    ;; (LaTeX-mode . reftex-mode)
-    ;; (LaTeX-mode . (lambda () (corfu-mode -1)))
-    ;; (LaTeX-mode . outline-minor-mode)
-    ;; (LaTeX-mode . olivetti-mode))
+    :hook
+    (LaTeX-mode . turn-on-prettify-symbols-mode)
+    (LaTeX-mode . reftex-mode)
+    (LaTeX-mode . outline-minor-mode)
+    ;; (LaTeX-mode . olivetti-mode)
     :config
     (add-hook 'plain-TeX-mode-hook 'LaTeX-mode) ;; why is this not the default?
-    ;; (setq auto-mode-alist (cons '("\\.tex$" . latex-mode) auto-mode-alist))
+    ;; (add-to-list 'auto-mode-alist '("\\.tex$" . LaTeX-mode))
   ))
 
 ;; has issues with transient versions/elpaca, build seems to fail on android

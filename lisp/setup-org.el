@@ -113,7 +113,7 @@
 (defun open-current-document ()
   "open the pdf of the current latex document that was generated"
   (interactive)
-  (find-file-other-window (concat (get-latex-cache-dir-path) (current-filename-no-ext) ".pdf")))
+  (find-alternate-file-other-window (concat (get-latex-cache-dir-path) (current-filename-no-ext) ".pdf")))
 (defun open-current-document-this-window ()
   (interactive)
   (let ((pdf-file (concat (get-latex-cache-dir-path) (current-filename-no-ext) ".pdf")))
@@ -1327,14 +1327,22 @@ contextual information."
 
 (defun export-all-org-files-to-html ()
   (interactive)
-  (let ((should-export-org-file-function #'should-export-org-file)
-        (files-to-export (collect-org-files-to-export)))
+  (let* ((org-inhibit-startup t) ;; to make opening org files faster disable startup
+         (should-export-org-file-function #'should-export-org-file)
+         (files-to-export (if (boundp 'files-to-export) files-to-export (collect-org-files-to-export))))
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
     ;; (export-entries-page)
     (export-all-org-files :html-p t)
     (generate-and-save-website-search-data)
     (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
+
+(defun export-all-org-files-to-pdf ()
+  (interactive)
+  (let* ((org-inhibit-startup t) ;; to make opening org files faster disable startup
+         (should-export-org-file-function (lambda (_) t))
+         (files-to-export (if (boundp 'files-to-export) files-to-export (collect-org-files-to-export))))
+    (export-all-org-files :pdf-p t)))
 
 (defun export-all-math-org-files-to-html ()
   (interactive)

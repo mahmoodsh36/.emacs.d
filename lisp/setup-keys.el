@@ -315,6 +315,7 @@
 ;; (led-kbd "w n" #'windmove-down)
 ;; (led-kbd "w p" #'windmove-up)
 (led-kbd "v" #'open-current-document-this-window :keymaps '(org-mode-map TeX-mode-map latex-mode-map))
+(led-kbd "V" #'open-current-document :keymaps '(org-mode-map TeX-mode-map latex-mode-map))
 (general-define-key :states 'normal :keymaps 'override
                     "M-o" ;; new line without breaking current line
                     (lambda ()
