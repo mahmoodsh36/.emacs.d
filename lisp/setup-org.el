@@ -80,7 +80,7 @@
   (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".tex"))
 (defun pdf-out-file ()
   (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".pdf"))
-(defun my-org-to-pdf ()
+(cl-defun my-org-to-pdf (&optional (async t))
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
@@ -90,20 +90,23 @@
           nil nil nil nil nil nil)
       (org-export-to-file 'latex outfile
         nil nil nil nil nil nil))
-    (compile-latex-file outfile)))
+    (compile-latex-file outfile async)))
 
-(defun compile-latex-file (path)
+(cl-defun compile-latex-file (path &optional (async t))
   ;; for biber we need a different set of commands, for cross-references we need to compile twice
   (let ((cmd (format "%s -shell-escape -output-directory=%s %s"
                      org-latex-compiler
                      (file-truename (get-latex-cache-dir-path))
                      path)))
-    (start-process-shell-command
-     "latex"
-     "latex"
-     ;; (format "%s && %s" cmd cmd)
-     cmd
-     )))
+    (if async
+        (start-process-shell-command
+         "latex"
+         "latex"
+         ;; (format "%s && %s" cmd cmd)
+         cmd
+         )
+      (call-process-shell-command
+       cmd))))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -1260,7 +1263,7 @@ contextual information."
   (with-file-as-current-buffer
    file
    (when (plist-get kw :pdf-p)
-     (my-org-to-pdf))
+     (my-org-to-pdf (plist-get kw :async)))
    (when (plist-get kw :html-p)
      (my-org-to-html))))
 
@@ -1342,7 +1345,7 @@ contextual information."
   (let* ((org-inhibit-startup t) ;; to make opening org files faster disable startup
          (should-export-org-file-function (lambda (_) t))
          (files-to-export (if (boundp 'files-to-export) files-to-export (collect-org-files-to-export))))
-    (export-all-org-files :pdf-p t)))
+    (export-all-org-files :pdf-p t :async nil)))
 
 (defun export-all-math-org-files-to-html ()
   (interactive)

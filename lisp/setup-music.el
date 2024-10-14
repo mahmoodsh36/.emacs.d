@@ -74,6 +74,9 @@
   (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
                                                                   (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
                                                                 (directory-files-recursively *music-dir* "")))))
-    (browse-url (expand-file-name my-file))))
+    (call-process "open.sh" nil 0 nil
+                  (expand-file-name my-file))
+    ;; (browse-url (expand-file-name my-file))
+    ))
 
 (provide 'setup-music)
