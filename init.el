@@ -343,3 +343,10 @@
 
 ;; this causes errors so disable it
 (setq text-mode-ispell-word-completion nil)
+
+;; limit the scope of bidirectional display to single line (make each line its own paragraph) https://emacs.stackexchange.com/questions/38464/limit-the-scope-of-bidirectional-display-to-single-line
+(setq bidi-paragraph-separate-re "^"
+      bidi-paragraph-start-re "^")
+;; this is needed to make it work with org
+(setq-default bidi-paragraph-separate-re "^"
+              bidi-paragraph-start-re "^")

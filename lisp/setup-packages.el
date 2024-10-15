@@ -1181,4 +1181,9 @@
 
 (use-package punpun-themes)
 
+;; need this for hebrew to be readable and other unicode characters
+(use-package unicode-fonts
+  :config
+  (unicode-fonts-setup))
+
 (provide 'setup-packages)

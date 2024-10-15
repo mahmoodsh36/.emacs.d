@@ -71,9 +71,12 @@
       (dired (join-path *music-dir* chosen-artist)))))
 (defun play-file ()
   (interactive)
-  (let ((my-file (completing-read "select file: " (cl-remove-if (lambda (filepath)
-                                                                  (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
-                                                                (directory-files-recursively *music-dir* "")))))
+  (let ((my-file (completing-read
+                  "select file: "
+                  (cl-remove-if
+                   (lambda (filepath)
+                     (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
+                   (directory-files-recursively *music-dir* "")))))
     (call-process "open.sh" nil 0 nil
                   (expand-file-name my-file))
     ;; (browse-url (expand-file-name my-file))
