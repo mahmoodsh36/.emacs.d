@@ -68,7 +68,7 @@
 \usepackage{svg}
 \usepackage{biblatex}
 \addbibresource{\string~/brain/bib.bib}
-% \usepackage{cleveref}
+\usepackage[noabbrev,capitalise]{cleveref} % https://texblog.org/2013/05/06/cleveref-a-clever-way-to-reference-in-latex/
 \usepackage{expl3}
 \usepackage{multicol}
 \usepackage{siunitx}
@@ -422,44 +422,45 @@
 \@ifclassloaded{beamer}%
   {}%
   {
-% \theoremstyle{definition} \newtheorem{definition}{definition}
-% \newtheorem{my_example}{example}
-% \newtheorem{assumption}{assumption}
-% \counterwithin{my_example}{section}
-% \counterwithin{my_example}{subsection}
-% \counterwithin{definition}{section}
-% \counterwithin{definition}{subsection}
-% \newtheorem{characteristic}{characteristic}
-% \newtheorem{entailment}{entailment}
-% \newtheorem{corollary}{corollary}
-% \newtheore*{proof}{Proof}
-% \newtheorem{lemma}{lemma}
-% \newtheorem{question}{question}
-% \newtheorem{remark}{remark}
-% \newtheorem{subquestion}{subquestion}[question]
-% \newtheorem{note}{Note}
-% \newtheorem{answer}{answer}
-% \counterwithin{answer}{question}
-% \counterwithin{answer}{subquestion}
-% \newtheorem{step}{step}[answer]
-% \newtheorem{problem}{problem}
-% \newtheorem{solution}{solution}% [problem]
-% \newtheorem{subproblem}{subproblem}% [problem]
-% \newtheorem{task}{task}
-% \newtheorem{theorem}{theorem}
-% \newtheorem{axiom}{axiom}
-% \newtheorem{claim}{claim}
-% \newtheorem{proposition}{proposition}
-% \newtheorem{notation}{notation}
-% \newenvironment{note}
-% {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
-%   {\end{bclogo}}
-% \newenvironment{attention}
-% {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
-%     couleur=red!15]{Important!}}
-%   {\end{bclogo}}
-% a dummy environment to group together "stuff"
-}%
+    \theoremstyle{definition}
+    \newtheorem{definition}{definition}
+    \newtheorem{my_example}{example}
+    % \newtheorem{assumption}{assumption}
+    % \counterwithin{my_example}{section}
+    % \counterwithin{my_example}{subsection}
+    % \counterwithin{definition}{section}
+    % \counterwithin{definition}{subsection}
+    % \newtheorem{characteristic}{characteristic}
+    % \newtheorem{entailment}{entailment}
+    % \newtheorem{corollary}{corollary}
+    % \newtheore*{proof}{Proof}
+    % \newtheorem{lemma}{lemma}
+    % \newtheorem{question}{question}
+    % \newtheorem{remark}{remark}
+    % \newtheorem{subquestion}{subquestion}[question]
+    \newtheorem{note}{note}
+    % \newtheorem{answer}{answer}
+    % \counterwithin{answer}{question}
+    % \counterwithin{answer}{subquestion}
+    % \newtheorem{step}{step}[answer]
+    \newtheorem{problem}{problem}
+    \newtheorem{solution}{solution}% [problem]
+    \newtheorem{subproblem}{subproblem}% [problem]
+    \newtheorem{task}{task}
+    \newtheorem{theorem}{theorem}
+    \newtheorem{axiom}{axiom}
+    \newtheorem{claim}{claim}
+    \newtheorem{proposition}{proposition}
+    \newtheorem{notation}{notation}
+    % \newenvironment{note}
+    % {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
+    %   {\end{bclogo}}
+    % \newenvironment{attention}
+    % {\begin{bclogo}[logo=\bcattention, couleurBarre=red, noborder=true,
+    %   couleur=red!15]{Important!}}
+    %   {\end{bclogo}}
+    % a dummy environment to group together "stuff"
+  }%
 \makeatother%
 % \newtheorem{thought}{thought}
 \newenvironment*{dummyenv}{}{}

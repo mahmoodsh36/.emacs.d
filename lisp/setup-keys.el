@@ -86,7 +86,8 @@
 ;; (led-kbd "r d" (lambda () (interactive) (export-current-buffer :pdf-p t)) :keymaps 'org-mode-map)
 (led-kbd "r d"
          (lambda () (interactive)
-           (my-org-to-pdf)
+           ;; (my-org-to-pdf)
+           (export-org-file buffer-file-name :pdf-p t :async t)
            (switch-to-buffer-other-window "latex"))
          :keymaps 'org-mode-map)
 (led-kbd "r u" #'org-latex-preview-clear-cache :keymaps 'org-mode-map)

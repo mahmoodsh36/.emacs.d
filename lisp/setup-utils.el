@@ -494,4 +494,12 @@ prompt the user for a coding system."
       ;; (call-process-shell-command (format "xdg-open %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0)
       (call-process "xdg-open" nil nil nil file))))
 
+(defun plist-keys (plist)
+  "Return a list of keys in PLIST."
+  (let (keys)
+    (while plist
+      (push (car plist) keys)
+      (setq plist (cddr plist)))
+    (reverse keys)))
+
 (provide 'setup-utils)

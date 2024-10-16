@@ -102,8 +102,7 @@
         (start-process-shell-command
          "latex"
          "latex"
-         ;; (format "%s && %s" cmd cmd)
-         cmd
+         (format "%s && %s" cmd cmd)
          )
       (call-process-shell-command
        cmd))))
@@ -124,7 +123,7 @@
         (find-file pdf-file)
       (message "pdf file hasnt been generated"))))
 
-(with-eval-after-load-all '(org ox)
+(with-eval-after-load-all '(org ox org-agenda ox-latex)
   (require 'org-attach)
   (require 'ox-beamer)
   ;; save the clock history across sessions
@@ -465,7 +464,17 @@ your browser does not support the video tag.
     (save-excursion
       (goto-char (point-min))
       (replace-regexp "#\\+caption: \\(.*\\)" "\\1")))
-  (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
+  ;; (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
+
+  ;; insert whitespace after blocks
+  (defun my-org-hook-insert-whitespace-after-block (&optional export-backend)
+    (save-excursion
+      (goto-char (point-min))
+      (replace-regexp "\\(\\end{[a-zA-Z0-9]*?}\\)$" "\\1\n")
+      (goto-char (point-min))
+      (replace-regexp "\\(#\\+end_.*\\)" "\\1\n")
+      ))
+  (add-to-list 'org-export-before-processing-functions 'my-org-hook-insert-whitespace-after-block)
 
   ;; remove the title that org inserts into exports by default
   (defun my-org-html--build-meta-info-hook (out)
@@ -558,30 +567,29 @@ contextual information."
       (if (member block-type special-blocks-not-for-handling)
           (funcall fn special-block contents info)
         (progn
-            (setq block-type (pcase block-type
-                               ("my_example" "example")
-                               ("my_comment" "comment")
-                               (_ block-type)))
-            (let ((title (my-block-title special-block))
-                  (dependency (org-block-property :on special-block))
-                  (citation (org-block-property :source special-block))
-                  (label (org-block-property :name special-block)))
-              (when (not label)
-                ;; (setq label (generate-random-string 7)))
-                (setq label "nil"))
-              (if dependency
-                  (progn
-                    (when (not (string-search "[" dependency)) ;; if its a link without the brackets
-                      (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
-
-                    (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
-                (when (org-block-property :on-prev special-block)
-                  (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
-              (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
-                              (if citation (format "[%s]" (org-export-string-as citation 'latex t)) ""))
-                      contents
-                      (format "\\end{myenv}")))))))
-  (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
+          (setq block-type (pcase block-type
+                             ("my_example" "example")
+                             ("my_comment" "comment")
+                             (_ block-type)))
+          (let ((title (my-block-title special-block))
+                (dependency (org-block-property :on special-block))
+                (citation (org-block-property :source special-block))
+                (label (org-block-property :name special-block)))
+            (when (not label)
+              ;; (setq label (generate-random-string 7)))
+              (setq label "nil"))
+            (if dependency
+                (progn
+                  (when (not (string-search "[" dependency)) ;; if its a link without the brackets
+                    (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
+                  (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
+              (when (org-block-property :on-prev special-block)
+                (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
+            (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
+                            (if citation (format "[%s]" (org-export-string-as citation 'latex t)) ""))
+                    contents
+                    (format "\\end{myenv}")))))))
+  ;; (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
 
   ;; enforce some default keywords for all org buffers (in a hacky way)
   (defun my-org-collect-keywords-advice (orig-func &rest args)
@@ -621,236 +629,7 @@ contextual information."
     )
   (advice-add #'org-html-meta-tags-default :filter-return #'my-org-html-meta-tags-default-advice)
 
-  ;; this should be used to get rid of the random id's org inserts, and to insert "anchor links"
-  ;; (defun my-org-html-export-filter (data backend channel)
-  ;;   ;; org-latex-preivew (for now, should be fixed i think by teco) inserts
-  ;;   ;; the string <?xml version='1.0' encoding='UTF-8'?> into the html
-  ;;   ;; which dom.el renders as nil, we need to get rid of those, otherwise
-  ;;   ;; we're gonna get unwanted results in the rendered html output
-  ;;   (setq data (replace-regexp-in-string
-  ;;               (regexp-quote "<?xml version='1.0' encoding='UTF-8'?>")
-  ;;               ""
-  ;;               data))
-  ;;   (let ((html (libxml-parse-html-string data))
-  ;;         (done))
-  ;;     (libxml-map-nodes
-  ;;      html
-  ;;      (lambda (node)
-  ;;        ;; 'done' is needed because without it we may handle the same node multiple times..
-  ;;        (when (and (consp node)
-  ;;                   (not (cl-find node done)))
-  ;;          (let ((class (dom-attr node 'class))
-  ;;                ;; (class (alist-get 'class (cadr node)))
-  ;;                (link-node (copy-tree `(a ((href . ,(format "#%s" (dom-attr node 'id))) (class . "copy-btn") (onclick . "copyAnchor(this)")) (i ((data-feather . "link") (class . "feather-16")) ""))))
-  ;;                (before-node (copy-tree `(div ((class . "fancy-before")) ,(dom-attr node 'data-before))))
-  ;;                (after-node (copy-tree `(div ((class . "fancy-after")) ,(dom-attr node 'data-after))))
-  ;;                (parent (dom-parent html node))
-  ;;                (container (copy-tree '(div ((class . "fancy-container")) ""))))
-  ;;            (when (and class (is-substring "fancy-block" class))
-  ;;              ;; (setcdr (last (dom-children parent)) (cons (copy-tree container) nil))
-  ;;              ;; replace the block with a fancy-container
-  ;;              (dom-add-child-before parent container node)
-  ;;              (dom-remove-node parent node)
-  ;;              ;; insert children to fancy-container (ncluding the block itself (node))
-  ;;              (when (dom-attr node 'id)
-  ;;                (dom-append-child container link-node))
-  ;;              (dom-append-child container before-node)
-  ;;              (dom-append-child container node)
-  ;;              (dom-append-child container after-node)
-  ;;              (push node done)
-  ;;              )))))
-  ;;     ;; we need to check if done because if we didnt handle any fancy-block
-  ;;     ;; then 'data' might've been just a string, and we'd be turning it
-  ;;     ;; into an entire html document by parsing and rerendering it which
-  ;;     ;; may give undesirable results
-  ;;     (if done
-  ;;         (libxml-render-html-string html)
-  ;;       data)))
-  ;; (add-to-list 'org-export-filter-body-functions 'my-org-html-export-filter)
-  ;; (add-to-list 'org-export-filter-final-output-functions 'my-org-html-export-filter)
-
   ;; this is a bad idea, but i copied the function and modified it to work with blk, since there's really no other sane way to go about it (for now atleast..)
-;;   (defun org-babel-expand-noweb-references (&optional info parent-buffer)
-;;     "Expand Noweb references in the body of the current source code block.
-
-;; When optional argument INFO is non-nil, use the block defined by INFO
-;; instead.
-
-;; The block is assumed to be located in PARENT-BUFFER or current buffer
-;; \(when PARENT-BUFFER is nil).
-
-;; For example the following reference would be replaced with the
-;; body of the source-code block named `example-block'.
-
-;; <<example-block>>
-
-;; Note that any text preceding the <<foo>> construct on a line will
-;; be interposed between the lines of the replacement text.  So for
-;; example if <<foo>> is placed behind a comment, then the entire
-;; replacement text will also be commented.
-
-;; This function must be called from inside of the buffer containing
-;; the source-code block which holds BODY.
-
-;; In addition the following syntax can be used to insert the
-;; results of evaluating the source-code block named `example-block'.
-
-;; <<example-block()>>
-
-;; Any optional arguments can be passed to example-block by placing
-;; the arguments inside the parenthesis following the convention
-;; defined by `org-babel-lob'.  For example
-
-;; <<example-block(a=9)>>
-
-;; would set the value of argument \"a\" equal to \"9\".  Note that
-;; these arguments are not evaluated in the current source-code
-;; block but are passed literally to the \"example-block\"."
-;;     (let* ((parent-buffer (or parent-buffer (current-buffer)))
-;; 	   (info (or info (org-babel-get-src-block-info 'no-eval)))
-;;            (lang (nth 0 info))
-;;            (body (nth 1 info))
-;; 	   (comment (string= "noweb" (cdr (assq :comments (nth 2 info)))))
-;;            (noweb-prefix (let ((v (assq :noweb-prefix (nth 2 info))))
-;;                            (or (not v)
-;;                                (and (org-not-nil (cdr v))
-;;                                     (not (equal (cdr v) "no"))))))
-;; 	   (noweb-re (format "\\(.*?\\)\\(%s\\)"
-;; 			     (with-current-buffer parent-buffer
-;; 			       (org-babel-noweb-wrap)))))
-;;       (unless (equal (cons parent-buffer
-;;                            (with-current-buffer parent-buffer
-;;                              (buffer-chars-modified-tick)))
-;;                      org-babel-expand-noweb-references--cache-buffer)
-;;         (setq org-babel-expand-noweb-references--cache nil
-;;               org-babel-expand-noweb-references--cache-buffer
-;;               (cons parent-buffer
-;;                     (with-current-buffer parent-buffer
-;;                       (buffer-chars-modified-tick)))))
-;;       (cl-macrolet ((c-wrap
-;; 	              (s)
-;; 	              ;; Comment string S, according to LANG mode.  Return new
-;; 	              ;; string.
-;; 	              `(unless org-babel-tangle-uncomment-comments
-;; 	                 (with-temp-buffer
-;; 		           (funcall (org-src-get-lang-mode lang))
-;; 		           (comment-region (point)
-;; 				           (progn (insert ,s) (point)))
-;; 		           (org-trim (buffer-string)))))
-;; 	            (expand-body
-;; 	              (i)
-;; 	              ;; Expand body of code represented by block info I.
-;; 	              `(let ((b (if (org-babel-noweb-p (nth 2 ,i) :eval)
-;; 			            (org-babel-expand-noweb-references ,i)
-;; 		                  (nth 1 ,i))))
-;; 	                 (if (not comment) b
-;; 		           (let ((cs (org-babel-tangle-comment-links ,i)))
-;; 		             (concat (c-wrap (car cs)) "\n"
-;; 			             b "\n"
-;; 			             (c-wrap (cadr cs)))))))
-;; 	            (expand-references
-;; 	              (ref)
-;; 	              `(pcase (gethash ,ref org-babel-expand-noweb-references--cache)
-;; 	                 (`(,last . ,previous)
-;; 	                  ;; Ignore separator for last block.
-;; 	                  (let ((strings (list (expand-body last))))
-;; 		            (dolist (i previous)
-;; 		              (let ((parameters (nth 2 i)))
-;; 		                ;; Since we're operating in reverse order, first
-;; 		                ;; push separator, then body.
-;; 		                (push (or (cdr (assq :noweb-sep parameters)) "\n")
-;; 			              strings)
-;; 		                (push (expand-body i) strings)))
-;; 		            (mapconcat #'identity strings "")))
-;; 	                 ;; Raise an error about missing reference, or return the
-;; 	                 ;; empty string.
-;; 	                 ((guard (or org-babel-noweb-error-all-langs
-;; 			             (member lang org-babel-noweb-error-langs)))
-;; 	                  (error "Cannot resolve %s (see `org-babel-noweb-error-langs')"
-;; 		                 (org-babel-noweb-wrap ,ref)))
-;; 	                 (_ ""))))
-;;         (replace-regexp-in-string
-;;          noweb-re
-;;          (lambda (m)
-;;            (with-current-buffer parent-buffer
-;; 	     (save-match-data
-;; 	       (let* ((prefix (match-string 1 m))
-;; 		      (id (match-string 3 m))
-;; 		      (evaluate (string-match-p "(.*)" id))
-;; 		      (expansion
-;; 		       (cond
-;; 		        (evaluate
-;;                          (prog1
-;; 		             (let ((raw (org-babel-ref-resolve id)))
-;; 		               (if (stringp raw) raw (format "%S" raw)))
-;;                            ;; Evaluation can potentially modify the buffer
-;; 		           ;; and invalidate the cache: reset it.
-;;                            (unless (equal org-babel-expand-noweb-references--cache-buffer
-;;                                           (cons parent-buffer
-;;                                                 (buffer-chars-modified-tick)))
-;; 		             (setq org-babel-expand-noweb-references--cache nil
-;;                                    org-babel-expand-noweb-references--cache-buffer
-;;                                    (cons parent-buffer
-;;                                          (with-current-buffer parent-buffer
-;;                                            (buffer-chars-modified-tick)))))))
-;;                         ;; Already cached.
-;;                         ((and (hash-table-p org-babel-expand-noweb-references--cache)
-;;                               (gethash id org-babel-expand-noweb-references--cache))
-;;                          (expand-references id))
-;; 		        ;; Return the contents of headlines literally.
-;; 		        ((org-babel-ref-goto-headline-id id)
-;; 		         (org-babel-ref-headline-body))
-;; 		        ;; Look for a source block named SOURCE-NAME.  If
-;; 		        ;; found, assume it is unique; do not look after
-;; 		        ;; `:noweb-ref' header argument.
-;; 		        ((org-with-point-at 1
-;; 		           (let ((r (org-babel-named-src-block-regexp-for-name id)))
-;; 			     (and (re-search-forward r nil t)
-;; 			          (not (org-in-commented-heading-p))
-;;                                   (let ((info (org-babel-get-src-block-info t)))
-;;                                     (unless (hash-table-p org-babel-expand-noweb-references--cache)
-;;                                       (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal)))
-;;                                     (push info (gethash id  org-babel-expand-noweb-references--cache))
-;; 			            (expand-body info))))))
-;; 		        ;; Retrieve from the Library of Babel.
-;; 		        ((nth 2 (assoc-string id org-babel-library-of-babel)))
-;;                         ((blk-find-by-id id)
-;;                          (let ((result (car (blk-find-by-id id))))
-;;                            (blk-with-file-as-current-buffer
-;;                             (plist-get result :filepath)
-;;                             (goto-char (plist-get result :position))
-;;                             (let ((info (org-babel-get-src-block-info t)))
-;;                               (expand-body info)))))
-;; 		        ;; All Noweb references were cached in a previous
-;; 		        ;; run.  Yet, ID is not in cache (see the above
-;; 		        ;; condition).  Process missing reference in
-;; 		        ;; `expand-references'.
-;; 		        ((and (hash-table-p org-babel-expand-noweb-references--cache)
-;;                               (gethash 'buffer-processed org-babel-expand-noweb-references--cache))
-;; 		         (expand-references id))
-;; 		        ;; Though luck.  We go into the long process of
-;; 		        ;; checking each source block and expand those
-;; 		        ;; with a matching Noweb reference.  Since we're
-;; 		        ;; going to visit all source blocks in the
-;; 		        ;; document, cache information about them as well.
-;; 		        (t
-;; 		         (setq org-babel-expand-noweb-references--cache (make-hash-table :test #'equal))
-;; 		         (org-with-wide-buffer
-;; 		          (org-babel-map-src-blocks nil
-;; 			    (if (org-in-commented-heading-p)
-;; 			        (org-forward-heading-same-level nil t)
-;; 			      (let* ((info (org-babel-get-src-block-info t))
-;; 				     (ref (cdr (assq :noweb-ref (nth 2 info)))))
-;; 			        (push info (gethash ref org-babel-expand-noweb-references--cache))))))
-;;                          (puthash 'buffer-processed t org-babel-expand-noweb-references--cache)
-;; 		         (expand-references id)))))
-;; 	         ;; Interpose PREFIX between every line.
-;;                  (if noweb-prefix
-;; 		     (mapconcat #'identity
-;; 			        (split-string expansion "[\n\r]")
-;; 			        (concat "\n" prefix))
-;;                    expansion)))))
-;;          body t t 2))))
   (defun org-babel-ref-resolve (ref)
     "Resolve the reference REF and return its value."
     (save-window-excursion
@@ -944,33 +723,6 @@ contextual information."
                  (org-babel-ref-index-list index result))
                 (t result)))))))))
 
-  ;; code for centering LaTeX previews -- a terrible idea
-  (add-hook 'org-latex-preview-open-functions
-            (defun my/org-latex-preview-uncenter (ov)
-              ;; (overlay-put ov 'justify (overlay-get ov 'before-string))
-              (overlay-put ov 'before-string nil)))
-  (add-hook 'org-latex-preview-close-functions
-            (defun my/org-latex-preview-recenter (ov)
-              (overlay-put ov 'before-string (overlay-get ov 'justify))
-              ;; (overlay-put ov 'justify nil)
-              ))
-
-  ;; (defun my/org-latex-preview-center (ov)
-  ;;   (message "hello there")
-  ;;   (save-excursion
-  ;;     (goto-char (overlay-start ov))
-  ;;     (when-let* ((elem (org-element-context))
-  ;;                 ((or (eq (org-element-type elem) 'latex-environment)
-  ;;                      (string-match-p "^\\\\\\[" (org-element-property :value elem))))
-  ;;                 (img (overlay-get ov 'display))
-  ;;                 (prop `(space :align-to (- center (0.55 . ,img))))
-  ;;                 (justify (propertize " " 'display prop 'face 'default)))
-  ;;       (overlay-put ov 'justify justify)
-  ;;       (overlay-put ov 'before-string (overlay-get ov 'justify)))))
-
-  ;; (add-hook 'org-latex-preview-overlay-update-functions
-  ;;           #'my/org-latex-preview-center)
-
   ;; dont insert \\usepackage[inkscapelatex=false]{svg} when exporting docs with svg's, i do that myself
   ;; (defun my-ox-latex-disable-svg-handling ()
   ;;   (interactive)
@@ -990,7 +742,83 @@ contextual information."
      data))
   (add-to-list 'org-export-filter-final-output-functions 'my-org-latex-export-filter-remove-svg)
 
+  ;; redefine
+  ;; to insert `figure` environment when #+caption is present
+  (defun org-latex-latex-environment (latex-environment _contents info)
+    "Transcode a LATEX-ENVIRONMENT element from Org to LaTeX.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+    (when (plist-get info :with-latex)
+      (let* ((value (org-remove-indentation
+                     (org-element-property :value latex-environment)))
+             (type (org-latex--environment-type latex-environment))
+             (caption (if (eq type 'math)
+                          (org-latex--label latex-environment info nil t)
+                        (org-latex--caption/label-string latex-environment info)))
+             (caption-above-p
+              (or (eq type 'math)
+                  (org-latex--caption-above-p latex-environment info))))
+        (if (not (or (org-element-property :name latex-environment)
+                     (org-element-property :caption latex-environment)))
+            value
+          ;; Environment is labeled: label must be within the environment
+          ;; (otherwise, a reference pointing to that element will count
+          ;; the section instead).  Also insert caption if `latex-environment'
+          ;; is not a math environment.
+          (with-temp-buffer
+            (insert "\\begin{figure}\\centering\n")
+            (insert value)
+            (goto-char (point-max))
+            (insert "\n\\end{figure}")
+            (if caption-above-p
+                (progn
+                  (goto-char (point-min))
+                  (forward-line))
+              (goto-char (point-max))
+              (forward-line -1))
+            (insert caption)
+            (buffer-string))))))
+
+  ;; add empty #+caption to any #+name'd block that doesnt have a caption
+  (defun my-add-empty-caption (_)
+    (let ((offset 0))
+      (org-element-map
+          (org-element-parse-buffer)
+          'latex-environment
+        (lambda (elm)
+          (let ((pos (+ (org-element-property :begin elm) offset))
+                (text-to-insert "#+caption: \n"))
+            (when (and (org-element-property :name elm) (not (org-element-property :caption elm)))
+              (beginning-of-line)
+              (goto-char pos)
+              (insert "#+caption: \n")
+              (setq offset (+ offset (length text-to-insert)))))))))
+  (add-to-list 'org-export-before-processing-functions 'my-add-empty-caption)
+
+  ;; redefine
+  ;; make it export links to my website and use \cref
+  (defun blk-org-export (link desc format)
+    "Return the LINK with DESC converted into html or markdown FORMAT.
+If LINK is not found, just return it as is."
+    (if (blk-find-by-id link)
+        (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
+               (desc (or desc link))
+               (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file)))
+               (latex-link (format "\\cref{%s}" link)))
+          (when (not (equal buffer-file-name linked-file))
+            (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
+          (cond
+           ((eq format 'html) (format "<a href=\"%s.html#%s\">%s</a>" linked-file-no-ext link desc))
+           ((eq format 'md) (format "[%s](%s.md)" desc linked-file-no-ext))
+           ((eq format 'latex) latex-link)
+           (t link)))
+      link))
+
   )
+
+(defun url-for-blk-id (blk-id)
+  (let* ((linked-file (plist-get (car (blk-find-by-id blk-id)) :filepath))
+         (html-filename (file-name-nondirectory (org-file-html-out-file linked-file))))
+    (format "https://mahmoodsh36.github.io/%s" html-filename)))
 
 ;; code for centering LaTeX preview
 (use-package org-latex-preview
@@ -1262,6 +1090,7 @@ contextual information."
   "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
   (with-file-as-current-buffer
    file
+   (when (not org-transclusion-mode) (org-transclusion-mode))
    (when (plist-get kw :pdf-p)
      (my-org-to-pdf (plist-get kw :async)))
    (when (plist-get kw :html-p)

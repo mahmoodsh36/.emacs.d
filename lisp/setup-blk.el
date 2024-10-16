@@ -119,8 +119,8 @@
                   "* NOTE %(my-time-format (current-time)) %?\nentered on %U\n %i\n %a"))
    )
 
+  ;; redefine
   ;; overwrite it to handle attachments inserted by org-transclusion
-  ;; unfinished
   (defun org-attach-expand-links (_)
     "Expand links in current buffer.
 It is meant to be added to `org-export-before-parsing-hook'."
@@ -140,7 +140,8 @@ It is meant to be added to `org-export-before-parsing-hook'."
                   'org-transclusion-orig-keyword
                   (buffer-substring
                    (org-element-begin link)
-                   (org-element-end link))) :link))
+                   (org-element-end link)))
+                 :link))
                (src-file (if (and orig-link (string-prefix-p "[[blk:" orig-link))
                              (plist-get (car (blk-find-by-id (substring orig-link 6 -2))) :filepath)
                            buffer-file-name)))
@@ -159,7 +160,62 @@ It is meant to be added to `org-export-before-parsing-hook'."
               (skip-chars-backward " \t")
               (delete-region (org-element-begin link) (point))
               (insert new-link)))))))
+
   )
+
+(with-eval-after-load-all '(blk ox)
+ ;; redefine
+ ;; resolve links in their original buffers when they're transcluded (by org-transclusion)
+ (defun org-export-custom-protocol-maybe (link desc backend &optional info)
+   "Try exporting LINK object with a dedicated function.
+
+DESC is its description, as a string, or nil.  BACKEND is the
+backend used for export, as a symbol.
+
+Return output as a string, or nil if no protocol handles LINK.
+
+A custom protocol has precedence over regular backend export.
+The function ignores links with an implicit type (e.g.,
+\"custom-id\")."
+   (setq a info)
+   (setq b link)
+   (let* ((type (org-element-property :type link))
+          (orig-buffer
+           (overlay-buffer
+            (get-text-property
+             0
+             'org-transclusion-pair
+             (buffer-substring
+              (org-element-begin link)
+              (org-element-end link)))))
+          ;; (orig-link
+          ;;  (plist-get
+          ;;   (get-text-property
+          ;;    0
+          ;;    'org-transclusion-orig-keyword
+          ;;    (buffer-substring
+          ;;     (org-element-begin link)
+          ;;     (org-element-end link)))
+          ;;   :link))
+          ;; (src-file (if (and orig-link (string-prefix-p "[[blk:" orig-link))
+          ;;               (plist-get (car (blk-find-by-id (blk-org-link-path orig-link))) :filepath)
+          ;;             buffer-file-name))
+          )
+     (with-current-buffer orig-buffer
+      (unless (or (member type '("coderef" "custom-id" "fuzzy" "radio" nil))
+		  (not backend))
+        (let ((protocol (org-link-get-parameter type :export))
+	      (path (org-element-property :path link)))
+	  (and (functionp protocol)
+	       (condition-case nil
+		   (funcall protocol path desc backend info)
+	         ;; XXX: The function used (< Org 9.4) to accept only
+	         ;; three mandatory arguments.  Type-specific `:export'
+	         ;; functions in the wild may not handle current
+	         ;; signature.  Provide backward compatibility support
+	         ;; for them.
+	         (wrong-number-of-arguments
+		  (funcall protocol path desc backend))))))))))
 
 ;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
 (use-package org-transclusion
