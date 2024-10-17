@@ -738,8 +738,8 @@
   (persp-mode)
   :config
   ;; make consult buffer switcher see only current perspective's buffers
-  (consult-customize consult--source-buffer :hidden t :default nil)
-  (add-to-list 'consult-buffer-sources persp-consult-source)
+  ;; (consult-customize consult--source-buffer :hidden t :default nil)
+  ;; (add-to-list 'consult-buffer-sources persp-consult-source)
   (setq persp-state-default-file (from-brain "emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
