@@ -125,7 +125,7 @@
     "Expand links in current buffer.
 It is meant to be added to `org-export-before-parsing-hook'."
     (save-excursion
-      (while (re-search-forward "attachment:" nil t)
+      (while (search-forward "attachment:" nil t)
         (let* ((link (org-element-context))
                ;; (val (get-text-property
                ;;       0
@@ -177,30 +177,18 @@ Return output as a string, or nil if no protocol handles LINK.
 A custom protocol has precedence over regular backend export.
 The function ignores links with an implicit type (e.g.,
 \"custom-id\")."
-   (setq a info)
-   (setq b link)
    (let* ((type (org-element-property :type link))
+          (overlay
+           (get-text-property
+            0
+            'org-transclusion-pair
+            (buffer-substring
+             (org-element-begin link)
+             (org-element-end link))))
           (orig-buffer
-           (overlay-buffer
-            (get-text-property
-             0
-             'org-transclusion-pair
-             (buffer-substring
-              (org-element-begin link)
-              (org-element-end link)))))
-          ;; (orig-link
-          ;;  (plist-get
-          ;;   (get-text-property
-          ;;    0
-          ;;    'org-transclusion-orig-keyword
-          ;;    (buffer-substring
-          ;;     (org-element-begin link)
-          ;;     (org-element-end link)))
-          ;;   :link))
-          ;; (src-file (if (and orig-link (string-prefix-p "[[blk:" orig-link))
-          ;;               (plist-get (car (blk-find-by-id (blk-org-link-path orig-link))) :filepath)
-          ;;             buffer-file-name))
-          )
+           (if overlay
+               (overlay-buffer overlay)
+             (current-buffer))))
      (with-current-buffer orig-buffer
       (unless (or (member type '("coderef" "custom-id" "fuzzy" "radio" nil))
 		  (not backend))

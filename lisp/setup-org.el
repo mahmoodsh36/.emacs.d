@@ -493,7 +493,9 @@ your browser does not support the video tag.
     (when (equal attribute :attr_html)
       (let* ((block-type (org-element-property :type element))
              (block-title (my-block-title element))
+             (element-name (org-block-property :name element))
              (citation (org-block-property :source element))
+             ;; (caption (org-element-property :caption element))
              (block-type-str
               (pcase block-type
                 ("dummy" "")
@@ -504,19 +506,25 @@ your browser does not support the video tag.
         (if (or (not (equal (org-element-type element) 'special-block))
                 (cl-member block-type special-blocks-not-for-handling :test #'equal))
             (funcall fn attribute element property)
-          (append
-           (list :class (format "fancy-block")
-                 :data-before (org-export-string-as
-                               (concat block-type-str
-                                       block-title)
-                               'html
-                               t)
-                 ;; dont export :source if it is just a path to a local file (starts with forward slash)
-                 :data-after (when (and citation (not (string-prefix-p "/" citation)))
-                               (org-export-string-as citation org-export-current-backend t))
-                 :id (org-block-property :name element)
-                 :data-id (org-block-property :name element))
-           (funcall fn attribute element property))))))
+          (let ((myplist (append (funcall fn attribute element property) '(:test "test"))))
+            (when (equal (org-element-type element) 'special-block)
+              (plist-put myplist :class "fancy-block")
+              (plist-put myplist
+                         :data-before (org-export-string-as
+                                       (concat block-type-str
+                                               block-title)
+                                       'html
+                                       t))
+              ;; dont export :source if it is just a path to a local file (starts with forward slash)
+              (plist-put myplist
+                         :data-after (when (and citation (not (string-prefix-p "/" citation)))
+                                       (org-export-string-as citation org-export-current-backend t))))
+            ;; (when caption
+            ;;   (plist-put myplist :data-caption caption))
+            (when element-name
+              (plist-put myplist :id element-name)
+              (plist-put myplist :data-id element-name))
+            myplist)))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
   ;; overwrite the function to add the data-language attribute to the code blocks
@@ -790,7 +798,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
             (when (and (org-element-property :name elm) (not (org-element-property :caption elm)))
               (beginning-of-line)
               (goto-char pos)
-              (insert "#+caption: \n")
+              (insert text-to-insert)
               (setq offset (+ offset (length text-to-insert)))))))))
   (add-to-list 'org-export-before-processing-functions 'my-add-empty-caption)
 
@@ -812,6 +820,34 @@ If LINK is not found, just return it as is."
            ((eq format 'latex) latex-link)
            (t link)))
       link))
+
+  ;; redefine
+  ;; make it insert the caption into the element, this is fragile as it doesnt encode the text before it inserts it into data-caption
+  (defun org-html-latex-environment (latex-environment _contents info)
+    "Transcode a LATEX-ENVIRONMENT element from Org to HTML.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+    (let ((processing-type (plist-get info :with-latex))
+          (latex-frag (org-remove-indentation
+                       (org-element-property :value latex-environment)))
+          (label (org-html--reference latex-environment info t))
+          (caption (org-element-property :caption latex-environment)))
+      (if (memq processing-type '(t mathjax))
+          (org-html--as-latex
+           latex-environment info
+           (if (org-string-nw-p label)
+               (replace-regexp-in-string "\\`.*"
+                                         (format "\\&\n\\\\label{%s}" label)
+                                         latex-frag)
+             latex-frag))
+        (format "\n<div%s class=\"equation-container\">\n%s\n<span class=\"caption\">%s</span>\n</div>"
+                ;; ID.
+                (if (org-string-nw-p label) (format " id=\"%s\"" label) "")
+                ;; Contents.
+                (format "<span class=\"equation\">\n%s\n</span>" (org-html--as-latex latex-environment info latex-frag))
+                (if caption
+                    (org-export-string-as (org-element-interpret-data caption) 'html t)
+                  "")
+                ))))
 
   )
 
