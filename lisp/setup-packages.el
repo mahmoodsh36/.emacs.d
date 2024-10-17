@@ -170,6 +170,8 @@
   (setq ivy-calling t)
   ;; (global-set-key (kbd "M-x") 'counsel-M-x)
   ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (setq ivy-re-builders-alist '((t . orderless-ivy-re-builder)))
+  (add-to-list 'ivy-highlight-functions-alist '(orderless-ivy-re-builder . orderless-ivy-highlight))
   )
 
 ;; ;; more featureful ivy menus, it may cause some error when switching buffers
@@ -738,7 +740,6 @@
   ;; make consult buffer switcher see only current perspective's buffers
   (consult-customize consult--source-buffer :hidden t :default nil)
   (add-to-list 'consult-buffer-sources persp-consult-source)
-  ;; (add-hook 'kill-emacs-hook #'persp-state-save)
   (setq persp-state-default-file (from-brain "emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 

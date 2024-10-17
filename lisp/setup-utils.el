@@ -229,16 +229,27 @@
            (idx (get-text-property 0 id-prop key)))
       (elt collection idx))))
 
-(defun completing-read-cons-consult (prompt collection)
-  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t'. this depends on consult (package)"
+(defun completing-read-cons-consult (prompt collection &optional predicate
+                                            require-match initial-input
+                                            hist def inherit-input-method)
+  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t', it doesnt make sense to use otherwise. this depends on consult (package)"
   (let ((new-collection)
-        (id-prop 'myid))
+        (id-prop 'myid)
+        (should-treat-as-cons (consp (car collection))))
     (dotimes (i (length collection))
       (let ((entry (elt collection i)))
-        (push (consult--tofu-append (car entry) i) new-collection)))
-    (let* ((key (completing-read prompt new-collection))
+        (push (consult--tofu-append (if should-treat-as-cons (car entry) entry) i) new-collection)))
+    (let* ((key (completing-read-default prompt new-collection predicate require-match initial-input hist def inherit-input-method))
            (idx (consult--tofu-get key)))
-      (elt collection idx))))
+      (if should-treat-as-cons
+          (car (elt collection idx))
+        (elt collection idx)))))
+
+(defun completing-read-allow-dupes (prompt collection &optional predicate
+                                           require-match initial-input
+                                           hist def inherit-input-method)
+  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t'. this depends on consult (package)"
+  (completing-read-cons-consult prompt collection predicate require-match initial-input hist def inherit-input-method))
 
 ;; https://emacs.stackexchange.com/questions/2298/how-do-i-force-re-evaluation-of-a-defvar
 (defun my/eval-buffer ()
