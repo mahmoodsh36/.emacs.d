@@ -165,7 +165,7 @@
 (use-package counsel
   :config
   ;;(ivy-mode)
-  (setq ivy-height 20)
+  (setq ivy-height 40)
   (setq ivy-use-selectable-prompt t)
   (setq ivy-calling t)
   ;; (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -1152,5 +1152,13 @@
 (use-package unicode-fonts
   :config
   (unicode-fonts-setup))
+
+;; filtering/sorting/history for ivy
+(use-package ivy-prescient
+  :config
+  (ivy-prescient-mode)
+  (setq prescient-save-file (from-brain "emacs_prescient"))
+  (prescient-persist-mode 1)
+  (setq prescient-history-length 10000))
 
 (provide 'setup-packages)

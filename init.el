@@ -332,7 +332,7 @@
 ;; http://xahlee.info/emacs/emacs/emacs_file_encoding.html
 ;; utf-8 as default encoding
 (set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
+(set-default-coding-systems 'prefer-utf-8) ;; this makes it work when exiting with ivy-prescient persist enabled
 (set-keyboard-coding-system 'utf-8-unix)
 
 ;; tell erc to save logs

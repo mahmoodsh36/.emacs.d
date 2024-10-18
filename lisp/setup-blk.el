@@ -220,7 +220,8 @@ The function ignores links with an implicit type (e.g.,
 
 (defun blk-find-with-ivy ()
   (interactive)
-  (let ((completing-read-function 'ivy-completing-read))
+  (let ((completing-read-function 'ivy-completing-read)
+        (blk-enable-groups t))
     (call-interactively 'blk-find)))
 
 ;; i dont think this is useful
