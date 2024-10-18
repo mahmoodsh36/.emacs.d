@@ -187,7 +187,7 @@
   ;; allow usage of #+BIND in latex exports
   (setq org-export-allow-bind-keywords t)
   ;; preserve all line breaks when exporting
-  (setq org-export-preserve-breaks t)
+  ;; (setq org-export-preserve-breaks t)
   ;; indent headings properly
   ;; (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-todo-keywords
@@ -459,22 +459,65 @@ your browser does not support the video tag.
           (setq citations nil)))))
   (add-to-list 'org-export-before-processing-functions 'my-org-replace-citations)
 
-  ;; temporary hack because captions dont get exported to html by ox-html
   (defun my-org-preprocess (&optional export-backend)
     (save-excursion
       (goto-char (point-min))
       (replace-regexp "#\\+caption: \\(.*\\)" "\\1")))
   ;; (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
 
-  ;; insert whitespace after blocks
-  (defun my-org-hook-insert-whitespace-after-block (&optional export-backend)
-    (save-excursion
-      (goto-char (point-min))
-      (replace-regexp "\\(\\end{[a-zA-Z0-9]*?}\\)$" "\\1\n")
-      (goto-char (point-min))
-      (replace-regexp "\\(#\\+end_.*\\)" "\\1\n")
-      ))
-  (add-to-list 'org-export-before-processing-functions 'my-org-hook-insert-whitespace-after-block)
+  ;; hacky, detects backslash at beginning of line as latex, #+ as keyword/special block/whatever
+  ;; insert whitespaces wherever appropriate when exporting
+  (defun my-org-hook-insert-whitespaces (&optional export-backend)
+    (goto-char (point-min))
+    ;; (replace-regexp "\\(\\end{[a-zA-Z0-9]*?}\\)$" "\\1\n") ;; this breaks the latex document when it matches \end{array} inside `equation' environment
+    ;; newline after tikzpicture figures
+    (replace-regexp "\\(\\end{tikzpicture}\\)$" "\\1\n")
+    (goto-char (point-min))
+    ;; newline after special blocks
+    ;; (replace-regexp "\\(#\\+end_.*\\)" "\\1\n")
+    ;; newline after sentences
+    (goto-char (point-min))
+    (let ((prev-line)
+          (next-line)
+          (this-line)
+          (this-element)
+          (next-line-begin)
+          (stop)
+          (inserted))
+      (while (not stop)
+        (setq this-line (buffer-substring (pos-bol) (pos-eol)))
+        (setq this-element (org-element-at-point))
+        (setq inserted nil)
+        (when (not (point-on-last-line-p))
+          (save-excursion
+            (setq next-line-begin (1+ (pos-eol)))
+            (goto-char next-line-begin)
+            (setq next-line (buffer-substring (pos-bol) (pos-eol)))))
+        ;; after each sentence
+        ;; also if next line is tikzpicture we need to create a line break
+        (when (or (and (not (point-on-last-line-p))
+                       ;; (string-suffix-p "." this-line) ;; dot to denote end of sentence and new line?
+                       (equal (org-element-type (org-element-context)) 'paragraph) ;; or maybe it deserves a new line simply if its a text line?
+                       (not (string-prefix-p "#+" next-line))
+                       (not (string-prefix-p "\\" next-line)))
+                  (and (not (point-on-last-line-p))
+                       (not (string-prefix-p "#+" this-line))
+                       (string-prefix-p "\\begin{tikzpicture}" next-line)))
+          (goto-char (pos-eol))
+          (insert (case export-backend
+                    (latex "\\\\")
+                    (html "\n")))
+          (setq inserted t))
+        ;; after block ends
+        (when (and (not inserted)
+                   (string-prefix-p "#+end_" this-line))
+          (goto-char (pos-eol))
+          (insert "\n"))
+        (setq prev-line this-line)
+        (if (point-on-last-line-p)
+            (setq stop t)
+          (goto-char (1+ (pos-eol)))))))
+  (add-to-list 'org-export-before-processing-functions 'my-org-hook-insert-whitespaces)
 
   ;; remove the title that org inserts into exports by default
   (defun my-org-html--build-meta-info-hook (out)
@@ -846,8 +889,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                 (format "<span class=\"equation\">\n%s\n</span>" (org-html--as-latex latex-environment info latex-frag))
                 (if caption
                     (org-export-string-as (org-element-interpret-data caption) 'html t)
-                  "")
-                ))))
+                  "")))))
 
   )
 

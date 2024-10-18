@@ -437,9 +437,8 @@
   (interactive)
   (let ((blk-enable-groups t))
     (call-interactively 'blk-find)))
-(led-kbd
- "r f"
- #'blk-find-with-ivy)
+(led-kbd "r f" #'blk-find-with-ivy)
+(led-kbd "r b" #'blk-update-cache)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))
 (led-kbd "r c i" (lambda () (interactive) (org-capture nil "i")))
