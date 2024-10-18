@@ -737,9 +737,6 @@
   :init
   (persp-mode)
   :config
-  ;; make consult buffer switcher see only current perspective's buffers
-  ;; (consult-customize consult--source-buffer :hidden t :default nil)
-  ;; (add-to-list 'consult-buffer-sources persp-consult-source)
   (setq persp-state-default-file (from-brain "emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
@@ -754,37 +751,6 @@
 ;; links to specific pdf pages from org mode
 (when (not (is-android-system))
   (use-package org-pdftools))
-
-;; (use-package hyperbole
-;;   :ensure (hyperbole :fetcher github :repo "rswgnu/hyperbole")
-;;   :config
-;;   (hyperbole-mode 1)
-;;   ;; it overrides the M-return key for vertico :/
-;;   (unbind-key "M-<return>" hyperbole-mode-map)
-;;   (unbind-key "M-RET" hyperbole-mode-map))
-
-;; (use-package denote
-;;   :ensure ( :fetcher github :repo "protesilaos/denote")  ;; :ref "55dcf23"
-;;   :config
-;;   (setq denote-directory *notes-dir*
-;;         denote-date-prompt-use-org-read-date t
-;;         denote-file-type 'org)
-;;   (add-hook 'dired-mode-hook #'denote-dired-mode)
-;;   (add-to-list 'denote-file-types
-;;                '(xopp :extension ".xopp" :date-function denote-date-org-timestamp :title-value-function identity :title-value-reverse-function denote-trim-whitespace))
-;;   )
-
-;; (use-package denote-menu
-;;   :ensure (denote-menu :fetcher github :repo "namilus/denote-menu"))
-;; (use-package consult-notes)
-;; (use-package citar-denote)
-;; (use-package consult-explore)
-;; (use-package denote-explore)
-;; :ensure (consult-notes :fetcher github :repo "mclear-tools/consult-notes"))
-;; (use-package deft)
-;; (use-package xeft)
-;; (use-package reorg)
-;; (use-package iscroll)
 
 (use-package rg)
 
