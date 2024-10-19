@@ -1134,7 +1134,15 @@
 
 (use-package org-timeblock)
 
-(use-package gptel)
+(use-package gptel
+  :config
+  (setq gptel-model 'mistral:latest
+        gptel-backend (gptel-make-ollama "ollama"
+                        :host "localhost:11434"
+                        :stream t
+                        :models '("mistral:latest")
+                        ;; :models '("codellama:13b-instruct")
+                        )))
 
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import
