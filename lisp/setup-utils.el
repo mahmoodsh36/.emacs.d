@@ -229,27 +229,40 @@
            (idx (get-text-property 0 id-prop key)))
       (elt collection idx))))
 
-(defun completing-read-cons-consult (prompt collection &optional predicate
-                                            require-match initial-input
-                                            hist def inherit-input-method)
+(defun remove-consult-tofu (str)
+  (let ((result))
+    (cl-loop for mychar across str
+             do (when (not (consult--tofu-p mychar))
+                  (setq result (concat result (char-to-string mychar)))))
+    result))
+
+;; this function is super hacky
+(defun my-completing-read (prompt collection &optional predicate
+                                  require-match initial-input
+                                  hist def inherit-input-method)
   "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t', it doesnt make sense to use otherwise. this depends on consult (package)"
   (let ((new-collection)
         (id-prop 'myid)
-        (should-treat-as-cons (consp (car collection))))
+        (should-treat-as-cons (consp (car collection)))
+        (str-to-id-alist))
     (dotimes (i (length collection))
       (let ((entry (elt collection i)))
-        (push (consult--tofu-append (if should-treat-as-cons (car entry) entry) i) new-collection)))
-    (let* ((key (completing-read-default prompt new-collection predicate require-match initial-input hist def inherit-input-method))
+        (push (consult--tofu-append (if should-treat-as-cons (car entry) entry) i) new-collection)
+        (push (cons (if should-treat-as-cons (car entry) entry) i) str-to-id-alist)))
+    (let* ((modified-hist
+            (mapcar
+             (lambda (hist-entry)
+               (let ((myid (alist-get (remove-consult-tofu hist-entry) str-to-id-alist nil nil 'equal)))
+                 (if myid
+                     (consult--tofu-append hist-entry myid)
+                   hist-entry)))
+             (eval hist)))
+           (key (completing-read-default prompt new-collection predicate require-match initial-input 'modified-hist def inherit-input-method))
            (idx (consult--tofu-get key)))
+      (set hist (cons (remove-consult-tofu (car modified-hist)) (eval hist)))
       (if should-treat-as-cons
           (car (elt collection idx))
         (elt collection idx)))))
-
-(defun completing-read-allow-dupes (prompt collection &optional predicate
-                                           require-match initial-input
-                                           hist def inherit-input-method)
-  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t'. this depends on consult (package)"
-  (completing-read-cons-consult prompt collection predicate require-match initial-input hist def inherit-input-method))
 
 ;; https://emacs.stackexchange.com/questions/2298/how-do-i-force-re-evaluation-of-a-defvar
 (defun my/eval-buffer ()

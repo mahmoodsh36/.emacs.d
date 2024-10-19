@@ -419,25 +419,28 @@
 (led-kbd "s x" #'save-buffers-kill-terminal)
 
 (led-kbd "r n" #'new-note-file)
-;; (led-kbd "r f" #'my-notes-open-by-title)
-;; (led-kbd "r f" #'my-notes-open-all)
-;; (led-kbd "r f" #'my-notes-open)
-;; (led-kbd "r F" #'my-notes-open-1)
-;; (led-kbd
-;;  "r f"
-;;  (lambda ()
-;;    (interactive)
-;;    (let ((completing-read-function 'completing-read-allow-dupes))
-;;      ;; (call-interactively 'blk-find)
-;;      (call-interactively 'blk-find-enable-groups))))
+(led-kbd
+ "r f"
+ (lambda ()
+   (interactive)
+   (let ((completing-read-function 'completing-read-allow-dupes))
+     ;; (call-interactively 'blk-find)
+     (call-interactively 'blk-find))))
+(led-kbd
+ "r F"
+ (lambda ()
+   (interactive)
+   (let ((completing-read-function 'completing-read-allow-dupes))
+     ;; (call-interactively 'blk-find)
+     (call-interactively 'blk-find-enable-groups))))
 ;; (led-kbd "r F" #'blk-find-with-ivy)
-(led-kbd "r F" #'blk-find-enable-groups)
+;; (led-kbd "r F" #'blk-find-enable-groups)
 (global-set-key (kbd "<f6>") #'blk-find)
 (defun blk-find-enable-groups ()
   (interactive)
   (let ((blk-enable-groups t))
     (call-interactively 'blk-find)))
-(led-kbd "r f" #'blk-find-with-ivy)
+;; (led-kbd "r f" #'blk-find-with-ivy)
 (led-kbd "r b" #'blk-update-cache)
 
 (led-kbd "r c q" (lambda () (interactive) (org-capture nil "q")))

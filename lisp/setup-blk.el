@@ -213,10 +213,31 @@ The function ignores links with an implicit type (e.g.,
   ;; (add-to-list 'org-transclusion-after-add-functions 'org-latex-preview)
   )
 
-(defun blk-find-with-consult ()
-  (interactive)
-  (let ((completing-read-function 'my-consult-completing-read))
-    (call-interactively 'blk-find)))
+(defun blk-find-with-consult (text)
+  "Find entries defined by patterns in `blk-patterns' using the grepper `blk-grepper'.
+Select one and visit it."
+  (interactive
+   (list (let* ((minibuffer-allow-text-properties t)
+                (entries (blk-list-titles))
+                (completion-extra-properties
+                 '(:annotation-function
+                   (lambda (key)
+                     (let ((grep-result (get-text-property 0 'grep-data key)))
+                       (when (plist-get grep-result :matched-pattern)
+                         (propertize
+                          (format "\t%s"
+                                  (plist-get (plist-get grep-result :matched-pattern)
+                                             :title))
+                          'face 'font-lock-keyword-face)))))))
+           (when entries (consult--read entries :prompt "entry " :history 'blk-hist)))))
+  (when text
+    (if (get-text-property 0 'grep-data text)
+        (let* ((grep-data (get-text-property 0 'grep-data text))
+               (filepath (plist-get grep-data :filepath))
+               (position (plist-get grep-data :position)))
+          (find-file filepath)
+          (goto-char position))
+      (message "%s not found" text))))
 
 (defun blk-find-with-ivy ()
   (interactive)
