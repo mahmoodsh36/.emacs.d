@@ -423,14 +423,14 @@
  "r f"
  (lambda ()
    (interactive)
-   (let ((completing-read-function 'completing-read-allow-dupes))
+   (let ((completing-read-function 'my-completing-read))
      ;; (call-interactively 'blk-find)
      (call-interactively 'blk-find))))
 (led-kbd
  "r F"
  (lambda ()
    (interactive)
-   (let ((completing-read-function 'completing-read-allow-dupes))
+   (let ((completing-read-function 'my-completing-read))
      ;; (call-interactively 'blk-find)
      (call-interactively 'blk-find-enable-groups))))
 ;; (led-kbd "r F" #'blk-find-with-ivy)
