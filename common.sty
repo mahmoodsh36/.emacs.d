@@ -329,8 +329,8 @@
 \newcommand{\turingreducem}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_m}} #2}
 \newcommand{\turingreduce}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le}} #2}
 \newcommand{\turingreducep}[2]{#1 \operatorname{\refdef[blk:def-poly-reduc]{\le_p}} #2}
-\DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\mathscr{L}}}
-\DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\mathscr{L}}}
+\DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\operatorname{L}}}
+\DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\operatorname{L}}}
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
 \NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
 \newcommand{\fordset}{\refdef[blk:1724262093.0556488]{\omega}} % the set of all finite ordinals
@@ -445,8 +445,9 @@
     % \newtheorem{step}{step}[answer]
     \newtheorem{problem}{problem}
     \newtheorem{solution}{solution}% [problem]
-    \newtheorem{subproblem}{subproblem}% [problem]
-    \newtheorem{subproof}{subproof}% [problem]
+    \newtheorem{subproblem}{subproblem}
+    \newtheorem{subproof}{subproof}
+    \newtheorem{proof_idea}{proof idea}
     \newtheorem{task}{task}
     \newtheorem{theorem}{theorem}
     \newtheorem{axiom}{axiom}
