@@ -226,8 +226,6 @@
 \DeclareMathOperator{\range}{range}
 \DeclareMathOperator{\img}{Im}
 \DeclareMathOperator{\adj}{adj}
-\DeclareMathOperator{\Var}{Var}
-\DeclareMathOperator{\cov}{cov}
 \newcommand\dif[1]{\:\mathrm{d}#1}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -244,7 +242,6 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
-\DeclareMathOperator{\expc}{\mathbb{E}} % expected value symbol
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
 \newcommand{\textand}{\mathbin{\smallspace\text{and}\smallspace}}
 \newcommand{\textnot}{\text{ not }}
@@ -294,6 +291,11 @@
 \newcommand{\euler}{\refdef[blk:def-euler-num]{\mathscr{e}}}
 \newcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
 \newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
+
+% probability
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{\refdef[blk:def-covar]{cov}}
+\DeclareMathOperator{\expc}{\refdef[blk:def-expec]{E}} % expected value symbol
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
@@ -353,13 +355,15 @@
 \newcommand{\bigoh}{\refdef[blk:def-bigo]{\mathscr{O}}} % big o
 \newcommand{\bigth}{\refdef[blk:def-bigo]{\Theta}}
 \newcommand{\bigom}{\refdef[blk:def-bigo]{\Omega}}
-\newcommand{\litoh}{\refdef[blk:def-bigo]{\mathscr{o}}}
+\newcommand{\litoh}{\refdef[blk:def-bigo]{o}}
 \newcommand{\litth}{\refdef[blk:def-bigo]{\theta}}
 \newcommand{\litom}{\refdef[blk:def-bigo]{\omega}}
 \newcommand{\langconcat}{\mathrel{\refdef[blk:def-langconcat]{\cdot}}} % matrix product
 \newcommand{\emptytrans}{\refdef[blk:blk:1704361386]{\varepsilon}}
 \newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
 \newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
+\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\operatorname{P}_{/\operatorname{poly}}}}
+\newcommand{\csize}{\operatorname{SIZE}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
