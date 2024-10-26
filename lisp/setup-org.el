@@ -1263,7 +1263,9 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                 (cl-find "cs" (org-get-tags) :test 'equal)))))
         (*static-html-dir* (expand-file-name "~/work/test/")))
     (map-org-dir-elements
-     *notes-dir* ":forexport:" 'headline
+     *notes-dir*
+     ":forexport:"
+     'headline
      (lambda (_) (org-export-heading-html)))
     (export-all-org-files :html-p t)))
 
@@ -1307,8 +1309,14 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (with-file-as-current-buffer
      file
      (org-collect-keywords '("export_section"))))))
+;; this is quicker, it grabs the date from the filename
+;; (defun org-file-grab-time (orgfile)
+;;   (timestamp-to-time (string-to-number (file-name-nondirectory orgfile))))
 (defun org-file-grab-time (orgfile)
-  (timestamp-to-time (string-to-number (file-name-nondirectory orgfile))))
+  (with-file-as-current-buffer orgfile
+   (let* ((date-string (or (org-get-keyword "actual_date") (org-get-keyword "date")))
+          (time (when date-string (date-to-time date-string))))
+     time)))
 (defun org-file-grab-keyword (orgfile kw)
   (with-file-as-current-buffer
    orgfile
@@ -1647,6 +1655,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
      (list :title (org-file-grab-title orgfile)
            :books (entry-books orgfile)
            :nodes (entry-children orgfile)
+           :time (org-file-grab-time orgfile)
            :image (org-file-grab-keyword orgfile "image")
            :id (org-file-grab-keyword orgfile "identifier")))
    (org-files-with-tag "entry")))
