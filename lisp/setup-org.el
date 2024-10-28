@@ -467,7 +467,7 @@ your browser does not support the video tag.
 
   ;; hacky, detects backslash at beginning of line as latex, #+ as keyword/special block/whatever
   ;; insert whitespaces wherever appropriate when exporting
-  (defun my-org-hook-insert-whitespaces (&optional export-backend)
+  (defun my-org-hook-insert-whitespaces (export-backend)
     (goto-char (point-min))
     ;; (replace-regexp "\\(\\end{[a-zA-Z0-9]*?}\\)$" "\\1\n") ;; this breaks the latex document when it matches \end{array} inside `equation' environment
     ;; newline after tikzpicture figures
@@ -570,6 +570,7 @@ your browser does not support the video tag.
             myplist)))))
   (advice-add #'org-export-read-attribute :around #'my-org-export-read-attribute-hook)
 
+  ;; redefine
   ;; overwrite the function to add the data-language attribute to the code blocks
   (defun org-html-src-block (src-block _contents info)
     "Transcode a SRC-BLOCK element from Org to HTML.
