@@ -95,7 +95,8 @@
  )
 
 (defvar my-current-theme nil)
-(add-to-list 'savehist-additional-variables 'my-current-theme)
+(with-eval-after-load 'savehist
+  (add-to-list 'savehist-additional-variables 'my-current-theme))
 (defun switch-to-theme (theme)
   "remove current theme, switch to another"
   (when (car custom-enabled-themes)

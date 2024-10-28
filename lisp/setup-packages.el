@@ -750,7 +750,8 @@
 
 ;; links to specific pdf pages from org mode
 (when (not (is-android-system))
-  (use-package org-pdftools))
+  (use-package org-pdftools
+    :after 'org))
 
 (use-package rg)
 
@@ -766,27 +767,27 @@
 
 ;; latex auto activating snippets
 ;; it requries auctex, so disable it on android
-(when (not (is-android-system))
-  (use-package laas
-    :hook (LaTeX-mode . laas-mode)
-    :config ; do whatever here
-    (aas-set-snippets 'laas-mode
-                      ;; set condition!
-                      :cond #'texmathp ; expand only while in math
-                      "supp" "\\supp"
-                      "On" "O(n)"
-                      "O1" "O(1)"
-                      "Olog" "O(\\log n)"
-                      "Olon" "O(n \\log n)"
-                      ;; bind to functions!
-                      ;; "Sum" (lambda () (interactive)
-                      ;;         (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
-                      ;; "Span" (lambda () (interactive)
-                      ;;          (yas-expand-snippet "\\Span($1)$0"))
-                      ;; add accent snippets
-                      ;; :cond #'laas-object-on-left-condition
-                      ;; "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
-                      )))
+;; (when (not (is-android-system))
+;;   (use-package laas
+;;     :hook (LaTeX-mode . laas-mode)
+;;     :config ; do whatever here
+;;     (aas-set-snippets 'laas-mode
+;;                       ;; set condition!
+;;                       :cond #'texmathp ; expand only while in math
+;;                       "supp" "\\supp"
+;;                       "On" "O(n)"
+;;                       "O1" "O(1)"
+;;                       "Olog" "O(\\log n)"
+;;                       "Olon" "O(n \\log n)"
+;;                       ;; bind to functions!
+;;                       ;; "Sum" (lambda () (interactive)
+;;                       ;;         (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+;;                       ;; "Span" (lambda () (interactive)
+;;                       ;;          (yas-expand-snippet "\\Span($1)$0"))
+;;                       ;; add accent snippets
+;;                       ;; :cond #'laas-object-on-left-condition
+;;                       ;; "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt"))
+;;                       )))
 
 ;; (use-package orglink
 ;;   :config
@@ -877,7 +878,8 @@
 ;; (use-package consult-eglot)
 (use-package sideline)
 
-(use-package origami)
+;; errors out in batch mode?
+;; (use-package origami)
 
 (use-package org-super-agenda
   ;; :config
@@ -1132,7 +1134,8 @@
 
 (use-package git-timemachine)
 
-(use-package org-timeblock)
+(use-package org-timeblock
+  :after 'org)
 
 (use-package gptel
   :config
@@ -1150,7 +1153,7 @@
                  :repo "tecosaur/org-pandoc-import"
                  :files ("*.el" "filters" "preprocessors")))
 
-(use-package elsa)
+;; (use-package elsa)
 
 (use-package puni)
 
