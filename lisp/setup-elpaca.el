@@ -41,9 +41,10 @@
 (elpaca elpaca-use-package
   ;; enable use-package :ensure support for elpaca.
   (elpaca-use-package-mode)
-  (when (is-android-system)
-    ;; to prevent android killing the subprocesses for exhausting the cpu (ghostkiller), it doesnt really work well (15 was the value that first "worked")
-    (setq elpaca-queue-limit 20))
+  ;; (when (is-android-system)
+  ;;   ;; to prevent android killing the subprocesses for exhausting the cpu (ghostkiller), it doesnt really work well (15 was the value that first "worked")
+  ;;   (setq elpaca-queue-limit 20))
+  (setq elpaca-queue-limit 20) ;; set limit anyway because its not a good idea to have so many parallel processes (i think it causes failures)
   (setq use-package-always-ensure t))
 
 ;; block until current queue processed.
