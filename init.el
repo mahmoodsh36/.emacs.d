@@ -163,7 +163,7 @@
 (setq auto-window-vscroll nil)
 
 ;; start server
-;; (server-start)
+(server-start)
 
 ;; eshell configs
 ;; make the cursor stay at the prompt when scrolling
