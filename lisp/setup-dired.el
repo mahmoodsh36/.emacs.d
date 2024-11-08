@@ -21,7 +21,7 @@
 (use-package dired-rsync)
 
 (use-package dired-du)
-(use-package dired-single)
+;; (use-package dired-single)
 (use-package diredful)
 ;; (use-package dired-quick-sort)
 (use-package dired-narrow)

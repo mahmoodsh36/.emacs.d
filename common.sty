@@ -1,6 +1,6 @@
 \makeatletter%
 \@ifclassloaded{beamer}%
-  {\usetheme{Antibes}}%
+  {} % {\usetheme{Antibes}}%
   {
     \usepackage{enumitem}% enumitem doesnt work with beamer so only load it if we arent using beamer
     \usepackage[margin=0.2in]{geometry}
@@ -73,6 +73,9 @@
 \usepackage{multicol}
 \usepackage{siunitx}
 \usepackage[Export]{adjustbox}
+\usepackage{tabularray}
+\UseTblrLibrary{amsmath}
+\usepackage{blkarray}
 
 % these work smoothly, unlike other fonts
 % \usepackage{newtxtext,newtxmath}
@@ -205,9 +208,7 @@
 
 % alternative to \hyperref to refer to a symbols definition/source using blk
 \newcommand{\refdef}[2][]{%
-  \special{dvisvgm:raw <g data-ref='#1' class='fancy-button' pointer-events="bounding-box">}
-  \textcolor{orange}{\hyperref[#1]{#2}}
-  \special{dvisvgm:raw </g>}
+  #2
 }
 % define a variable with a given id, 1st arg is id, 2nd is definition, the id should be referrable by \refdef similar to blk id's
 \newcommand{\defvar}[2]{% define a variable, \defvar{id/name}{symbol}, like lexical bindings but maybe extend it to highest block
@@ -367,6 +368,7 @@
 \newcommand{\ppoly}{\refdef[blk:def-ppoly]{\operatorname{P}_{/\operatorname{poly}}}}
 \newcommand{\csize}{\operatorname{SIZE}}
 \newcommand{\coNP}{\refdef[blk:def-conp]{\brm{coNP}}}
+\newcommand{\compdtime}{\operatorname{DTIME}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

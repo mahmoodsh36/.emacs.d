@@ -7,6 +7,12 @@
   {\usepackage[margin=0.2in]{geometry}}%
 \makeatother%
 
+\newcommand{\refdef}[2][]{%
+  \special{dvisvgm:raw <g data-ref='#1' class='fancy-button' pointer-events="bounding-box">}
+  \textcolor{orange}{\hyperref[#1]{#2}}
+  \special{dvisvgm:raw </g>}
+}
+
 % these font settings work very well atleast
 % \usepackage{fontspec}
 % \usepackage{txfonts}

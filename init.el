@@ -353,3 +353,5 @@
 
 ;; make some buffers open in the current window (works for some commands like `list-buffers')
 (setq display-buffer-alist '((t display-buffer-same-window)))
+
+(setq comint-scroll-to-bottom-on-output t)
