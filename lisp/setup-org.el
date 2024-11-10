@@ -84,7 +84,6 @@
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
-    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext)))
     (if is-beamer
         (org-export-to-file 'beamer outfile
           nil nil nil nil nil nil)
@@ -98,6 +97,7 @@
                      org-latex-compiler
                      (file-truename (get-latex-cache-dir-path))
                      path)))
+    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (file-name-base path)))
     (if async
         (start-process-shell-command
          "latex"
@@ -471,7 +471,9 @@ your browser does not support the video tag.
     (goto-char (point-min))
     ;; (replace-regexp "\\(\\end{[a-zA-Z0-9]*?}\\)$" "\\1\n") ;; this breaks the latex document when it matches \end{array} inside `equation' environment
     ;; newline after tikzpicture figures
-    (replace-regexp "\\(\\end{tikzpicture}\\)$" "\\1\n")
+    (let ((message-log-max nil)
+          (inhibit-message t))
+      (replace-regexp "\\(\\end{tikzpicture}\\)$" "\\1\n"))
     (goto-char (point-min))
     ;; newline after special blocks
     ;; (replace-regexp "\\(#\\+end_.*\\)" "\\1\n")
@@ -521,7 +523,8 @@ your browser does not support the video tag.
 
   ;; remove the title that org inserts into exports by default
   (defun my-org-html--build-meta-info-hook (out)
-    (let ((inhibit-message t))
+    (let ((message-log-max nil)
+          (inhibit-message t))
       (replace-regexp-in-string "<title>.*?</title>" "" out)))
   (advice-add #'org-html--build-meta-info :filter-return #'my-org-html--build-meta-info-hook)
 
