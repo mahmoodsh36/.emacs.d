@@ -217,6 +217,9 @@
 % define a variable with a given variable name, it should be referred to by \refvar, the variable definition should only be valid for current document and should hold until \vardef is used again
 \newcommand{\vardef}[2]{#2}
 \newcommand{\varref}[2][]{}
+\newcommand{\bythis}[2][]{%
+  by: #2
+}
 
 % no space before paragraph (is this desired?)
 % \setlength{\parindent}{0pt}

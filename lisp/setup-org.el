@@ -275,8 +275,7 @@
   (setq org-latex-preview-live '(block inline edit-special))
   ;; for previews use private.sty
   ;; (setq org-latex-preview-preamble "\\documentclass[ignorerest=true,varwidth=true,float=true,crop=true,preview=true,multi=true]{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
-  (setq org-latex-preview-preamble "\\documentclass{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
-  (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")) ;; use my ~/.emacs.d/common.sty
+  (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}"  "\\usepackage{\\string~/.emacs.d/private}")) ;; use my ~/.emacs.d/common.sty
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; dont export headlines with tags
