@@ -229,37 +229,67 @@
            (idx (get-text-property 0 id-prop key)))
       (elt collection idx))))
 
+;; (defun remove-consult-tofu (str)
+;;   (let ((result))
+;;     (cl-loop for mychar across str
+;;              do (when (not (consult--tofu-p mychar))
+;;                   (setq result (concat result (char-to-string mychar)))))
+;;     result))
+;; this should be faster
 (defun remove-consult-tofu (str)
-  (let ((result))
-    (cl-loop for mychar across str
-             do (when (not (consult--tofu-p mychar))
-                  (setq result (concat result (char-to-string mychar)))))
-    result))
+  (let ((last-char (elt str (1- (length str)))))
+    (if (consult--tofu-p last-char)
+        (substring str 0 -1)
+      str)))
 
 ;; this function is super hacky
 (defun my-completing-read (prompt collection &optional predicate
                                   require-match initial-input
                                   hist def inherit-input-method)
-  "an alternative to `completing-read' that returns the whole cons from the alist `collection' instead of just the key, and handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t', it doesnt make sense to use otherwise. this depends on consult (package)"
+  "an alternative to `completing-read' that handles duplicates \"properly\". assumes `minibuffer-allow-text-properties' is set to `t', it doesnt make much sense to use otherwise because the given entries could be identified by a unique text property. this depends on consult (package)"
   (let ((new-collection)
         (id-prop 'myid)
         (should-treat-as-cons (consp (car collection)))
         (str-to-id-alist))
-    (dotimes (i (length collection))
-      (let ((entry (elt collection i)))
-        (push (consult--tofu-append (if should-treat-as-cons (car entry) entry) i) new-collection)
-        (push (cons (if should-treat-as-cons (car entry) entry) i) str-to-id-alist)))
+    (cl-loop
+     for i from 0
+     for entry in collection
+     do (progn
+          (push (consult--tofu-append
+                 (if should-treat-as-cons
+                     (car entry)
+                   entry)
+                 i)
+                new-collection)
+          (push (cons (if should-treat-as-cons
+                          (car entry)
+                        entry)
+                      i)
+                str-to-id-alist)))
     (let* ((modified-hist
             (mapcar
              (lambda (hist-entry)
-               (let ((myid (alist-get (remove-consult-tofu hist-entry) str-to-id-alist nil nil 'equal)))
+               (let ((myid (alist-get (remove-consult-tofu hist-entry)
+                                      str-to-id-alist
+                                      nil
+                                      nil
+                                      'equal)))
                  (if myid
                      (consult--tofu-append hist-entry myid)
                    hist-entry)))
              (eval hist)))
-           (key (completing-read-default prompt new-collection predicate require-match initial-input 'modified-hist def inherit-input-method))
+           (key (completing-read-default prompt
+                                         new-collection
+                                         predicate
+                                         require-match
+                                         initial-input
+                                         'modified-hist
+                                         def
+                                         inherit-input-method))
            (idx (consult--tofu-get key)))
-      (set hist (cons (remove-consult-tofu (car modified-hist)) (eval hist)))
+      (set hist (cons (remove-consult-tofu (car modified-hist))
+                      (eval hist)))
+      (setq a key)
       (if should-treat-as-cons
           (car (elt collection idx))
         (elt collection idx)))))
