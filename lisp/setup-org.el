@@ -314,6 +314,8 @@
   ;; (setq org-link-descriptive nil)
   ;; (setq org-pretty-entities t)
   (setq org-ellipsis "⤵")
+  ;; so that a state modification date is inserted on a new heading automatically
+  (setq org-treat-insert-todo-heading-as-state-change t)
 
   ;; make org not evaluate code blocks on exporting
   ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
@@ -1128,7 +1130,9 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (interactive)
   (setq org-agenda-files (my-org-agenda-files))
 
-  (let ((org-super-agenda-groups
+  (let ((org-inhibit-startup t)
+        (org-startup-with-latex-preview nil)
+        (org-super-agenda-groups
          '(;; Each group has an implicit boolean OR operator between its selectors.
            (:name "Today"
                   :time-grid t
@@ -1861,5 +1865,42 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun open-storage-dir-for-current-org-buffer ()
   (interactive)
   (find-file (storage-path-for-current-org-buffer)))
+
+(defun my-new-todo ()
+  (interactive)
+  (let* ((todo-files (org-files-with-tag "todo"))
+         (titles (mapcar 'org-file-grab-title todo-files))
+         (selected-title (completing-read "file " titles))
+         (selected-idx (cl-position selected-title titles :test 'equal))
+         (selected-todo-file (when selected-idx (elt todo-files selected-idx)))
+         (found nil))
+    (when selected-idx
+      (find-file selected-todo-file)
+      (goto-char 0)
+      (org-element-map
+          (org-element-parse-buffer)
+          'headline
+        (lambda (head)
+          (let ((head-title (save-excursion
+                              (goto-char (org-element-begin head))
+                              (elt (org-heading-components) 4))))
+            (message "got %s" head-title)
+            (when (equal head-title "todos")
+              (setq found t)
+              (goto-char (org-element-begin head))
+              (end-of-line)
+              (call-interactively 'org-insert-todo-subheading)))))
+      (when (not found)
+        (goto-char (point-max))
+        (end-of-line)
+        (newline)
+        (insert "* todos")
+        (newline)
+        (call-interactively 'org-insert-todo-subheading))
+      (enter-append-if-evil))))
+
+(defun enter-append-if-evil ()
+  (when (and (boundp 'evil-mode) evil-mode)
+    (call-interactively 'evil-append)))
 
 (provide 'setup-org)

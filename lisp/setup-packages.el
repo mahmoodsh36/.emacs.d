@@ -977,6 +977,15 @@
   (treesit-auto-install t)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
+  ;; doesnt help things with auctex?
+  ;; (add-to-list
+  ;;  'treesit-auto-recipe-list
+  ;;  (make-treesit-auto-recipe
+  ;;   :lang 'latex
+  ;;   :ts-mode 'latex-ts-mode
+  ;;   :remap 'LaTeX-mode
+  ;;   :url "https://github.com/latex-lsp/tree-sitter-latex"
+  ;;   :ext "\\.tex\\'"))
   (global-treesit-auto-mode))
 
 ;; library for working with time stamps easily
