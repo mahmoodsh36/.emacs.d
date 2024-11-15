@@ -1164,8 +1164,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
            ,result)))))
 
 (defmacro with-file-as-current-buffer-faster (file &rest body)
-  `(let ((buf (get-buffer-create " myhidden1"))
-         (org-startup-with-latex-preview nil))
+  `(let ((buf (get-buffer-create " myhidden1")))
      (with-current-buffer buf
        (erase-buffer)
        (insert-file-contents ,file)
@@ -1833,7 +1832,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                   :title (org-file-grab-keyword blk-filepath "book_title")
                   :subtitle (org-file-grab-keyword blk-filepath "book_author")
                   :subsubtitle (org-file-grab-keyword blk-filepath "book_year"))
-          (message "no book_main_file defined for %s" (org-file-grab-keyword blk-filepath "title")))))
+          (message "no book_main_file defined for %s"
+                   (org-file-grab-keyword blk-filepath "title")))))
     blk-ids)))
 
 (defun cover-from-pdf (pdf-path)
