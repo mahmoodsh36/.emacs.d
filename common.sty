@@ -285,17 +285,25 @@
 \newcommand{\seq}[2]{\refdef[blk:def-seq]{#1_{#2}}} % sequence notation, first arg is sequence name, second is the indexing variable
 \newcommand{\seqelm}[2]{\refdef[blk:def-seq]{(#1_{#2})}} % get a specific element of a sequence by its index, first arg is the sequence, second is the element's index
 \newcommand{\attn}{\refdef[blk:blk-attention]{\operatorname{Attention}}}
-\newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
-\newcommand{\vertex}[1][v]{\refdef[blk:def-vertex]{#1}}
-\newcommand{\vertexset}[1][V]{\refdef[blk:def-vertex-set]{#1}}
-\newcommand{\edge}[1][e]{\refdef[blk:def-edge]{#1}}
-\newcommand{\edgeset}[1][E]{\refdef[blk:def-edge-set]{#1}}
 \renewcommand{\log}{\refdef[blk:def-log]{\operatorname{log}}}
 \renewcommand{\ln}{\refdef[blk:def-ln]{\operatorname{ln}}}
 \newcommand{\euler}{\refdef[blk:def-euler-num]{e}}
 \newcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
 \newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
 \newcommand{\xor}{\oplus}
+
+% graph theory?
+\newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
+\newcommand{\vertex}[1][v]{\refdef[blk:def-vertex]{#1}}
+\newcommand{\vertexset}[1][V]{\refdef[blk:def-vertex-set]{#1}}
+\newcommand{\edge}[1][e]{\refdef[blk:def-edge]{#1}}
+\newcommand{\edgeset}[1][E]{\refdef[blk:def-edge-set]{#1}}
+\newcommand{\dartrev}{\refdef[blk:def-dartrev]{\operatorname{rev}}}
+\newcommand{\graphdel}{\mathrel{\refdef[blk:def-graph-del]{-}}}
+\newcommand{\edgecon}{\refdef[blk:def-edge-con]{/}}
+\newcommand{\graphemb}{\refdef[blk:def-graph-emb]{\pi}}
+\newcommand{\graphdual}{\refdef[blk:def-dual-graph]{\operatorname{dual}}}
+\newcommand{\graphduall}[1][\pi]{\refdef[blk:def-dual-graph]{{#1}^*}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -385,6 +393,12 @@
 \newcommand{\sigexp}{\operatorname{Sig-Forge}_{\mathcal{A},\Pi}}
 
 \newcommand{\smallspace}{\hspace{5pt}}
+
+% other macros/symbols
+\newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
+\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n (i found this notation in several books, including \ref{blk:1731676381.9014068})
+\newcommand{\equivrel}{\mathrel{\refdef[blk:def-equiv-relation]{\sim}}}
+\newcommand{\fcomp}{\mathrel{\refdef[blk:def-func-comp]{\circ}}}
 
 % some symbols for relational algebra
 \def\ojoin{\setbox0=\hbox{$\bowtie$}%
