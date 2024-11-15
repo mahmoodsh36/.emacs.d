@@ -1181,4 +1181,4 @@
   (prescient-persist-mode 1)
   (setq prescient-history-length 10000))
 
-(provide 'setup-packages)
+(provide 'config-packages)

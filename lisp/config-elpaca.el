@@ -50,4 +50,4 @@
 ;; block until current queue processed.
 (elpaca-wait)
 
-(provide 'setup-elpaca)
+(provide 'config-elpaca)

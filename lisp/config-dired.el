@@ -184,4 +184,4 @@ Version 2015-07-30"
       (setq counter (1+ counter)))
     filename))
 
-(provide 'setup-dired)
+(provide 'config-dired)

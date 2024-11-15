@@ -45,4 +45,4 @@
               (setq eldoc-documentation-strategy #'eldoc-documentation-compose)))
   )
 
-(provide 'setup-eglot)
+(provide 'config-eglot)

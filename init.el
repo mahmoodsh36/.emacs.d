@@ -8,11 +8,11 @@
 
 ;; add ~/.emacs.d to load-path and load some files
 (push (concat user-emacs-directory "/lisp") load-path)
-(require 'setup-utils)
-(require 'setup-constants)
-(require 'setup-android)
-(require 'setup-elpaca)
-(require 'setup-other)
+(require 'config-utils)
+(require 'config-constants)
+(require 'config-android)
+(require 'config-elpaca)
+(require 'config-other)
 
 ;; set tab size to 2 spaces except 4 for python
 (setq-default ;tab-width 2
@@ -252,18 +252,18 @@
   (add-hook 'kill-buffer-hook 'comint-write-input-ring))
 
 ;; load other elisp files
-(require 'setup-org)
-(require 'setup-packages)
-(require 'setup-evil)
-(require 'setup-theme)
-(require 'setup-dired)
-(require 'setup-eglot)
-(require 'setup-blk)
+(require 'config-org)
+(require 'config-packages)
+(require 'config-evil)
+(require 'config-theme)
+(require 'config-dired)
+(require 'config-eglot)
+(require 'config-blk)
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
           (lambda ()
-            (require 'setup-keys) ;; load setup-org.el
+            (require 'config-keys)
             ;; (with-eval-after-load-all
             ;; '(evil general)
             (when (file-exists-p persp-state-default-file)

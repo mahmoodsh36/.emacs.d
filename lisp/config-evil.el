@@ -294,4 +294,4 @@ space rather than before."
   )
 
 
-(provide 'setup-evil)
+(provide 'config-evil)

@@ -257,4 +257,4 @@ Select one and visit it."
        (let ((filename (buffer-file-name)))
          (org-babel-lob-ingest filename))))))
 
-(provide 'setup-blk)
+(provide 'config-blk)

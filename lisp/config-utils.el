@@ -556,4 +556,4 @@ prompt the user for a coding system."
       (setq plist (cddr plist)))
     (reverse keys)))
 
-(provide 'setup-utils)
+(provide 'config-utils)

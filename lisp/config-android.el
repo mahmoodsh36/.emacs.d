@@ -28,4 +28,4 @@
       (insert (shell-command-to-string-no-stderr cmd))
       0)))
 
-(provide 'setup-android)
+(provide 'config-android)

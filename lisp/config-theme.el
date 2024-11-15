@@ -153,4 +153,4 @@
                     (pdf-view-refresh-themed-buffer t))
                 (pdf-view-themed-minor-mode -1)))))))
 
-(provide 'setup-theme)
+(provide 'config-theme)

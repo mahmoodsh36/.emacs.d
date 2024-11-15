@@ -30,4 +30,4 @@
 ;; if i need more recursion depth
 ;; (setq max-lisp-eval-depth 10000)
 
-(provide 'setup-constants)
+(provide 'config-constants)

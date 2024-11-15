@@ -127,9 +127,9 @@
 (led-kbd "f c"
          (lambda () (interactive) (find-file "~/.emacs.d/common.sty")))
 (led-kbd "f o"
-         (lambda () (interactive) (find-file (from-emacsd "lisp/setup-org.el"))))
+         (lambda () (interactive) (find-file (from-emacsd "lisp/config-org.el"))))
 (led-kbd "f p"
-         (lambda () (interactive) (find-file (from-emacsd "lisp/setup-packages.el"))))
+         (lambda () (interactive) (find-file (from-emacsd "lisp/config-packages.el"))))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
@@ -138,7 +138,7 @@
 ;;               (search-open-file-in-emacs "~/data" "")))
 
 ;; music keys
-(require 'setup-music)
+(require 'config-music)
 (led-kbd "f m" #'play-file)
 ;; play artist
 (led-kbd "m a" #'play-artist)
@@ -560,4 +560,4 @@
 
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 
-(provide 'setup-keys)
+(provide 'config-keys)

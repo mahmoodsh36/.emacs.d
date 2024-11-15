@@ -1903,4 +1903,4 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (when (and (boundp 'evil-mode) evil-mode)
     (call-interactively 'evil-append)))
 
-(provide 'setup-org)
+(provide 'config-org)

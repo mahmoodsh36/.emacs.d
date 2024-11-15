@@ -58,4 +58,4 @@
 ;; yuck extension for eww
 (add-to-list 'auto-mode-alist '("\\.yuck\\'" . lisp-mode))
 
-(provide 'setup-other)
+(provide 'config-other)

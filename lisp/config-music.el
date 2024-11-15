@@ -82,4 +82,4 @@
     ;; (browse-url (expand-file-name my-file))
     ))
 
-(provide 'setup-music)
+(provide 'config-music)
