@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: question block
+# key: qb
+# --
+#+begin_question
+$0
+#+end_question
