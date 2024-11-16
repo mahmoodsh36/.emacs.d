@@ -84,6 +84,7 @@
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
+    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (file-name-base outfile)))
     (if is-beamer
         (org-export-to-file 'beamer outfile
           nil nil nil nil nil nil)
@@ -97,7 +98,7 @@
                      org-latex-compiler
                      (file-truename (get-latex-cache-dir-path))
                      path)))
-    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (file-name-base path)))
+    ;; (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (file-name-base path)))
     (if async
         (start-process-shell-command
          "latex"
@@ -1169,6 +1170,25 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
        (erase-buffer)
        (insert-file-contents ,file)
        (progn ,@body))))
+
+(defmacro with-org-file-faster (file &rest body)
+  `(let ((org-inhibit-startup t)
+         (org-element-cache-persistent)
+         (org-element-use-cache)
+         (org-mode-hook))
+     (with-temp-buffer
+       (buffer-disable-undo)
+       (insert-file-contents ,file)
+       (let ((major-mode 'org-mode))
+         (progn ,@body)))))
+
+(defun grab-all ()
+  (mapcar
+   (lambda (orgfile)
+     (with-org-file-faster
+      orgfile
+      (org-element-parse-buffer)))
+   (list-note-files)))
 
 (defun export-org-file (file &rest kw)
   "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"

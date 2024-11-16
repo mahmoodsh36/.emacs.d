@@ -659,7 +659,6 @@
 (use-package vertico-directory
   :ensure nil
   :after vertico
-  :ensure nil
   ;; more convenient directory navigation commands
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
@@ -940,7 +939,7 @@
 (use-package pcre2el)
 
 ;; for non-contiguous region selection
-(use-package zones)
+;; (use-package zones)
 
 ;; automatic tangling and detangling for org babel
 (use-package org-tanglesync)

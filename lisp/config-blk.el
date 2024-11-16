@@ -53,6 +53,10 @@
   ;; (setq blk-grepper blk-grepper-rg)
   ;; (setq blk-grepper blk-grepper-grep)
 
+  (setq blk-ignored-files
+        (list
+         "/home/mahmooz/brain/notes/1713104680.org"))
+
   ;; add the :defines pattern for the emacs grepper
   ;; (dolist (pattern-table '(blk-emacs-patterns))
   ;;   (add-to-list pattern-table (list :title "definition"
