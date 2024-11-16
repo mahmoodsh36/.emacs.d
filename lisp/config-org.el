@@ -317,6 +317,8 @@
   (setq org-ellipsis "⤵")
   ;; so that a state modification date is inserted on a new heading automatically
   (setq org-treat-insert-todo-heading-as-state-change t)
+  ;; show evaluation time in hash?
+  (setq org-babel-hash-show-time t)
 
   ;; make org not evaluate code blocks on exporting
   ;; (add-to-list 'org-babel-default-header-args '(:eval . "no-export"))
@@ -1171,25 +1173,6 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
        (insert-file-contents ,file)
        (progn ,@body))))
 
-(defmacro with-org-file-faster (file &rest body)
-  `(let ((org-inhibit-startup t)
-         (org-element-cache-persistent)
-         (org-element-use-cache)
-         (org-mode-hook))
-     (with-temp-buffer
-       (buffer-disable-undo)
-       (insert-file-contents ,file)
-       (let ((major-mode 'org-mode))
-         (progn ,@body)))))
-
-(defun grab-all ()
-  (mapcar
-   (lambda (orgfile)
-     (with-org-file-faster
-      orgfile
-      (org-element-parse-buffer)))
-   (list-note-files)))
-
 (defun export-org-file (file &rest kw)
   "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
   (with-file-as-current-buffer
@@ -1200,13 +1183,8 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
    (when (plist-get kw :html-p)
      (my-org-to-html))))
 
-(defun all-org-files ()
-  "return all known org files"
-  (directory-files (from-brain "notes/") t ".*\\.org$"))
-
 (defun files-linked-from-org-file (filepath)
-  (with-file-as-current-buffer
-   filepath
+  (with-org-file-faster filepath
    (remove
     nil
     (org-element-map (org-element-parse-buffer) 'link
@@ -1922,5 +1900,24 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun enter-append-if-evil ()
   (when (and (boundp 'evil-mode) evil-mode)
     (call-interactively 'evil-append)))
+
+(defmacro with-org-file-faster (file &rest body)
+  `(let ((org-inhibit-startup t)
+         (org-element-cache-persistent)
+         (org-element-use-cache)
+         (org-mode-hook))
+     (with-temp-buffer
+       (buffer-disable-undo)
+       (insert-file-contents ,file)
+       (let ((major-mode 'org-mode))
+         (progn ,@body)))))
+
+(defun grab-all ()
+  (mapcar
+   (lambda (orgfile)
+     (with-org-file-faster
+      orgfile
+      (org-element-parse-buffer)))
+   (list-note-files)))
 
 (provide 'config-org)
