@@ -1901,23 +1901,26 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (when (and (boundp 'evil-mode) evil-mode)
     (call-interactively 'evil-append)))
 
-(defmacro with-org-file-faster (file &rest body)
+(defmacro map-org-files (files &rest body)
   `(let ((org-inhibit-startup t)
          (org-element-cache-persistent)
          (org-element-use-cache)
-         (org-mode-hook))
+         (org-mode-hook)
+         (files (if (atom ,files) (list ,files) ,files))
+         (gc-cons-threshold 1000000000)
+         (coding-system-for-read 'utf-8))
      (with-temp-buffer
        (buffer-disable-undo)
-       (insert-file-contents ,file)
-       (let ((major-mode 'org-mode))
-         (progn ,@body)))))
+       (mapcar
+        (lambda (orgfile)
+          (insert-file-contents orgfile nil nil nil t)
+          (let ((major-mode 'org-mode))
+            (progn ,@body)))
+        files))))
 
 (defun grab-all ()
-  (mapcar
-   (lambda (orgfile)
-     (with-org-file-faster
-      orgfile
-      (org-element-parse-buffer)))
-   (list-note-files)))
+  (map-org-files
+   (list-note-files)
+   (org-element-parse-buffer)))
 
 (provide 'config-org)
