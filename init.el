@@ -91,7 +91,6 @@
 (add-to-list 'savehist-additional-variables 'compile-command)
 (add-to-list 'savehist-additional-variables 'compile-history)
 (add-to-list 'savehist-additional-variables 'blk-hist)
-(add-to-list 'savehist-additional-variables 'files-to-export)
 (setq savehist-save-minibuffer-history t)
 (setq history-length t) ;; no limit to history length
 ;; break long lines into multiple, dont cut-off words

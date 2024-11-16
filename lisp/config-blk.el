@@ -165,6 +165,33 @@ It is meant to be added to `org-export-before-parsing-hook'."
               (delete-region (org-element-begin link) (point))
               (insert new-link)))))))
 
+  ;; redefine
+  ;; redefine it to use `map-org-files' instead of `blk-with-file-as-current-buffer' for faster results
+  (defun blk-extract-id (grep-result)
+    "open the file and run the :extract-id-function of the grep rule that was matched to
+obtain the id"
+    (let* ((grep-pattern (plist-get grep-result :matched-pattern))
+           (extract-id-func (plist-get grep-pattern :extract-id-function)))
+      ;; if :extract-id-function isnt provided, we could try making our own that simply
+      ;; returns the "src id" of the target to be linked to, although notice that if this is to
+      ;; happen, the file might be later loaded into memory for no reason by `blk-with-file-as-current-buffer'
+      (when (not extract-id-func)
+        (let ((src-id-func (plist-get (plist-get grep-result :matched-pattern) :src-id-function)))
+          (when src-id-func
+            (setq extract-id-func
+                  (lambda (grep-data-local)
+                    ;; `grep-data-local' would be the same as `grep-result' anyway
+                    (funcall (plist-get (plist-get grep-result :matched-pattern) :src-id-function) (plist-get grep-data-local :matched-value)))))))
+      (if extract-id-func
+          (let* ((id (map-org-files
+                      (plist-get grep-result :filepath)
+                      (goto-char (plist-get grep-result :position))
+                      (funcall extract-id-func grep-result))))
+            id)
+        (progn
+          (message "Pattern has no `extract-id-function' or `src-id-function'")
+          nil))))
+
   )
 
 (with-eval-after-load-all '(blk ox)
@@ -260,5 +287,16 @@ Select one and visit it."
      (lambda (_)
        (let ((filename (buffer-file-name)))
          (org-babel-lob-ingest filename))))))
+
+(defun construct-blk-hashtable (data)
+  (let ((ht (make-hash-table :test 'equal)))
+    (mapc
+     (lambda (entry)
+       (puthash (plist-get entry :id) entry ht))
+     data)
+    ht))
+
+(defun blk-find-by-id-using-hashtable (id)
+  (gethash id blk-hashtable))
 
 (provide 'config-blk)

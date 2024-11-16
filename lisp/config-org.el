@@ -1183,17 +1183,36 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
    (when (plist-get kw :html-p)
      (my-org-to-html))))
 
+;; (defun files-linked-from-org-file (filepath)
+;;   (with-org-file-faster filepath
+;;    (remove
+;;     nil
+;;     (org-element-map (org-element-parse-buffer) 'link
+;;       (lambda (mylink)
+;;         (let ((filepath
+;;                (pcase (org-element-property :type mylink)
+;;                  ("blk" (plist-get
+;;                          (car (blk-find-by-id (org-element-property :path mylink)))
+;;                          :filepath))
+;;                  ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
+;;                  (_ nil))))
+;;           filepath))))))
+
 (defun files-linked-from-org-file (filepath)
-  (with-org-file-faster filepath
+  (map-org-files filepath
    (remove
     nil
     (org-element-map (org-element-parse-buffer) 'link
       (lambda (mylink)
-        (let ((filepath (pcase (org-element-property :type mylink)
-                          ("blk" (plist-get (car (blk-find-by-id (org-element-property :path mylink)))
-                                            :filepath))
-                          ("denote" (denote-get-path-by-id (org-element-property :path mylink)))
-                          (_ nil))))
+        (let ((filepath
+               (pcase (org-element-property :type mylink)
+                 ("blk" (plist-get
+                         (blk-find-by-id-using-hashtable
+                          (org-element-property :path mylink))
+                         :filepath))
+                 ("denote" (denote-get-path-by-id
+                            (org-element-property :path mylink)))
+                 (_ nil))))
           filepath))))))
 
 (defun export-node (node exceptions &rest kw)
@@ -1241,9 +1260,11 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 
 (defun export-all-org-files-to-html ()
   (interactive)
+  (message "collecting files to export")
   (let* ((org-inhibit-startup t) ;; to make opening org files faster disable startup
          (should-export-org-file-function #'should-export-org-file)
-         (files-to-export (if (boundp 'files-to-export) files-to-export (collect-org-files-to-export))))
+         (files-to-export (collect-org-files-to-export)))
+    (message "collected %s files to export" (length files-to-export))
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
     ;; (export-entries-page)
@@ -1255,7 +1276,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (interactive)
   (let* ((org-inhibit-startup t) ;; to make opening org files faster disable startup
          (should-export-org-file-function (lambda (_) t))
-         (files-to-export (if (boundp 'files-to-export) files-to-export (collect-org-files-to-export))))
+         (files-to-export (collect-org-files-to-export)))
     (export-all-org-files :pdf-p t :async nil)))
 
 (defun export-all-math-org-files-to-html ()
@@ -1329,6 +1350,13 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (with-file-as-current-buffer
    orgfile
    (org-get-title)))
+(defun org-file-grab-keyword-faster (orgfile kw)
+  (with-file-as-current-buffer-faster
+   orgfile
+   (let ((value (cdar (custom-org-collect-keywords (list kw)))))
+     (if (string-prefix-p "(" value)
+         (eval (car (read-from-string value)))
+       value))))
 
 (defun list-section-export-candidates (section)
   (let* ((grep-results (grep-org-dir *notes-dir* (format "#\\+export_section: %s" section)))
@@ -1492,10 +1520,16 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                     (let ((entry-id (blk-extract-id entry)))
                       (plist-put entry :id entry-id)
                       (when (not html-file)
-                        (setq html-file (html-out-file (org-file-grab-title org-file)))
+                        (setq html-file
+                              (html-out-file
+                               (org-file-grab-keyword-faster
+                                org-file
+                                "title")))
                         (push (cons org-file html-file) org-file-to-html-file-alist))
                       (plist-put entry :filepath (file-name-nondirectory html-file))
-                      (plist-put entry :original-filename (file-name-nondirectory html-file))
+                      (plist-put entry
+                                 :original-filename
+                                 (file-name-nondirectory html-file))
                       (push entry new-data)))))
     new-data))
 (defun generate-and-save-website-search-data ()
@@ -1769,25 +1803,40 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 
 (defun collect-org-files-to-export ()
   (let ((files-to-export)
-        (entries (org-files-with-tag "entry")))
+        (entries (org-files-with-tag "entry"))
+        (blk-hashtable (construct-blk-hashtable (blk-collect-all))))
     (dolist (orgfile entries)
       (push orgfile files-to-export)
       (let ((children (entry-children orgfile)))
         (dolist (child children)
           (let ((blk-entry (car (blk-find-by-id child))))
             (push (plist-get blk-entry :filepath) files-to-export)))))
-    (setq files-to-export (cl-union files-to-export (org-files-with-tag "export_section")))
+    (setq files-to-export
+          (cl-union files-to-export (org-files-with-tag "export_section")))
     (dolist (file-to-export files-to-export)
-      (setq files-to-export (cl-union files-to-export (org-files-connected-to-org-file file-to-export export-graph-depth) :test 'equal)))
+      (setq files-to-export
+            (cl-union
+             files-to-export
+             (org-files-connected-to-org-file
+              file-to-export
+              export-graph-depth)
+             :test 'equal)))
     files-to-export))
 
 (cl-defun org-files-connected-to-org-file (org-file &optional (depth 1))
-  (when (> depth 0)
+  (when (and org-file (> depth 0))
     (let ((nodes (files-linked-from-org-file org-file)))
       (let ((connected-files))
         (dolist (node nodes)
-          (when (not (cl-find node (cl-union connected-files (list org-file) :test 'equal) :test 'equal))
-            (setq connected-files (cl-union (cons node connected-files) (org-files-connected-to-org-file node (1- depth)) :test #'equal))))
+          (when (not (cl-find node
+                              (cl-union connected-files
+                                        (list org-file)
+                                        :test 'equal)
+                              :test 'equal))
+            (setq connected-files
+                  (cl-union (cons node connected-files)
+                            (org-files-connected-to-org-file node (1- depth))
+                            :test #'equal))))
         connected-files))))
 
 (defun get-latex-preview-svg-by-blk-id (blk-id)
