@@ -1956,7 +1956,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
          (org-element-use-cache)
          (org-mode-hook)
          (files (if (atom ,files) (list ,files) ,files))
-         (gc-cons-threshold 1000000000)
+         (gc-cons-threshold 1000000000) ;; 1gb
          (coding-system-for-read 'utf-8))
      (with-temp-buffer
        (buffer-disable-undo)

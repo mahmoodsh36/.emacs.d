@@ -183,10 +183,10 @@ obtain the id"
                     ;; `grep-data-local' would be the same as `grep-result' anyway
                     (funcall (plist-get (plist-get grep-result :matched-pattern) :src-id-function) (plist-get grep-data-local :matched-value)))))))
       (if extract-id-func
-          (let* ((id (map-org-files
-                      (plist-get grep-result :filepath)
-                      (goto-char (plist-get grep-result :position))
-                      (funcall extract-id-func grep-result))))
+          (let* ((id (car (map-org-files
+                           (plist-get grep-result :filepath)
+                           (goto-char (plist-get grep-result :position))
+                           (funcall extract-id-func grep-result)))))
             id)
         (progn
           (message "Pattern has no `extract-id-function' or `src-id-function'")
