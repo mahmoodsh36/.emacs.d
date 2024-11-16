@@ -302,8 +302,10 @@
 \newcommand{\graphdel}{\mathrel{\refdef[blk:def-graph-del]{-}}}
 \newcommand{\edgecon}{\refdef[blk:def-edge-con]{/}}
 \newcommand{\graphemb}{\refdef[blk:def-graph-emb]{\pi}}
-\newcommand{\graphdual}{\refdef[blk:def-dual-graph]{\operatorname{dual}}}
-\newcommand{\graphduall}[1][\pi]{\refdef[blk:def-dual-graph]{{#1}^*}}
+\newcommand{\graphembdual}{\refdef[blk:def-face]{\operatorname{dual}}} % the dual of a graph embedding
+\newcommand{\graphembduall}[1][\pi]{\refdef[blk:def-face]{{#1}^*}}
+\newcommand{\embgraphdual}{\refdef[blk:def-embgraphdual]{\operatorname{dual}}} % the dual graph of an embedded graph
+\newcommand{\embgraphduall}[1][G]{\refdef[blk:def-embgraphdual]{{#1}^*}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -365,7 +367,7 @@
 \newcommand{\compP}{\polylangs}
 \newcommand{\compNP}{\npolylangs}
 \newcommand{\compSTP}{\refdef{STP}} % set of total computable functions
-\newcommand{\albetstar}[1]{\refdef[blk:def-kleenestar]{{#1}^*}} % kleene closure of an alphabet
+\newcommand{\albetstar}[1]{{#1}^{\refdef[blk:def-kleenestar]{*}}} % kleene closure of an alphabet
 \newcommand{\bigoh}{\refdef[blk:def-bigo]{\mathscr{O}}} % big o
 \newcommand{\bigth}{\refdef[blk:def-bigo]{\Theta}}
 \newcommand{\bigom}{\refdef[blk:def-bigo]{\Omega}}
@@ -376,10 +378,15 @@
 \newcommand{\emptytrans}{\refdef[blk:blk:1704361386]{\varepsilon}}
 \newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
 \newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
-\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\operatorname{P}_{/\operatorname{poly}}}}
-\newcommand{\csize}{\operatorname{SIZE}}
+\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\brm{P}_{/\brm{poly}}}}
+\newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\operatorname{SIZE}}}
+\newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\operatorname{DEPTH}}}
 \newcommand{\coNP}{\refdef[blk:def-conp]{\brm{coNP}}}
 \newcommand{\compdtime}{\operatorname{DTIME}}
+\newcommand{\compEXP}{\brm{EXP}}
+\newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
+\newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
+\newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -459,8 +466,8 @@
     % \newtheorem{characteristic}{characteristic}
     % \newtheorem{entailment}{entailment}
     % \newtheorem{corollary}{corollary}
-    % \newtheore*{proof}{Proof}
-    % \newtheorem{lemma}{lemma}
+    % \newtheorem*{proof}{Proof}
+    \newtheorem{lemma}{lemma}
     % \newtheorem{question}{question}
     % \newtheorem{remark}{remark}
     % \newtheorem{subquestion}{subquestion}[question]
