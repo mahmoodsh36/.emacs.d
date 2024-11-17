@@ -16,6 +16,12 @@
   (dolist (child (treesit-node-children node))
     (map-treesitter-node child func)))
 
+(defun grab-all-latex-commands ()
+  (append
+   (mapcar
+    'grab-commands-from-latex-file
+    (list-note-files))))
+
 (defun shorten-strings (strings length)
   "Shorten strings to unique prefixes of the specified length.
 If a prefix is repeated, append a number to make it unique."

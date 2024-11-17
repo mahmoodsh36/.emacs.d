@@ -512,6 +512,7 @@
 (general-define-key :states '(insert normal) :keymaps 'override "C-SPC" #'my-yas-insert)
 (general-define-key :states '(insert normal) :keymaps 'override "M-SPC" #'yas-next-field)
 (general-define-key :states '(insert normal) :keymaps 'override "S-SPC" #'toggle-yas-auto-expand)
+(general-define-key :states '(insert normal) :keymaps 'override "<backspace>" #'my-yas-insert)
 
 (led-kbd "; i" #'imenu)
 
