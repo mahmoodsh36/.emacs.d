@@ -1180,4 +1180,11 @@
   (prescient-persist-mode 1)
   (setq prescient-history-length 10000))
 
+;; this doesnt work
+;; (use-package org-xournalpp
+;;   :elpaca ( :fetcher gitlab :repo "vherrmann/org-xournalpp")
+;;   :config
+;;   ;; (add-hook 'org-mode-hook 'org-xournalpp-mode)
+;;   )
+
 (provide 'config-packages)

@@ -84,7 +84,7 @@
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
-    (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (file-name-base outfile)))
+    (clean-latex-files outfile)
     (if is-beamer
         (org-export-to-file 'beamer outfile
           nil nil nil nil nil nil)
@@ -98,7 +98,6 @@
                      org-latex-compiler
                      (file-truename (get-latex-cache-dir-path))
                      path)))
-    ;; (call-process-shell-command (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path)) (file-name-base path)))
     (if async
         (start-process-shell-command
          "latex"
@@ -108,9 +107,15 @@
       (call-process-shell-command
        cmd))))
 
+(cl-defun clean-latex-files (path)
+  (call-process-shell-command
+   (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path))
+           (file-name-base path))))
+
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
+  (clean-latex-files (buffer-file-name))
   (compile-latex-file (buffer-file-name)))
 
 (defun open-current-document ()
@@ -1971,5 +1976,46 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (map-org-files
    (list-note-files)
    (org-element-parse-buffer)))
+
+(defun org-overlay-xournalpp-file-links ()
+  "overlay .xopp file links in the current org buffer with the corresponding sketches."
+  (interactive)
+  (let ((temp-dir (expand-file-name "xournal-sketches" temporary-file-directory)))
+    ;; Ensure the temporary directory exists
+    (unless (file-exists-p temp-dir)
+      (make-directory temp-dir t))
+    ;; Iterate over all file links in the buffer
+    (org-element-map (org-element-parse-buffer) 'link
+      (lambda (link)
+        (let ((type (org-element-property :type link))
+              (path (org-element-property :path link))
+              (begin (org-element-property :begin link))
+              (end (org-element-property :end link)))
+          (when (and (string-equal type "file")
+                     (string-suffix-p ".xopp" path t)) ; Check if the file is a .xopp file
+            (let* ((absolute-path (expand-file-name path))
+                   (output-file (concat temp-dir "/"
+                                        (file-name-base absolute-path) ".png")))
+              ;; Check if the .xopp file exists
+              (if (not (file-exists-p absolute-path))
+                  (message "File not found: %s" absolute-path)
+                ;; Export the .xopp file to an image if not already done
+                (unless (file-exists-p output-file)
+                  (let ((result (call-process "xournalpp" nil "*XournalPP Export Log*" t
+                                              "--create-img" output-file
+                                              absolute-path)))
+                    (if (/= result 0)
+                        (message "Failed to export %s. See *XournalPP Export Log* for details." absolute-path)
+                      (message "Successfully exported %s to %s" absolute-path output-file))))
+                ;; Add an overlay with the image
+                (when (file-exists-p output-file)
+                  (let ((img (create-image output-file nil nil :scale 0.2)))  ;; Resize image to 20% of original size
+                    (save-excursion
+                      (goto-char begin)
+                      (let ((ov (make-overlay begin end)))
+                        (overlay-put ov 'display img)
+                        (overlay-put ov 'org-image-overlay t)
+                        (overlay-put ov 'modification-hooks
+                                     (list (lambda (ov &rest _) (delete-overlay ov))))))))))))))))
 
 (provide 'config-org)

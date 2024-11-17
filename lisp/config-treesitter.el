@@ -1,12 +1,15 @@
 (defun grab-commands-from-latex-file (latex-file)
   (with-file-as-current-buffer
    latex-file
-   (let ((root (treesit-parse-string (buffer-string) 'latex)))
+   (let ((root (treesit-parse-string (buffer-string) 'latex))
+         (results))
      (map-treesitter-node
       root
       (lambda (node)
         (when (equal (treesit-node-field-name node) "command")
-          (message "got %s" (treesit-node-text node))))))))
+          (let ((text (treesit-node-text node)))
+            (push text results)))))
+     results)))
 
 (defun map-treesitter-node (node func)
   (funcall func node)
