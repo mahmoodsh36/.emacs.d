@@ -556,4 +556,11 @@ prompt the user for a coding system."
       (setq plist (cddr plist)))
     (reverse keys)))
 
+(defmacro with-file-as-current-buffer-faster (file &rest body)
+  `(let ((buf (get-buffer-create " myhidden1")))
+     (with-current-buffer buf
+       (erase-buffer)
+       (insert-file-contents ,file)
+       (progn ,@body))))
+
 (provide 'config-utils)

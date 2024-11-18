@@ -1171,13 +1171,6 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
              (kill-buffer (current-buffer)))
            ,result)))))
 
-(defmacro with-file-as-current-buffer-faster (file &rest body)
-  `(let ((buf (get-buffer-create " myhidden1")))
-     (with-current-buffer buf
-       (erase-buffer)
-       (insert-file-contents ,file)
-       (progn ,@body))))
-
 (defun export-org-file (file &rest kw)
   "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
   (with-file-as-current-buffer

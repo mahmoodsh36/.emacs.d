@@ -1,7 +1,12 @@
-(defun grab-commands-from-latex-file (latex-file)
-  (with-file-as-current-buffer
+(defun grab-latex-commands-from-file (latex-file)
+  (with-file-as-current-buffer-faster
    latex-file
-   (let ((root (treesit-parse-string (buffer-string) 'latex))
+   (message "in %s" latex-file)
+   (let ((root (treesit-parse-string
+                (buffer-substring-no-properties
+                 (point-min)
+                 (point-max))
+                'latex))
          (results))
      (map-treesitter-node
       root
@@ -17,9 +22,10 @@
     (map-treesitter-node child func)))
 
 (defun grab-all-latex-commands ()
-  (append
+  (apply
+   'append
    (mapcar
-    'grab-commands-from-latex-file
+    'grab-latex-commands-from-file
     (list-note-files))))
 
 (defun shorten-strings (strings length)

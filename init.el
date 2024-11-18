@@ -258,6 +258,7 @@
 (require 'config-dired)
 (require 'config-eglot)
 (require 'config-blk)
+(require 'config-treesitter)
 
 ;; open agenda on startup
 (add-hook 'elpaca-after-init-hook
