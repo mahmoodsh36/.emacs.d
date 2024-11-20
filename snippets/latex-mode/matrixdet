@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: matrixdet
-# key: det
+# key: dt
 # --
 \left|
   \begin{array}{$1}

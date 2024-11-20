@@ -275,7 +275,7 @@
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
 \newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
 \newcommand{\scomp}[1]{\overline{#1}} % set complement
-\DeclarePairedDelimiter\tupl{(}{)}
+\DeclarePairedDelimiter{\tupl}{{\refdef[blk:1701442956]{(}}}{{\refdef[blk:1701442956]{)}}}  % godel number pairing notation
 \newcommand\softmax{\refdef[blk:blk-softmax]{\operatorname{softmax}}}
 \newcommand\powset{\refdef[blk:def-pow-set]{\mathcal{P}}}
 \newcommand\sigmoid{\refdef[blk:def-sigmoid]{\operatorname{\sigma}}}
@@ -307,6 +307,10 @@
 \newcommand{\graphembduall}[1][\pi]{\refdef[blk:def-face]{{#1}^*}}
 \newcommand{\embgraphdual}{\refdef[blk:def-embgraphdual]{\operatorname{dual}}} % the dual graph of an embedded graph
 \newcommand{\embgraphduall}[1][G]{\refdef[blk:def-embgraphdual]{{#1}^*}}
+\newcommand{\dartset}{\refdef[blk:def-graph-edgecen]{\operatorname{D}}}
+\newcommand{\embgraph}[1][G]{\refdef[blk:def-emb-graph]{{#1}_{\graphemb}}}
+\newcommand{\tree}[1][T]{\refdef[blk:def-tree]{#1}}
+\newcommand{\embgraphdualspantree}{\refdef[blk:not-dual-spantree]{T^*}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}

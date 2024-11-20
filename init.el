@@ -59,7 +59,17 @@
 ;; display only buffer name in modeline
 ;; the following line enables L<line number> at the end
 (when (not (is-android-system))
-  (setq-default mode-line-format (list " " mode-line-modified "%e %b" mode-line-position-line-format " " '(:eval (persp-current-name)) " " '(:eval (current-buffer-title-if-org)))))
+  (setq-default
+   mode-line-format
+   (list
+    " "
+    mode-line-modified
+    " "
+    '(:eval (persp-mode-line))
+    "%e %b"
+    mode-line-position-line-format
+    " "
+    '(:eval (current-buffer-title-if-org)))))
 (defun current-buffer-title-if-org ()
   (if (derived-mode-p 'org-mode)
       (org-get-title)

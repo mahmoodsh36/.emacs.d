@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: inline bmatrix
-# key: ibm
-# --
-\begin{bmatrix} $1 \end{bmatrix}$0

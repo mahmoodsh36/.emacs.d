@@ -999,8 +999,20 @@
 ;; for nushell scripts
 ;; (use-package nushell-mode)
 
-;; (use-package el-easydraw
-;;   :ensure ( :host github :repo "misohena/el-easydraw"))
+(use-package el-easydraw
+  :ensure ( :host github :repo "misohena/el-easydraw" :main nil)
+  :config
+  (with-eval-after-load 'org
+    (require 'edraw-org)
+    (edraw-org-setup-default))
+  ;; When using the org-export-in-background option (when using the
+  ;; asynchronous export function), the following settings are
+  ;; required. This is because Emacs started in a separate process does
+  ;; not load org.el but only ox.el.
+  ;; (with-eval-after-load "ox"
+  ;;   (require 'edraw-org)
+  ;;   (edraw-org-setup-exporter))
+  )
 
 ;; (use-package fancy-dabbrev
 ;;   :config
@@ -1186,5 +1198,10 @@
 ;;   :config
 ;;   ;; (add-hook 'org-mode-hook 'org-xournalpp-mode)
 ;;   )
+
+(use-package org-krita
+  :ensure ( :fetcher github :repo "lepisma/org-krita" :files ("*.el" "resources"))
+  :config
+  (add-hook 'org-mode-hook 'org-krita-mode))
 
 (provide 'config-packages)
