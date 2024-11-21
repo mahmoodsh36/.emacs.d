@@ -430,7 +430,6 @@
  (lambda ()
    (interactive)
    (let ((completing-read-function 'my-completing-read))
-     ;; (call-interactively 'blk-find)
      (call-interactively 'blk-find))))
 (led-kbd
  "r F"

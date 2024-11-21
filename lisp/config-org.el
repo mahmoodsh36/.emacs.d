@@ -1494,15 +1494,18 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
              "")))
          (org-html-preamble-format (list (list "en" my-preamble)))
          (search-data))
-    (when heading
-      (org-narrow-to-subtree))
-    (org-export-to-file 'html outfile
-      nil nil nil nil nil nil)
-    (when heading
-      (widen))
-    ;; (copy-directory "ltx" *static-html-dir* t)
-    (dolist (filepath (directory-files (join-path *template-html-dir* "static") t "html\\|css\\|js"))
-      (copy-file filepath *static-html-dir* t))))
+    (when (not (and (not heading)
+                    buffer-file-name
+                    (file-newer-than-file-p outfile buffer-file-name)))
+      (when heading
+        (org-narrow-to-subtree))
+      (org-export-to-file 'html outfile
+        nil nil nil nil nil nil)
+      (when heading
+        (widen))
+      ;; (copy-directory "ltx" *static-html-dir* t)
+      (dolist (filepath (directory-files (join-path *template-html-dir* "static") t "html\\|css\\|js"))
+        (copy-file filepath *static-html-dir* t)))))
 
 (defun generate-website-search-data ()
   (let ((data (blk-collect-all))
