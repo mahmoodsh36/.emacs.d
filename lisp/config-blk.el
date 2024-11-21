@@ -55,7 +55,8 @@
 
   (setq blk-ignored-files
         (list
-         "/home/mahmooz/brain/notes/1713104680.org"))
+         ;; "/home/mahmooz/brain/notes/1713104680.org" ;; this affects exporting :/ (blk.html doesnt get written..)
+         "org-tex"))
 
   ;; add the :defines pattern for the emacs grepper
   ;; (dolist (pattern-table '(blk-emacs-patterns))

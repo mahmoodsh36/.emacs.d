@@ -65,11 +65,11 @@
     " "
     mode-line-modified
     " "
-    '(:eval (persp-mode-line))
-    "%e %b"
     mode-line-position-line-format
+    "%e %b"
+    '(:eval (current-buffer-title-if-org))
     " "
-    '(:eval (current-buffer-title-if-org)))))
+    '(:eval (persp-mode-line)))))
 (defun current-buffer-title-if-org ()
   (if (derived-mode-p 'org-mode)
       (org-get-title)

@@ -107,9 +107,14 @@
       (call-process-shell-command
        cmd))))
 
+;; (cl-defun clean-latex-files (path)
+;;   (call-process-shell-command
+;;    (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path))
+;;            (file-name-base path))))
 (cl-defun clean-latex-files (path)
   (call-process-shell-command
-   (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path))
+   (format "find -name '%s*%s*' -not -name '*.tex' -delete"
+           (file-truename (get-latex-cache-dir-path))
            (file-name-base path))))
 
 (defun compile-current-document ()
@@ -641,7 +646,7 @@ contextual information."
                 (label (org-block-property :name special-block)))
             (when (not label)
               ;; (setq label (generate-random-string 7)))
-              (setq label "nil"))
+              (setq label ""))
             (if dependency
                 (progn
                   (when (not (string-search "[" dependency)) ;; if its a link without the brackets
@@ -654,6 +659,25 @@ contextual information."
                     contents
                     (format "\\end{myenv}")))))))
   ;; (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
+
+  ;; redefine
+  ;; redefine to insert :name (by default org only recognizes #+name)
+  (defun org-latex-special-block (special-block contents info)
+    "Transcode a SPECIAL-BLOCK element from Org to LaTeX.
+CONTENTS holds the contents of the block.  INFO is a plist
+holding contextual information."
+    (let ((type (org-element-property :type special-block))
+          (opt (org-export-read-attribute :attr_latex special-block :options))
+          ;; (caption (org-latex--caption/label-string special-block info))
+          (caption (when (org-block-property :name special-block)
+                     (format "\\label{%s}"
+                             (org-block-property :name special-block))))
+          (caption-above-p (org-latex--caption-above-p special-block info)))
+      (concat (format "\\begin{%s}%s\n" type (or opt ""))
+              (and caption-above-p caption)
+              contents
+              (and (not caption-above-p) caption)
+              (format "\\end{%s}" type))))
 
   ;; enforce some default keywords for all org buffers (in a hacky way)
   (defun my-org-collect-keywords-advice (orig-func &rest args)
@@ -863,12 +887,18 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (defun blk-org-export (link desc format)
     "Return the LINK with DESC converted into html or markdown FORMAT.
 If LINK is not found, just return it as is."
+    (message "handling %s %s" link desc)
     (if (blk-find-by-id link)
         (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
                (desc (or desc link))
                (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file)))
-               (latex-link (format "\\cref{%s}" link)))
+               (latex-link
+                (if desc
+                    (format "\\hyperref[%s]{%s}" link desc)
+                  (format "\\cref{%s}" link))))
+          (message "here1 %s %s %s" link buffer-file-name linked-file)
           (when (not (equal buffer-file-name linked-file))
+            (message "here2 %s %s" link buffer-file-name)
             (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
           (cond
            ((eq format 'html) (format "<a href=\"%s.html#%s\">%s</a>" linked-file-no-ext link desc))
