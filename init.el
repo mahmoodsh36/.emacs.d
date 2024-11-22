@@ -64,9 +64,8 @@
    (list
     " "
     mode-line-modified
-    " "
     mode-line-position-line-format
-    "%e %b"
+    "%e %b "
     '(:eval (current-buffer-title-if-org))
     " "
     '(:eval (persp-mode-line)))))

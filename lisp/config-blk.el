@@ -195,7 +195,8 @@ obtain the id"
 
   )
 
-(with-eval-after-load-all '(blk ox)
+(with-eval-after-load-all
+ '(blk ox)
  ;; redefine
  ;; resolve links in their original buffers when they're transcluded (by org-transclusion)
  (defun org-export-custom-protocol-maybe (link desc backend &optional info)
@@ -222,20 +223,20 @@ The function ignores links with an implicit type (e.g.,
                (overlay-buffer overlay)
              (current-buffer))))
      (with-current-buffer orig-buffer
-      (unless (or (member type '("coderef" "custom-id" "fuzzy" "radio" nil))
-		  (not backend))
-        (let ((protocol (org-link-get-parameter type :export))
-	      (path (org-element-property :path link)))
-	  (and (functionp protocol)
-	       (condition-case nil
-		   (funcall protocol path desc backend info)
-	         ;; XXX: The function used (< Org 9.4) to accept only
-	         ;; three mandatory arguments.  Type-specific `:export'
-	         ;; functions in the wild may not handle current
-	         ;; signature.  Provide backward compatibility support
-	         ;; for them.
-	         (wrong-number-of-arguments
-		  (funcall protocol path desc backend))))))))))
+       (unless (or (member type '("coderef" "custom-id" "fuzzy" "radio" nil))
+		   (not backend))
+         (let ((protocol (org-link-get-parameter type :export))
+	       (path (org-element-property :path link)))
+           (and (functionp protocol)
+                (condition-case nil
+                    (funcall protocol path desc backend info)
+                  ;; XXX: The function used (< Org 9.4) to accept only
+                  ;; three mandatory arguments.  Type-specific `:export'
+                  ;; functions in the wild may not handle current
+                  ;; signature.  Provide backward compatibility support
+                  ;; for them.
+                  (wrong-number-of-arguments
+		   (funcall protocol path desc backend))))))))))
 
 ;; transclusions (including text from other documents) for org mode, causes problems when inserting ids to blocks that have a name using blk..
 (use-package org-transclusion
