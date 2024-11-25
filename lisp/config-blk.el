@@ -45,10 +45,9 @@
   (dolist (pattern-table '(blk-rg-patterns blk-grep-patterns))
     (add-to-list pattern-table (list :title "definition"
                                      :glob "*.org"
-                                     :anchor-regex "(:defines)\\s+[^:]+"
+                                     :anchor-regex "(:defines|:mentions)\\s+[^:]+"
                                      :title-function 'blk-value-after-space-upto-colon
-                                     :extract-id-function 'blk-org-id-at-point))
-    )
+                                     :extract-id-function 'blk-org-id-at-point)))
   (setq blk-patterns blk-rg-patterns)
   ;; (setq blk-grepper blk-grepper-rg)
   ;; (setq blk-grepper blk-grepper-grep)

@@ -364,3 +364,5 @@
 (setq display-buffer-alist '((t display-buffer-same-window)))
 
 (setq comint-scroll-to-bottom-on-output t)
+
+(add-hook 'find-file-hook (lambda () (flymake-mode -1)))

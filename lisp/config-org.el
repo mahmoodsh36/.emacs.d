@@ -896,9 +896,7 @@ If LINK is not found, just return it as is."
                 (if desc
                     (format "\\hyperref[%s]{%s}" link desc)
                   (format "\\cref{%s}" link))))
-          (message "here1 %s %s %s" link buffer-file-name linked-file)
           (when (not (equal buffer-file-name linked-file))
-            (message "here2 %s %s" link buffer-file-name)
             (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
           (cond
            ((eq format 'html) (format "<a href=\"%s.html#%s\">%s</a>" linked-file-no-ext link desc))

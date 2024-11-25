@@ -292,6 +292,7 @@
 \newcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
 \newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
 \newcommand{\xor}{\oplus}
+\newcommand{\parity}{\oplus}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -312,7 +313,8 @@
 \newcommand{\tree}[1][T]{\refdef[blk:def-tree]{#1}}
 \newcommand{\embgraphdualspantree}{\refdef[blk:not-dual-spantree]{T^*}}
 \newcommand{\pathh}[1][p]{\refdef[blk:def-path]{#1}}
-\newcommand{\pathbetween}[2]{#1\refdef[blk:def-path]{\rightarrow} #2} % path in graph between two given vertices
+\newcommand{\edgebetween}[2]{#1\refdef[blk:def-edge]{\rightarrow} #2} % edge in graph between two given vertices
+\newcommand{\graphembrestrict}{\refdef[blk:def-graph-emb]{|}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -395,6 +397,8 @@
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
 \newcommand{\fcsize}{\refdef[blk:not-fsize]{\brm{S}}}
+\newcommand{\bfuncs}{\refdef[blk:not-bfuncs]{\mathbb{B}}}
+\newcommand{\bfuncshat}{\refdef[def-bool-std-basis]{\hat{\mathcal{B}}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
