@@ -887,7 +887,6 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (defun blk-org-export (link desc format)
     "Return the LINK with DESC converted into html or markdown FORMAT.
 If LINK is not found, just return it as is."
-    (message "handling %s %s" link desc)
     (if (blk-find-by-id link)
         (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
                (desc (or desc link))

@@ -546,7 +546,7 @@ prompt the user for a coding system."
     ;; (if (locate-file "open.sh" exec-path)
         ;; (call-process-shell-command (format "open.sh %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0)
       ;; (call-process-shell-command (format "xdg-open %s" (shell-quote-argument file) (shell-quote-argument file)) nil 0)
-    (call-process "xdg-open" nil nil nil file)))
+    (call-process-shell-command (format "xdg-open %s &" (shell-quote-argument file)) nil 0)))
 
 (defun plist-keys (plist)
   "Return a list of keys in PLIST."
