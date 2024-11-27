@@ -373,7 +373,7 @@
           ))
 
   ;; advice to only render links to files that fit the criterion defined by 'should-export-org-file' so as to not generate links to pages that dont exist
-  (defun my-org-link-advice (fn link desc info)
+  (defun my-org-html-link-advice (fn link desc info)
     "when exporting a file, it may contain links to other org files via id's, if a file being exported links to a note that is not tagged 'public', dont transcode the link to that note, just insert its description 'desc'. also we need to handle links to static files, copy those over to the html dir and link to them properly."
     (let* ((link-path (org-element-property :path link))
            (link-type (org-element-property :type link))
@@ -424,7 +424,24 @@ your browser does not support the video tag.
                           filename
                           (or desc link-path)))))
           (funcall fn link desc info)))))
-  (advice-add #'org-html-link :around #'my-org-link-advice)
+  (advice-add #'org-html-link :around #'my-org-html-link-advice)
+
+  ;; handle .xopp files properly
+  (defun my-org-latex-link-advice (fn link desc info)
+    (let* ((link-path (org-element-property :path link))
+           (file-basename (file-name-base link-path))
+           (link-type (org-element-property :type link)))
+      (if (string-suffix-p ".xopp" link-path)
+          (progn
+            (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
+                  (shell-command-dont-erase-buffer t))
+              (shell-command
+               (format "xournalpp --create-pdf %s %s"
+                       pdf-filepath
+                       link-path))
+              (format "\\includepdf[pages=-]{%s}" pdf-filepath)))
+        (funcall fn link desc info))))
+  (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
 
   (defun my-org-replace-citations (&optional export-backend)
     "blocks whose last line is a citation, remove that citation to the block's :source keyword"
@@ -936,7 +953,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 (defun url-for-blk-id (blk-id)
   (let* ((linked-file (plist-get (car (blk-find-by-id blk-id)) :filepath))
          (html-filename (file-name-nondirectory (org-file-html-out-file linked-file))))
-    (format "https://mahmoodsh36.github.io/%s" html-filename)))
+    (format "https://mahmoodsh36.github.io/%s#%s" html-filename blk-id)))
 
 ;; code for centering LaTeX preview
 (use-package org-latex-preview
@@ -1224,9 +1241,9 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 ;;           filepath))))))
 
 (defun files-linked-from-org-file (filepath)
-  (map-org-files filepath
-   (remove
-    nil
+  (car
+   (map-org-files
+    filepath
     (org-element-map (org-element-parse-buffer) 'link
       (lambda (mylink)
         (let ((filepath

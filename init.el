@@ -29,7 +29,7 @@
 (when (not (is-android-system))
   ;; (menu-bar-mode -1) ;; enable it so that emacs acts like a normal app on macos
   (when window-system (set-frame-size (selected-frame) 100 50))
-  (toggle-scroll-bar -1)
+  ;; (toggle-scroll-bar -1) ;; i need it for navigation when im using a stylus pen
   (tool-bar-mode -1)
   ;; margin around the windows
   ;; (set-fringe-style '(12 . 0))
