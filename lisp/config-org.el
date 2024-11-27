@@ -427,19 +427,18 @@ your browser does not support the video tag.
   (advice-add #'org-html-link :around #'my-org-html-link-advice)
 
   ;; handle .xopp files properly
+  ;; todo rewrite, this can be done without advising with `org-export-before-processing-functions`
   (defun my-org-latex-link-advice (fn link desc info)
     (let* ((link-path (org-element-property :path link))
-           (file-basename (file-name-base link-path))
-           (link-type (org-element-property :type link)))
+           (file-basename (file-name-base link-path)))
       (if (string-suffix-p ".xopp" link-path)
-          (progn
-            (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
-                  (shell-command-dont-erase-buffer t))
-              (shell-command
-               (format "xournalpp --create-pdf %s %s"
-                       pdf-filepath
-                       link-path))
-              (format "\\includepdf[pages=-]{%s}" pdf-filepath)))
+        (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
+              (shell-command-dont-erase-buffer t))
+          (shell-command
+            (format "xournalpp --create-pdf %s %s"
+                    pdf-filepath
+                    link-path))
+          (format "\\includepdf[pages=-]{%s}" pdf-filepath))
         (funcall fn link desc info))))
   (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
 
@@ -1172,6 +1171,8 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 
 (defun org-files-with-tag (tag)
   (grep-org-dir-get-files *notes-dir* (format "#\\+filetags:.*%s.*" tag)))
+(defun org-files-with-property (prop)
+  (grep-org-dir-get-files *notes-dir* (format "#\\+%s:.*" prop)))
 (defun my-org-agenda-files ()
   (org-files-with-tag "todo"))
 
@@ -1857,7 +1858,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
           (let ((blk-entry (car (blk-find-by-id child))))
             (push (plist-get blk-entry :filepath) files-to-export)))))
     (setq files-to-export
-          (cl-union files-to-export (org-files-with-tag "export_section")))
+          (cl-union files-to-export (org-files-with-property "export_section")))
     (dolist (file-to-export files-to-export)
       (setq files-to-export
             (cl-union
