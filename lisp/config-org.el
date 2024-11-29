@@ -1390,7 +1390,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
    orgfile
    (org-get-keyword kw)))
 (defun org-file-grab-title (orgfile)
-  (with-file-as-current-buffer
+  (with-file-as-current-buffer-faster
    orgfile
    (org-get-title)))
 (defun org-file-grab-keyword-faster (orgfile kw)
@@ -1962,7 +1962,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun my-new-todo ()
   (interactive)
   (let* ((todo-files (org-files-with-tag "todo"))
-         (titles (mapcar 'org-file-grab-title todo-files))
+         (titles (map-org-files todo-files (org-get-keyword "title")))
          (selected-title (completing-read "file " titles))
          (selected-idx (cl-position selected-title titles :test 'equal))
          (selected-todo-file (when selected-idx (elt todo-files selected-idx)))

@@ -1204,4 +1204,7 @@
   :config
   (add-hook 'org-mode-hook 'org-krita-mode))
 
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
 (provide 'config-packages)

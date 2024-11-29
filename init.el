@@ -365,4 +365,4 @@
 
 (setq comint-scroll-to-bottom-on-output t)
 
-(add-hook 'find-file-hook (lambda () (flymake-mode -1)))
+;; (add-hook 'find-file-hook (lambda () (flymake-mode -1)))
