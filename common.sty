@@ -398,10 +398,14 @@
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
-\newcommand{\fcsize}{\refdef[blk:not-fsize]{\brm{S}}}
+\newcommand{\fcsize}{\refdef[blk:not-fcsize]{\operatorname{Size}}}
+\newcommand{\fcdepth}{\refdef[blk:not-fcdepth]{\operatorname{Depth}}}
 \newcommand{\bfuncs}{\refdef[blk:not-bfuncs]{\mathbb{B}}}
 \newcommand{\bfuncshat}{\refdef[def-bool-std-basis]{\hat{\mathcal{B}}}}
+\newcommand{\bfuncsbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_0}}
+\newcommand{\bfuncsunbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_1}}
 \newcommand{\boolmatrprod}{\refdef[def-bool-matr-prod]{\operatorname{BMM}}}
+\newcommand{\bcirc}[1][C]{\refdef[blk:def-bool-circ]{#1}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
