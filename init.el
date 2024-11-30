@@ -365,4 +365,9 @@
 
 (setq comint-scroll-to-bottom-on-output t)
 
+;; (defun my-monitor-keys ()
+;;   (message "got %s %s" (this-command-keys) this-command)
+;;   )
+;; (add-hook 'post-command-hook #'my-monitor-keys)
+
 ;; (add-hook 'find-file-hook (lambda () (flymake-mode -1)))

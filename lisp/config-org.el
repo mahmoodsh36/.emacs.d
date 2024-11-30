@@ -83,7 +83,8 @@
 (cl-defun my-org-to-pdf (&optional (async t))
   (interactive)
   (let ((outfile (latex-out-file))
-        (is-beamer (car (cdar (org-collect-keywords '("latex_class"))))))
+        (is-beamer (car (cdar (org-collect-keywords '("latex_class")))))
+        (org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")))
     (clean-latex-files outfile)
     (if is-beamer
         (org-export-to-file 'beamer outfile
@@ -287,6 +288,7 @@
   ;; for previews use private.sty
   ;; (setq org-latex-preview-preamble "\\documentclass[ignorerest=true,varwidth=true,float=true,crop=true,preview=true,multi=true]{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
   (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}"  "\\usepackage{\\string~/.emacs.d/private}")) ;; use my ~/.emacs.d/common.sty
+  ;; (setq org-latex-preview-preamble "\\documentclass{article}\n\\usepackage{\\string~/.emacs.d/common}\\usepackage{\\string~/.emacs.d/private}")
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; dont export headlines with tags
@@ -430,8 +432,10 @@ your browser does not support the video tag.
   ;; todo rewrite, this can be done without advising with `org-export-before-processing-functions`
   (defun my-org-latex-link-advice (fn link desc info)
     (let* ((link-path (org-element-property :path link))
-           (file-basename (file-name-base link-path)))
-      (if (string-suffix-p ".xopp" link-path)
+           (file-basename (file-name-base link-path))
+           (link-type (org-element-property :type link)))
+      (if (and (string-suffix-p ".xopp" link-path)
+               (equal link-type "xopp-pages"))
         (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
               (shell-command-dont-erase-buffer t))
           (shell-command
@@ -946,6 +950,10 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                 (if caption
                     (org-export-string-as (org-element-interpret-data caption) 'html t)
                   "")))))
+
+  ;; for xopp
+  (org-add-link-type "xopp-figure")
+  (org-add-link-type "xopp-pages")
 
   )
 
@@ -2022,33 +2030,31 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   "overlay .xopp file links in the current org buffer with the corresponding sketches."
   (interactive)
   (let ((temp-dir (expand-file-name "xournal-sketches" temporary-file-directory)))
-    ;; Ensure the temporary directory exists
+    ;; ensure the temporary directory exists
     (unless (file-exists-p temp-dir)
       (make-directory temp-dir t))
-    ;; Iterate over all file links in the buffer
+    ;; iterate over all file links in the buffer
     (org-element-map (org-element-parse-buffer) 'link
       (lambda (link)
         (let ((type (org-element-property :type link))
               (path (org-element-property :path link))
               (begin (org-element-property :begin link))
               (end (org-element-property :end link)))
-          (when (and (string-equal type "file")
-                     (string-suffix-p ".xopp" path t)) ; Check if the file is a .xopp file
+          (message "got %s" type)
+          (when (and (string-equal type "xopp-figure")
+                     (string-suffix-p ".xopp" path t))
             (let* ((absolute-path (expand-file-name path))
-                   (output-file (concat temp-dir "/"
-                                        (file-name-base absolute-path) ".png")))
+                   (output-file))
               ;; Check if the .xopp file exists
               (if (not (file-exists-p absolute-path))
-                  (message "File not found: %s" absolute-path)
+                  (message "file not found: %s" absolute-path)
                 ;; Export the .xopp file to an image if not already done
-                (unless (file-exists-p output-file)
-                  (let ((result (call-process "xournalpp" nil "*XournalPP Export Log*" t
-                                              "--create-img" output-file
-                                              absolute-path)))
-                    (if (/= result 0)
-                        (message "Failed to export %s. See *XournalPP Export Log* for details." absolute-path)
-                      (message "Successfully exported %s to %s" absolute-path output-file))))
-                ;; Add an overlay with the image
+                (let ((result (s-trim (shell-command-to-string-no-stderr
+                                       (format "generate_xopp_figure.sh %s"
+                                               absolute-path)))))
+                  (setq output-file result))
+                ;; add an overlay with the image
+                (message "got %s" output-file)
                 (when (file-exists-p output-file)
                   (let ((img (create-image output-file nil nil :scale 0.2)))  ;; Resize image to 20% of original size
                     (save-excursion
@@ -2058,5 +2064,12 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                         (overlay-put ov 'org-image-overlay t)
                         (overlay-put ov 'modification-hooks
                                      (list (lambda (ov &rest _) (delete-overlay ov))))))))))))))))
+
+(defun new-xournalpp ()
+  (interactive)
+  (let* ((timestamp (current-unix-timestamp))
+         (xopp-file (from-brain (format "pen/%s.xopp" timestamp))))
+    (start-process "xournalpp" "xournalpp" "xournalpp" xopp-file)
+    (insert (format "[[file:%s]]" xopp-file))))
 
 (provide 'config-org)
