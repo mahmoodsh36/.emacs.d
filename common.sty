@@ -247,13 +247,13 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
-\newcommand{\textand}{\mathbin{\smallspace\text{and}\smallspace}}
-\newcommand{\textnot}{\text{ not }}
+\newcommand{\textand}{\mathbin{\textsc{and}}}
+\newcommand{\textnot}{\textsc{not }}
 \newcommand{\textop}[1]{\relax\ifmmode\mathop{\text{#1}}\else\text{#1}\fi} % https://tex.stackexchange.com/questions/8047/spacing-around-text-in-mathmode
-\newcommand{\textor}{\textop{or}}
+\newcommand{\textor}{\textsc{or}}
 \newcommand{\textif}{\textop{if}}
 \newcommand{\textiff}{\textop{iff}}
-\newcommand{\textthen}{\textop{then}}
+\newcommand{\textthen}{\textsc{then}}
 \newcommand{\textgoto}{\textop{goto}}
 \newcommand{\textelse}{\textop{else}}
 \newcommand{\textloop}{\textop{loop}}
@@ -261,7 +261,7 @@
 \newcommand{\textfor}{\textop{for}}
 \newcommand{\textend}{\textop{end}}
 \newcommand{\textreturn}{\textop{return}}
-\newcommand{\textxor}{\textop{xor}}
+\newcommand{\textxor}{\textsc{xor}}
 \DeclareMathOperator{\graph}{graph}
 \newcommand{\angled}[1]{\langle #1 \rangle}
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
@@ -293,6 +293,7 @@
 \newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
 \newcommand{\xor}{\oplus}
 \newcommand{\parity}{\oplus}
+\DeclarePairedDelimiter{\opair}{\langle}{\rangle} % \ref{blk:def-ord-pair}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -406,6 +407,8 @@
 \newcommand{\bfuncsunbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_1}}
 \newcommand{\boolmatrprod}{\refdef[def-bool-matr-prod]{\operatorname{BMM}}}
 \newcommand{\bcirc}[1][C]{\refdef[blk:def-bool-circ]{#1}}
+\newcommand{\bsete}{\set{0,1}} % the set of binary numbers, "e" for explicit, "b" for boolean
+\newcommand{\bset}{\mathcal{B}} % the set of binary numbers, "e" for explicit, "b" for boolean
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -773,6 +776,10 @@
 % function as a variable and value without name
 \newcommand{\funcv}[2]{%
   #1 \mapsto #2
+}
+% function as a name and value
+\newcommand{\funce}[2]{%
+  #1 = #2
 }
 
 % physics notations

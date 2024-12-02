@@ -64,8 +64,9 @@
       (org-latex-preview-auto-mode 1)
       (enable-latex-previews))))
 
-(when *latex-previews-enabled-p*
-  (enable-latex-previews))
+(with-eval-after-load 'org-latex-preview
+  (when *latex-previews-enabled-p*
+    (enable-latex-previews)))
 
 ;; bibliography file (i use one global one for everything)
 (setq org-cite-global-bibliography (list (from-brain "bib.bib") (from-brain "auto.bib")))
@@ -955,6 +956,8 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (org-add-link-type "xopp-figure")
   (org-add-link-type "xopp-pages")
 
+  (setq org-image-align 'center)
+
   )
 
 (defun url-for-blk-id (blk-id)
@@ -1215,7 +1218,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (let ((present-buffer (gensym))
         (result (gensym)))
     `(let ((,present-buffer (find-buffer-visiting ,file))
-           (org-startup-with-latex-preview nil))
+           (org-inhibit-startup t))
        (save-excursion
          (with-current-buffer (or (find-buffer-visiting ,file)
                                   (find-file-noselect ,file))
@@ -1389,8 +1392,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 ;; (defun org-file-grab-time (orgfile)
 ;;   (timestamp-to-time (string-to-number (file-name-nondirectory orgfile))))
 (defun org-file-grab-time (orgfile)
-  (with-file-as-current-buffer orgfile
-   (let* ((date-string (or (org-get-keyword "actual_date") (org-get-keyword "date")))
+  (with-file-as-current-buffer-faster orgfile
+   (let* ((date-string (or (org-get-keyword-faster "actual_date") (org-get-keyword-faster "date")))
           (time (when date-string (date-to-time date-string))))
      time)))
 (defun org-file-grab-keyword (orgfile kw)
