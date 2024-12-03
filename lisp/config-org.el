@@ -2032,41 +2032,36 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun org-overlay-xournalpp-file-links ()
   "overlay .xopp file links in the current org buffer with the corresponding sketches."
   (interactive)
-  (let ((temp-dir (expand-file-name "xournal-sketches" temporary-file-directory)))
-    ;; ensure the temporary directory exists
-    (unless (file-exists-p temp-dir)
-      (make-directory temp-dir t))
-    ;; iterate over all file links in the buffer
-    (org-element-map (org-element-parse-buffer) 'link
-      (lambda (link)
-        (let ((type (org-element-property :type link))
-              (path (org-element-property :path link))
-              (begin (org-element-property :begin link))
-              (end (org-element-property :end link)))
-          (message "got %s" type)
-          (when (and (string-equal type "xopp-figure")
-                     (string-suffix-p ".xopp" path t))
-            (let* ((absolute-path (expand-file-name path))
-                   (output-file))
-              ;; Check if the .xopp file exists
-              (if (not (file-exists-p absolute-path))
-                  (message "file not found: %s" absolute-path)
-                ;; Export the .xopp file to an image if not already done
-                (let ((result (s-trim (shell-command-to-string-no-stderr
-                                       (format "generate_xopp_figure.sh %s"
-                                               absolute-path)))))
-                  (setq output-file result))
-                ;; add an overlay with the image
-                (message "got %s" output-file)
-                (when (file-exists-p output-file)
-                  (let ((img (create-image output-file nil nil :scale 0.2)))  ;; Resize image to 20% of original size
-                    (save-excursion
-                      (goto-char begin)
-                      (let ((ov (make-overlay begin end)))
-                        (overlay-put ov 'display img)
-                        (overlay-put ov 'org-image-overlay t)
-                        (overlay-put ov 'modification-hooks
-                                     (list (lambda (ov &rest _) (delete-overlay ov))))))))))))))))
+  ;; iterate over all file links in the buffer and replace them with images
+  (org-element-map (org-element-parse-buffer) 'link
+    (lambda (link)
+      (let ((type (org-element-property :type link))
+            (path (org-element-property :path link))
+            (begin (org-element-property :begin link))
+            (end (org-element-property :end link)))
+        (when (and (string-equal type "xopp-figure")
+                   (string-suffix-p ".xopp" path t))
+          (let* ((absolute-path (expand-file-name path))
+                 (output-file))
+            ;; check if the .xopp file exists
+            (if (not (file-exists-p absolute-path))
+                (message "file not found: %s" absolute-path)
+              ;; export the .xopp file to an image if not already done
+              (let ((result (s-trim (shell-command-to-string-no-stderr
+                                     (format "generate_xopp_figure.sh %s"
+                                             absolute-path)))))
+                (setq output-file result))
+              ;; add an overlay with the image
+              (message "got %s" output-file)
+              (when (file-exists-p output-file)
+                (let ((img (create-image output-file nil nil :scale 0.5))) ;; resize to 50%?
+                  (save-excursion
+                    (goto-char begin)
+                    (let ((ov (make-overlay begin end)))
+                      (overlay-put ov 'display img)
+                      ;; (overlay-put ov 'org-image-overlay t)
+                      (overlay-put ov 'modification-hooks
+                                   (list (lambda (ov &rest _) (delete-overlay ov)))))))))))))))
 
 (defun new-xournalpp ()
   (interactive)
