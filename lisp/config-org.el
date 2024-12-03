@@ -2054,7 +2054,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
               ;; add an overlay with the image
               (message "got %s" output-file)
               (when (file-exists-p output-file)
-                (let ((img (create-image output-file nil nil :scale 0.5))) ;; resize to 50%?
+                (let ((img (create-image output-file nil nil :scale 0.3))) ;; resize to 30%?
                   (save-excursion
                     (goto-char begin)
                     (let ((ov (make-overlay begin end)))
