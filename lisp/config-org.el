@@ -2029,7 +2029,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
    (list-note-files)
    (org-element-parse-buffer)))
 
-(defun org-overlay-xournalpp-file-links ()
+(defun org-overlay-xournalpp-links ()
   "overlay .xopp file links in the current org buffer with the corresponding sketches."
   (interactive)
   ;; iterate over all file links in the buffer and replace them with images
