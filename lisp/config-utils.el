@@ -508,9 +508,6 @@ prompt the user for a coding system."
            (push entry entries)))))
     entries))
 
-(defmacro memoized (seconds &rest body)
-  )
-
 (defun replace-file-extension (filepath new-ext)
   "return FILEPATH with the extension changed to NEW-EXT"
   (concat (file-name-sans-extension filepath) "." new-ext))

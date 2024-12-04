@@ -967,48 +967,46 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                            :preview #'org-xopp-figure-image
                            )
 
+  ;; (defun org-xopp-figure-image (ov path link)
+  ;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
+  ;;   (let ((absolute-path (expand-file-name path))
+  ;;         (output-file))
+  ;;     ;; check if the .xopp file exists
+  ;;     (if (not (file-exists-p absolute-path))
+  ;;         (message "file not found: %s" absolute-path)
+  ;;       ;; export the .xopp file to an image if not already done
+  ;;       (setq output-file (s-trim (shell-command-to-string-no-stderr
+  ;;                                  (format "generate_xopp_figure.sh %s"
+  ;;                                          absolute-path))))
+  ;;       (org-link-preview-file ov output-file link))))
+
   (defun org-xopp-figure-image (ov path link)
     "overlay .xopp file links in the current org buffer with the corresponding sketches."
-    ;; iterate over all file links in the buffer and replace them with images
-    (let ((type (org-element-property :type link))
-          (path (org-element-property :path link))
-          (begin (org-element-property :begin link))
-          (end (org-element-property :end link)))
-      (when (and (string-equal type "xopp-figure")
-                 (string-suffix-p ".xopp" path t))
-        (let ((absolute-path (expand-file-name path))
-              (output-file))
-          ;; check if the .xopp file exists
-          (if (not (file-exists-p absolute-path))
-              (message "file not found: %s" absolute-path)
-            ;; export the .xopp file to an image if not already done
-            (setq output-file (s-trim (shell-command-to-string-no-stderr
-                                       (format "generate_xopp_figure.sh %s"
-                                               absolute-path))))
-            ;; add an overlay with the image
-            (message "got %s" output-file)
-            (when (file-exists-p output-file)
-              (let* ((width (org-display-inline-image--width link))
-                     (align (org-image--align link))
-                     ;; (img (org--create-inline-image output-file width))
-                     (img (create-image output-file nil nil :scale 0.2))
-                     )
-                (when img
-                  (message "here %s" img)
-                  (overlay-put ov 'display img)
-                  (overlay-put ov 'face 'default)
-                  (overlay-put ov 'keymap image-map)
-                  ;; (overlay-put ov 'org-image-overlay t)
-                  (when align
-                    (overlay-put
-                     ov
-                     'before-string
-                     (propertize
-                      " " 'face 'default
-                      'display
-                      (pcase align
-                        ("center" `(space :align-to (- center (0.5 . ,img))))
-                        ("right"  `(space :align-to (- right ,img)))))))))))))))
+    (let ((absolute-path (expand-file-name path)))
+      ;; check if the .xopp file exists
+      (if (not (file-exists-p absolute-path))
+          (message "file not found: %s" absolute-path)
+        ;; export the .xopp file to an image if not already done
+        (lexical-let ((ov ov)
+                      (link link))
+          (prog1 t
+            (make-process
+             :name "xopp-preview"
+             :buffer (generate-new-buffer "*xopp-preview*")
+             :command (list "sh"
+                            "-c"
+                            (format "generate_xopp_figure.sh '%s' 2>/dev/null"
+                                    absolute-path))
+             :sentinel (lambda (_proc _status)
+                         (message "here %s" (buffer-string))
+                         (when-let* ((output-file
+                                      (with-current-buffer
+                                          (process-buffer _proc)
+                                        (string-trim (buffer-string))))
+                                     (org-buf (overlay-buffer ov))
+                                     (buffer-live-p org-buf))
+                           (with-current-buffer org-buf
+                             (org-link-preview-file ov output-file link))))))))))
 
   (setq org-image-align 'center)
 
