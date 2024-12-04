@@ -992,13 +992,12 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
           (prog1 t
             (make-process
              :name "xopp-preview"
-             :buffer (generate-new-buffer "*xopp-preview*")
+             :buffer (generate-new-buffer " *xopp-preview*")
              :command (list "sh"
                             "-c"
                             (format "generate_xopp_figure.sh '%s' 2>/dev/null"
                                     absolute-path))
              :sentinel (lambda (_proc _status)
-                         (message "here %s" (buffer-string))
                          (when-let* ((output-file
                                       (with-current-buffer
                                           (process-buffer _proc)
@@ -1008,7 +1007,9 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                            (with-current-buffer org-buf
                              (org-link-preview-file ov output-file link))))))))))
 
+  ;; center images, limit max width of images
   (setq org-image-align 'center)
+  (setq org-image-max-width 300)
 
   )
 
