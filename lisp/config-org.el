@@ -435,16 +435,23 @@ your browser does not support the video tag.
     (let* ((link-path (org-element-property :path link))
            (file-basename (file-name-base link-path))
            (link-type (org-element-property :type link)))
-      (if (and (string-suffix-p ".xopp" link-path)
-               (equal link-type "xopp-pages"))
-        (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
-              (shell-command-dont-erase-buffer t))
-          (shell-command
-            (format "xournalpp --create-pdf %s %s"
-                    pdf-filepath
-                    link-path))
-          (format "\\includepdf[pages=-]{%s}" pdf-filepath))
-        (funcall fn link desc info))))
+      (if (equal link-type "xopp-pages")
+          (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
+                (shell-command-dont-erase-buffer t))
+            (shell-command
+             (format "xournalpp --create-pdf %s %s"
+                     pdf-filepath
+                     link-path))
+            (format "\\includepdf[pages=-]{%s}" pdf-filepath))
+        (if (equal link-type "xopp-figure")
+            (let ((png-filepath
+                   (s-trim
+                    (shell-command-to-string-no-stderr
+                     (format "generate_xopp_figure.sh '%s'"
+                             link-path)))))
+              (message "im here %s" png-filepath)
+              (format "\\begin{center}\\includegraphics[max width=0.5\\linewidth]{%s}\\end{center}" png-filepath))
+          (funcall fn link desc info)))))
   (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
 
   (defun my-org-replace-citations (&optional export-backend)
@@ -953,8 +960,55 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                   "")))))
 
   ;; for xopp
-  (org-add-link-type "xopp-figure")
+  ;; (org-add-link-type "xopp-figure")
   (org-add-link-type "xopp-pages")
+
+  (org-link-set-parameters "xopp-figure"
+                           :preview #'org-xopp-figure-image
+                           )
+
+  (defun org-xopp-figure-image (ov path link)
+    "overlay .xopp file links in the current org buffer with the corresponding sketches."
+    ;; iterate over all file links in the buffer and replace them with images
+    (let ((type (org-element-property :type link))
+          (path (org-element-property :path link))
+          (begin (org-element-property :begin link))
+          (end (org-element-property :end link)))
+      (when (and (string-equal type "xopp-figure")
+                 (string-suffix-p ".xopp" path t))
+        (let ((absolute-path (expand-file-name path))
+              (output-file))
+          ;; check if the .xopp file exists
+          (if (not (file-exists-p absolute-path))
+              (message "file not found: %s" absolute-path)
+            ;; export the .xopp file to an image if not already done
+            (setq output-file (s-trim (shell-command-to-string-no-stderr
+                                       (format "generate_xopp_figure.sh %s"
+                                               absolute-path))))
+            ;; add an overlay with the image
+            (message "got %s" output-file)
+            (when (file-exists-p output-file)
+              (let* ((width (org-display-inline-image--width link))
+                     (align (org-image--align link))
+                     ;; (img (org--create-inline-image output-file width))
+                     (img (create-image output-file nil nil :scale 0.2))
+                     )
+                (when img
+                  (message "here %s" img)
+                  (overlay-put ov 'display img)
+                  (overlay-put ov 'face 'default)
+                  (overlay-put ov 'keymap image-map)
+                  ;; (overlay-put ov 'org-image-overlay t)
+                  (when align
+                    (overlay-put
+                     ov
+                     'before-string
+                     (propertize
+                      " " 'face 'default
+                      'display
+                      (pcase align
+                        ("center" `(space :align-to (- center (0.5 . ,img))))
+                        ("right"  `(space :align-to (- right ,img)))))))))))))))
 
   (setq org-image-align 'center)
 
@@ -963,7 +1017,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 (defun url-for-blk-id (blk-id)
   (let* ((linked-file (plist-get (car (blk-find-by-id blk-id)) :filepath))
          (html-filename (file-name-nondirectory (org-file-html-out-file linked-file))))
-    (format "https://mahmoodsh36.github.io/%s#%s" html-filename blk-id)))
+    (format "https://mahmoodsh36.github.io/%s\\#%s" html-filename blk-id)))
 
 ;; code for centering LaTeX preview
 (use-package org-latex-preview
@@ -2068,6 +2122,6 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (let* ((timestamp (current-unix-timestamp))
          (xopp-file (from-brain (format "pen/%s.xopp" timestamp))))
     (start-process "xournalpp" "xournalpp" "xournalpp" xopp-file)
-    (insert (format "[[file:%s]]" xopp-file))))
+    (insert (format "[[xopp-figure:%s]]" xopp-file))))
 
 (provide 'config-org)

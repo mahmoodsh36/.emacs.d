@@ -82,4 +82,10 @@
     ;; (browse-url (expand-file-name my-file))
     ))
 
+(defun lyrics ()
+  (interactive)
+  (let ((f (string-trim (shell-command-to-string "mpv_lyrics_file.sh"))))
+    (unless (string-empty-p f)
+      (find-file f))))
+
 (provide 'config-music)
