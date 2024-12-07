@@ -992,7 +992,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
           (prog1 t
             (make-process
              :name "xopp-preview"
-             :buffer (get-buffer-create " *xopp-preview*")
+             :buffer (generate-new-buffer " *xopp-preview*")
              :command (list "sh"
                             "-c"
                             (format "generate_xopp_figure.sh '%s' 2>/dev/null"
@@ -2082,6 +2082,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
    (list-note-files)
    (org-element-parse-buffer)))
 
+;; not used anymore
 (defun org-overlay-xournalpp-links ()
   "overlay .xopp file links in the current org buffer with the corresponding sketches."
   (interactive)
