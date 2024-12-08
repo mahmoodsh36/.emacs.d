@@ -561,6 +561,8 @@
 
 (led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
 
+(led-kbd "; p" 'new-xournalpp)
+
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 
 (provide 'config-keys)

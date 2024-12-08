@@ -431,28 +431,28 @@ your browser does not support the video tag.
 
   ;; handle .xopp files properly
   ;; todo rewrite, this can be done without advising with `org-export-before-processing-functions`
-  (defun my-org-latex-link-advice (fn link desc info)
-    (let* ((link-path (org-element-property :path link))
-           (file-basename (file-name-base link-path))
-           (link-type (org-element-property :type link)))
-      (if (equal link-type "xopp-pages")
-          (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
-                (shell-command-dont-erase-buffer t))
-            (shell-command
-             (format "xournalpp --create-pdf %s %s"
-                     pdf-filepath
-                     link-path))
-            (format "\\includepdf[pages=-]{%s}" pdf-filepath))
-        (if (equal link-type "xopp-figure")
-            (let ((png-filepath
-                   (s-trim
-                    (shell-command-to-string-no-stderr
-                     (format "generate_xopp_figure.sh '%s'"
-                             link-path)))))
-              (message "im here %s" png-filepath)
-              (format "\\begin{center}\\includegraphics[max width=0.5\\linewidth]{%s}\\end{center}" png-filepath))
-          (funcall fn link desc info)))))
-  (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
+  ;; (defun my-org-latex-link-advice (fn link desc info)
+  ;;   (let* ((link-path (org-element-property :path link))
+  ;;          (file-basename (file-name-base link-path))
+  ;;          (link-type (org-element-property :type link)))
+  ;;     (if (equal link-type "xopp-pages")
+  ;;         (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
+  ;;               (shell-command-dont-erase-buffer t))
+  ;;           (shell-command
+  ;;            (format "xournalpp --create-pdf %s %s"
+  ;;                    pdf-filepath
+  ;;                    link-path))
+  ;;           (format "\\includepdf[pages=-]{%s}" pdf-filepath))
+  ;;       (if (equal link-type "xopp-figure")
+  ;;           (let ((png-filepath
+  ;;                  (s-trim
+  ;;                   (shell-command-to-string-no-stderr
+  ;;                    (format "generate_xopp_figure.sh '%s'"
+  ;;                            link-path)))))
+  ;;             (message "im here %s" png-filepath)
+  ;;             (format "\\begin{center}\\includegraphics[max width=0.5\\linewidth]{%s}\\end{center}" png-filepath))
+  ;;         (funcall fn link desc info)))))
+  ;; (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
 
   (defun my-org-replace-citations (&optional export-backend)
     "blocks whose last line is a citation, remove that citation to the block's :source keyword"
@@ -961,11 +961,11 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 
   ;; for xopp
   ;; (org-add-link-type "xopp-figure")
-  (org-add-link-type "xopp-pages")
+  ;; (org-add-link-type "xopp-pages")
 
-  (org-link-set-parameters "xopp-figure"
-                           :preview #'org-xopp-figure-image
-                           )
+  ;; (org-link-set-parameters "xopp-figure"
+  ;;                          :preview #'org-xopp-figure-image
+  ;;                          )
 
   ;; (defun org-xopp-figure-image (ov path link)
   ;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
@@ -980,32 +980,32 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   ;;                                          absolute-path))))
   ;;       (org-link-preview-file ov output-file link))))
 
-  (defun org-xopp-figure-image (ov path link)
-    "overlay .xopp file links in the current org buffer with the corresponding sketches."
-    (let ((absolute-path (expand-file-name path)))
-      ;; check if the .xopp file exists
-      (if (not (file-exists-p absolute-path))
-          (message "file not found: %s" absolute-path)
-        ;; export the .xopp file to an image if not already done
-        (lexical-let ((ov ov)
-                      (link link))
-          (prog1 t
-            (make-process
-             :name "xopp-preview"
-             :buffer (generate-new-buffer " *xopp-preview*")
-             :command (list "sh"
-                            "-c"
-                            (format "generate_xopp_figure.sh '%s' 2>/dev/null"
-                                    absolute-path))
-             :sentinel (lambda (_proc _status)
-                         (when-let* ((output-file
-                                      (with-current-buffer
-                                          (process-buffer _proc)
-                                        (string-trim (buffer-string))))
-                                     (org-buf (overlay-buffer ov))
-                                     (buffer-live-p org-buf))
-                           (with-current-buffer org-buf
-                             (org-link-preview-file ov output-file link))))))))))
+  ;; (defun org-xopp-figure-image (ov path link)
+  ;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
+  ;;   (let ((absolute-path (expand-file-name path)))
+  ;;     ;; check if the .xopp file exists
+  ;;     (if (not (file-exists-p absolute-path))
+  ;;         (message "file not found: %s" absolute-path)
+  ;;       ;; export the .xopp file to an image if not already done
+  ;;       (lexical-let ((ov ov)
+  ;;                     (link link))
+  ;;         (prog1 t
+  ;;           (make-process
+  ;;            :name "xopp-preview"
+  ;;            :buffer (generate-new-buffer " *xopp-preview*")
+  ;;            :command (list "sh"
+  ;;                           "-c"
+  ;;                           (format "generate_xopp_figure.sh '%s' 2>/dev/null"
+  ;;                                   absolute-path))
+  ;;            :sentinel (lambda (_proc _status)
+  ;;                        (when-let* ((output-file
+  ;;                                     (with-current-buffer
+  ;;                                         (process-buffer _proc)
+  ;;                                       (string-trim (buffer-string))))
+  ;;                                    (org-buf (overlay-buffer ov))
+  ;;                                    (buffer-live-p org-buf))
+  ;;                          (with-current-buffer org-buf
+  ;;                            (org-link-preview-file ov output-file link))))))))))
 
   ;; center images, limit max width of images
   (setq org-image-align 'center)
@@ -2083,39 +2083,39 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
    (org-element-parse-buffer)))
 
 ;; not used anymore
-(defun org-overlay-xournalpp-links ()
-  "overlay .xopp file links in the current org buffer with the corresponding sketches."
-  (interactive)
-  ;; iterate over all file links in the buffer and replace them with images
-  (org-element-map (org-element-parse-buffer) 'link
-    (lambda (link)
-      (let ((type (org-element-property :type link))
-            (path (org-element-property :path link))
-            (begin (org-element-property :begin link))
-            (end (org-element-property :end link)))
-        (when (and (string-equal type "xopp-figure")
-                   (string-suffix-p ".xopp" path t))
-          (let* ((absolute-path (expand-file-name path))
-                 (output-file))
-            ;; check if the .xopp file exists
-            (if (not (file-exists-p absolute-path))
-                (message "file not found: %s" absolute-path)
-              ;; export the .xopp file to an image if not already done
-              (let ((result (s-trim (shell-command-to-string-no-stderr
-                                     (format "generate_xopp_figure.sh %s"
-                                             absolute-path)))))
-                (setq output-file result))
-              ;; add an overlay with the image
-              (message "got %s" output-file)
-              (when (file-exists-p output-file)
-                (let ((img (create-image output-file nil nil :scale 0.3))) ;; resize to 30%?
-                  (save-excursion
-                    (goto-char begin)
-                    (let ((ov (make-overlay begin end)))
-                      (overlay-put ov 'display img)
-                      ;; (overlay-put ov 'org-image-overlay t)
-                      (overlay-put ov 'modification-hooks
-                                   (list (lambda (ov &rest _) (delete-overlay ov)))))))))))))))
+;; (defun org-overlay-xournalpp-links ()
+;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
+;;   (interactive)
+;;   ;; iterate over all file links in the buffer and replace them with images
+;;   (org-element-map (org-element-parse-buffer) 'link
+;;     (lambda (link)
+;;       (let ((type (org-element-property :type link))
+;;             (path (org-element-property :path link))
+;;             (begin (org-element-property :begin link))
+;;             (end (org-element-property :end link)))
+;;         (when (and (string-equal type "xopp-figure")
+;;                    (string-suffix-p ".xopp" path t))
+;;           (let* ((absolute-path (expand-file-name path))
+;;                  (output-file))
+;;             ;; check if the .xopp file exists
+;;             (if (not (file-exists-p absolute-path))
+;;                 (message "file not found: %s" absolute-path)
+;;               ;; export the .xopp file to an image if not already done
+;;               (let ((result (s-trim (shell-command-to-string-no-stderr
+;;                                      (format "generate_xopp_figure.sh %s"
+;;                                              absolute-path)))))
+;;                 (setq output-file result))
+;;               ;; add an overlay with the image
+;;               (message "got %s" output-file)
+;;               (when (file-exists-p output-file)
+;;                 (let ((img (create-image output-file nil nil :scale 0.3))) ;; resize to 30%?
+;;                   (save-excursion
+;;                     (goto-char begin)
+;;                     (let ((ov (make-overlay begin end)))
+;;                       (overlay-put ov 'display img)
+;;                       ;; (overlay-put ov 'org-image-overlay t)
+;;                       (overlay-put ov 'modification-hooks
+;;                                    (list (lambda (ov &rest _) (delete-overlay ov)))))))))))))))
 
 (defun new-xournalpp ()
   (interactive)

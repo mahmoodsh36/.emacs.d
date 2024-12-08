@@ -84,6 +84,7 @@
 
 (defun lyrics ()
   (interactive)
+  (shell-command "mpv_lyrics.sh")
   (let ((f (string-trim (shell-command-to-string "mpv_lyrics_file.sh"))))
     (unless (string-empty-p f)
       (find-file f))))

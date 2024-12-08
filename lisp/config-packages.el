@@ -1207,4 +1207,22 @@
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 
+(use-package p-search
+  :elpaca (:host github :repo "https://github.com/zkry/p-search.git"))
+
+;; (use-package org-xopp
+;;   :ensure nil)
+
+(if (file-exists-p "/home/mahmooz/work/org-xopp/")
+    (use-package org-xopp
+      :after (org)
+      :load-path "/home/mahmooz/work/org-xopp/"
+      :config
+      (org-xopp-setup))
+  (use-package org-xopp
+    :after (org)
+    :ensure ( :host github :repo "mahmoodsheikh36/org-xopp")
+    :config
+    (org-xopp-setup)))
+
 (provide 'config-packages)
