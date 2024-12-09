@@ -1213,7 +1213,7 @@
 ;; (use-package org-xopp
 ;;   :ensure nil)
 
-(if (file-exists-p "/home/mahmooz/work/org-xopp/")
+(if nil ;;(file-exists-p "/home/mahmooz/work/org-xopp/")
     (use-package org-xopp
       :after (org)
       :load-path "/home/mahmooz/work/org-xopp/"
@@ -1221,8 +1221,9 @@
       (org-xopp-setup))
   (use-package org-xopp
     :after (org)
-    :ensure ( :host github :repo "mahmoodsheikh36/org-xopp")
+    :ensure ( :host github :repo "mahmoodsh36/org-xopp" :files (:defaults "*.sh"))
     :config
     (org-xopp-setup)))
+
 
 (provide 'config-packages)

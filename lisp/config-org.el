@@ -5,7 +5,7 @@
   :ensure ( :remotes ("tecosaur"
                       :repo "https://git.tecosaur.net/tec/org-mode.git"
                       :branch "dev"
-                      ;; :depth nil ;; clone full repo
+                      :depth 1
                       ;; :pin t
                       ;; :ref "2022f1ff5dc1b42b002fbae44b565b0ac10fca42"
                       )
