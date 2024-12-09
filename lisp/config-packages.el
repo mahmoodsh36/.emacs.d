@@ -1213,7 +1213,7 @@
 ;; (use-package org-xopp
 ;;   :ensure nil)
 
-(if nil ;;(file-exists-p "/home/mahmooz/work/org-xopp/")
+(if (file-exists-p "/home/mahmooz/work/org-xopp/")
     (use-package org-xopp
       :after (org)
       :load-path "/home/mahmooz/work/org-xopp/"
