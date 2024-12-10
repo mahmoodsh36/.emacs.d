@@ -1288,7 +1288,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
    (when (plist-get kw :pdf-p)
      (my-org-to-pdf (plist-get kw :async)))
    (when (plist-get kw :html-p)
-     (my-org-to-html))))
+     (my-org-to-html nil (plist-get kw :force)))))
 
 ;; (defun files-linked-from-org-file (filepath)
 ;;   (with-org-file-faster filepath
@@ -1566,7 +1566,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
    org-filepath
    (html-out-file (org-get-title))))
 
-(defun my-org-to-html (&optional heading)
+(cl-defun my-org-to-html (&optional heading (force nil))
   (interactive)
   ;; so that org mode places the latex previews in the specified dir
   ;; (plist-put org-html-latex-image-options :image-dir "ltx")
@@ -1605,7 +1605,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
          (search-data))
     (when (not (and (not heading)
                     buffer-file-name
-                    (file-newer-than-file-p outfile buffer-file-name)))
+                    (file-newer-than-file-p outfile buffer-file-name)
+                    (not force)))
       (when heading
         (org-narrow-to-subtree))
       (org-export-to-file 'html outfile
