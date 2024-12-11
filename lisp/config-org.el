@@ -5,15 +5,15 @@
   :ensure ( :remotes ("tecosaur"
                       :repo "https://git.tecosaur.net/tec/org-mode.git"
                       :branch "dev"
-                      :depth 1
+                      ;; :depth nil ;; full depth clone
                       ;; :pin t
                       ;; :ref "2022f1ff5dc1b42b002fbae44b565b0ac10fca42"
                       )
             :files (:defaults "etc"))
-  ;; :ref "2022f1ff5" ;; not sure where it needs to be but just to be safe lol
   )
 
 (use-package org-contrib
+  :after (org)
   :ensure ( :type git :host sourcehut :repo "bzg/org-contrib"))
 
 ;; org-notmuch.el from an old org-contrib
@@ -63,10 +63,6 @@
       (org-latex-preview)
       (org-latex-preview-auto-mode 1)
       (enable-latex-previews))))
-
-(with-eval-after-load 'org-latex-preview
-  (when *latex-previews-enabled-p*
-    (enable-latex-previews)))
 
 ;; bibliography file (i use one global one for everything)
 (setq org-cite-global-bibliography (list (from-brain "bib.bib") (from-brain "auto.bib")))
@@ -136,7 +132,8 @@
         (find-file pdf-file)
       (message "pdf file hasnt been generated"))))
 
-(with-eval-after-load-all '(org ox org-agenda ox-latex)
+;; (with-eval-after-load-all '(org ox org-latex-preview org-agenda ox-latex)
+(with-eval-after-load 'org
   (require 'org-attach)
   (require 'ox-beamer)
   ;; save the clock history across sessions
@@ -402,30 +399,42 @@
                       html-link)
                   (format "%s" (or desc link-path))))
             (format "%s" (or desc link-path)))
-        (if (equal link-type "file") ;; if its a link to a static file
-            (let* ((filename (file-name-nondirectory link-path))
-                   (ext (file-name-extension filename)))
-              (message "copying linked static file %s" filename)
-              (condition-case nil
-                  (copy-file link-path (join-path *static-html-dir* filename) t)
-                (error (message "failed to copy file %s" filename)))
-              (if (cl-member ext (list "png" "jpg" "jpeg" "webp" "svg" "gif") :test #'equal)
-                  (format "<img src=\"%s%s\" />"
-                          *html-static-route*
-                          filename)
-                (if (cl-member ext (list "mp4" "mkv") :test #'equal)
-                    (format "
+        ;; if its a link to a static file
+        (if (or (equal link-type "file")
+                (equal link-type "xopp-figure"))
+            (progn
+              (when (equal link-type "xopp-figure")
+                (message "here %s %s" link-path (org-xopp-temp-file link-path))
+                (call-process org-xopp-figure-generation-script
+                              nil
+                              nil
+                              nil
+                              link-path
+                              (org-xopp-temp-file link-path))
+                (setq link-path (org-xopp-temp-file link-path)))
+              (let* ((filename (file-name-nondirectory link-path))
+                     (ext (file-name-extension filename)))
+                (message "copying linked static file %s" filename)
+                (condition-case nil
+                    (copy-file link-path (join-path *static-html-dir* filename) t)
+                  (error (message "failed to copy file %s" filename)))
+                (if (cl-member ext (list "png" "jpg" "jpeg" "webp" "svg" "gif") :test #'equal)
+                    (format "<img src=\"%s%s\" />"
+                            *html-static-route*
+                            filename)
+                  (if (cl-member ext (list "mp4" "mkv") :test #'equal)
+                      (format "
 <video controls muted>
   <source src='%s%s' type='video/%s'>
 your browser does not support the video tag.
 </video>"
+                              *html-static-route*
+                              filename
+                              ext)
+                    (format "<a href=\"%s%s\">%s</a>"
                             *html-static-route*
                             filename
-                            ext)
-                  (format "<a href=\"%s%s\">%s</a>"
-                          *html-static-route*
-                          filename
-                          (or desc link-path)))))
+                            (or desc link-path))))))
           (funcall fn link desc info)))))
   (advice-add #'org-html-link :around #'my-org-html-link-advice)
 
@@ -546,7 +555,8 @@ your browser does not support the video tag.
                        (not (string-prefix-p "\\" next-line)))
                   (and (not (point-on-last-line-p))
                        (not (string-prefix-p "#+" this-line))
-                       (string-prefix-p "\\begin{tikzpicture}" next-line)))
+                       (or (string-prefix-p "\\begin{tikzpicture}" next-line)
+                           (string-prefix-p "\\begin{alg}" next-line))))
           (goto-char (pos-eol))
           (insert (case export-backend
                     (latex "\\\\")
@@ -1010,6 +1020,10 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   ;; center images, limit max width of images
   (setq org-image-align 'center)
   (setq org-image-max-width 300)
+
+  (with-eval-after-load 'org-latex-preview
+    (when *latex-previews-enabled-p*
+      (enable-latex-previews)))
 
   )
 

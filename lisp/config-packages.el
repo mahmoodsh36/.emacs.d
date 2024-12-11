@@ -332,6 +332,7 @@
 (when (not (is-android-system))
   (use-package pdf-tools
     :ensure (:host github :repo "vedang/pdf-tools")
+    :after (org org-latex-preview)
     :config
     (pdf-tools-install t)
     (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
@@ -1001,10 +1002,10 @@
 
 (use-package el-easydraw
   :ensure ( :host github :repo "misohena/el-easydraw" :main nil)
+  :after (org)
   :config
-  (with-eval-after-load 'org
-    (require 'edraw-org)
-    (edraw-org-setup-default))
+  (require 'edraw-org)
+  (edraw-org-setup-default)
   ;; When using the org-export-in-background option (when using the
   ;; asynchronous export function), the following settings are
   ;; required. This is because Emacs started in a separate process does

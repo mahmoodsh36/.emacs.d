@@ -56,33 +56,6 @@
 (setq disabled-command-function nil)
 ;; initial frame size
 ;; (when window-system (set-frame-size (selected-frame) 120 48))
-;; display only buffer name in modeline
-;; the following line enables L<line number> at the end
-(when (not (is-android-system))
-  (setq-default
-   mode-line-format
-   (list
-    " "
-    mode-line-modified
-    mode-line-position-line-format
-    "%e %b "
-    '(:eval (current-buffer-title-if-org))
-    " "
-    '(:eval (persp-mode-line)))))
-(defun current-buffer-title-if-org ()
-  (if (derived-mode-p 'org-mode)
-      (org-get-title)
-    ""))
-;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
-;; restore default status line for pdf mode
-(let ((hooks '(pdf-view-mode-hook doc-view-mode-hook)))
-  (dolist (hook hooks)
-    (add-hook
-     hook
-     (lambda ()
-       (interactive)
-       (setq-local mode-line-format
-                   (eval (car (get 'mode-line-format 'standard-value))))))))
 ;; kill buffer without confirmation when its tied to a process
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 ;; make tab complete current word
@@ -150,6 +123,33 @@
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
 ;;(which-key-mode)
+;; minimal modeline
+(with-eval-after-load 'org
+  (when (not (is-android-system))
+    (setq-default
+     mode-line-format
+     (list
+      " "
+      mode-line-modified
+      mode-line-position-line-format
+      "%e %b "
+      '(:eval (current-buffer-title-if-org))
+      " "
+      '(:eval (persp-mode-line))))))
+(defun current-buffer-title-if-org ()
+  (if (derived-mode-p 'org-mode)
+      (org-get-title)
+    ""))
+;; (setq-default mode-line-format (list " " mode-line-modified "%e %b"))
+;; restore default status line for pdf mode
+(let ((hooks '(pdf-view-mode-hook doc-view-mode-hook)))
+  (dolist (hook hooks)
+    (add-hook
+     hook
+     (lambda ()
+       (interactive)
+       (setq-local mode-line-format
+                   (eval (car (get 'mode-line-format 'standard-value))))))))
 
 ;; for M-x term
 ;; (setq explicit-shell-file-name "zsh")
