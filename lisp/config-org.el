@@ -2139,4 +2139,13 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (start-process "xournalpp" "xournalpp" "xournalpp" xopp-file)
     (insert (format "[[xopp-figure:%s]]" xopp-file))))
 
+;; could be helpful, https://emacs.stackexchange.com/questions/52678/convert-org-table-to-ms-excel
+(defun org-table-export-to-spreadsheet (arg)
+  "export org table to spreadsheet formats, e.g. `ods', `xls', `xlsx'."
+  (interactive "sFormat: ")
+  (let* ((source-file  (file-name-sans-extension (buffer-file-name  (current-buffer))))
+         (csv-file (concat source-file ".csv")))
+    (org-table-export csv-file "orgtbl-to-csv")
+    (org-odt-convert csv-file arg)))
+
 (provide 'config-org)
