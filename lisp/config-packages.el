@@ -1226,5 +1226,8 @@
     :config
     (org-xopp-setup)))
 
+(use-package ox-ipynb
+  :after (org)
+  :ensure ( :host github :repo "jkitchin/ox-ipynb"))
 
 (provide 'config-packages)
