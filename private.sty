@@ -7,9 +7,13 @@
   {\usepackage[margin=0.2in]{geometry}}%
 \makeatother%
 
+% https://latexcolor.com/
+\definecolor{bistre}{rgb}{0.24, 0.17, 0.12}
+\definecolor{darkgreen}{rgb}{0.0, 0.55, 0.1}
+\definecolor{darkorange}{rgb}{0.688039215686, 0.309411764706, 0.078431372549}
 \renewcommand{\refdef}[2][]{%
   \special{dvisvgm:raw <g data-ref='#1' class='fancy-button' pointer-events="bounding-box">}
-  \textcolor{orange}{\hyperref[#1]{#2}}
+  \textcolor{darkorange}{\hyperref[#1]{#2}}
   \special{dvisvgm:raw </g>}
 }
 
