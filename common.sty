@@ -77,6 +77,8 @@
 \UseTblrLibrary{amsmath}
 \usepackage{blkarray}
 
+\definecolor{darkorange}{rgb}{0.688039215686, 0.309411764706, 0.078431372549}
+
 % these work smoothly, unlike other fonts
 % \usepackage{newtxtext,newtxmath}
 
@@ -298,12 +300,13 @@
 \newcommand{\algname}[1]{\textsc{#1}}
 \newcommand{\varname}[1]{#1}
 \newcommand{\alginput}[1]{\ \textbf{input}:\text{#1}}
-\newcommand{\algcom}[1]{\parbox[t]{0.9\textwidth}{\textcolor{blue}{/*} #1 \textcolor{blue}{*/}}}
-\newcommand{\algcominline}[1]{\text{ \textcolor{blue}{/*} #1 \textcolor{blue}{*/}}}
+\newcommand{\algcom}[1]{\parbox[t]{0.9\textwidth}{\textcolor{darkorange}{/*} #1 \textcolor{darkorange}{*/}}}
+\newcommand{\algcominline}[1]{\text{ \textcolor{darkorange}{/*} #1 \textcolor{darkorange}{*/}}}
 \newcommand{\algspace}{\quad}
-\newcommand{\algop}[1]{\textop{\textcolor{blue}{#1}}}
+\newcommand{\algop}[1]{\textop{\textcolor{darkorange}{#1}}}
 \newcommand{\algnull}{\algop{null}}
 \newcommand{\subgraph}{\refdef[def-subgraph]{\subseteq}}
+\newcommand{\inducegraph}[2]{#1[#2]}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
