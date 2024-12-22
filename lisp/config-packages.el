@@ -587,7 +587,9 @@
 ;;   (setq slime-repl-history-size 1000000))
 
 ;; better alternative to counsel-ag, best i found for grepping
-(use-package deadgrep)
+(use-package deadgrep
+  :config
+  (setq deadgrep--search-type 'regexp))
 (use-package wgrep)
 
 ;; some packages that i use are to replicate evil functionality

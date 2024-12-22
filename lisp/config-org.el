@@ -1927,6 +1927,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-mode)
     (my-org-to-html)))
 
+(defvar blk-hashtable)
 (defun collect-org-files-to-export ()
   (let ((files-to-export)
         (entries (org-files-with-tag "entry"))
