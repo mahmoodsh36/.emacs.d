@@ -562,6 +562,7 @@
 (led-kbd "; b" (lambda () (interactive) (switch-to-buffer "*Messages*")))
 
 (led-kbd "; p" 'new-xournalpp)
+(led-kbd "; u" 'my-open-at-point)
 
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 

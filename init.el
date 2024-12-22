@@ -371,3 +371,18 @@
 ;; (add-hook 'post-command-hook #'my-monitor-keys)
 
 ;; (add-hook 'find-file-hook (lambda () (flymake-mode -1)))
+
+;; buttonize links, https://superuser.com/questions/331895/how-to-get-emacs-to-highlight-and-link-file-paths
+(define-button-type 'find-file-button
+  'follow-link t
+  'action #'find-file-button)
+(defun find-file-button (button)
+  (find-file (buffer-substring (button-start button) (button-end button))))
+(defun buttonize-buffer ()
+  "turn all file paths into buttons"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "/[^ \t]*" nil t)
+      (make-button (match-beginning 0) (match-end 0) :type 'find-file-button))))
+;; (add-hook 'find-file-hook 'buttonize-buffer) ; uncomment to add to find file

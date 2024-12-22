@@ -2140,6 +2140,16 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (start-process "xournalpp" "xournalpp" "xournalpp" xopp-file)
     (insert (format "[[xopp-figure:%s]]" xopp-file))))
 
+(defun my-open-at-point (&optional beg end)
+  "open the file at point"
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list nil nil)))
+  (let ((path (if (and beg end)
+                  (buffer-substring-no-properties beg end)
+                (thing-at-point-file-at-point))))
+    (my-xdg-open-file path)))
+
 ;; could be helpful, https://emacs.stackexchange.com/questions/52678/convert-org-table-to-ms-excel
 (defun org-table-export-to-spreadsheet (arg)
   "export org table to spreadsheet formats, e.g. `ods', `xls', `xlsx'."
