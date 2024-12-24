@@ -550,8 +550,8 @@ your browser does not support the video tag.
         ;; after each sentence
         ;; also if next line is tikzpicture we need to create a line break
         (when (or (and (not (point-on-last-line-p))
-                       ;; (string-suffix-p "." this-line) ;; dot to denote end of sentence and new line?
-                       (equal (org-element-type (org-element-context)) 'paragraph) ;; or maybe it deserves a new line simply if its a text line?
+                       (string-suffix-p "." this-line) ;; dot to denote end of sentence and new line?
+                       (equal (org-element-type (org-element-at-point)) 'paragraph) ;; or maybe it deserves a new line simply if its a text line?
                        (not (string-prefix-p "#+" next-line))
                        (not (string-prefix-p "\\" next-line)))
                   (and (not (point-on-last-line-p))
@@ -559,15 +559,17 @@ your browser does not support the video tag.
                        (or (string-prefix-p "\\begin{tikzpicture}" next-line)
                            (string-prefix-p "\\begin{alg}" next-line))))
           (goto-char (pos-eol))
-          (insert (case export-backend
-                    (latex "\\\\")
-                    (html "\n")))
+          (unless (get-text-property (point) 'read-only)
+            (insert (case export-backend
+                      (latex "\\\\")
+                      (html "\n"))))
           (setq inserted t))
         ;; after block ends
         (when (and (not inserted)
                    (string-prefix-p "#+end_" this-line))
           (goto-char (pos-eol))
-          (insert "\n"))
+          (unless (get-text-property (point) 'read-only)
+            (insert "\n")))
         (setq prev-line this-line)
         (if (point-on-last-line-p)
             (setq stop t)
@@ -1380,6 +1382,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 ;;   (let ((should-export-org-file-function #'should-export-org-file))
 ;;     (export-all-org-files :html-p t :pdf-p t)))
 
+(defvar files-to-export) ;; to make it dynamically bound
 (defun export-all-org-files-to-html ()
   (interactive)
   (message "collecting files to export")
