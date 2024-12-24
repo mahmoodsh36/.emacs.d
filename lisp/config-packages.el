@@ -208,9 +208,10 @@
 (use-package request)
 
 ;; highlights color names with the corresponding color
-(use-package rainbow-mode
-  :config
-  (add-hook 'text-mode-hook 'rainbow-mode))
+;; replaced this with colorful-mode
+;; (use-package rainbow-mode
+;;   :config
+;;   (add-hook 'text-mode-hook 'rainbow-mode))
 
 ;; log elisp commands
 ;; (use-package command-log-mode
@@ -1231,5 +1232,9 @@
 (use-package ox-ipynb
   :after (org)
   :ensure ( :host github :repo "jkitchin/ox-ipynb"))
+
+(use-package colorful-mode
+  :ensure ( :host github :repo "DevelopmentCool2449/colorful-mode")
+  :hook (prog-mode text-mode))
 
 (provide 'config-packages)
