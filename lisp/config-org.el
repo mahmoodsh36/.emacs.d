@@ -106,15 +106,15 @@
       (call-process-shell-command
        cmd))))
 
-;; (cl-defun clean-latex-files (path)
-;;   (call-process-shell-command
-;;    (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path))
-;;            (file-name-base path))))
 (cl-defun clean-latex-files (path)
   (call-process-shell-command
-   (format "find -name '%s*%s*' -not -name '*.tex' -delete"
-           (file-truename (get-latex-cache-dir-path))
+   (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path))
            (file-name-base path))))
+;; (cl-defun clean-latex-files (path)
+;;   (call-process-shell-command
+;;    (format "find -name '%s*%s*' -not -name '*.tex' -delete"
+;;            (file-truename (get-latex-cache-dir-path))
+;;            (file-name-base path))))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
@@ -405,7 +405,6 @@
                 (equal link-type "xopp-figure"))
             (progn
               (when (equal link-type "xopp-figure")
-                (message "here %s %s" link-path (org-xopp-temp-file link-path))
                 (call-process org-xopp-figure-generation-script
                               nil
                               nil
@@ -1345,7 +1344,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
       (progn
         (push node exceptions)
         (when (and node (funcall should-export-org-file-function node))
-          (message (format "exporting: %s" node))
+          ;; (message (format "exporting: %s" node))
           (condition-case nil
               (apply #'export-org-file node kw)
             (error (message "failed to export %s" node)))
