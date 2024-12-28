@@ -1021,7 +1021,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 
   ;; center images, limit max width of images
   (setq org-image-align 'center)
-  (setq org-image-max-width 300)
+  (setq org-image-max-width 0.7)
 
   (with-eval-after-load 'org-latex-preview
     (when *latex-previews-enabled-p*
@@ -2101,41 +2101,6 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
    (list-note-files)
    (org-element-parse-buffer)))
 
-;; not used anymore
-;; (defun org-overlay-xournalpp-links ()
-;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
-;;   (interactive)
-;;   ;; iterate over all file links in the buffer and replace them with images
-;;   (org-element-map (org-element-parse-buffer) 'link
-;;     (lambda (link)
-;;       (let ((type (org-element-property :type link))
-;;             (path (org-element-property :path link))
-;;             (begin (org-element-property :begin link))
-;;             (end (org-element-property :end link)))
-;;         (when (and (string-equal type "xopp-figure")
-;;                    (string-suffix-p ".xopp" path t))
-;;           (let* ((absolute-path (expand-file-name path))
-;;                  (output-file))
-;;             ;; check if the .xopp file exists
-;;             (if (not (file-exists-p absolute-path))
-;;                 (message "file not found: %s" absolute-path)
-;;               ;; export the .xopp file to an image if not already done
-;;               (let ((result (s-trim (shell-command-to-string-no-stderr
-;;                                      (format "generate_xopp_figure.sh %s"
-;;                                              absolute-path)))))
-;;                 (setq output-file result))
-;;               ;; add an overlay with the image
-;;               (message "got %s" output-file)
-;;               (when (file-exists-p output-file)
-;;                 (let ((img (create-image output-file nil nil :scale 0.3))) ;; resize to 30%?
-;;                   (save-excursion
-;;                     (goto-char begin)
-;;                     (let ((ov (make-overlay begin end)))
-;;                       (overlay-put ov 'display img)
-;;                       ;; (overlay-put ov 'org-image-overlay t)
-;;                       (overlay-put ov 'modification-hooks
-;;                                    (list (lambda (ov &rest _) (delete-overlay ov)))))))))))))))
-
 (defun new-xournalpp ()
   (interactive)
   (let* ((timestamp (current-unix-timestamp))
@@ -2161,68 +2126,5 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
          (csv-file (concat source-file ".csv")))
     (org-table-export csv-file "orgtbl-to-csv")
     (org-odt-convert csv-file arg)))
-
-;; overwrite to make it center image
-;; (with-eval-after-load 'org-xopp
-;;   (defun org-xopp-place-figures ()
-;;     "overlay .xopp file links in the current org buffer with the corresponding sketches."
-;;     (interactive)
-;;     (org-element-map (org-element-parse-buffer) 'link
-;;       (lambda (link)
-;;         (lexical-let* ((type (org-element-property :type link))
-;;                (path (org-element-property :path link))
-;;                (begin (org-element-property :begin link))
-;;                (end (org-element-property :end link))
-;;                (absolute-path (expand-file-name path))
-;;                (width (org-display-inline-image--width link))
-;;                (output-path (org-xopp-temp-file absolute-path))
-;;                (ov (make-overlay begin end))
-;;                ;; (align (org-image--align link))
-;;                (align "center")
-;;                )
-;;           (when (string-equal type "xopp-figure")
-;;             ;; check if the .xopp file exists
-;;             (if (not (file-exists-p absolute-path))
-;;                 (message "file not found: %s" absolute-path)
-;;               ;; export the .xopp file to an image if not already done
-;;               (progn
-;;                 (message "generating image %s" output-path)
-;;                 (prog1 t
-;;                   (make-process
-;;                    :name "xopp-preview"
-;;                    ;; not a good idea to keep generating new buffers
-;;                    :buffer (generate-new-buffer " *xopp-preview*")
-;;                    :command (list org-xopp-figure-generation-script
-;;                                   absolute-path
-;;                                   output-path)
-;;                    :sentinel
-;;                    (lambda (proc event)
-;;                      (let ((out (with-current-buffer
-;;                                     (process-buffer proc)
-;;                                   (string-trim (buffer-string)))))
-;;                        (if (string= event "finished\n")
-;;                            (when-let* ((img (org--create-inline-image output-path width))
-;;                                        (org-buf (overlay-buffer ov))
-;;                                        (buffer-live-p org-buf)
-;;                                        (file-exists-p output-path))
-;;                              (with-current-buffer org-buf
-;;                                (save-excursion
-;;                                  (goto-char begin)
-;;                                  (let ((ov (make-overlay begin end)))
-;;                                    (overlay-put ov 'display img)
-;;                                    (overlay-put ov 'modification-hooks
-;;                                                 (list (lambda (ov &rest _) (delete-overlay ov))))
-;;                                    (when align
-;;                                      (message "got here %s" align)
-;;                                      (overlay-put
-;;                                       ov 'before-string
-;;                                       (propertize
-;;                                        " " 'face 'default
-;;                                        'display
-;;                                        (pcase align
-;;                                          ("center" `(space :align-to (- center (0.5 . ,img))))
-;;                                          ("right"  `(space :align-to (- right ,img)))))))))))
-;;                          (progn
-;;                            (message "Error generating image: %s, %s" event out)))))))))))))))
 
 (provide 'config-org)
