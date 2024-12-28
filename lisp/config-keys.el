@@ -132,6 +132,8 @@
          (lambda () (interactive) (find-file (from-emacsd "lisp/config-packages.el"))))
 (led-kbd "f k"
          (lambda () (interactive) (find-file (from-emacsd "lisp/config-keys.el"))))
+(led-kbd "f e"
+         (lambda () (interactive) (find-file (from-brain "pen/"))))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))
