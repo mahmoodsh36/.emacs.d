@@ -1325,18 +1325,19 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (car
    (map-org-files
     filepath
-    (org-element-map (org-element-parse-buffer) 'link
-      (lambda (mylink)
-        (let ((filepath
-               (pcase (org-element-property :type mylink)
-                 ("blk" (plist-get
-                         (blk-find-by-id-using-hashtable
-                          (org-element-property :path mylink))
-                         :filepath))
-                 ("denote" (denote-get-path-by-id
-                            (org-element-property :path mylink)))
-                 (_ nil))))
-          filepath))))))
+    (lambda ()
+      (org-element-map (org-element-parse-buffer) 'link
+        (lambda (mylink)
+          (let ((filepath
+                 (pcase (org-element-property :type mylink)
+                   ("blk" (plist-get
+                           (blk-find-by-id-using-hashtable
+                            (org-element-property :path mylink))
+                           :filepath))
+                   ("denote" (denote-get-path-by-id
+                              (org-element-property :path mylink)))
+                   (_ nil))))
+            filepath)))))))
 
 (defun export-node (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
@@ -2045,7 +2046,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun my-new-todo ()
   (interactive)
   (let* ((todo-files (org-files-with-tag "todo"))
-         (titles (map-org-files todo-files (org-get-keyword "title")))
+         (titles (map-org-files todo-files (lambda () (org-get-keyword "title"))))
          (selected-title (completing-read "file " titles))
          (selected-idx (cl-position selected-title titles :test 'equal))
          (selected-todo-file (when selected-idx (elt todo-files selected-idx)))
@@ -2079,27 +2080,44 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (when (and (boundp 'evil-mode) evil-mode)
     (call-interactively 'evil-append)))
 
-(defmacro map-org-files (files &rest body)
-  `(let ((org-inhibit-startup t)
-         (org-element-cache-persistent)
-         (org-element-use-cache)
-         (org-mode-hook)
-         (files (if (atom ,files) (list ,files) ,files))
-         (gc-cons-threshold 100000000) ;; 100mb
-         (coding-system-for-read 'utf-8))
-     (with-temp-buffer
-       (buffer-disable-undo)
-       (mapcar
-        (lambda (orgfile)
-          (insert-file-contents orgfile nil nil nil t)
-          (let ((major-mode 'org-mode))
-            (progn ,@body)))
-        files))))
+;; (defmacro map-org-files (files &rest body)
+;;   `(let ((org-inhibit-startup t)
+;;          (org-element-cache-persistent)
+;;          (org-element-use-cache)
+;;          (org-mode-hook)
+;;          (files (if (atom ,files) (list ,files) ,files))
+;;          (gc-cons-threshold 100000000) ;; 100mb
+;;          (coding-system-for-read 'utf-8))
+;;      (with-temp-buffer
+;;        (buffer-disable-undo)
+;;        (mapcar
+;;         (lambda (orgfile)
+;;           (insert-file-contents orgfile nil nil nil t)
+;;           (let ((major-mode 'org-mode))
+;;             (progn ,@body)))
+;;         files))))
+
+(defun map-org-files (files func)
+  (let ((org-inhibit-startup t)
+        (org-element-cache-persistent)
+        (org-element-use-cache)
+        (org-mode-hook)
+        (files (if (atom files) (list files) files))
+        (gc-cons-threshold 100000000) ;; 100mb
+        (coding-system-for-read 'utf-8))
+    (with-temp-buffer
+      (buffer-disable-undo)
+      (mapcar
+       (lambda (orgfile)
+         (insert-file-contents orgfile nil nil nil t)
+         (let ((major-mode 'org-mode))
+           (funcall func)))
+       files))))
 
 (defun grab-all ()
   (map-org-files
    (list-note-files)
-   (org-element-parse-buffer)))
+   'org-element-parse-buffer))
 
 (defun new-xournalpp ()
   (interactive)

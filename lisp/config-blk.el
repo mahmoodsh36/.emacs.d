@@ -185,8 +185,9 @@ obtain the id"
       (if extract-id-func
           (let* ((id (car (map-org-files
                            (plist-get grep-result :filepath)
-                           (goto-char (plist-get grep-result :position))
-                           (funcall extract-id-func grep-result)))))
+                           (lambda ()
+                             (goto-char (plist-get grep-result :position))
+                             (funcall extract-id-func grep-result))))))
             id)
         (progn
           (message "Pattern has no `extract-id-function' or `src-id-function'")
