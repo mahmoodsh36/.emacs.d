@@ -360,7 +360,7 @@
 \newcommand{\gobblenextarg}[2]{#1#2\@ifnextchar\bgroup{\gobblenextarg{#1}}{}}
 \makeatother
 
-% some computability/toc symbols
+% some computability/toc/complexity symbols
 \DeclareMathOperator{\program}{\refdef[blk:def-program]{\mathscr{P}}} % symbol for a program
 \DeclareMathOperator{\numedcfunc}{\refdef[blk:def-std-program-numbering]{\varphi}} % numbered computable function symbol
 \DeclareMathOperator{\cfunc}{\refdef[blk:not-comp-func]{\psi}} % computable function symbol
@@ -426,6 +426,8 @@
 \newcommand{\bsete}{\set{0,1}} % the set of binary numbers, "e" for explicit, "b" for boolean
 \newcommand{\bset}{\mathcal{B}} % the set of binary numbers, "e" for explicit, "b" for boolean
 \newcommand{\leafsize}{\refdef[blk:not-leafsize]{\operatorname{LeafSize}}}
+\newcommand{\implics}{\refdef[blk:def-implicant]{\operatorname{I}}} % implicants
+\newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\operatorname{PI}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
