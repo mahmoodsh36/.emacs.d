@@ -1237,4 +1237,12 @@
   :ensure ( :host github :repo "DevelopmentCool2449/colorful-mode")
   :hook (prog-mode text-mode))
 
+(use-package casual
+  :config
+  (require 'casual-agenda)
+  (keymap-set org-agenda-mode-map "C-o" #'casual-agenda-tmenu)
+  (require 'casual-calc) ; optional if using autoloaded menu
+  (keymap-set calc-mode-map "C-o" #'casual-calc-tmenu)
+  (keymap-set calc-alg-map "C-o" #'casual-calc-tmenu))
+
 (provide 'config-packages)
