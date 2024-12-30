@@ -241,7 +241,6 @@
 \newcommand{\khat}{\hat{\textbf{k}}}
 \newcommand{\rhat}{\hat{\textbf{r}}}
 \newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}
-\newcommand{\?}{\stackrel{?}{=}}
 \newcommand{\cmark}{\text{\ding{51}}}
 \newcommand{\xmark}{\text{\ding{55}}}
 \renewcommand\Pr{\operatorname{\brm{P}}} % for probability function symbol
@@ -307,6 +306,10 @@
 \newcommand{\algnull}{\algop{null}}
 \newcommand{\subgraph}{\refdef[def-subgraph]{\subseteq}}
 \newcommand{\inducegraph}[2]{#1[#2]}
+% for placing equal signs over operators
+\NewDocumentCommand{\?}{g}{%
+  \overset{?}{\IfNoValueTF{#1}{=}{#1}}%
+}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -428,6 +431,11 @@
 \newcommand{\leafsize}{\refdef[blk:not-leafsize]{\operatorname{LeafSize}}}
 \newcommand{\implics}{\refdef[blk:def-implicant]{\operatorname{I}}} % implicants
 \newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\operatorname{PI}}}
+\newcommand{\compNC}{\refdef[blk:def-nc]{\brm{NC}}}
+\newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\operatorname{SIZE-DEPTH}}}
+\newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE}}}
+\newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FDEPTH}}}
+\newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE-DEPTH}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
