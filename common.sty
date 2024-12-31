@@ -293,7 +293,7 @@
 \newcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
 \newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
 \newcommand{\xor}{\oplus}
-\newcommand{\parity}{\oplus}
+\newcommand{\parity}{\refdef[blk:def-parity]{\oplus}}
 \DeclarePairedDelimiter{\opair}{\langle}{\rangle} % \ref{blk:def-ord-pair}
 % more for algorithms?
 \newcommand{\algname}[1]{\textsc{#1}}
@@ -337,6 +337,7 @@
 \newcommand{\edgecut}{\refdef{\delta}}
 \newcommand{\edgedicut}{\refdef{\delta^+}}
 \newcommand{\graphdist}{\refdef{\delta}}
+\newcommand{\infface}[1][\pi]{\refdef[blk:def-face]{{#1}^*}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -436,6 +437,8 @@
 \newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE}}}
 \newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FDEPTH}}}
 \newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE-DEPTH}}}
+\newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
+\newcommand{\compAC}{\refdef[blk:def-ac]{\brm{AC}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
