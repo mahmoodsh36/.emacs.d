@@ -13,6 +13,8 @@
 (led-kbd "d o" (lambda () (interactive) (dired "~/brain/out/")))
 (led-kbd "d g" (lambda () (interactive) (dired "~/work/blog/")))
 (led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
+(led-kbd "d e" (lambda () (interactive) (dired (from-brain "pen/"))))
+
 (led-kbd "f f" 'find-file)
 (led-kbd "f v" 'find-alternate-file)
 (led-kbd "d j" 'dired-jump)
@@ -132,8 +134,6 @@
          (lambda () (interactive) (find-file (from-emacsd "lisp/config-packages.el"))))
 (led-kbd "f k"
          (lambda () (interactive) (find-file (from-emacsd "lisp/config-keys.el"))))
-(led-kbd "f e"
-         (lambda () (interactive) (find-file (from-brain "pen/"))))
 
 ;; (define-key evil-normal-state-map (kbd "SPC f d")
 ;;             (lambda () (interactive) (search-open-file "~/data" "")))

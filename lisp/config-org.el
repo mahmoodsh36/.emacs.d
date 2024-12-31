@@ -516,6 +516,34 @@ your browser does not support the video tag.
       (replace-regexp "#\\+caption: \\(.*\\)" "\\1")))
   ;; (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
 
+  (defmacro org-with-modifications (element-type &rest body)
+    "Iterate over Org ELEMENT-TYPE and modify them, adjusting positions automatically.
+   Handles both insertions and deletions."
+    `(let ((offset 0))
+       (org-element-map (org-element-parse-buffer) ,element-type
+         (lambda (elm)
+           (let* ((begin-pos (org-element-property :begin elm))
+                  (modified-pos (+ begin-pos offset))
+                  (initial-buffer-size (point-max)))
+             (save-excursion
+               (goto-char modified-pos)
+               ,@body)
+             ;; Calculate how much the buffer size has changed (inserted or deleted)
+             (let ((buffer-size-delta (- (point-max) initial-buffer-size)))
+               (setq offset (+ offset buffer-size-delta))))))))
+
+  ;; remove blocks with :noexport
+  (defun my-org-remove-noexport-blocks (&optional export-backend)
+    (org-with-modifications
+     'special-block
+     (when (or (string= (org-block-property :noexport (org-element-at-point))
+                        (symbol-name export-backend))
+               (string= (org-block-property :noexport (org-element-at-point))
+                        ""))
+       (delete-region (org-element-begin (org-element-at-point))
+                      (org-element-end (org-element-at-point))))))
+  (add-to-list 'org-export-before-processing-functions 'my-org-remove-noexport-blocks)
+
   ;; hacky, detects backslash at beginning of line as latex, #+ as keyword/special block/whatever
   ;; insert whitespaces wherever appropriate when exporting
   (defun my-org-hook-insert-whitespaces (export-backend)
@@ -2061,7 +2089,6 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
           (let ((head-title (save-excursion
                               (goto-char (org-element-begin head))
                               (elt (org-heading-components) 4))))
-            (message "got %s" head-title)
             (when (equal head-title "todos")
               (setq found t)
               (goto-char (org-element-begin head))
