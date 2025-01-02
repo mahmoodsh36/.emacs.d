@@ -337,7 +337,7 @@
 \newcommand{\edgecut}{\refdef{\delta}}
 \newcommand{\edgedicut}{\refdef{\delta^+}}
 \newcommand{\graphdist}{\refdef{\delta}}
-\newcommand{\infface}[1][\pi]{\refdef[blk:def-face]{{#1}^*}}
+\newcommand{\infface}[1]{\refdef[blk:def-face-inf]{f_{\infty}}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -642,6 +642,7 @@
   \begin{bmatrix}#2\end{bmatrix}
 \endgroup}
 \newcommand\matinv[1]{{#1}^{\refdef[blk:def-mat-inv]{-1}}}
+\newcommand{\tenselm}[2]{{#1}_{#2}} % to denote the element at specific indicies of a tensor
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
