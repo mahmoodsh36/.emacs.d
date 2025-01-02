@@ -2172,4 +2172,19 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-table-export csv-file "orgtbl-to-csv")
     (org-odt-convert csv-file arg)))
 
+;; advice to resize properly from 0-2500 to 0-600
+(with-eval-after-load 'org-xopp
+  (defun my-org-xopp-place-image-advice (fn buffer image-path link)
+    (let* ((max-xopp-image-width (float 2500))
+           (max-display-width 600)
+           (org-image-actual-width
+            (floor
+             (* (/ (car (image-size
+                         (create-image image-path)
+                         t))
+                   max-xopp-image-width)
+                max-display-width))))
+      (funcall fn buffer image-path link)))
+  (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice))
+
 (provide 'config-org)
