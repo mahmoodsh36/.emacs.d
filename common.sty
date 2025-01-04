@@ -298,8 +298,9 @@
 % more for algorithms?
 \newcommand{\algname}[1]{\textsc{#1}}
 \newcommand{\varname}[1]{#1}
-\newcommand{\alginput}[1]{\ \textbf{input}:\text{#1}}
+\newcommand{\alginput}[1]{\textbf{input}:\text{#1}}
 \newcommand{\algcom}[1]{\parbox[t]{0.9\textwidth}{\textcolor{darkorange}{/*} #1 \textcolor{darkorange}{*/}}}
+\newcommand{\algline}[1]{\parbox[t]{0.9\textwidth}{#1}}
 \newcommand{\algcominline}[1]{\text{ \textcolor{darkorange}{/*} #1 \textcolor{darkorange}{*/}}}
 \newcommand{\algspace}{\quad}
 \newcommand{\algop}[1]{\textop{\textcolor{darkorange}{#1}}}
@@ -310,6 +311,7 @@
 \NewDocumentCommand{\?}{g}{%
   \overset{?}{\IfNoValueTF{#1}{=}{#1}}%
 }
+\newcommand{\algout}[1]{\textbf{out}:\text{#1}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
