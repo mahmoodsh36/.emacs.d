@@ -31,13 +31,14 @@
 ;;                       (kill-all-buffers)
 ;;                       (switch-to-buffer "*scratch*")))
 ;; switch to buffer but restrict choice to current perspective's buffers
-(led-kbd "b s"
-         (lambda ()
-           (interactive)
-           (let ((consult--source-buffer '(:hidden t :default nil))
-                 (consult-buffer-sources (cons persp-consult-source consult-buffer-sources)))
-             (call-interactively 'consult-buffer))))
-(led-kbd "b S" 'consult-buffer)
+;; (led-kbd "b s"
+;;          (lambda ()
+;;            (interactive)
+;;            (let ((consult--source-buffer '(:hidden t :default nil))
+;;                  (consult-buffer-sources (cons persp-consult-source consult-buffer-sources)))
+;;              (call-interactively 'consult-buffer))))
+(led-kbd "b s" 'consult-buffer)
+;; (led-kbd "b S" 'consult-buffer)
 (led-kbd "b l" 'list-buffers)
 (led-kbd "b b" 'bookmark-jump)
 (led-kbd "x" 'eval-defun  :keymaps '(emacs-lisp-mode-map lisp-interaction-mode-map))

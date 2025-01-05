@@ -110,16 +110,16 @@
   (call-process-shell-command
    (format "rm %s*%s*" (file-truename (get-latex-cache-dir-path))
            (file-name-base path))))
-;; (cl-defun clean-latex-files (path)
-;;   (call-process-shell-command
-;;    (format "find -name '%s*%s*' -not -name '*.tex' -delete"
-;;            (file-truename (get-latex-cache-dir-path))
-;;            (file-name-base path))))
+(cl-defun clean-latex-files-without-tex-file (path)
+  (call-process-shell-command
+   (format "find -name '%s*%s*' -not -name '*.tex' -delete"
+           (file-truename (get-latex-cache-dir-path))
+           (file-name-base path))))
 
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
-  (clean-latex-files (buffer-file-name))
+  (clean-latex-files-without-tex-file (buffer-file-name))
   (compile-latex-file (buffer-file-name)))
 
 (defun open-current-document ()

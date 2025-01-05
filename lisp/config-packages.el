@@ -740,6 +740,8 @@
   :init
   (persp-mode)
   :config
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (add-to-list 'consult-buffer-sources persp-consult-source)
   (setq persp-state-default-file (from-brain "emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
@@ -1244,5 +1246,8 @@
   (require 'casual-calc) ; optional if using autoloaded menu
   (keymap-set calc-mode-map "C-o" #'casual-calc-tmenu)
   (keymap-set calc-alg-map "C-o" #'casual-calc-tmenu))
+
+;; (use-package evil-terminal-cursor-changer
+;;   )
 
 (provide 'config-packages)
