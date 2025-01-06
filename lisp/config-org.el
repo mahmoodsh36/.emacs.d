@@ -8,7 +8,7 @@
                       :branch "dev"
                       ;; :depth nil ;; full depth clone
                       ;; :pin t
-                      ;; :ref "2022f1ff5dc1b42b002fbae44b565b0ac10fca42"
+                      ;; :ref "b9637ef14273f35e77ca9efe82fbab178c24993f"
                       )
             :files (:defaults "etc"))
   )
@@ -1562,10 +1562,10 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (interactive)
   (org-ql-search (my-org-agenda-files)
     '(or (and (not (done))
-             (or (habit)
-                 (deadline auto)
-                 (scheduled :to today)
-                 (ts-active :on today)))
+              (or (habit)
+                  (deadline auto)
+                  (scheduled :to today)
+                  (ts-active :on today)))
          (closed :on today)
          (ts :from -7 :to today)
          (deadline :from -60 :to +60)
