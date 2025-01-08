@@ -538,8 +538,8 @@ your browser does not support the video tag.
      'special-block
      (when (or (string= (org-block-property :noexport (org-element-at-point))
                         (symbol-name export-backend))
-               (string= (org-block-property :noexport (org-element-at-point))
-                        ""))
+               (equal (org-block-property-1 :noexport (org-element-at-point))
+                      '(:noexport)))
        (delete-region (org-element-begin (org-element-at-point))
                       (org-element-end (org-element-at-point))))))
   (add-to-list 'org-export-before-processing-functions 'my-org-remove-noexport-blocks)
@@ -1593,6 +1593,20 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                                    t))))))
     (when result
       (format "%s" result))))
+
+(defun org-block-property-1 (property block)
+  (let ((result
+         (or (org-element-property property block)
+             (alist-get
+              property
+              (org-babel-parse-header-arguments
+               (org-element-property :parameters block)
+               t))
+             (member property
+                     (mapcar 'car (org-babel-parse-header-arguments
+                                   (org-element-property :parameters block)
+                                   t))))))
+    result))
 
 (defun my-block-title (block)
   (or (org-block-property :defines block)
