@@ -1239,15 +1239,29 @@
   :ensure ( :host github :repo "DevelopmentCool2449/colorful-mode")
   :hook (prog-mode text-mode))
 
-(use-package casual
-  :config
-  (require 'casual-agenda)
-  (keymap-set org-agenda-mode-map "C-o" #'casual-agenda-tmenu)
-  (require 'casual-calc) ; optional if using autoloaded menu
-  (keymap-set calc-mode-map "C-o" #'casual-calc-tmenu)
-  (keymap-set calc-alg-map "C-o" #'casual-calc-tmenu))
+;; version issues with transient
+;; (use-package casual
+;;   :config
+;;   (require 'casual-agenda)
+;;   (keymap-set org-agenda-mode-map "C-o" #'casual-agenda-tmenu)
+;;   (require 'casual-calc) ; optional if using autoloaded menu
+;;   (keymap-set calc-mode-map "C-o" #'casual-calc-tmenu)
+;;   (keymap-set calc-alg-map "C-o" #'casual-calc-tmenu))
 
 ;; (use-package evil-terminal-cursor-changer
 ;;   )
+
+;; actual smooth scrolling?
+(use-package ultra-scroll
+  :ensure ( :host github :repo "jdtsmith/ultra-scroll")
+  :init
+  (setq scroll-conservatively 101 ; important!
+        scroll-margin 0)
+  :config
+  (ultra-scroll-mode 1))
+
+;; does this work?
+(use-package org-sliced-images
+  :config (org-sliced-images-mode))
 
 (provide 'config-packages)
