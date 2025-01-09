@@ -638,7 +638,7 @@ your browser does not support the video tag.
             (when (equal (org-element-type element) 'special-block)
               (plist-put myplist :class "fancy-block")
               (plist-put myplist
-                         :data-before (org-export-string-as
+                         :data-before (cheap-org-export-string-as
                                        (concat block-type-str
                                                block-title)
                                        'html
@@ -646,7 +646,7 @@ your browser does not support the video tag.
               ;; dont export :source if it is just a path to a local file (starts with forward slash)
               (plist-put myplist
                          :data-after (when (and citation (not (string-prefix-p "/" citation)))
-                                       (org-export-string-as citation org-export-current-backend t))))
+                                       (cheap-org-export-string-as citation org-export-current-backend t))))
             ;; (when caption
             ;;   (plist-put myplist :data-caption caption))
             (when element-name
@@ -719,11 +719,11 @@ contextual information."
                 (progn
                   (when (not (string-search "[" dependency)) ;; if its a link without the brackets
                     (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
-                  (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
+                  (setq title (format "%s %s" title (cheap-org-export-string-as dependency 'latex t))))
               (when (org-block-property :on-prev special-block)
                 (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
             (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
-                            (if citation (format "[%s]" (org-export-string-as citation 'latex t)) ""))
+                            (if citation (format "[%s]" (cheap-org-export-string-as citation 'latex t)) ""))
                     contents
                     (format "\\end{myenv}")))))))
   ;; (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
@@ -952,25 +952,27 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 
   ;; redefine
   ;; make it export links to my website and use \cref
-  (defun blk-org-export (link desc format)
-    "Return the LINK with DESC converted into html or markdown FORMAT.
+  (with-eval-after-load-all
+   '(org blk)
+   (defun blk-org-export (link desc format)
+     "Return the LINK with DESC converted into html or markdown FORMAT.
 If LINK is not found, just return it as is."
-    (if (blk-find-by-id link)
-        (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
-               (desc (or desc link))
-               (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file)))
-               (latex-link
-                (if desc
-                    (format "\\hyperref[%s]{%s}" link desc)
-                  (format "\\cref{%s}" link))))
-          (when (not (equal buffer-file-name linked-file))
-            (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
-          (cond
-           ((eq format 'html) (format "<a href=\"%s.html#%s\">%s</a>" linked-file-no-ext link desc))
-           ((eq format 'md) (format "[%s](%s.md)" desc linked-file-no-ext))
-           ((eq format 'latex) latex-link)
-           (t link)))
-      link))
+     (if (blk-find-by-id link)
+         (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
+                (desc (or desc link))
+                (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file)))
+                (latex-link
+                 (if desc
+                     (format "\\hyperref[%s]{%s}" link desc)
+                   (format "\\cref{%s}" link))))
+           (when (not (equal buffer-file-name linked-file))
+             (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
+           (cond
+            ((eq format 'html) (format "<a href=\"%s.html#%s\">%s</a>" linked-file-no-ext link desc))
+            ((eq format 'md) (format "[%s](%s.md)" desc linked-file-no-ext))
+            ((eq format 'latex) latex-link)
+            (t link)))
+       link)))
 
   ;; redefine
   ;; make it insert the caption into the element, this is fragile as it doesnt encode the text before it inserts it into data-caption
@@ -996,7 +998,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                 ;; Contents.
                 (format "<span class=\"equation\">\n%s\n</span>" (org-html--as-latex latex-environment info latex-frag))
                 (if caption
-                    (org-export-string-as (org-element-interpret-data caption) 'html t)
+                    (cheap-org-export-string-as (org-element-interpret-data caption) 'html t)
                   "")))))
 
   ;; for xopp
@@ -2200,5 +2202,11 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                 max-display-width))))
       (funcall fn buffer image-path link)))
   (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice))
+
+(defun cheap-org-export-string-as (str backend &optional body-only)
+  (with-temp-buffer
+    (insert str)
+    (org-export-to-file backend "/tmp/test1" nil nil nil body-only))
+  (org-file-contents "/tmp/test1"))
 
 (provide 'config-org)
