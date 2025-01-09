@@ -11,6 +11,7 @@
 \definecolor{bistre}{rgb}{0.24, 0.17, 0.12}
 \definecolor{darkgreen}{rgb}{0.0, 0.55, 0.1}
 \definecolor{darkorange}{rgb}{0.688039215686, 0.309411764706, 0.078431372549}
+% alternative to \hyperref to refer to a symbols definition/source using blk
 \renewcommand{\refdef}[2][]{%
   \special{dvisvgm:raw <g data-ref='#1' class='fancy-button' pointer-events="bounding-box">}
   \textcolor{darkorange}{\hyperref[#1]{#2}}

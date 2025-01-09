@@ -212,6 +212,9 @@
 \newcommand{\refdef}[2][]{%
   #2
 }
+\newcommand{\mrefdef}[2][]{% currently doesnt work, just a placeholder for making references in latex using blk links
+  #2
+}
 % define a variable with a given id, 1st arg is id, 2nd is definition, the id should be referrable by \refdef similar to blk id's
 \newcommand{\defvar}[2]{% define a variable, \defvar{id/name}{symbol}, like lexical bindings but maybe extend it to highest block
   \refdef[#1]{#2}
