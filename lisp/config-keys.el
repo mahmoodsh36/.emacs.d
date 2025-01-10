@@ -546,7 +546,7 @@
         (when command
           (new-shell-with-cmd (plist-get command :cmd)))))))
 
-(led-kbd "; k" #'my-sys-prompt)
+;; (led-kbd "; k" #'my-sys-prompt)
 
 (evil-set-initial-state 'org-agenda-mode 'normal)
 
@@ -568,5 +568,21 @@
 (led-kbd "; u" 'my-open-at-point)
 
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
+
+(defun start-program-on-current-file (program-name)
+  (interactive)
+  (start-process program-name nil program-name buffer-file-name))
+
+(led-kbd
+ "; z"
+ (lambda ()
+   (interactive)
+   (start-program-on-current-file "zathura")))
+
+(led-kbd
+ "; k"
+ (lambda ()
+   (interactive)
+   (start-program-on-current-file "okular")))
 
 (provide 'config-keys)

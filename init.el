@@ -386,3 +386,11 @@
     (while (re-search-forward "/[^ \t]*" nil t)
       (make-button (match-beginning 0) (match-end 0) :type 'find-file-button))))
 ;; (add-hook 'find-file-hook 'buttonize-buffer) ; uncomment to add to find file
+
+(setq eval-expression-print-level nil)
+(setq eval-expression-print-length nil)
+;; dont truncate errors messages?
+(setq edebug-print-level nil)
+(setq edebug-print-length nil)
+(setq print-level nil)
+(setq print-length nil)
