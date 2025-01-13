@@ -1165,13 +1165,18 @@
 
 (use-package gptel
   :config
-  (setq gptel-model 'mistral:latest
-        gptel-backend (gptel-make-ollama "ollama"
-                        :host "localhost:11434"
-                        :stream t
-                        :models '("mistral:latest")
-                        ;; :models '("codellama:13b-instruct")
-                        )))
+  (setq
+   ;; gptel-model 'mistral:latest
+   ;; gptel-backend (gptel-make-ollama "ollama"
+   ;;                 :host "localhost:11434"
+   ;;                 :stream t
+   ;;                 :models '("mistral:latest")
+   ;;                 ;; :models '("codellama:13b-instruct")
+   ;;                 )
+   gptel-model 'gemini
+   gptel-backend (gptel-make-gemini "Gemini"
+                   :key (getenv "GEMINI_API_KEY")
+                   :stream t)))
 
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import
