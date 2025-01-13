@@ -571,9 +571,14 @@
 
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 
-(defun start-program-on-current-file (program-name)
+(defun start-program-on-current-file (program-name &optional args)
   (interactive)
-  (start-process program-name nil program-name buffer-file-name))
+  (let ((filepath (if (derived-mode-p 'dired-mode)
+                      (dired-get-filename)
+                    buffer-file-name)))
+    (apply 'start-process
+           (append (list program-name nil program-name)
+                   (append args (list filepath))))))
 
 (led-kbd
  "; z"
@@ -586,5 +591,17 @@
  (lambda ()
    (interactive)
    (start-program-on-current-file "okular")))
+
+(led-kbd
+ "; v"
+ (lambda ()
+   (interactive)
+   (start-program-on-current-file "mpv")))
+
+(led-kbd
+ "; V"
+ (lambda ()
+   (interactive)
+   (start-program-on-current-file "mpv" (list "--no-video" "--force-window"))))
 
 (provide 'config-keys)
