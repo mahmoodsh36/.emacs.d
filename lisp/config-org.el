@@ -613,6 +613,7 @@ your browser does not support the video tag.
   (defvar special-blocks-not-for-handling
     (list ;; "dummy"
           "any"
+          "part"
           ;; "dummy2"
           "literal"))
 
@@ -1056,6 +1057,67 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
   (with-eval-after-load 'org-latex-preview
     (when *latex-previews-enabled-p*
       (enable-latex-previews)))
+
+  ;; redefine
+  ;; redefine to always center images no matter what
+  (defun org-image--align (link)
+    "Determine the alignment of the image LINK.
+LINK is a link object.
+
+In decreasing order of priority, this is controlled:
+- Per image by the value of `:center' or `:align' in the
+affiliated keyword `#+attr_org'.
+- By the `#+attr_html' or `#+attr_latex` keywords with valid
+  `:center' or `:align' values.
+- Globally by the user option `org-image-align'.
+
+The result is either nil or one of the strings \"left\",
+\"center\" or \"right\".
+
+\"center\" will cause the image preview to be centered, \"right\"
+will cause it to be right-aligned.  A value of \"left\" or nil
+implies no special alignment."
+    (let ((par (org-element-lineage link 'paragraph)))
+      ;; Only align when image is not surrounded by paragraph text:
+      (when (and par ; when image is not in paragraph, but in table/headline/etc, do not align
+                 ;; (= (org-element-begin link)
+                 ;;    (save-excursion
+                 ;;      (goto-char (org-element-contents-begin par))
+                 ;;      (skip-chars-forward "\t ")
+                 ;;      (point)))           ;account for leading space
+                 ;;                        ;before link
+                 ;; (<= (- (org-element-contents-end par)
+                 ;;        (org-element-end link))
+                 ;;     1)
+                 )                  ;account for trailing newline
+                                        ;at end of paragraph
+        (save-match-data
+          ;; Look for a valid ":center t" or ":align left|center|right"
+          ;; attribute.
+          ;;
+          ;; An attr_org keyword has the highest priority, with
+          ;; any attr.* next.  Choosing between these is
+          ;; unspecified.
+          (let ((center-re ":\\(center\\)[[:space:]]+t\\b")
+                (align-re ":align[[:space:]]+\\(left\\|center\\|right\\)\\b")
+                attr-align)
+            (catch 'exit
+              (org-element-properties-mapc
+               (lambda (propname propval)
+                 (when (and propval
+                            (string-match-p ":attr.*" (symbol-name propname)))
+                   (setq propval (car-safe propval))
+                   (when (or (string-match center-re propval)
+                             (string-match align-re propval))
+                     (setq attr-align (match-string 1 propval))
+                     (when (eq propname :attr_org)
+                       (throw 'exit t)))))
+               par))
+            (if attr-align
+                (when (member attr-align '("center" "right")) attr-align)
+              ;; No image-specific keyword, check global alignment property
+              (when (memq org-image-align '(center right))
+                (symbol-name org-image-align))))))))
 
   )
 
