@@ -1269,4 +1269,30 @@
 (use-package org-sliced-images
   :config (org-sliced-images-mode))
 
+;; from https://github.com/karthink/.emacs.d/blob/ff61c62c955eb941b8111fa9356d5f80b8dc9cbc/init.el#L200
+(condition-case-unless-debug nil
+    (use-package gcmh
+      :defer 2
+      :ensure t
+      ;; :hook (after-init . gcmh-mode)
+      :config
+      (defun gcmh-register-idle-gc ()
+        "Register a timer to run `gcmh-idle-garbage-collect'.
+Cancel the previous one if present."
+        (unless (eq this-command 'self-insert-command)
+          (let ((idle-t (if (eq gcmh-idle-delay 'auto)
+                            (* gcmh-auto-idle-delay-factor gcmh-last-gc-time)
+                          gcmh-idle-delay)))
+            (if (timerp gcmh-idle-timer)
+                (timer-set-time gcmh-idle-timer idle-t)
+              (setf gcmh-idle-timer
+                    (run-with-timer idle-t nil #'gcmh-idle-garbage-collect))))))
+      (setq gcmh-idle-delay 'auto  ; default is 15s
+            gcmh-high-cons-threshold (* 32 1024 1024)
+            gcmh-verbose nil
+            gc-cons-percentage 0.2)
+      (gcmh-mode 1))
+  (error (setq gc-cons-threshold (* 16 1024 1024)
+               gc-cons-percentage 0.2)))
+
 (provide 'config-packages)
