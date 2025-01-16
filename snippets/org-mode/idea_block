@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: idea block
+# key: 'b
+# --
+#+begin_idea
+$0
+#+end_idea

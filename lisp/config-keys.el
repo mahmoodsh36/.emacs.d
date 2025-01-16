@@ -571,6 +571,7 @@
 
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 
+;; run a specific program on a specific file (works for dired too)
 (defun start-program-on-current-file (program-name &optional args)
   (interactive)
   (let ((filepath (if (derived-mode-p 'dired-mode)
@@ -580,12 +581,12 @@
            (append (list program-name nil program-name)
                    (append args (list filepath))))))
 
+;; some keys to launch different pdf viewers
 (led-kbd
  "; z"
  (lambda ()
    (interactive)
    (start-program-on-current-file "zathura")))
-
 (led-kbd
  "; k"
  (lambda ()
@@ -597,7 +598,7 @@
  (lambda ()
    (interactive)
    (start-program-on-current-file "mpv")))
-
+;; mpv on file without video
 (led-kbd
  "; V"
  (lambda ()

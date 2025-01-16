@@ -262,6 +262,7 @@
 \newcommand{\textloop}{\textop{loop}}
 \newcommand{\textstop}{\textop{stop}}
 \newcommand{\textfor}{\algop{for}}
+\newcommand{\textwhile}{\algop{while}}
 \newcommand{\textend}{\algop{end}}
 \newcommand{\textreturn}{\algop{return}}
 \newcommand{\textxor}{\textsc{xor}}
@@ -313,7 +314,7 @@
 \NewDocumentCommand{\?}{g}{%
   \overset{?}{\IfNoValueTF{#1}{=}{#1}}%
 }
-\newcommand{\algout}[1]{\textbf{out}:\text{#1}}
+\newcommand{\algout}[1]{\textbf{output}:\text{#1}}
 \newcommand{\boolor}{\refdef{\lor}}
 \newcommand{\bboolor}{\mathop{\refdef{\bigvee}}}
 
@@ -344,6 +345,7 @@
 \newcommand{\edgedicut}{\refdef{\delta^+}}
 \newcommand{\graphdist}{\refdef{\delta}}
 \newcommand{\infface}{\refdef[blk:def-face-inf]{f_{\infty}}}
+\newcommand{\ddgraph}{DDG}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -445,6 +447,7 @@
 \newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE-DEPTH}}}
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
 \newcommand{\compAC}{\refdef[blk:def-ac]{\brm{AC}}}
+\newcommand{\tildoh}{\tilde\bigoh}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -562,6 +565,7 @@
 \newenvironment*{dummy}{}{}
 \newenvironment*{dummy2}{}{}
 \newenvironment{any}{}{}
+\newenvironment{my_part}{}{}
 \newenvironment{literal}{}{}
 
 % the following snippet auto resizes images to fit properly
