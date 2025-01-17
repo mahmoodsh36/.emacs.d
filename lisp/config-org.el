@@ -2250,19 +2250,33 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-table-export csv-file "orgtbl-to-csv")
     (org-odt-convert csv-file arg)))
 
-;; advice to resize properly from 0-2500 to 0-600
+;; resize from 0-2500 to 0-x
+(defun calc-xopp-image-width (image-path)
+  (let ((max-xopp-image-width (float 2500))
+        (max-display-width 600))
+    (floor
+     (* (/ (car (image-size
+                 (create-image image-path)
+                 t))
+           max-xopp-image-width)
+        max-display-width))))
+
 (with-eval-after-load 'org-xopp
+  ;; advice to resize properly from 0-2500 to 0-600
   (defun my-org-xopp-place-image-advice (fn buffer image-path link)
-    (let* ((max-xopp-image-width (float 2500))
-           (max-display-width 600)
-           (org-image-actual-width
-            (floor
-             (* (/ (car (image-size
-                         (create-image image-path)
-                         t))
-                   max-xopp-image-width)
-                max-display-width))))
+    (let* ((org-image-actual-width (calc-xopp-image-width image-path)))
       (funcall fn buffer image-path link)))
+  ;; redefine to resize properly from 0-2500 to 0-600 when embedding in pdf
+  (defun org-xopp-export-figure (path desc backend)
+    (let* ((image-filepath (org-xopp-generate-figure path)))
+      ;; perhaps allow the user to specify how the figures are handled on export?
+      ;; this behavior is somewhat of a "placeholder".
+      (if (string= backend "html")
+          (format "<img src='%s' />" image-filepath)
+        (when (string= backend "latex")
+          (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
+                  (calc-xopp-image-width image-filepath)
+                  image-filepath)))))
   (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice))
 
 (defun cheap-org-export-string-as (str backend &optional body-only)
