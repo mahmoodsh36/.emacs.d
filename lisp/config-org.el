@@ -78,18 +78,21 @@
   (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".tex"))
 (defun pdf-out-file ()
   (concat (file-truename (get-latex-cache-dir-path)) (current-filename-no-ext) ".pdf"))
-(cl-defun my-org-to-pdf (&optional (async t))
+(cl-defun my-org-to-pdf (&optional (async t) (force nil))
   (interactive)
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class")))))
         (org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")))
-    (clean-latex-files outfile)
-    (if is-beamer
-        (org-export-to-file 'beamer outfile
-          nil nil nil nil nil nil)
-      (org-export-to-file 'latex outfile
-        nil nil nil nil nil nil))
-    (compile-latex-file outfile async)))
+
+    (when (not (and (file-newer-than-file-p outfile buffer-file-name)
+                    (not force)))
+      (clean-latex-files outfile)
+      (if is-beamer
+          (org-export-to-file 'beamer outfile
+            nil nil nil nil nil nil)
+        (org-export-to-file 'latex outfile
+          nil nil nil nil nil nil))
+      (compile-latex-file outfile async))))
 
 (cl-defun compile-latex-file (path &optional (async t))
   ;; for biber we need a different set of commands, for cross-references we need to compile twice
@@ -1394,7 +1397,7 @@ implies no special alignment."
    file
    (when (not org-transclusion-mode) (org-transclusion-mode))
    (when (plist-get kw :pdf-p)
-     (my-org-to-pdf (plist-get kw :async)))
+     (my-org-to-pdf (plist-get kw :async) (plist-get kw :force)))
    (when (plist-get kw :html-p)
      (my-org-to-html nil (plist-get kw :force)))))
 

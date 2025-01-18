@@ -261,7 +261,7 @@
           (lambda ()
             (led-kbd "c" (lambda () (interactive) (run-this-in-eshell "clear 1")) :keymaps 'local)))
 (led-kbd "x" 'eshell-interrupt-process :keymaps 'eshell-mode-map)
-(led-kbd "x" 'sly-compile-defun :keymaps 'lisp-mode-map)
+(led-kbd "x" 'sly-eval-defun :keymaps 'lisp-mode-map)
 (led-kbd "c" 'sly-eval-buffer :keymaps 'lisp-mode-map)
 (led-kbd "z"
          (lambda ()
