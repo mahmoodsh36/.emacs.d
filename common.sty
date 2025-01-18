@@ -430,6 +430,7 @@
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
 \newcommand{\fcsize}{\refdef[blk:not-fcsize]{\operatorname{Size}}}
 \newcommand{\fcdepth}{\refdef[blk:not-fcdepth]{\operatorname{Depth}}}
+\newcommand{\ffcdepth}{\refdef[blk:not-ffcdepth]{\operatorname{FDepth}}}
 \newcommand{\bfuncs}{\refdef[blk:not-bfuncs]{\mathbb{B}}}
 \newcommand{\bfuncshat}{\refdef[def-bool-std-basis]{\hat{\mathcal{B}}}}
 \newcommand{\bfuncsbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_0}}
@@ -449,6 +450,7 @@
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
 \newcommand{\compAC}{\refdef[blk:def-ac]{\brm{AC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
+\newcommand{\boolunivfuncop}{\mathop{\refdef[blk:def-bool-univ-func]{\diamond}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -468,6 +470,7 @@
 
 % other macros/symbols
 \newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n (i found this notation in several books, including \ref{blk:1731676381.9014068})
+\newcommand{\brange}[1]{[#1]} % [n] to denote 1,...,n
 \newcommand{\equivrel}{\mathrel{\refdef[blk:def-equiv-relation]{\sim}}}
 \newcommand{\fcomp}{\mathrel{\refdef[blk:def-func-comp]{\circ}}}
 
@@ -544,6 +547,7 @@
     \newtheorem{solution}{solution}% [problem]
     \newtheorem{subproblem}{subproblem}
     \newtheorem{subproof}{subproof}
+    \newtheorem{proof2}{proof}
     \newtheorem{proof_idea}{proof idea}
     \newtheorem{task}{task}
     \newtheorem{theorem}{theorem}
