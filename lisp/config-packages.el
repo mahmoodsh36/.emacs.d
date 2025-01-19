@@ -1295,4 +1295,6 @@ Cancel the previous one if present."
   (error (setq gc-cons-threshold (* 16 1024 1024)
                gc-cons-percentage 0.2)))
 
+;; (use-package pdfgrep)
+
 (provide 'config-packages)

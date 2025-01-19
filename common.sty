@@ -317,6 +317,10 @@
 \newcommand{\algout}[1]{\textbf{output}:\text{#1}}
 \newcommand{\boolor}{\refdef{\lor}}
 \newcommand{\bboolor}{\mathop{\refdef{\bigvee}}}
+\newcommand{\booland}{\refdef{\land}}
+\newcommand{\bbooland}{\mathop{\refdef{\land}}}
+\newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
+\newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_#2}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -450,7 +454,7 @@
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
 \newcommand{\compAC}{\refdef[blk:def-ac]{\brm{AC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
-\newcommand{\boolunivfuncop}{\mathop{\refdef[blk:def-bool-univ-func]{\diamond}}}
+\newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

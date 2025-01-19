@@ -84,8 +84,8 @@
         (is-beamer (car (cdar (org-collect-keywords '("latex_class")))))
         (org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")))
 
-    (when (not (and (file-newer-than-file-p outfile buffer-file-name)
-                    (not force)))
+    (when (or (file-newer-than-file-p buffer-file-name outfile)
+              force)
       (clean-latex-files outfile)
       (if is-beamer
           (org-export-to-file 'beamer outfile
