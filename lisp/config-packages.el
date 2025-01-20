@@ -1173,10 +1173,17 @@
    ;;                 :models '("mistral:latest")
    ;;                 ;; :models '("codellama:13b-instruct")
    ;;                 )
-   gptel-model 'gemini
-   gptel-backend (gptel-make-gemini "Gemini"
-                   :key (getenv "GEMINI_API_KEY")
-                   :stream t)))
+;; Llama.cpp offers an OpenAI compatible API
+   gptel-backend (gptel-make-openai "llama-cpp"
+                   :stream t
+                   :protocol "http"
+                   :host "mahmooz2:8080"
+                   :models '(qwen))
+   ;; gptel-model 'gemini
+   ;; gptel-backend (gptel-make-gemini "Gemini"
+   ;;                 :key (getenv "GEMINI_API_KEY")
+   ;;                 :stream t)
+   ))
 
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import
