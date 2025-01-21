@@ -1166,7 +1166,6 @@
 (use-package gptel
   :config
   (setq
-   ;; gptel-model 'mistral:latest
    ;; gptel-backend (gptel-make-ollama "ollama"
    ;;                 :host "localhost:11434"
    ;;                 :stream t
@@ -1174,6 +1173,7 @@
    ;;                 ;; :models '("codellama:13b-instruct")
    ;;                 )
 ;; Llama.cpp offers an OpenAI compatible API
+   gptel-default-mode 'org-mode
    gptel-backend (gptel-make-openai "llama-cpp"
                    :stream t
                    :protocol "http"

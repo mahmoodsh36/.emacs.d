@@ -29,7 +29,7 @@
 (setq should-export-org-file-function #'should-export-org-file)
 
 ;; 0 means export only the nodes themselves, i means nodes with a distance of at most 'i' links from each node we have
-(defconst export-graph-depth 2)
+(defvar export-graph-depth 2)
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
@@ -1416,13 +1416,14 @@ implies no special alignment."
 
 (defun export-org-file (file &rest kw)
   "export a node's file to both html and pdf, if pdf-p is true, export to pdf, if html-p is true, export to html"
-  (with-file-as-current-buffer
-   file
-   (when (not org-transclusion-mode) (org-transclusion-mode))
-   (when (plist-get kw :pdf-p)
-     (my-org-to-pdf (plist-get kw :async) (plist-get kw :force)))
-   (when (plist-get kw :html-p)
-     (my-org-to-html nil (plist-get kw :force)))))
+  (let ((enable-dir-local-variables nil)) ;; to not use git-auto-commit-mode..
+    (with-file-as-current-buffer
+     file
+     (when (not org-transclusion-mode) (org-transclusion-mode))
+     (when (plist-get kw :pdf-p)
+       (my-org-to-pdf (plist-get kw :async) (plist-get kw :force)))
+     (when (plist-get kw :html-p)
+       (my-org-to-html nil (plist-get kw :force))))))
 
 ;; (defun files-linked-from-org-file (filepath)
 ;;   (with-org-file-faster filepath
@@ -1459,14 +1460,17 @@ implies no special alignment."
 
 (defun export-node (node exceptions &rest kw)
   "export node, export all nodes/files it links to, and all files linked from those and so on, basically we're exporting the connected subgraph the node exists in, `exceptions' is used for recursion to keep a record of exported nodes"
+  (message "exporting %s" node)
   (if (and node (not (cl-find node exceptions :test #'string=)))
       (progn
         (push node exceptions)
         (when (and node (funcall should-export-org-file-function node))
           ;; (message (format "exporting: %s" node))
-          (condition-case nil
-              (apply #'export-org-file node kw)
-            (error (message "failed to export %s" node)))
+          (if (plist-get kw :continue-on-error)
+              (condition-case nil
+                  (apply #'export-org-file node kw)
+                (error (message "failed to export %s" node)))
+            (apply #'export-org-file node kw))
           ;; (when (< depth export-graph-depth)
           ;;   (let ((nodes (files-linked-from-org-file node)))
           ;;     (dolist (other-node nodes)
@@ -1524,22 +1528,28 @@ implies no special alignment."
 
 (defun export-all-org-files-to-html-local ()
   (interactive)
-  (let (
-        ;; (should-export-org-file-function
-        ;;  (lambda (orgfile)
-        ;;    (with-file-as-current-buffer orgfile
-        ;;     (or (cl-find "math" (org-get-tags) :test 'equal)
-        ;;         (cl-find "cs" (org-get-tags) :test 'equal)))))
-        (should-export-org-file-function
-         (lambda () t))
-        (*static-html-dir* (expand-file-name "~/work/localsite/"))
-        (files-to-export (collect-org-files-to-export)))
+  (let* (
+         ;; (should-export-org-file-function
+         ;;  (lambda (orgfile)
+         ;;    (with-file-as-current-buffer orgfile
+         ;;     (or (cl-find "math" (org-get-tags) :test 'equal)
+         ;;         (cl-find "cs" (org-get-tags) :test 'equal)))))
+         (should-export-org-file-function
+          (lambda (_) t))
+         (export-graph-depth 0)
+         (*static-html-dir* (expand-file-name "~/work/localsite/"))
+         (org-inhibit-startup t)
+         ;; (files-to-export (collect-org-files-to-export))
+         (files-to-export (list-note-files)))
+    (message "collected %s files to export" (length files-to-export))
     (map-org-dir-elements
      *notes-dir*
      ":forexport:"
      'headline
      (lambda (_) (org-export-heading-html)))
-    (export-all-org-files :html-p t)))
+    (export-all-org-files :html-p t :continue-on-error nil)
+    (generate-and-save-website-search-data)
+    (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
 
 (defun export-current-buffer (&rest kw)
   "gets the node associated with the current buffer, exports it"
