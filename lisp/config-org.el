@@ -442,29 +442,52 @@ your browser does not support the video tag.
   (advice-add #'org-html-link :around #'my-org-html-link-advice)
 
   ;; handle .xopp files properly
-  ;; todo rewrite, this can be done without advising with `org-export-before-processing-functions`
-  ;; (defun my-org-latex-link-advice (fn link desc info)
-  ;;   (let* ((link-path (org-element-property :path link))
-  ;;          (file-basename (file-name-base link-path))
-  ;;          (link-type (org-element-property :type link)))
-  ;;     (if (equal link-type "xopp-pages")
-  ;;         (let ((pdf-filepath (format "/tmp/%s.pdf" file-basename))
-  ;;               (shell-command-dont-erase-buffer t))
-  ;;           (shell-command
-  ;;            (format "xournalpp --create-pdf %s %s"
-  ;;                    pdf-filepath
-  ;;                    link-path))
-  ;;           (format "\\includepdf[pages=-]{%s}" pdf-filepath))
-  ;;       (if (equal link-type "xopp-figure")
-  ;;           (let ((png-filepath
-  ;;                  (s-trim
-  ;;                   (shell-command-to-string-no-stderr
-  ;;                    (format "generate_xopp_figure.sh '%s'"
-  ;;                            link-path)))))
-  ;;             (message "im here %s" png-filepath)
-  ;;             (format "\\begin{center}\\includegraphics[max width=0.5\\linewidth]{%s}\\end{center}" png-filepath))
-  ;;         (funcall fn link desc info)))))
-  ;; (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
+  (defun my-org-latex-link-advice (fn link desc info)
+    ;; :caption and :name are nil unless we use the hack below
+    (let* ((link-paragraph
+            (save-excursion
+              (goto-char (org-element-begin link))
+              (org-element-at-point)))
+           (link-path (org-element-property :path link))
+           (link-type (org-element-property :type link))
+           (link-caption
+            (save-excursion
+              (goto-char (org-element-begin link))
+              (org-narrow-to-element)
+              (let ((tmp (org-get-keyword-faster "caption")))
+                (widen)
+                tmp)))
+           (link-name
+            (save-excursion
+              (goto-char (org-element-begin link))
+              (org-narrow-to-element)
+              (let ((tmp (org-get-keyword-faster "name")))
+                (widen)
+                tmp)))
+           (image-filepath (org-xopp-generate-figure link-path))
+           (caption-above-p nil))
+      (if (equal link-type "xopp-figure")
+          (if (not (or link-name link-caption))
+              (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
+                      (calc-xopp-image-width image-filepath)
+                      image-filepath)
+            (with-temp-buffer
+              (insert "\\begin{figure}\\centering\n")
+              (insert (format "\\includegraphics[width=%spx]{%s}\n"
+                              (calc-xopp-image-width image-filepath 400)
+                              image-filepath))
+              (goto-char (point-max))
+              (insert "\n\\end{figure}")
+              (if caption-above-p
+                  (progn
+                    (goto-char (point-min))
+                    (forward-line))
+                (goto-char (point-max))
+                (forward-line -1))
+              (insert (format "\\caption{%s}" (or link-caption "")))
+              (buffer-string)))
+        (funcall fn link desc info))))
+  (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
 
   (defun my-org-replace-citations (&optional export-backend)
     "blocks whose last line is a citation, remove that citation to the block's :source keyword"
@@ -1499,14 +1522,18 @@ implies no special alignment."
          (files-to-export (collect-org-files-to-export)))
     (export-all-org-files :pdf-p t :async nil)))
 
-(defun export-all-math-org-files-to-html ()
+(defun export-all-org-files-to-html-local ()
   (interactive)
-  (let ((should-export-org-file-function
-         (lambda (orgfile)
-           (with-file-as-current-buffer orgfile
-            (or (cl-find "math" (org-get-tags) :test 'equal)
-                (cl-find "cs" (org-get-tags) :test 'equal)))))
-        (*static-html-dir* (expand-file-name "~/work/test/")))
+  (let (
+        ;; (should-export-org-file-function
+        ;;  (lambda (orgfile)
+        ;;    (with-file-as-current-buffer orgfile
+        ;;     (or (cl-find "math" (org-get-tags) :test 'equal)
+        ;;         (cl-find "cs" (org-get-tags) :test 'equal)))))
+        (should-export-org-file-function
+         (lambda () t))
+        (*static-html-dir* (expand-file-name "~/work/localsite/"))
+        (files-to-export (collect-org-files-to-export)))
     (map-org-dir-elements
      *notes-dir*
      ":forexport:"
@@ -1742,7 +1769,9 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
         (widen))
       ;; (copy-directory "ltx" *static-html-dir* t)
       (dolist (filepath (directory-files (join-path *template-html-dir* "static") t "html\\|css\\|js"))
-        (copy-file filepath *static-html-dir* t)))))
+        (if (file-exists-p filepath)
+            (copy-file filepath *static-html-dir* t)
+          (message "linked file %s doesnt exist" filepath))))))
 
 (defun generate-website-search-data ()
   (let ((data (blk-collect-all))
@@ -2016,7 +2045,9 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                myhtml
                (plist-get entry :id)
                (when (plist-get entry :image)
-                 (export-static-file (plist-get entry :image)))
+                 (if (file-exists-p (plist-get entry :image))
+                     (export-static-file (plist-get entry :image))
+                   (message "collage image %s doesnt exist" (plist-get entry :image))))
                (plist-get entry :title)
                (or (plist-get entry :subtitle) "")
                (or (plist-get entry :subsubtitle) "")
@@ -2254,15 +2285,14 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-odt-convert csv-file arg)))
 
 ;; resize from 0-2500 to 0-x
-(defun calc-xopp-image-width (image-path)
-  (let ((max-xopp-image-width (float 2500))
-        (max-display-width 600))
+(cl-defun calc-xopp-image-width (image-path &optional (new-max-width 600))
+  (let ((max-xopp-image-width (float 2500)))
     (floor
      (* (/ (car (image-size
                  (create-image image-path)
                  t))
            max-xopp-image-width)
-        max-display-width))))
+        new-max-width))))
 
 (with-eval-after-load 'org-xopp
   ;; advice to resize properly from 0-2500 to 0-600
