@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: big oh
+# key: oh
+# --
+\bigoh($0)
