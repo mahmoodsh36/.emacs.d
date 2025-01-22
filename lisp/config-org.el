@@ -444,11 +444,7 @@ your browser does not support the video tag.
   ;; handle .xopp files properly
   (defun my-org-latex-link-advice (fn link desc info)
     ;; :caption and :name are nil unless we use the hack below
-    (let* ((link-paragraph
-            (save-excursion
-              (goto-char (org-element-begin link))
-              (org-element-at-point)))
-           (link-path (org-element-property :path link))
+    (let* ((link-path (org-element-property :path link))
            (link-type (org-element-property :type link))
            (link-caption
             (save-excursion
@@ -1542,12 +1538,12 @@ implies no special alignment."
          ;; (files-to-export (collect-org-files-to-export))
          (files-to-export (list-note-files)))
     (message "collected %s files to export" (length files-to-export))
-    (map-org-dir-elements
-     *notes-dir*
-     ":forexport:"
-     'headline
-     (lambda (_) (org-export-heading-html)))
-    (export-all-org-files :html-p t :continue-on-error nil)
+    ;; (map-org-dir-elements
+    ;;  *notes-dir*
+    ;;  ":forexport:"
+    ;;  'headline
+    ;;  (lambda (_) (org-export-heading-html)))
+    ;; (export-all-org-files :html-p t :continue-on-error t)
     (generate-and-save-website-search-data)
     (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
 
@@ -1794,19 +1790,19 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                        (html-file (alist-get org-file org-file-to-html-file-alist)))
                   (message "%s/%s %s" num (length data) (plist-get entry :title))
                   (when (funcall should-export-org-file-function org-file)
-                    (let ((entry-id (blk-extract-id entry)))
+                    (let ((entry-id (blk-extract-id entry))
+                          (title (org-file-grab-keyword-faster
+                                  org-file
+                                  "title")))
                       (plist-put entry :id entry-id)
-                      (when (not html-file)
-                        (setq html-file
-                              (html-out-file
-                               (org-file-grab-keyword-faster
-                                org-file
-                                "title")))
+                      (when (and (not html-file) title)
+                        (setq html-file (html-out-file title))
                         (push (cons org-file html-file) org-file-to-html-file-alist))
-                      (plist-put entry :filepath (file-name-nondirectory html-file))
-                      (plist-put entry
-                                 :original-filename
-                                 (file-name-nondirectory html-file))
+                      (when title
+                        (plist-put entry :filepath (file-name-nondirectory html-file))
+                        (plist-put entry
+                                   :original-filename
+                                   (file-name-nondirectory html-file)))
                       (push entry new-data)))))
     new-data))
 (defun generate-and-save-website-search-data ()
