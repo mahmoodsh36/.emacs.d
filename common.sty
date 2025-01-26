@@ -370,6 +370,7 @@
 \newcommand{\mproddot}[1]{\impop[blk:def-proddot]{#1}} % dot product
 \newcommand{\mcomp}[1]{#1} % composition, e.g. fgc instead of f(g(c)).
 \newcommand{\addvec}{\refdef[blk:def-add-vec]{+}} % vector addition
+\newcommand{\expvs}[2]{{#1}^{#2}} % vector space exponent
 
 % to denote an implicit operation between candidates, \ref{blk:c170e620-ba4d-4162-8522-fd70ba57753d}, example usage: \(\impop[blk:myid][+]{979}{2}{31}{9}\), \(\impop[blk:myid]{979}{2}{31}{9}\)
 \makeatletter
@@ -456,6 +457,8 @@
 \newcommand{\compAC}{\refdef[blk:def-ac]{\brm{AC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
+\newcommand{\booldist}{\refdef[blk:def-bool-dist]{\operatorname{dist}}}
+\newcommand{\compACp}{\compAC^0[\parity]}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -560,6 +563,8 @@
     \newtheorem{claim}{claim}
     \newtheorem{proposition}{proposition}
     \newtheorem{notation}{notation}
+    \newtheorem{my_part}{part}
+    \counterwithin{my_part}{solution}
     % \newenvironment{note}
     % {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}
     %   {\end{bclogo}}
@@ -575,7 +580,6 @@
 \newenvironment*{dummy}{}{}
 \newenvironment*{dummy2}{}{}
 \newenvironment{any}{}{}
-\newenvironment{my_part}{}{}
 \newenvironment{literal}{}{}
 
 % the following snippet auto resizes images to fit properly
@@ -747,6 +751,8 @@
 \newcommand\transpose[1]{{#1}^{\refdef[blk:def-transpose]{\intercal}}}
 \newcommand\tensor[1]{\refdef[blk:def-tensor-inf]{\ptvct{#1}}}
 \newcommand\cntinfty{\refdef[blk:20240523T095610]{\aleph_0}} % \refdef[blk:20240523T095610]{countable infinity}
+\newcommand{\ffield}[1]{\refdef[blk:1737722654.9790187]{\mathbb{Z}_{#1}}}
+\newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{deg}}}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
@@ -844,3 +850,19 @@
 \NewDocumentCommand\aclrn{o}{\IfNoValueTF{#1}{\vct{a}}{#1}}
 \NewDocumentCommand\tim{o}{\IfNoValueTF{#1}{t}{#1}}
 \NewDocumentCommand\Gconst{}{G}
+
+% denoting intervals, https://tex.stackexchange.com/questions/23640/how-to-input-open-intervals
+\NewDocumentCommand{\INTERVALINNARDS}{ m m }{
+    #1 {,} #2
+}
+\NewDocumentCommand{\interval}{ s m >{\SplitArgument{1}{,}}m m o }{
+    \IfBooleanTF{#1}{
+        \left#2 \INTERVALINNARDS #3 \right#4
+    }{
+        \IfValueTF{#5}{
+            #5{#2} \INTERVALINNARDS #3 #5{#4}
+        }{
+            #2 \INTERVALINNARDS #3 #4
+        }
+    }
+}

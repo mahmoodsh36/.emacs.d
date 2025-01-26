@@ -405,9 +405,9 @@
             (format "%s" (or desc link-path)))
         ;; if its a link to a static file
         (if (or (equal link-type "file")
-                (equal link-type "xopp-figure"))
+                (equal link-type "xopp-figure1"))
             (progn
-              (when (equal link-type "xopp-figure")
+              (when (equal link-type "xopp-figure1")
                 (call-process org-xopp-figure-generation-script
                               nil
                               nil
@@ -460,28 +460,34 @@ your browser does not support the video tag.
               (let ((tmp (org-get-keyword-faster "name")))
                 (widen)
                 tmp)))
-           (image-filepath (org-xopp-generate-figure link-path))
+           ;; force org-xopp to regenerate the image with the dimensions we want
+           ;; (org-xopp-imagemagick-extra-args nil)
+           ;; (org-xopp-regenerate-only-on-change nil)
+           (image-filepath nil)
            (caption-above-p nil))
       (if (equal link-type "xopp-figure")
-          (if (not (or link-name link-caption))
-              (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
-                      (calc-xopp-image-width image-filepath)
-                      image-filepath)
-            (with-temp-buffer
-              (insert "\\begin{figure}\\centering\n")
-              (insert (format "\\includegraphics[width=%spx]{%s}\n"
-                              (calc-xopp-image-width image-filepath 400)
-                              image-filepath))
-              (goto-char (point-max))
-              (insert "\n\\end{figure}")
-              (if caption-above-p
-                  (progn
-                    (goto-char (point-min))
-                    (forward-line))
+          (progn
+            ;; (setq image-filepath (org-xopp-generate-figure link-path))
+            (message "handling %s" link-path)
+            (if (not (or link-name link-caption))
+                (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
+                        (calc-xopp-image-width image-filepath)
+                        image-filepath)
+              (with-temp-buffer
+                (insert "\\begin{figure}\\centering\n")
+                (insert (format "\\includegraphics[width=%spx]{%s}\n"
+                                (calc-xopp-image-width image-filepath 400)
+                                image-filepath))
                 (goto-char (point-max))
-                (forward-line -1))
-              (insert (format "\\caption{%s}" (or link-caption "")))
-              (buffer-string)))
+                (insert "\n\\end{figure}")
+                (if caption-above-p
+                    (progn
+                      (goto-char (point-min))
+                      (forward-line))
+                  (goto-char (point-max))
+                  (forward-line -1))
+                (insert (format "\\caption{\\label{%s}%s}" (or link-name "")(or link-caption "")))
+                (buffer-string))))
         (funcall fn link desc info))))
   (advice-add #'org-latex-link :around #'my-org-latex-link-advice)
 
@@ -982,12 +988,12 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 If LINK is not found, just return it as is."
      (if (blk-find-by-id link)
          (let* ((linked-file (plist-get (car (blk-find-by-id link)) :filepath))
-                (desc (or desc link))
                 (linked-file-no-ext (file-name-sans-extension (org-export-file-uri linked-file)))
                 (latex-link
                  (if desc
                      (format "\\hyperref[%s]{%s}" link desc)
-                   (format "\\cref{%s}" link))))
+                   (format "\\cref{%s}" link)))
+                (desc (or desc link)))
            (when (not (equal buffer-file-name linked-file))
              (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
            (cond
@@ -1023,54 +1029,6 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                 (if caption
                     (cheap-org-export-string-as (org-element-interpret-data caption) 'html t)
                   "")))))
-
-  ;; for xopp
-  ;; (org-add-link-type "xopp-figure")
-  ;; (org-add-link-type "xopp-pages")
-
-  ;; (org-link-set-parameters "xopp-figure"
-  ;;                          :preview #'org-xopp-figure-image
-  ;;                          )
-
-  ;; (defun org-xopp-figure-image (ov path link)
-  ;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
-  ;;   (let ((absolute-path (expand-file-name path))
-  ;;         (output-file))
-  ;;     ;; check if the .xopp file exists
-  ;;     (if (not (file-exists-p absolute-path))
-  ;;         (message "file not found: %s" absolute-path)
-  ;;       ;; export the .xopp file to an image if not already done
-  ;;       (setq output-file (s-trim (shell-command-to-string-no-stderr
-  ;;                                  (format "generate_xopp_figure.sh %s"
-  ;;                                          absolute-path))))
-  ;;       (org-link-preview-file ov output-file link))))
-
-  ;; (defun org-xopp-figure-image (ov path link)
-  ;;   "overlay .xopp file links in the current org buffer with the corresponding sketches."
-  ;;   (let ((absolute-path (expand-file-name path)))
-  ;;     ;; check if the .xopp file exists
-  ;;     (if (not (file-exists-p absolute-path))
-  ;;         (message "file not found: %s" absolute-path)
-  ;;       ;; export the .xopp file to an image if not already done
-  ;;       (lexical-let ((ov ov)
-  ;;                     (link link))
-  ;;         (prog1 t
-  ;;           (make-process
-  ;;            :name "xopp-preview"
-  ;;            :buffer (generate-new-buffer " *xopp-preview*")
-  ;;            :command (list "sh"
-  ;;                           "-c"
-  ;;                           (format "generate_xopp_figure.sh '%s' 2>/dev/null"
-  ;;                                   absolute-path))
-  ;;            :sentinel (lambda (_proc _status)
-  ;;                        (when-let* ((output-file
-  ;;                                     (with-current-buffer
-  ;;                                         (process-buffer _proc)
-  ;;                                       (string-trim (buffer-string))))
-  ;;                                    (org-buf (overlay-buffer ov))
-  ;;                                    (buffer-live-p org-buf))
-  ;;                          (with-current-buffer org-buf
-  ;;                            (org-link-preview-file ov output-file link))))))))))
 
   ;; center images, limit max width of images
   (setq org-image-align 'center)
@@ -1511,7 +1469,7 @@ implies no special alignment."
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
     ;; (export-entries-page)
-    (export-all-org-files :html-p t)
+    (export-all-org-files :html-p t :continue-on-error t)
     (generate-and-save-website-search-data)
     (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
 
@@ -2290,9 +2248,9 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-table-export csv-file "orgtbl-to-csv")
     (org-odt-convert csv-file arg)))
 
-;; resize from 0-2500 to 0-x
-(cl-defun calc-xopp-image-width (image-path &optional (new-max-width 600))
-  (let ((max-xopp-image-width (float 2500)))
+;; resize from 0-2500 (or some other number inplace of 2500) to 0-x
+(cl-defun calc-xopp-image-width (image-path &optional (new-max-width 500))
+  (let ((max-xopp-image-width (float (/ 2500 4))))
     (floor
      (* (/ (car (image-size
                  (create-image image-path)
@@ -2306,17 +2264,21 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (let* ((org-image-actual-width (calc-xopp-image-width image-path)))
       (funcall fn buffer image-path link)))
   ;; redefine to resize properly from 0-2500 to 0-600 when embedding in pdf
-  (defun org-xopp-export-figure (path desc backend)
-    (let* ((image-filepath (org-xopp-generate-figure path)))
-      ;; perhaps allow the user to specify how the figures are handled on export?
-      ;; this behavior is somewhat of a "placeholder".
-      (if (string= backend "html")
-          (format "<img src='%s' />" image-filepath)
-        (when (string= backend "latex")
-          (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
-                  (calc-xopp-image-width image-filepath)
-                  image-filepath)))))
-  (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice))
+  ;; (defun org-xopp-export-figure (path desc backend)
+  ;;   (let* ((image-filepath (org-xopp-generate-figure path)))
+  ;;     ;; perhaps allow the user to specify how the figures are handled on export?
+  ;;     ;; this behavior is somewhat of a "placeholder".
+  ;;     (if (string= backend "html")
+  ;;         (format "<img src='%s' />" image-filepath)
+  ;;       (when (string= backend "latex")
+  ;;         (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
+  ;;                 (calc-xopp-image-width image-filepath)
+  ;;                 image-filepath)))))
+  ;; (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
+  ;; (setq org-xopp-image-format "png")
+  ;; to get an even smaller file size
+  (setq org-xopp-imagemagick-extra-args (list "-resize" "25%"))
+  )
 
 (defun cheap-org-export-string-as (str backend &optional body-only)
   (with-temp-buffer

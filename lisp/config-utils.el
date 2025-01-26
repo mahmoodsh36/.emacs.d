@@ -559,4 +559,20 @@ prompt the user for a coding system."
        (insert-file-contents ,file)
        (progn ,@body))))
 
+;; faster find-file?
+(defun cheap-find-file (filepath &optional wildwards)
+  "Return a list of keys in PLIST."
+  (let ((contents (buffer-string)))
+    (with-current-buffer (get-buffer-create filepath)
+      (insert-file-contents filepath))))
+
+(defun cheap-org-agenda ()
+  (cl-letf (((symbol-function 'find-file) 'cheap-find-file))
+    (my-org-agenda)))
+
+(defun test2 ()
+  (fset 'tmp 'find-file)
+  (cl-letf (((symbol-function 'find-file) 'cheap-find-file))
+    (find-file "/home/mahmooz/.emacs.d/init.el")))
+
 (provide 'config-utils)
