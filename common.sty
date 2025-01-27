@@ -266,6 +266,7 @@
 \newcommand{\textend}{\algop{end}}
 \newcommand{\textreturn}{\algop{return}}
 \newcommand{\textxor}{\textsc{xor}}
+\newcommand{\textotherwise}{\text{otherwise}}
 \DeclareMathOperator{\graph}{graph}
 \newcommand{\angled}[1]{\langle #1 \rangle}
 \newcommand{\decr}[1]{#1\texttt{-{}-}} % increment of a number
@@ -459,6 +460,7 @@
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 \newcommand{\booldist}{\refdef[blk:def-bool-dist]{\operatorname{dist}}}
 \newcommand{\compACp}{\compAC^0[\parity]}
+\newcommand{\thresh}{\refdef[blk:def-thresh]{\operatorname{Th}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -751,7 +753,7 @@
 \newcommand\transpose[1]{{#1}^{\refdef[blk:def-transpose]{\intercal}}}
 \newcommand\tensor[1]{\refdef[blk:def-tensor-inf]{\ptvct{#1}}}
 \newcommand\cntinfty{\refdef[blk:20240523T095610]{\aleph_0}} % \refdef[blk:20240523T095610]{countable infinity}
-\newcommand{\ffield}[1]{\refdef[blk:1737722654.9790187]{\mathbb{Z}_{#1}}}
+\newcommand{\ffield}{\refdef[blk:1737722654.9790187]{\mathbb{Z}}}
 \newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{deg}}}
 
 \ExplSyntaxOn

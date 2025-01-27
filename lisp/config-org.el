@@ -22,7 +22,8 @@
   (require 'org-notmuch))
 
 (defvar *latex-previews-enabled-p*
-  (not (is-android-system))
+  nil
+  ;; (not (is-android-system))
   "whether latex previews for org mode are enabled for the current session")
 
 ;; whether to export an org mode file
@@ -186,10 +187,11 @@
   (setq org-imenu-depth 4)
   ;; annoying broken links..
   (setq org-export-with-broken-links 'mark)
-  ;; dont cache latex preview images
-  ;; (setq org-latex-preview-cache 'temp)
-  ;; (setq org-element-cache-persistent nil)
-  ;; (setq org-element-use-cache nil)
+  ;; dont cache latex preview images, actually dont use org-persist at all because
+  ;; after long usage it causes a huge delay on the killing of org buffers
+  (setq org-latex-preview-cache 'temp)
+  (setq org-element-cache-persistent nil)
+  (setq org-element-use-cache nil)
 
   (setq org-latex-default-packages-alist nil)
   ;; dont export with table of contents unless i want you to
@@ -405,39 +407,40 @@
             (format "%s" (or desc link-path)))
         ;; if its a link to a static file
         (if (or (equal link-type "file")
-                (equal link-type "xopp-figure1"))
+                (equal link-type "xopp-figure")
+                (equal link-type "xopp-pages"))
             (progn
-              (when (equal link-type "xopp-figure1")
-                (call-process org-xopp-figure-generation-script
-                              nil
-                              nil
-                              nil
-                              link-path
-                              (org-xopp-temp-file link-path))
-                (setq link-path (org-xopp-temp-file link-path)))
-              (let* ((filename (file-name-nondirectory link-path))
-                     (ext (file-name-extension filename)))
-                (message "copying linked static file %s" filename)
-                (condition-case nil
-                    (copy-file link-path (join-path *static-html-dir* filename) t)
-                  (error (message "failed to copy file %s" filename)))
-                (if (cl-member ext (list "png" "jpg" "jpeg" "webp" "svg" "gif") :test #'equal)
-                    (format "<img src=\"%s%s\" />"
-                            *html-static-route*
-                            filename)
-                  (if (cl-member ext (list "mp4" "mkv") :test #'equal)
-                      (format "
+              (let ((static-file-paths
+                     (if (equal link-type "xopp-pages")
+                         (org-xopp-generate-figures link-path)
+                       (list link-path))))
+                (mapconcat
+                 (lambda (static-file-path)
+                   (message "got1 %s" static-file-path)
+                   (let* ((filename (file-name-nondirectory static-file-path))
+                          (ext (file-name-extension filename)))
+                     (message "copying linked static file %s" filename)
+                     (condition-case nil
+                         (copy-file static-file-path (join-path *static-html-dir* filename) t)
+                       (error (message "failed to copy file %s" filename)))
+                     (if (cl-member ext (list "png" "jpg" "jpeg" "webp" "svg" "gif") :test #'equal)
+                         (format "<img src=\"%s%s\" />"
+                                 *html-static-route*
+                                 filename)
+                       (if (cl-member ext (list "mp4" "mkv") :test #'equal)
+                           (format "
 <video controls muted>
   <source src='%s%s' type='video/%s'>
 your browser does not support the video tag.
 </video>"
-                              *html-static-route*
-                              filename
-                              ext)
-                    (format "<a href=\"%s%s\">%s</a>"
-                            *html-static-route*
-                            filename
-                            (or desc link-path))))))
+                                   *html-static-route*
+                                   filename
+                                   ext)
+                         (format "<a href=\"%s%s\">%s</a>"
+                                 *html-static-route*
+                                 filename
+                                 (or desc static-file-path))))))
+                 static-file-paths)))
           (funcall fn link desc info)))))
   (advice-add #'org-html-link :around #'my-org-html-link-advice)
 
@@ -467,7 +470,7 @@ your browser does not support the video tag.
            (caption-above-p nil))
       (if (equal link-type "xopp-figure")
           (progn
-            ;; (setq image-filepath (org-xopp-generate-figure link-path))
+            (setq image-filepath (car (org-xopp-generate-figures link-path)))
             (message "handling %s" link-path)
             (if (not (or link-name link-caption))
                 (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
@@ -2250,7 +2253,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 
 ;; resize from 0-2500 (or some other number inplace of 2500) to 0-x
 (cl-defun calc-xopp-image-width (image-path &optional (new-max-width 500))
-  (let ((max-xopp-image-width (float (/ 2500 4))))
+  (let ((max-xopp-image-width (float (/ 2500 4)))) ;; because of the -resize 25% arg
     (floor
      (* (/ (car (image-size
                  (create-image image-path)

@@ -640,13 +640,14 @@
   (require 'vertico-mouse)
   (require 'vertico-indexed)
   (require 'vertico-reverse)
-  (vertico-buffer-mode)
+  ;; (vertico-buffer-mode)
   (vertico-indexed-mode)
   (vertico-mouse-mode)
   ;; (vertico-grid-mode)
   ;; (vertico-reverse-mode)
-  ;; (setq vertico-grid-annotate 1)
+  (setq vertico-grid-annotate 1)
   (setq vertico-buffer-display-action '(display-buffer-same-window))
+  (setq vertico-count 25)
   )
 ;; enable recursive minibuffers
 (setq enable-recursive-minibuffers t)
@@ -1303,5 +1304,19 @@ Cancel the previous one if present."
                gc-cons-percentage 0.2)))
 
 ;; (use-package pdfgrep)
+
+;; svg popups?
+(use-package nova
+  :ensure ( :host github :repo "thisisran/nova")
+  :config
+  (nova-vertico-mode 1)
+  (nova-corfu-mode 1)
+  (nova-corfu-popupinfo-mode 1)
+  (nova-eldoc-mode 1))
+
+;; dont resize windows on vertico popups
+(use-package mini-ontop
+  :ensure ( :host github :repo "hkjels/mini-ontop.el")
+  :config (mini-ontop-mode 1))
 
 (provide 'config-packages)
