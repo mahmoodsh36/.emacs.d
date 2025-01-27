@@ -322,6 +322,7 @@
 \newcommand{\bbooland}{\mathop{\refdef{\land}}}
 \newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
 \newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_#2}
+\newcommand{\andreev}{\refdef[blk:def-andreev]{\operatorname{And}}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -427,17 +428,18 @@
 \newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
 \newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
 \newcommand{\ppoly}{\refdef[blk:def-ppoly]{\brm{P}_{/\brm{poly}}}}
-\newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\operatorname{SIZE}}}
-\newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\operatorname{DEPTH}}}
+\newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\operatorname{CSize}}}
+\newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\operatorname{CDepth}}}
 \newcommand{\coNP}{\refdef[blk:def-conp]{\brm{coNP}}}
 \newcommand{\compdtime}{\operatorname{DTIME}}
 \newcommand{\compEXP}{\brm{EXP}}
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
-\newcommand{\fcsize}{\refdef[blk:not-fcsize]{\operatorname{Size}}}
-\newcommand{\fcdepth}{\refdef[blk:not-fcdepth]{\operatorname{Depth}}}
-\newcommand{\ffcdepth}{\refdef[blk:not-ffcdepth]{\operatorname{FDepth}}}
+\newcommand{\fcsize}{\refdef[blk:not-fcsize]{\operatorname{FCSize}}}
+\newcommand{\fcdepth}{\refdef[blk:not-fcdepth]{\operatorname{FCDepth}}}
+\newcommand{\ffcdepth}{\refdef[blk:not-ffcdepth]{\operatorname{BFDepth}}}
+\newcommand{\ffcsize}{\leafsize}
 \newcommand{\bfuncs}{\refdef[blk:not-bfuncs]{\mathbb{B}}}
 \newcommand{\bfuncshat}{\refdef[def-bool-std-basis]{\hat{\mathcal{B}}}}
 \newcommand{\bfuncsbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_0}}
