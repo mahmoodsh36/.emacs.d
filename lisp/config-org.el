@@ -22,15 +22,14 @@
   (require 'org-notmuch))
 
 (defvar *latex-previews-enabled-p*
-  nil
-  ;; (not (is-android-system))
+  (not (is-android-system))
   "whether latex previews for org mode are enabled for the current session")
 
 ;; whether to export an org mode file
 (setq should-export-org-file-function #'should-export-org-file)
 
 ;; 0 means export only the nodes themselves, i means nodes with a distance of at most 'i' links from each node we have
-(defvar export-graph-depth 2)
+(defvar export-graph-depth 0)
 
 (defun enable-latex-previews ()
   "enable org mode latex previews for current emacs session"
@@ -189,9 +188,9 @@
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images, actually dont use org-persist at all because
   ;; after long usage it causes a huge delay on the killing of org buffers
-  (setq org-latex-preview-cache 'temp)
-  (setq org-element-cache-persistent nil)
-  (setq org-element-use-cache nil)
+  ;; (setq org-latex-preview-cache 'temp)
+  ;; (setq org-element-cache-persistent nil)
+  ;; (setq org-element-use-cache nil)
 
   (setq org-latex-default-packages-alist nil)
   ;; dont export with table of contents unless i want you to
