@@ -2242,14 +2242,14 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                 (thing-at-point-file-at-point))))
     (my-xdg-open-file path)))
 
-;; could be helpful, https://emacs.stackexchange.com/questions/52678/convert-org-table-to-ms-excel
-(defun org-table-export-to-spreadsheet (arg)
-  "export org table to spreadsheet formats, e.g. `ods', `xls', `xlsx'."
-  (interactive "sFormat: ")
-  (let* ((source-file  (file-name-sans-extension (buffer-file-name  (current-buffer))))
+;; to excel? xlsx
+(defun org-table-export-to-excel ()
+  "export org table to spreadsheet formats"
+  (interactive)
+  (let* ((source-file (file-name-sans-extension (buffer-file-name (current-buffer))))
          (csv-file (concat source-file ".csv")))
     (org-table-export csv-file "orgtbl-to-csv")
-    (org-odt-convert csv-file arg)))
+    (org-odt-convert csv-file "xlsx")))
 
 ;; resize from 0-2500 (or some other number inplace of 2500) to 0-x
 (cl-defun calc-xopp-image-width (image-path &optional (new-max-width 500))
@@ -2280,7 +2280,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   ;; (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
   ;; (setq org-xopp-image-format "png")
   ;; to get an even smaller file size
-  (setq org-xopp-imagemagick-extra-args (list "-resize" "20%"))
+  (setq org-xopp-imagemagick-extra-args (list "-resize" "15%"))
   )
 
 (defun cheap-org-export-string-as (str backend &optional body-only)
