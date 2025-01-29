@@ -297,7 +297,7 @@
 \newcommand{\lisni}[2]{{#1}_{#2}} % to denote a list via name and index
 \newcommand{\funclim}[2]{{\refdef[blk:def-lim]{\lim}}_{#1}#2}
 \newcommand{\xor}{\oplus}
-\newcommand{\parity}{\mathop{\refdef[blk:def-parity]{\oplus}}}
+\newcommand{\parity}{\mathop{\refdef[blk:def-parity]{\bigoplus}}}
 \DeclarePairedDelimiter{\opair}{\langle}{\rangle} % \ref{blk:def-ord-pair}
 % more for algorithms?
 \newcommand{\algname}[1]{\textsc{#1}}
@@ -323,6 +323,7 @@
 \newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
 \newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_#2}
 \newcommand{\andreev}{\refdef[blk:def-andreev]{\operatorname{And}}}
+\newcommand{\logb}{\refdef[blk:def-log]{\operatorname{log}}} % binary log, for boolean complexity mostly
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -354,6 +355,14 @@
 \newcommand{\infface}{\refdef[blk:def-face-inf]{f_{\infty}}}
 \newcommand{\ddgraph}{DDG}
 \newcommand{\graphlca}{\operatorname{lca}}
+\newcommand{\flow}{\refdef[blk:def-flow]{\ptvct{\gamma}}}
+\newcommand{\slack}{\refdef[blk:def-slack-cost]{\cost_{\price}}}
+\newcommand{\cost}{\ptvct{c}}
+\newcommand{\capac}{\ptvct{c}}
+\newcommand{\circul}{\refdef[blk:def-circul]{\ptvct{\theta}}}
+\newcommand{\price}{\refdef[blk:def-slack-cost]{\ptvct{\rho}}}
+\newcommand{\darteta}{\refdef[blk:not-dart-eta]{\ptvct{\eta}}}
+\newcommand{\dartvertexmat}{\refdef[blk:def-dart-vertex-mat]{A}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}

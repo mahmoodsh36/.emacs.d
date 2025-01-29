@@ -605,4 +605,14 @@
    (interactive)
    (start-program-on-current-file "mpv" (list "--no-video" "--force-window"))))
 
+;; (led-kbd "; l" 'gptel-menu)
+;; to avoid forcing the buffer to be displayed..
+(led-kbd
+ "; l"
+ (lambda ()
+   (interactive)
+   (setq gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window)))
+   (let ((gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window))))
+     (call-interactively 'gptel-menu))))
+
 (provide 'config-keys)

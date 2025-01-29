@@ -410,7 +410,8 @@
                 (equal link-type "xopp-pages"))
             (progn
               (let ((static-file-paths
-                     (if (equal link-type "xopp-pages")
+                     (if (or (equal link-type "xopp-pages")
+                             (equal link-type "xopp-figure"))
                          (org-xopp-generate-figures link-path)
                        (list link-path))))
                 (mapconcat
@@ -2279,7 +2280,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   ;; (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
   ;; (setq org-xopp-image-format "png")
   ;; to get an even smaller file size
-  (setq org-xopp-imagemagick-extra-args (list "-resize" "25%"))
+  (setq org-xopp-imagemagick-extra-args (list "-resize" "20%"))
   )
 
 (defun cheap-org-export-string-as (str backend &optional body-only)

@@ -321,13 +321,8 @@
 ;; (use-package eval-sexp-fu)
 
 ;; flutter setup
-(use-package highlight-indent-guides
-  :config
-  (setq highlight-indent-guides-method 'character)
-  ;; highlight-indent-guides-responsive 'stack)
-  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
-(use-package flutter)
-(use-package dart-mode)
+;; (use-package flutter)
+;; (use-package dart-mode)
 
 ;; pdf viewer
 (when (not (is-android-system))
@@ -1318,5 +1313,22 @@ Cancel the previous one if present."
 (use-package mini-ontop
   :ensure ( :host github :repo "hkjels/mini-ontop.el")
   :config (mini-ontop-mode 1))
+
+;; indentation guide
+(use-package indent-bars
+  :ensure ( :host github :repo "jdtsmith/indent-bars")
+  :custom
+  (indent-bars-no-descend-lists t) ; no extra bars in continued func arg lists
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  ;; add other languages as needed
+  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+                                       if_statement with_statement while_statement)))
+  ;; note: wrap may not be needed if no-descend-list is enough
+  ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
+  ;;                             list list_comprehension
+  ;;                             dictionary dictionary_comprehension
+  ;;                             parenthesized_expression subscript)))
+  :hook ((python-base-mode yaml-mode) . indent-bars-mode))
 
 (provide 'config-packages)
