@@ -222,7 +222,8 @@
 \newcommand{\vardef}[2]{#2}
 \newcommand{\varref}[2][]{}
 \newcommand{\bythis}[2][]{%
-  by: #2
+  % by: #2
+  by ?
 }
 
 % no space before paragraph (is this desired?)
@@ -343,6 +344,7 @@
 \newcommand{\embgraph}[1][G]{\refdef[blk:def-emb-graph]{{#1}_{\graphemb}}}
 \newcommand{\tree}[1][T]{\refdef[blk:def-tree]{#1}}
 \newcommand{\embgraphdualspantree}{\refdef[blk:not-dual-spantree]{T^*}}
+\newcommand{\intertree}{\embgraphdualspantree}
 \newcommand{\pathh}[1][p]{\refdef[blk:def-path]{#1}}
 \newcommand{\edgebetween}[2]{#1\refdef[blk:def-edge]{.} #2} % edge in graph between two given vertices
 \newcommand{\pathbetween}[2]{#1\to #2}
@@ -363,6 +365,9 @@
 \newcommand{\price}{\refdef[blk:def-slack-cost]{\ptvct{\rho}}}
 \newcommand{\darteta}{\refdef[blk:not-dart-eta]{\ptvct{\eta}}}
 \newcommand{\dartvertexmat}{\refdef[blk:def-dart-vertex-mat]{A}}
+\newcommand{\darthead}{\refdef[blk:def-dart-head-tail]{\operatorname{head}}}
+\newcommand{\darttail}{\refdef[blk:def-dart-head-tail]{\operatorname{tail}}}
+\newcommand{\dualstar}{\refdef[blk:def-embgraphdual]{*}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
