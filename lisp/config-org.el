@@ -2280,7 +2280,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   ;; (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
   ;; (setq org-xopp-image-format "png")
   ;; to get an even smaller file size
-  (setq org-xopp-imagemagick-extra-args (list "-resize" "15%"))
+  (setq org-xopp-imagemagick-extra-args (list "-resize" "20%"))
   )
 
 (defun cheap-org-export-string-as (str backend &optional body-only)
