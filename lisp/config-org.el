@@ -1480,8 +1480,9 @@ implies no special alignment."
   (interactive)
   (let* ((org-inhibit-startup t) ;; to make opening org files faster disable startup
          (should-export-org-file-function (lambda (_) t))
-         (files-to-export (collect-org-files-to-export)))
-    (export-all-org-files :pdf-p t :async nil)))
+         ;; (files-to-export (collect-org-files-to-export))
+         (files-to-export (list-note-files)))
+    (export-all-org-files :pdf-p t :async nil :continue-on-error t)))
 
 (defun export-all-org-files-to-html-local ()
   (interactive)
@@ -2280,7 +2281,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   ;; (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
   ;; (setq org-xopp-image-format "png")
   ;; to get an even smaller file size
-  (setq org-xopp-imagemagick-extra-args (list "-resize" "20%"))
+  (setq org-xopp-imagemagick-extra-args (list "-resize" "25%"))
   )
 
 (defun cheap-org-export-string-as (str backend &optional body-only)

@@ -575,4 +575,8 @@ prompt the user for a coding system."
   (cl-letf (((symbol-function 'find-file) 'cheap-find-file))
     (find-file "/home/mahmooz/.emacs.d/init.el")))
 
+(defun to-tex-from-clipboard ()
+  (interactive)
+  (async-shell-command (format "to_tex.sh '%s'" (string-trim (shell-command-to-string "wl-paste")))))
+
 (provide 'config-utils)

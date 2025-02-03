@@ -76,6 +76,7 @@
 \usepackage{tabularray}
 \UseTblrLibrary{amsmath}
 \usepackage{blkarray}
+\usepackage{stmaryrd} % \llbracket
 
 \definecolor{darkorange}{rgb}{0.688039215686, 0.309411764706, 0.078431372549}
 
@@ -322,7 +323,7 @@
 \newcommand{\booland}{\refdef{\land}}
 \newcommand{\bbooland}{\mathop{\refdef{\land}}}
 \newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
-\newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_#2}
+\newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_{#2}}
 \newcommand{\andreev}{\refdef[blk:def-andreev]{\operatorname{And}}}
 \newcommand{\logb}{\refdef[blk:def-log]{\operatorname{log}}} % binary log, for boolean complexity mostly
 
@@ -368,6 +369,7 @@
 \newcommand{\darthead}{\refdef[blk:def-dart-head-tail]{\operatorname{head}}}
 \newcommand{\darttail}{\refdef[blk:def-dart-head-tail]{\operatorname{tail}}}
 \newcommand{\dualstar}{\refdef[blk:def-embgraphdual]{*}}
+\newcommand{\facepotent}{\refdef[blk:def-circul]{\ptvct{\varphi}}}
 
 % probability
 \DeclareMathOperator{\Var}{Var}
@@ -495,8 +497,8 @@
 \renewcommand{\emptyset}{\varnothing}
 
 % other macros/symbols
-\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n (i found this notation in several books, including \ref{blk:1731676381.9014068})
-\newcommand{\brange}[1]{[#1]} % [n] to denote 1,...,n
+\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n
+\newcommand{\brange}[1]{[#1]} % [n] to denote 1,...,n (i found this notation in several books, including \ref{blk:1731676381.9014068})
 \newcommand{\equivrel}{\mathrel{\refdef[blk:def-equiv-relation]{\sim}}}
 \newcommand{\fcomp}{\mathrel{\refdef[blk:def-func-comp]{\circ}}}
 
