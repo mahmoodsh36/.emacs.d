@@ -193,6 +193,50 @@ obtain the id"
           (message "Pattern has no `extract-id-function' or `src-id-function'")
           nil))))
 
+  ;; redefine
+  ;; redefine to insert a header with a title when transcluding a file
+  (defun blk-org-transclusion-at-point (grep-data)
+    "Function that return a DWIM org-transclusion plist.
+the plist returned represents an org-transclusion object which is then passed to
+org-transclusion to be handled for transclusion in an org buffer."
+    (let ((elm (org-element-at-point)))
+      (when elm
+        (let* ((elm-type (org-element-type elm)))
+          (cond
+           ;; handler for custom/src org-blocks
+           ((or (eq elm-type 'special-block) (eq elm-type 'src-block))
+            (list :src-content (buffer-substring (org-element-property :begin elm)
+                                                 (org-element-property :end elm))
+                  :src-buf (current-buffer)
+                  :src-beg (org-element-property :begin elm)
+                  :src-end (org-element-property :end elm)))
+           ;; handler for latex blocks identified by #+name
+           ((eq elm-type 'latex-environment)
+            (progn
+              (forward-line)
+              (blk-tex-transclusion-env-at-point grep-data)))
+           ((and (equal elm-type 'keyword)
+                 (equal (org-element-property :key elm) "IDENTIFIER"))
+            ;; skip over the file keywords
+            (save-excursion
+              (let ((no-text))
+                (while (and (equal (org-element-type (org-element-at-point)) 'keyword)
+                            (not no-text))
+                  ;; check if we are at the last line
+                  (if (eq (line-number-at-pos)
+                          (line-number-at-pos (point-max)))
+                      (setq no-text t)
+                    (forward-line)))
+                ;; file contains no text except the keywords, dont transclude
+                (when (not no-text)
+                  (list :src-content (concat (format "* %s\n" (org-get-title))
+                                             (buffer-substring (point)
+                                                               (point-max))
+                                             )
+                        :src-buf (current-buffer)
+                        :src-beg (point)
+                        :src-end (point-max)))))))))))
+
   )
 
 (with-eval-after-load-all

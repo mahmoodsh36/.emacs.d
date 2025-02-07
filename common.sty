@@ -78,6 +78,15 @@
 \usepackage{blkarray}
 \usepackage{stmaryrd} % \llbracket
 
+\hypersetup{
+  pdfauthor={mahmood sheikh},
+  % pdftitle={},
+  bookmarks=true,
+  bookmarksopen=true,
+  bookmarksopenlevel=3, % show sections and subsections in bookmarks
+  pdfpagemode=UseOutlines, % open PDF with bookmarks panel
+}
+
 \definecolor{darkorange}{rgb}{0.688039215686, 0.309411764706, 0.078431372549}
 
 % these work smoothly, unlike other fonts
@@ -497,7 +506,7 @@
 \renewcommand{\emptyset}{\varnothing}
 
 % other macros/symbols
-\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n
+\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n (was this ever relevant?!)
 \newcommand{\brange}[1]{[#1]} % [n] to denote 1,...,n (i found this notation in several books, including \ref{blk:1731676381.9014068})
 \newcommand{\equivrel}{\mathrel{\refdef[blk:def-equiv-relation]{\sim}}}
 \newcommand{\fcomp}{\mathrel{\refdef[blk:def-func-comp]{\circ}}}
@@ -773,6 +782,8 @@
 \newcommand\cntinfty{\refdef[blk:20240523T095610]{\aleph_0}} % \refdef[blk:20240523T095610]{countable infinity}
 \newcommand{\ffield}{\refdef[blk:1737722654.9790187]{\mathbb{Z}}}
 \newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{deg}}}
+\newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{deg}}} % real boolean degree
+\newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{deg}}} % approximate boolean degree
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
