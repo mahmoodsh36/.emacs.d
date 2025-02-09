@@ -356,8 +356,9 @@
 \newcommand{\embgraphdualspantree}{\refdef[blk:not-dual-spantree]{T^*}}
 \newcommand{\intertree}{\embgraphdualspantree}
 \newcommand{\pathh}[1][p]{\refdef[blk:def-path]{#1}}
-\newcommand{\edgebetween}[2]{#1\refdef[blk:def-edge]{.} #2} % edge in graph between two given vertices
-\newcommand{\pathbetween}[2]{#1\to #2}
+\newcommand{\edgebetween}[2]{#1\refdef[blk:def-edge]{\rightarrow}#2} % edge in graph between two given vertices
+\newcommand{\pathbetween}[2]{#1\to #2} % path between 2 vertices
+\newcommand{\pathb}[2]{#1\to #2} % same as above
 \newcommand{\graphembrestrict}{\refdef[blk:def-graph-emb]{|}}
 \newcommand{\graphforest}[1][F]{\refdef[blk:def-forest]{#1}}
 \newcommand{\dartbound}{\refdef[blk:def-dart-cut]{\overrightarrow{\delta}}}
