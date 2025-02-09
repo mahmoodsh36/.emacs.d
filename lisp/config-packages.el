@@ -1159,27 +1159,28 @@
 (use-package org-timeblock
   :after 'org)
 
-(use-package gptel
-  :config
-  (setq
-   ;; gptel-backend (gptel-make-ollama "ollama"
-   ;;                 :host "localhost:11434"
-   ;;                 :stream t
-   ;;                 :models '("mistral:latest")
-   ;;                 ;; :models '("codellama:13b-instruct")
-   ;;                 )
-;; Llama.cpp offers an OpenAI compatible API
-   gptel-default-mode 'org-mode
-   gptel-backend (gptel-make-openai "llama-cpp"
-                   :stream t
-                   :protocol "http"
-                   :host "mahmooz2:8080"
-                   :models '(qwen))
-   ;; gptel-model 'gemini
-   ;; gptel-backend (gptel-make-gemini "Gemini"
-   ;;                 :key (getenv "GEMINI_API_KEY")
-   ;;                 :stream t)
-   ))
+(unless (is-android-system)
+  (use-package gptel
+    :config
+    (setq
+     ;; gptel-backend (gptel-make-ollama "ollama"
+     ;;                 :host "localhost:11434"
+     ;;                 :stream t
+     ;;                 :models '("mistral:latest")
+     ;;                 ;; :models '("codellama:13b-instruct")
+     ;;                 )
+     ;; Llama.cpp offers an OpenAI compatible API
+     gptel-default-mode 'org-mode
+     gptel-backend (gptel-make-openai "llama-cpp"
+                     :stream t
+                     :protocol "http"
+                     :host "mahmooz2:8080"
+                     :models '(qwen))
+     ;; gptel-model 'gemini
+     ;; gptel-backend (gptel-make-gemini "Gemini"
+     ;;                 :key (getenv "GEMINI_API_KEY")
+     ;;                 :stream t)
+     )))
 
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import
