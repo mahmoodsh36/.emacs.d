@@ -277,6 +277,19 @@
 (led-kbd "l i" 'sly-repl-inspect :keymaps 'sly-repl-mode-map)
 (led-kbd "l s" 'sly-inspect-presentation-at-point :keymaps 'sly-repl-mode-map)
 (led-kbd "c" 'eval-buffer :keymaps 'emacs-lisp-mode-map)
+(defun my-sly-apropos ()
+  (interactive)
+  (when-let ((name (completing-read "apropos " (sly-eval `(common-lisp:apropos-list "" nil t)))))
+    (sly-describe-symbol name)))
+(defun my-sly-apropos-func ()
+  (interactive)
+  (when-let ((name (completing-read "apropos " (sly-eval `(common-lisp:apropos-list "" nil t)))))
+    (sly-describe-function
+     (if (string-prefix-p ":" name)
+         (cl-subseq name 1)
+       name))))
+(led-kbd "l h a" 'my-sly-apropos)
+(led-kbd "l h f" 'my-sly-apropos-func)
 
 ;; jummp to definition of thing at point
 (led-kbd "l d" 'xref-find-definitions :keymaps 'prog-mode-map)

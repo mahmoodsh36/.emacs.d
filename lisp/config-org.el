@@ -2268,17 +2268,17 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (let* ((org-image-actual-width (calc-xopp-image-width image-path)))
       (funcall fn buffer image-path link)))
   ;; redefine to resize properly from 0-2500 to 0-600 when embedding in pdf
-  ;; (defun org-xopp-export-figure (path desc backend)
-  ;;   (let* ((image-filepath (org-xopp-generate-figure path)))
-  ;;     ;; perhaps allow the user to specify how the figures are handled on export?
-  ;;     ;; this behavior is somewhat of a "placeholder".
-  ;;     (if (string= backend "html")
-  ;;         (format "<img src='%s' />" image-filepath)
-  ;;       (when (string= backend "latex")
-  ;;         (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
-  ;;                 (calc-xopp-image-width image-filepath)
-  ;;                 image-filepath)))))
-  ;; (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
+  (defun org-xopp-export-figure (path desc backend)
+    (let* ((image-filepath (org-xopp-generate-figure path)))
+      ;; perhaps allow the user to specify how the figures are handled on export?
+      ;; this behavior is somewhat of a "placeholder".
+      (if (string= backend "html")
+          (format "<img src='%s' />" image-filepath)
+        (when (string= backend "latex")
+          (format "\\begin{center}\\includegraphics[width=%spx]{%s}\\end{center}"
+                  (calc-xopp-image-width image-filepath)
+                  image-filepath)))))
+  (advice-add #'org-xopp-place-image :around #'my-org-xopp-place-image-advice)
   ;; (setq org-xopp-image-format "png")
   ;; to get an even smaller file size
   (setq org-xopp-imagemagick-extra-args (list "-resize" "25%"))
