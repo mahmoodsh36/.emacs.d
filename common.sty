@@ -340,6 +340,8 @@
 \newcommand{\lhs}{\relax\ifmmode\mathrm{L.H.S.}\else{}left-hand side\xspace\fi}
 % define \rhs for "right-hand side" in text or "R.H.S." in math. 
 \newcommand{\rhs}{\relax\ifmmode\mathrm{R.H.S.}\else{}right-hand side\xspace\fi}
+\newcommand{\textboolor}{\refdef{\brm{OR}}}
+\newcommand{\textbooland}{\refdef{\brm{AND}}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -492,7 +494,8 @@
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 \newcommand{\booldist}{\refdef[blk:def-bool-dist]{\operatorname{dist}}}
-\newcommand{\compACp}{\compAC^0[\parity]}
+\newcommand{\compACp}{\refdef[blk:def-compacp]{\compAC^0[\parity]}}
+\newcommand{\compACz}{\compAC^0}
 \newcommand{\thresh}{\refdef[blk:def-thresh]{\operatorname{Th}}}
 \newcommand{\bigoheq}{\approx}
 
@@ -946,7 +949,7 @@
    { \dots,#3{\sb{#1\sb{#4}}} }
  }
 
-\ExplSyntaxOffx
+\ExplSyntaxOff
 
 % general macro for quantifiers that enforces parentheses around the final expression
 \NewDocumentCommand{\quantifier}{m m m}{%
