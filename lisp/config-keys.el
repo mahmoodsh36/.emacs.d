@@ -14,6 +14,7 @@
 (led-kbd "d g" (lambda () (interactive) (dired "~/work/blog/")))
 (led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
 (led-kbd "d e" (lambda () (interactive) (dired (from-brain "pen/"))))
+(led-kbd "d t" (lambda () (interactive) (dired "~/othermusic")))
 
 (led-kbd "f f" 'find-file)
 (led-kbd "f v" 'find-alternate-file)
@@ -627,5 +628,7 @@
    (setq gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window)))
    (let ((gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window))))
      (call-interactively 'gptel-menu))))
+
+(led-kbd "; a" 'open-auto-tex)
 
 (provide 'config-keys)

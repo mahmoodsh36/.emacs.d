@@ -2290,4 +2290,16 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (org-export-to-file backend "/tmp/test1" nil nil nil body-only))
   (org-file-contents "/tmp/test1"))
 
+;; auto tex
+(defun to-tex-from-clipboard ()
+  (interactive)
+  (async-shell-command (format "to_tex.sh '%s'" (string-trim (shell-command-to-string "wl-paste")))))
+(defun open-auto-tex ()
+  (interactive)
+  (if (file-exists-p (auto-tex-file-for buffer-file-name))
+      (find-file (auto-tex-file-for buffer-file-name))
+    (message "no tex file.")))
+(defun auto-tex-file-for (filepath)
+  (from-data (format "got/%s.tex" (file-name-base filepath))))
+
 (provide 'config-org)
