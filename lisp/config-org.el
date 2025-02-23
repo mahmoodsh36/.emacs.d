@@ -96,18 +96,10 @@
 
 (cl-defun compile-latex-file (path &optional (async t))
   ;; for biber we need a different set of commands, for cross-references we need to compile twice
-  (let ((cmd (format "%s -shell-escape -output-directory=%s %s"
-                     org-latex-compiler
-                     (file-truename (get-latex-cache-dir-path))
-                     path)))
+  (let ((args (list "-interaction=nonstopmode" "-shell-escape" (format "-output-directory=%s" (file-truename (get-latex-cache-dir-path))) path)))
     (if async
-        (start-process-shell-command
-         "latex"
-         "latex"
-         (format "%s && %s" cmd cmd)
-         )
-      (call-process-shell-command
-       cmd))))
+        (apply #'start-process (append (list "latex" "latex" org-latex-compiler) args))
+      (apply #'call-process (append (list org-latex-compiler nil nil nil) args)))))
 
 (cl-defun clean-latex-files (path)
   (call-process-shell-command
@@ -122,7 +114,7 @@
 (defun compile-current-document ()
   "compile the current latex document being edited"
   (interactive)
-  (clean-latex-files-without-tex-file (buffer-file-name))
+  ;; (clean-latex-files-without-tex-file (buffer-file-name))
   (compile-latex-file (buffer-file-name)))
 
 (defun open-current-document ()
@@ -2300,6 +2292,6 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
       (find-file (auto-tex-file-for buffer-file-name))
     (message "no tex file.")))
 (defun auto-tex-file-for (filepath)
-  (from-data (format "got/%s.tex" (file-name-base filepath))))
+  (from-data (format "nougat/%s.tex" (file-name-base filepath))))
 
 (provide 'config-org)

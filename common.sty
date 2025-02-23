@@ -256,7 +256,7 @@
 \newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}
 \newcommand{\cmark}{\text{\ding{51}}}
 \newcommand{\xmark}{\text{\ding{55}}}
-\renewcommand\Pr{\operatorname{\brm{P}}} % for probability function symbol
+\renewcommand\Pr{\operatorname{\mathsf{P}}} % for probability function symbol
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
@@ -340,8 +340,9 @@
 \newcommand{\lhs}{\relax\ifmmode\mathrm{L.H.S.}\else{}left-hand side\xspace\fi}
 % define \rhs for "right-hand side" in text or "R.H.S." in math. 
 \newcommand{\rhs}{\relax\ifmmode\mathrm{R.H.S.}\else{}right-hand side\xspace\fi}
-\newcommand{\textboolor}{\refdef{\brm{OR}}}
-\newcommand{\textbooland}{\refdef{\brm{AND}}}
+\newcommand{\textboolor}{\refdef{\mathsf{OR}}}
+\newcommand{\textbooland}{\refdef{\mathsf{AND}}}
+\newcommand{\textboolmod}{\refdef{\mathsf{MOD}}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -391,7 +392,7 @@
 % probability
 \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\cov}{\refdef[blk:def-covar]{cov}}
-\DeclareMathOperator{\expc}{\refdef[blk:def-expec]{E}} % expected value symbol
+\DeclareMathOperator{\expc}{\refdef[blk:def-expec]{\mathsf{E}}} % expected value symbol
 
 % many different products
 \newcommand{\prodinr}[2]{\refdef[blk:def-inr-prod]{\langle} #1, #2 \refdef[blk:def-inr-prod]{\rangle}} % inner product
@@ -434,17 +435,17 @@
 \NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
 \newcommand{\albt}[1]{\set{#1}}
 \newcommand{\fordset}{\refdef[blk:1724262093.0556488]{\omega}} % the set of all finite ordinals
-\newcommand{\compW}{\refdef[blk:not-comp-W]{W}}
-\newcommand{\compK}{\refdef[blk:not-comp-K]{K}}
-\newcommand{\compKo}{\refdef[blk:not-comp-K0]{K0}}
-\newcommand{\compTot}{\refdef[blk:def-comp-tot]{Tot}} % set of total computable functions
-\newcommand{\compRE}{\refdef[blk:def-recur-enum]{RE}} % set of recursively enumerable sets
-\newcommand{\compcoRE}{\refdef[blk:def-corecur-enum]{\operatorname{co-RE}}}
+\newcommand{\compW}{\refdef[blk:not-comp-W]{\mathsf{W}}}
+\newcommand{\compK}{\refdef[blk:not-comp-K]{\mathsf{K}}}
+\newcommand{\compKo}{\refdef[blk:not-comp-K0]{\mathsf{K0}}}
+\newcommand{\compTot}{\refdef[blk:def-comp-tot]{\mathsf{Tot}}} % set of total computable functions
+\newcommand{\compRE}{\refdef[blk:def-recur-enum]{\mathsf{RE}}} % set of recursively enumerable sets
+\newcommand{\compcoRE}{\refdef[blk:def-corecur-enum]{\mathsf{co-RE}}}
 \newcommand{\compN}{\refdef[blk:not-omega-natural-numbers]{\omega}}
 \newcommand{\compR}{\refdef[blk:def-comp-set]{R}} % set of recursive sets
 \newcommand{\turmach}{\refdef[blk:def-tur]{\mathscr{M}}} % turing machine
-\newcommand{\polylangs}{\refdef[blk:def-polylang]{\brm{P}}} % \refdef[blk:20240308T125435]{polynomial time decidable languages}
-\newcommand{\npolylangs}{\refdef[blk:def-np]{\brm{NP}}}
+\newcommand{\polylangs}{\refdef[blk:def-polylang]{\mathsf{P}}} % \refdef[blk:20240308T125435]{polynomial time decidable languages}
+\newcommand{\npolylangs}{\refdef[blk:def-np]{\mathsf{NP}}}
 % aliases for the 2 commands above
 \newcommand{\compP}{\polylangs}
 \newcommand{\compNP}{\npolylangs}
@@ -460,12 +461,12 @@
 \newcommand{\emptytrans}{\refdef[blk:blk:1704361386]{\varepsilon}}
 \newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
 \newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
-\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\brm{P}_{/\brm{poly}}}}
+\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\mathsf{P}_{/\mathsf{poly}}}}
 \newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\operatorname{CSize}}}
 \newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\operatorname{CDepth}}}
-\newcommand{\coNP}{\refdef[blk:def-conp]{\brm{coNP}}}
+\newcommand{\coNP}{\refdef[blk:def-conp]{\mathsf{coNP}}}
 \newcommand{\compdtime}{\operatorname{DTIME}}
-\newcommand{\compEXP}{\brm{EXP}}
+\newcommand{\compEXP}{\mathsf{EXP}}
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
@@ -484,19 +485,19 @@
 \newcommand{\leafsize}{\refdef[blk:not-leafsize]{\operatorname{LeafSize}}}
 \newcommand{\implics}{\refdef[blk:def-implicant]{\operatorname{I}}} % implicants
 \newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\operatorname{PI}}}
-\newcommand{\compNC}{\refdef[blk:def-nc]{\brm{NC}}}
+\newcommand{\compNC}{\refdef[blk:def-nc]{\mathsf{NC}}}
 \newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\operatorname{SIZE-DEPTH}}}
 \newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE}}}
 \newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FDEPTH}}}
 \newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE-DEPTH}}}
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
-\newcommand{\compAC}{\refdef[blk:def-ac]{\brm{AC}}}
+\newcommand{\compAC}{\refdef[blk:def-ac]{\mathsf{AC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 \newcommand{\booldist}{\refdef[blk:def-bool-dist]{\operatorname{dist}}}
 \newcommand{\compACp}{\refdef[blk:def-compacp]{\compAC^0[\parity]}}
 \newcommand{\compACz}{\compAC^0}
-\newcommand{\thresh}{\refdef[blk:def-thresh]{\operatorname{Th}}}
+\newcommand{\thresh}{\refdef[blk:def-thresh]{\mathsf{Th}}}
 \newcommand{\bigoheq}{\approx}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others

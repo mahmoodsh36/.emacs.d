@@ -46,7 +46,13 @@
 (led-kbd "s g" 'deadgrep)
 (led-kbd "s G" 'consult-ripgrep)
 (led-kbd "x" 'org-ctrl-c-ctrl-c :keymaps 'org-mode-map)
-(led-kbd "x" 'compile-current-document :keymaps '(TeX-mode-map tex-mode-map latex-mode-map) )
+(led-kbd
+ "x"
+ (lambda ()
+   (interactive)
+   (compile-current-document)
+   (switch-to-buffer-other-window "latex"))
+ :keymaps '(TeX-mode-map tex-mode-map latex-mode-map))
 (led-kbd "e" (lambda () (interactive) (find-file user-init-file)))
 (led-kbd "p" 'projectile-command-map)
 ;; (general-define-key :keymaps 'TeX-mode-map (led "c" 'compile-sagetex)

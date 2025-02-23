@@ -394,3 +394,14 @@
 (setq edebug-print-length nil)
 (setq print-level nil)
 (setq print-length nil)
+
+(setq tramp-terminal-name "tramp")
+
+;; (defun dired-do-local-command ()
+;;   (interactive)
+;;   (let* ((marked-files (dired-get-marked-files nil current-prefix-arg))
+;;          (local-tmp-files (mapcar #'file-local-copy marked-files))
+;;          (num-files (length local-tmp-files))
+;;          (default-directory temporary-file-directory)
+;;          (command (dired-read-shell-command "! on %s: " num-files marked-files)))
+;;     (dired-do-shell-command command num-files local-tmp-files)))
