@@ -122,7 +122,8 @@
 (setq large-file-warning-threshold nil)
 ;; disable multiplication precedence over division in calc
 (setq calc-multiplication-has-precedence nil)
-;;(which-key-mode)
+;; enable which-key by default (builtin for emacs >30)
+(which-key-mode)
 ;; minimal modeline
 (with-eval-after-load 'org
   (when (not (is-android-system))

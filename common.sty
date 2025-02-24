@@ -256,7 +256,8 @@
 \newcommand{\thetahat}{\boldsymbol{\hat{\theta}}}
 \newcommand{\cmark}{\text{\ding{51}}}
 \newcommand{\xmark}{\text{\ding{55}}}
-\renewcommand\Pr{\operatorname{\mathsf{P}}} % for probability function symbol
+\renewcommand\Pr{\prob}
+\newcommand\prob{\mathop{\refdef[blk:def-prob]{\mathsf{P}}}} % for probability function symbol
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
@@ -492,6 +493,7 @@
 \newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE-DEPTH}}}
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
 \newcommand{\compAC}{\refdef[blk:def-ac]{\mathsf{AC}}}
+\newcommand{\compACC}{\refdef[blk:def-acc]{\mathsf{ACC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 \newcommand{\booldist}{\refdef[blk:def-bool-dist]{\operatorname{dist}}}
