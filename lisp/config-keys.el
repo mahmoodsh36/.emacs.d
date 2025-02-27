@@ -200,10 +200,11 @@
 (led-kbd "s l" #'switch-to-light-theme)
 (led-kbd "s e" 'eshell)
 ;; (general-define-key :keymaps 'override (led "s g") 'magit)
-(led-kbd "s i"
-         (lambda ()
-           (interactive)
-           (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+;; (led-kbd "s i"
+;;          (lambda ()
+;;            (interactive)
+;;            (let ((current-prefix-arg '-)) (call-interactively 'sly))))
+(led-kbd "s i" 'sly)
 (led-kbd "s r" #'eat);;'vterm)
 (led-kbd "s s" #'shell)
 (led-kbd "s S" #'shell-create-name-incremented)

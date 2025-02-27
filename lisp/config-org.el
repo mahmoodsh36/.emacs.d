@@ -2276,6 +2276,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (setq org-xopp-imagemagick-extra-args (list "-resize" "25%"))
   )
 
+;; this was a workaround for an issue that is no longer present, it should be removed
 (defun cheap-org-export-string-as (str backend &optional body-only)
   (with-temp-buffer
     (insert str)

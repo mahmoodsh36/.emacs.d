@@ -547,7 +547,10 @@
   :config
   (setq inferior-lisp-program "")
   (setq sly-lisp-implementations
-        '((sbcl ("sbcl" "--dynamic-space-size" "12GB"))
+        `((sbcl ("sbcl"
+                 "--dynamic-space-size" "12GB"
+                 "--load"
+                 ,(join-path (expand-file-name "~/work/cl-tools/myloader.lisp"))))
           (clisp ("clisp"))
           (ecl ("ecl"))
           (cmucl ("cmucl"))

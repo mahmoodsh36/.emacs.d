@@ -3,7 +3,7 @@
   {} % {\usetheme{Antibes}}%
   {
     \usepackage{enumitem}% enumitem doesnt work with beamer so only load it if we arent using beamer
-    \usepackage[margin=0.2in]{geometry}
+    % \usepackage[margin=0.2in]{geometry}
     \usepackage{hyperref} % hyperref is loaded by default in beamer, if we load it we get "option clash" error
   }
 \makeatother%
@@ -262,14 +262,14 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand*{\defeq}{\stackrel{\text{def}}{=}} % def on top of equal sign
 \DeclareMathOperator{\Mat}{Mat} % Mat symbol for sets of matrices of specific dimensions
-\newcommand{\textand}{\mathbin{\textsc{and}}}
+\newcommand{\textand}{\textop{and}}
 \newcommand{\midand}{\mathbin{\operatorname{and}}}
 \newcommand{\textnot}{\textsc{not }}
 \newcommand{\textop}[1]{\relax\ifmmode\mathop{\text{#1}}\else\text{#1}\fi} % https://tex.stackexchange.com/questions/8047/spacing-around-text-in-mathmode
-\newcommand{\textor}{\textsc{or}}
+\newcommand{\textor}{\textop{or}}
 \newcommand{\textif}{\algop{if}}
 \newcommand{\textiff}{\textop{iff}}
-\newcommand{\textthen}{\textsc{then}}
+\newcommand{\textthen}{\textop{then}}
 \newcommand{\textgoto}{\textop{goto}}
 \newcommand{\textelse}{\textop{else}}
 \newcommand{\textloop}{\textop{loop}}
@@ -344,6 +344,8 @@
 \newcommand{\textboolor}{\refdef{\mathsf{OR}}}
 \newcommand{\textbooland}{\refdef{\mathsf{AND}}}
 \newcommand{\textboolmod}{\refdef{\mathsf{MOD}}}
+\newcommand{\textboolnot}{\refdef{\mathsf{NOT}}}
+\newcommand{\modd}{\mathrm{mod}\,}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -500,7 +502,10 @@
 \newcommand{\compACp}{\refdef[blk:def-compacp]{\compAC^0[\parity]}}
 \newcommand{\compACz}{\compAC^0}
 \newcommand{\thresh}{\refdef[blk:def-thresh]{\mathsf{Th}}}
+\newcommand{\majo}{\refdef[blk:def-bool-func-sym]{\mathsf{Maj}}}
 \newcommand{\bigoheq}{\approx}
+\newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
+\newcommand{\compCC}{\mathsf{CC}} % communication complexity
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -794,9 +799,9 @@
 \newcommand\tensor[1]{\refdef[blk:def-tensor-inf]{\ptvct{#1}}}
 \newcommand\cntinfty{\refdef[blk:20240523T095610]{\aleph_0}} % \refdef[blk:20240523T095610]{countable infinity}
 \newcommand{\ffield}{\refdef[blk:1737722654.9790187]{\mathbb{Z}}}
-\newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{deg}}}
-\newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{deg}}} % real boolean degree
-\newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{deg}}} % approximate boolean degree
+\newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{pdeg}}}
+\newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{rbdeg}}} % real boolean degree
+\newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{abdeg}}} % approximate boolean degree
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
