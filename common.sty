@@ -278,7 +278,6 @@
 \newcommand{\textwhile}{\algop{while}}
 \newcommand{\textend}{\algop{end}}
 \newcommand{\textreturn}{\algop{return}}
-\newcommand{\textxor}{\textsc{xor}}
 \newcommand{\textotherwise}{\text{otherwise}}
 \DeclareMathOperator{\graph}{graph}
 \newcommand{\angled}[1]{\langle #1 \rangle}
@@ -286,7 +285,7 @@
 \newcommand{\incr}[1]{#1\texttt{+{}+}} % decrement of a number
 \newcommand{\sucfunc}{\brm{s}} % successor function
 \newcommand{\prefunc}{\brm{p}} % predecessor function (do i need this one?)
-\newcommand{\halt}{\refdef[blk:the-halt]{\operatorname{HALT}}} % operator for the halting problem
+\newcommand{\halt}{\refdef[blk:the-halt]{\mathsf{HALT}}} % operator for the halting problem
 \newcommand{\converges}[1]{#1 \refdef[blk:def-program-conv]{\downarrow}}
 \newcommand{\convergesto}[2]{\left. #1 \right\downarrow=#2}
 \newcommand{\diverges}[1]{#1 \refdef[blk:def-program-div]{\uparrow}}
@@ -335,7 +334,7 @@
 \newcommand{\bbooland}{\mathop{\refdef{\land}}}
 \newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
 \newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_{#2}}
-\newcommand{\andreev}{\refdef[blk:def-andreev]{\operatorname{And}}}
+\newcommand{\andreev}{\refdef[blk:def-andreev]{\mathsf{And}}}
 \newcommand{\logb}{\refdef[blk:def-log]{\operatorname{log}}} % binary log, for boolean complexity mostly
 % define \lhs for "left-hand side" in text or "L.H.S." in math.
 \newcommand{\lhs}{\relax\ifmmode\mathrm{L.H.S.}\else{}left-hand side\xspace\fi}
@@ -345,7 +344,8 @@
 \newcommand{\textbooland}{\refdef{\mathsf{AND}}}
 \newcommand{\textboolmod}{\refdef{\mathsf{MOD}}}
 \newcommand{\textboolnot}{\refdef{\mathsf{NOT}}}
-\newcommand{\modd}{\mathrm{mod}\,}
+\newcommand{\textboolxor}{\refdef{\mathsf{XOR}}}
+\newcommand{\modd}{\text{mod}\,}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -432,8 +432,8 @@
 \newcommand{\turingreducem}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_m}} #2}
 \newcommand{\turingreduce}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le}} #2}
 \newcommand{\turingreducep}[2]{#1 \operatorname{\refdef[blk:def-poly-reduc]{\le_p}} #2}
-\DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\operatorname{L}}}
-\DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\operatorname{L}}}
+\DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\mathsf{L}}}
+\DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\mathsf{L}}}
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
 \NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
 \newcommand{\albt}[1]{\set{#1}}
@@ -465,40 +465,40 @@
 \newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
 \newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
 \newcommand{\ppoly}{\refdef[blk:def-ppoly]{\mathsf{P}_{/\mathsf{poly}}}}
-\newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\operatorname{CSize}}}
-\newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\operatorname{CDepth}}}
+\newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\mathsf{CSize}}}
+\newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\mathsf{CDepth}}}
 \newcommand{\coNP}{\refdef[blk:def-conp]{\mathsf{coNP}}}
-\newcommand{\compdtime}{\operatorname{DTIME}}
+\newcommand{\compdtime}{\mathsf{DTIME}}
 \newcommand{\compEXP}{\mathsf{EXP}}
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
-\newcommand{\fcsize}{\refdef[blk:not-fcsize]{\operatorname{FCSize}}}
-\newcommand{\fcdepth}{\refdef[blk:not-fcdepth]{\operatorname{FCDepth}}}
-\newcommand{\ffcdepth}{\refdef[blk:not-ffcdepth]{\operatorname{BFDepth}}}
+\newcommand{\fcsize}{\refdef[blk:not-fcsize]{\mathsf{FCSize}}}
+\newcommand{\fcdepth}{\refdef[blk:not-fcdepth]{\mathsf{FCDepth}}}
+\newcommand{\ffcdepth}{\refdef[blk:not-ffcdepth]{\mathsf{BFDepth}}}
 \newcommand{\ffcsize}{\leafsize}
 \newcommand{\bfuncs}{\refdef[blk:not-bfuncs]{\mathbb{B}}}
 \newcommand{\bfuncshat}{\refdef[def-bool-std-basis]{\hat{\mathcal{B}}}}
 \newcommand{\bfuncsbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_0}}
 \newcommand{\bfuncsunbounded}{\refdef[blk:def-bool-std-basis]{\mathcal{B}_1}}
-\newcommand{\boolmatrprod}{\refdef[def-bool-matr-prod]{\operatorname{BMM}}}
+\newcommand{\boolmatrprod}{\refdef[def-bool-matr-prod]{\mathsf{BMM}}}
 \newcommand{\bcirc}[1][C]{\refdef[blk:def-bool-circ]{#1}}
 \newcommand{\bsete}{\set{0,1}} % the set of binary numbers, "e" for explicit, "b" for boolean
 \newcommand{\bset}{\mathcal{B}} % the set of binary numbers, "e" for explicit, "b" for boolean
-\newcommand{\leafsize}{\refdef[blk:not-leafsize]{\operatorname{LeafSize}}}
-\newcommand{\implics}{\refdef[blk:def-implicant]{\operatorname{I}}} % implicants
-\newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\operatorname{PI}}}
+\newcommand{\leafsize}{\refdef[blk:not-leafsize]{\mathsf{LeafSize}}}
+\newcommand{\implics}{\refdef[blk:def-implicant]{\mathsf{I}}} % implicants
+\newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\mathsf{PI}}}
 \newcommand{\compNC}{\refdef[blk:def-nc]{\mathsf{NC}}}
-\newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\operatorname{SIZE-DEPTH}}}
-\newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE}}}
-\newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FDEPTH}}}
-\newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{FSIZE-DEPTH}}}
-\newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\operatorname{UnbSIZE-DEPTH}}}
+\newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\mathsf{SIZE{-}DEPTH}}}
+\newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\mathsf{FSIZE}}}
+\newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FDEPTH}}}
+\newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FSIZE{-}DEPTH}}}
+\newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{UnbSIZE{-}DEPTH}}}
 \newcommand{\compAC}{\refdef[blk:def-ac]{\mathsf{AC}}}
 \newcommand{\compACC}{\refdef[blk:def-acc]{\mathsf{ACC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
-\newcommand{\booldist}{\refdef[blk:def-bool-dist]{\operatorname{dist}}}
+\newcommand{\booldist}{\refdef[blk:def-bool-dist]{\mathsf{dist}}}
 \newcommand{\compACp}{\refdef[blk:def-compacp]{\compAC^0[\parity]}}
 \newcommand{\compACz}{\compAC^0}
 \newcommand{\thresh}{\refdef[blk:def-thresh]{\mathsf{Th}}}
@@ -800,8 +800,8 @@
 \newcommand\cntinfty{\refdef[blk:20240523T095610]{\aleph_0}} % \refdef[blk:20240523T095610]{countable infinity}
 \newcommand{\ffield}{\refdef[blk:1737722654.9790187]{\mathbb{Z}}}
 \newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{pdeg}}}
-\newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{rbdeg}}} % real boolean degree
-\newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\operatorname{abdeg}}} % approximate boolean degree
+\newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{rbdeg}}} % real boolean degree
+\newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{abdeg}}} % approximate boolean degree
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption

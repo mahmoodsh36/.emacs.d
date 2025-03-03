@@ -1305,13 +1305,13 @@ Cancel the previous one if present."
 ;; (use-package pdfgrep)
 
 ;; svg popups?
-(use-package nova
-  :ensure ( :host github :repo "thisisran/nova")
-  :config
-  (nova-vertico-mode 1)
-  (nova-corfu-mode 1)
-  (nova-corfu-popupinfo-mode 1)
-  (nova-eldoc-mode 1))
+;; (use-package nova
+;;   :ensure ( :host github :repo "thisisran/nova")
+;;   :config
+;;   (nova-vertico-mode 1)
+;;   (nova-corfu-mode 1)
+;;   (nova-corfu-popupinfo-mode 1)
+;;   (nova-eldoc-mode 1))
 
 ;; dont resize windows on vertico popups
 (use-package mini-ontop
