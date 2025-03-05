@@ -293,7 +293,7 @@
   ;; dont show equation numbers, they sometimes mess up the preview by causing it to be cut off
   (setq org-latex-preview-numbered nil)
   ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-  (setq org-latex-compiler "pdflatex")
+  (setq org-latex-compiler "lualatex")
   ;; make org-agenda open up in the current window
   (setq org-agenda-window-setup 'current-window)
   ;; dont prompt for downloading remote files on export
@@ -535,9 +535,13 @@ your browser does not support the video tag.
 
   (defun my-org-preprocess (&optional export-backend)
     (save-excursion
+      ;; (goto-char (point-min))
+      ;; (replace-regexp "#\\+caption: \\(.*\\)" "\\1")
+      ;; remove #(code) for now
       (goto-char (point-min))
-      (replace-regexp "#\\+caption: \\(.*\\)" "\\1")))
-  ;; (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
+      (replace-regexp "#(.*?)" "")
+      ))
+  (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
 
   (defmacro org-with-modifications (element-type &rest body)
     "Iterate over Org ELEMENT-TYPE and modify them, adjusting positions automatically.

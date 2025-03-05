@@ -3,7 +3,7 @@
   {} % {\usetheme{Antibes}}%
   {
     \usepackage{enumitem}% enumitem doesnt work with beamer so only load it if we arent using beamer
-    % \usepackage[margin=0.2in]{geometry}
+    \usepackage[margin=0.2in]{geometry}
     \usepackage{hyperref} % hyperref is loaded by default in beamer, if we load it we get "option clash" error
   }
 \makeatother%
@@ -485,7 +485,7 @@
 \newcommand{\boolmatrprod}{\refdef[def-bool-matr-prod]{\mathsf{BMM}}}
 \newcommand{\bcirc}[1][C]{\refdef[blk:def-bool-circ]{#1}}
 \newcommand{\bsete}{\set{0,1}} % the set of binary numbers, "e" for explicit, "b" for boolean
-\newcommand{\bset}{\mathcal{B}} % the set of binary numbers, "e" for explicit, "b" for boolean
+\newcommand{\bset}{\refdef{\mathcal{B}}} % the set of binary numbers, "e" for explicit, "b" for boolean
 \newcommand{\leafsize}{\refdef[blk:not-leafsize]{\mathsf{LeafSize}}}
 \newcommand{\implics}{\refdef[blk:def-implicant]{\mathsf{I}}} % implicants
 \newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\mathsf{PI}}}
