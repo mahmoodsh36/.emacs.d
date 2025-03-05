@@ -338,7 +338,7 @@
 \newcommand{\logb}{\refdef[blk:def-log]{\operatorname{log}}} % binary log, for boolean complexity mostly
 % define \lhs for "left-hand side" in text or "L.H.S." in math.
 \newcommand{\lhs}{\relax\ifmmode\mathrm{L.H.S.}\else{}left-hand side\xspace\fi}
-% define \rhs for "right-hand side" in text or "R.H.S." in math. 
+% define \rhs for "right-hand side" in text or "R.H.S." in math.
 \newcommand{\rhs}{\relax\ifmmode\mathrm{R.H.S.}\else{}right-hand side\xspace\fi}
 \newcommand{\textboolor}{\refdef{\mathsf{OR}}}
 \newcommand{\textbooland}{\refdef{\mathsf{AND}}}
@@ -346,6 +346,7 @@
 \newcommand{\textboolnot}{\refdef{\mathsf{NOT}}}
 \newcommand{\textboolxor}{\refdef{\mathsf{XOR}}}
 \newcommand{\modd}{\text{mod}\,}
+\newcommand{\boolcliq}{\refdef[blk:def-cliq-bool]{\textsc{CLIQUE}}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -489,11 +490,11 @@
 \newcommand{\implics}{\refdef[blk:def-implicant]{\mathsf{I}}} % implicants
 \newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\mathsf{PI}}}
 \newcommand{\compNC}{\refdef[blk:def-nc]{\mathsf{NC}}}
-\newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\mathsf{SIZE{-}DEPTH}}}
-\newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\mathsf{FSIZE}}}
-\newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FDEPTH}}}
-\newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FSIZE{-}DEPTH}}}
-\newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{UnbSIZE{-}DEPTH}}}
+\newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\mathsf{Size{-}Depth}}}
+\newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\mathsf{FSize}}}
+\newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FDepth}}}
+\newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FSize{-}Depth}}}
+\newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{UnbSize{-}Depth}}}
 \newcommand{\compAC}{\refdef[blk:def-ac]{\mathsf{AC}}}
 \newcommand{\compACC}{\refdef[blk:def-acc]{\mathsf{ACC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
@@ -505,7 +506,7 @@
 \newcommand{\majo}{\refdef[blk:def-bool-func-sym]{\mathsf{Maj}}}
 \newcommand{\bigoheq}{\approx}
 \newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
-\newcommand{\compCC}{\mathsf{CC}} % communication complexity
+\newcommand{\compcom}{\mathsf{C}} % communication complexity
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

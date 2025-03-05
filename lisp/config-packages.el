@@ -1343,4 +1343,48 @@ Cancel the previous one if present."
     (setenv "ANTHROPIC_API_KEY" anthropic-api-key)
     (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)))
 
+(use-package elysium
+  :custom
+  (elysium-window-size 0.33)
+  (elysium-window-style 'vertical))
+
+(use-package evedel
+  :defer t
+  :config
+  (customize-set-variable 'evedel-empty-tag-query-matches-all nil)
+  :bind (("C-c e r" . evedel-create-reference)
+         ("C-c e d" . evedel-create-directive)
+         ("C-c e s" . evedel-save-instructions)
+         ("C-c e l" . evedel-load-instructions)
+         ("C-c e p" . evedel-process-directives)
+         ("C-c e m" . evedel-modify-directive)
+         ("C-c e C" . evedel-modify-reference-commentary)
+         ("C-c e k" . evedel-delete-instructions)
+         ("C-c e c" . evedel-convert-instructions)
+         ("C->"     . evedel-next-instruction)
+         ("C-<"     . evedel-previous-instruction)
+         ("C-."     . evedel-cycle-instructions-at-point)
+         ("C-c e t" . evedel-add-tags)
+         ("C-c e T" . evedel-remove-tags)
+         ("C-c e D" . evedel-modify-directive-tag-query)
+         ("C-c e P" . evedel-preview-directive-prompt)
+         ("C-c e /" . evedel-directive-undo)
+         ("C-c e ?" . (lambda ()
+                        (interactive)
+                        (evedel-directive-undo t)))))
+
+;; (use-package ellama
+;;   :ensure t
+;;   :bind ("C-c e" . ellama-transient-main-menu)
+;;   ;; send last message in chat buffer with C-c C-c
+;;   :hook (org-ctrl-c-ctrl-c-final . ellama-chat-send-last-message)
+;;   :init (setopt ellama-auto-scroll t)
+;;   :config
+;;   ;; show ellama context in header line in all buffers
+;;   (ellama-context-header-line-global-mode +1))
+
+;; (use-package mini-modeline
+;;   :config
+;;   (mini-modeline-mode t))
+
 (provide 'config-packages)
