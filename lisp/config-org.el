@@ -666,7 +666,7 @@ your browser does not support the video tag.
             (when (equal (org-element-type element) 'special-block)
               (plist-put myplist :class "fancy-block")
               (plist-put myplist
-                         :data-before (cheap-org-export-string-as
+                         :data-before (org-export-string-as
                                        (concat block-type-str
                                                block-title)
                                        'html
@@ -674,7 +674,7 @@ your browser does not support the video tag.
               ;; dont export :source if it is just a path to a local file (starts with forward slash)
               (plist-put myplist
                          :data-after (when (and citation (not (string-prefix-p "/" citation)))
-                                       (cheap-org-export-string-as citation org-export-current-backend t))))
+                                       (org-export-string-as citation org-export-current-backend t))))
             ;; (when caption
             ;;   (plist-put myplist :data-caption caption))
             (when element-name
@@ -747,11 +747,11 @@ contextual information."
                 (progn
                   (when (not (string-search "[" dependency)) ;; if its a link without the brackets
                     (setq dependency (format "\\(\\to\\) [[%s]]" dependency)))
-                  (setq title (format "%s %s" title (cheap-org-export-string-as dependency 'latex t))))
+                  (setq title (format "%s %s" title (org-export-string-as dependency 'latex t))))
               (when (org-block-property :on-prev special-block)
                 (setq title (format "%s \\(\\to\\) %s" title "previous block"))))
             (concat (format "\\begin{myenv}{%s}{%s}[%s]%s\n" block-type label title ;; note that title can be broken into multiple lines with \\ which may also allow for multiple titles i guess
-                            (if citation (format "[%s]" (cheap-org-export-string-as citation 'latex t)) ""))
+                            (if citation (format "[%s]" (org-export-string-as citation 'latex t)) ""))
                     contents
                     (format "\\end{myenv}")))))))
   ;; (advice-add #'org-latex-special-block :around #'my-org-latex-special-block-advice)
@@ -1026,7 +1026,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
                 ;; Contents.
                 (format "<span class=\"equation\">\n%s\n</span>" (org-html--as-latex latex-environment info latex-frag))
                 (if caption
-                    (cheap-org-export-string-as (org-element-interpret-data caption) 'html t)
+                    (org-export-string-as (org-element-interpret-data caption) 'html t)
                   "")))))
 
   ;; center images, limit max width of images
@@ -2279,13 +2279,6 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   ;; to get an even smaller file size
   (setq org-xopp-imagemagick-extra-args (list "-resize" "25%"))
   )
-
-;; this was a workaround for an issue that is no longer present, it should be removed
-(defun cheap-org-export-string-as (str backend &optional body-only)
-  (with-temp-buffer
-    (insert str)
-    (org-export-to-file backend "/tmp/test1" nil nil nil body-only))
-  (org-file-contents "/tmp/test1"))
 
 ;; auto tex
 (defun to-tex-from-clipboard ()

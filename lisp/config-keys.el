@@ -332,10 +332,11 @@
 (led-kbd "s j"
          (lambda () (interactive)
            (let ((julia-snail-extensions '(repl-history formatter ob-julia))
+                 (default-directory *brain-dir*)
                  ;; (julia-snail-executable (join-path (getenv "WORK_DIR")
                  ;;                                    "myjulia"
                  ;;                                    "myjulia.sh"))
-                 (julia-snail-executable "LD_LIBRARY_PATH=/run/opengl-driver/lib/ julia")
+                 (julia-snail-executable "julia")
                  )
              (julia-snail))))
 
