@@ -180,9 +180,9 @@
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images, actually dont use org-persist at all because
   ;; after long usage it causes a huge delay on the killing of org buffers
-  ;; (setq org-latex-preview-cache 'temp)
-  ;; (setq org-element-cache-persistent nil)
-  ;; (setq org-element-use-cache nil)
+  (setq org-latex-preview-cache 'temp)
+  (setq org-element-cache-persistent nil)
+  (setq org-element-use-cache nil)
 
   (setq org-latex-default-packages-alist nil)
   ;; dont export with table of contents unless i want you to
