@@ -1335,44 +1335,45 @@ Cancel the previous one if present."
   ;;                             parenthesized_expression subscript)))
   :hook ((python-base-mode yaml-mode) . indent-bars-mode))
 
-(unless (is-android-system)
-  (use-package aidermacs
-    :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
-    :config
-    (setq aidermacs-args '("--model" "anthropic/claude-3-5-sonnet-20241022"))
-    (setenv "ANTHROPIC_API_KEY" anthropic-api-key)
-    (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)))
+;; (unless (is-android-system)
+;;   (use-package aidermacs
+;;     :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
+;;     :config
+;;     (setq aidermacs-args '("--model" "anthropic/claude-3-5-sonnet-20241022"))
+;;     (setenv "ANTHROPIC_API_KEY" anthropic-api-key)
+;;     (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)))
 
-(use-package elysium
-  :custom
-  (elysium-window-size 0.33)
-  (elysium-window-style 'vertical))
+;; (use-package elysium
+;;   :custom
+;;   (elysium-window-size 0.33)
+;;   (elysium-window-style 'vertical))
 
-(use-package evedel
-  :defer t
-  :config
-  (customize-set-variable 'evedel-empty-tag-query-matches-all nil)
-  :bind (("C-c e r" . evedel-create-reference)
-         ("C-c e d" . evedel-create-directive)
-         ("C-c e s" . evedel-save-instructions)
-         ("C-c e l" . evedel-load-instructions)
-         ("C-c e p" . evedel-process-directives)
-         ("C-c e m" . evedel-modify-directive)
-         ("C-c e C" . evedel-modify-reference-commentary)
-         ("C-c e k" . evedel-delete-instructions)
-         ("C-c e c" . evedel-convert-instructions)
-         ("C->"     . evedel-next-instruction)
-         ("C-<"     . evedel-previous-instruction)
-         ("C-."     . evedel-cycle-instructions-at-point)
-         ("C-c e t" . evedel-add-tags)
-         ("C-c e T" . evedel-remove-tags)
-         ("C-c e D" . evedel-modify-directive-tag-query)
-         ("C-c e P" . evedel-preview-directive-prompt)
-         ("C-c e /" . evedel-directive-undo)
-         ("C-c e ?" . (lambda ()
-                        (interactive)
-                        (evedel-directive-undo t)))))
+;; (use-package evedel
+;;   :defer t
+;;   :config
+;;   (customize-set-variable 'evedel-empty-tag-query-matches-all nil)
+;;   :bind (("C-c e r" . evedel-create-reference)
+;;          ("C-c e d" . evedel-create-directive)
+;;          ("C-c e s" . evedel-save-instructions)
+;;          ("C-c e l" . evedel-load-instructions)
+;;          ("C-c e p" . evedel-process-directives)
+;;          ("C-c e m" . evedel-modify-directive)
+;;          ("C-c e C" . evedel-modify-reference-commentary)
+;;          ("C-c e k" . evedel-delete-instructions)
+;;          ("C-c e c" . evedel-convert-instructions)
+;;          ("C->"     . evedel-next-instruction)
+;;          ("C-<"     . evedel-previous-instruction)
+;;          ("C-."     . evedel-cycle-instructions-at-point)
+;;          ("C-c e t" . evedel-add-tags)
+;;          ("C-c e T" . evedel-remove-tags)
+;;          ("C-c e D" . evedel-modify-directive-tag-query)
+;;          ("C-c e P" . evedel-preview-directive-prompt)
+;;          ("C-c e /" . evedel-directive-undo)
+;;          ("C-c e ?" . (lambda ()
+;;                         (interactive)
+;;                         (evedel-directive-undo t)))))
 
+;; havent tried this yet
 ;; (use-package ellama
 ;;   :ensure t
 ;;   :bind ("C-c e" . ellama-transient-main-menu)
@@ -1383,8 +1384,35 @@ Cancel the previous one if present."
 ;;   ;; show ellama context in header line in all buffers
 ;;   (ellama-context-header-line-global-mode +1))
 
-;; (use-package mini-modeline
-;;   :config
-;;   (mini-modeline-mode t))
+;; havent tried this yet
+;; (use-package minuet
+;;     :bind
+;;     (("M-y" . #'minuet-complete-with-minibuffer) ;; use minibuffer for completion
+;;      ("M-i" . #'minuet-show-suggestion) ;; use overlay for completion
+;;      ("C-c m" . #'minuet-configure-provider)
+;;      :map minuet-active-mode-map
+;;      ;; These keymaps activate only when a minuet suggestion is displayed in the current buffer
+;;      ("M-p" . #'minuet-previous-suggestion) ;; invoke completion or cycle to next completion
+;;      ("M-n" . #'minuet-next-suggestion) ;; invoke completion or cycle to previous completion
+;;      ("M-A" . #'minuet-accept-suggestion) ;; accept whole completion
+;;      ;; Accept the first line of completion, or N lines with a numeric-prefix:
+;;      ;; e.g. C-u 2 M-a will accepts 2 lines of completion.
+;;      ("M-a" . #'minuet-accept-suggestion-line)
+;;      ("M-e" . #'minuet-dismiss-suggestion))
+
+;;     :init
+;;     ;; if you want to enable auto suggestion.
+;;     ;; Note that you can manually invoke completions without enable minuet-auto-suggestion-mode
+;;     (add-hook 'prog-mode-hook #'minuet-auto-suggestion-mode)
+
+;;     :config
+;;     ;; You can use M-x minuet-configure-provider to interactively configure provider and model
+;;     (setq minuet-provider 'openai-fim-compatible)
+
+;;     ;; Required when defining minuet-ative-mode-map in insert/normal states.
+;;     ;; Not required when defining minuet-active-mode-map without evil state.
+;;     (add-hook 'minuet-active-mode-hook #'evil-normalize-keymaps)
+
+;;     (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 256))
 
 (provide 'config-packages)

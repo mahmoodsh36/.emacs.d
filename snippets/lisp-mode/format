@@ -2,4 +2,4 @@
 # name: format
 # key: fm
 # --
-(format t "$0" $1)
+(format t "$0~A~%" $1)
