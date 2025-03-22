@@ -332,6 +332,7 @@
 \newcommand{\bboolor}{\mathop{\refdef{\bigvee}}}
 \newcommand{\booland}{\refdef{\land}}
 \newcommand{\bbooland}{\mathop{\refdef{\land}}}
+\newcommand{\boolnot}{\refdef{\lnot}}
 \newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
 \newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_{#2}}
 \newcommand{\andreev}{\refdef[blk:def-andreev]{\mathsf{And}}}
@@ -427,12 +428,15 @@
 \newcommand{\godelpairl}{\refdef[blk:eq-pairing-function-3]{l}} % left number of a godel pair
 \newcommand{\godelpairr}{\refdef[blk:eq-pairing-function-4]{r}} % right number of a godel pair
 \DeclarePairedDelimiter{\Scoding}{{\refdef[blk:blk-S-program-encoding]{\langle}}}{{\refdef[blk:blk-S-program-encoding]{\rangle}}}
+\newcommand{\coded}{\Scoding}
 \newcommand{\compproj}{\refdef[blk:blk-mu-recursive-func-schema-3]{\pi}}
 \newcommand{\langS}{\refdef[blk:blk-S-lang]{\mathscr{S}}}
 \newcommand{\turingreduceo}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_1}} #2}
 \newcommand{\turingreducem}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le_m}} #2}
 \newcommand{\turingreduce}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le}} #2}
+\newcommand{\turingreduc}{\operatorname{\refdef[blk:def-turing-reduc]{\le}}}
 \newcommand{\turingreducep}[2]{#1 \operatorname{\refdef[blk:def-poly-reduc]{\le_p}} #2}
+\newcommand{\ereduce}{\operatorname{\refdef[blk:def-turing-reduc]{\le}}}
 \DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\mathsf{L}}}
 \DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\mathsf{L}}}
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
@@ -452,7 +456,9 @@
 \newcommand{\npolylangs}{\refdef[blk:def-np]{\mathsf{NP}}}
 % aliases for the 2 commands above
 \newcommand{\compP}{\polylangs}
+\newcommand{\compp}{\polylangs}
 \newcommand{\compNP}{\npolylangs}
+\newcommand{\compnp}{\npolylangs}
 \newcommand{\compSTP}{\refdef{STP}}
 \newcommand{\albetstar}[1]{{#1}^{\refdef[blk:def-kleenestar]{*}}} % kleene closure of an alphabet
 \newcommand{\bigoh}{\refdef[blk:def-bigo]{\mathscr{O}}} % big o
@@ -469,7 +475,7 @@
 \newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\mathsf{CSize}}}
 \newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\mathsf{CDepth}}}
 \newcommand{\coNP}{\refdef[blk:def-conp]{\mathsf{coNP}}}
-\newcommand{\compdtime}{\mathsf{DTIME}}
+\newcommand{\compdtime}{\refdef[blk:def-dtime]{\mathsf{DTIME}}}
 \newcommand{\compEXP}{\mathsf{EXP}}
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
@@ -507,6 +513,14 @@
 \newcommand{\bigoheq}{\approx}
 \newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
 \newcommand{\compcom}{\mathsf{C}} % communication complexity
+\newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\mathsf{SAT}}}
+\newcommand{\compdspace}{\refdef[blk:def-space]{\mathsf{DSPACE}}}
+\newcommand{\compnspace}{\refdef[blk:def-space]{\mathsf{NSPACE}}}
+\newcommand{\comppspace}{\refdef[blk:def-pspace]{\mathsf{PSPACE}}}
+\newcommand{\compnpspace}{\refdef[blk:def-pspace]{\mathsf{NPSPACE}}}
+\newcommand{\complspace}{\refdef[blk:def-lspace]{\mathsf{L}}}
+\newcommand{\compnlspace}{\refdef[blk:def-lspace]{\mathsf{NL}}}
+\newcommand{\comptsat}{\mathsf{3SAT}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

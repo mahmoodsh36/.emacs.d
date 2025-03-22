@@ -627,15 +627,33 @@
    (interactive)
    (start-program-on-current-file "mpv" (list "--no-video" "--force-window"))))
 
-;; (led-kbd "; l" 'gptel-menu)
-;; to avoid forcing the buffer to be displayed..
+(led-kbd "; L" 'gptel-menu)
 (led-kbd
  "; l"
  (lambda ()
    (interactive)
-   (setq gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window)))
-   (let ((gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window))))
-     (call-interactively 'gptel-menu))))
+   ;; (setq gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window)))
+   ;; (let ((gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window))))
+   ;;   (call-interactively 'gptel-menu))
+   (let ((gptel--system-message "you are a brilliant mathematician, you excel at solving problems. you are also an assistant living in emacs, respond concisely"))
+     (goto-char (point-max))
+     (gptel-send))))
+(led-kbd
+ "; c"
+ (lambda ()
+   (interactive)
+   (when-let ((gptel--system-message "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+              (prompt (read-string "prompt: ")))
+     (gptel-context-remove-all)
+     (gptel-context--add-region (current-buffer) (point-min) (point-max) t)
+     (gptel-request prompt
+       :buffer (get-buffer-create "gptel-code")
+       :position 0
+       :stream t
+       :system gptel--system-message
+       :fsm (gptel-make-fsm :handlers gptel-send--handlers))
+     (switch-to-buffer-other-window "gptel-code")
+     (gptel-context-remove-all))))
 
 (led-kbd "; a" 'open-auto-tex)
 

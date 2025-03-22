@@ -131,10 +131,10 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-tex)
-  ;; (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
+  (add-to-list 'completion-at-point-functions #'cape-line) ;; too intrusive, dont enable
   (add-to-list 'completion-at-point-functions #'cape-keyword)
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-  ;; (add-to-list 'completion-at-point-functions #'cape-history) ;; too intrusive
+  (add-to-list 'completion-at-point-functions #'cape-history) ;; too intrusive
   (add-to-list 'completion-at-point-functions #'cape-sgml)
   (add-to-list 'completion-at-point-functions #'cape-rfc1345)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
@@ -288,7 +288,6 @@
     ;; (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
     (yas-expand)))
 (add-hook 'post-command-hook #'my-yas-try-expanding-auto-snippets)
-
 
 ;; highlight errors in code
 ;; (use-package flycheck
@@ -556,6 +555,9 @@
           (cmucl ("cmucl"))
           (ccl ("ccl"))
           (maxima ("rmaxima" "-r" "to_lisp();"))))
+  ;; dont truncate my outputs!
+  (setq sly-truncate-lines nil)
+  (setq-default sly-truncate-lines nil)
   ;; make org babel use sly instead of slime
   (setq org-babel-lisp-eval-fn #'sly-eval)
   (setq sly-mrepl-history-file-name (from-brain "sly_history"))
@@ -1166,19 +1168,20 @@
   (use-package gptel
     :config
     (setq
-     ;; gptel-backend (gptel-make-ollama "ollama"
-     ;;                 :host "localhost:11434"
-     ;;                 :stream t
-     ;;                 :models '("mistral:latest")
-     ;;                 ;; :models '("codellama:13b-instruct")
-     ;;                 )
+     gptel-backend (gptel-make-ollama "ollama"
+                     :host "mahmooz2:11434"
+                     :stream t
+                     ;; :models '("mistral:latest")
+                     :models '("qwq:32b")
+                     ;; :models '("codellama:13b-instruct")
+                     )
      ;; Llama.cpp offers an OpenAI compatible API
      gptel-default-mode 'org-mode
-     gptel-backend (gptel-make-openai "llama-cpp"
-                     :stream t
-                     :protocol "http"
-                     :host "mahmooz2:8080"
-                     :models '(qwen))
+     ;; gptel-backend (gptel-make-openai "llama-cpp"
+     ;;                 :stream t
+     ;;                 :protocol "http"
+     ;;                 :host "mahmooz2:8080"
+     ;;                 :models '(qwen))
      ;; gptel-model 'gemini
      ;; gptel-backend (gptel-make-gemini "Gemini"
      ;;                 :key (getenv "GEMINI_API_KEY")
@@ -1335,13 +1338,23 @@ Cancel the previous one if present."
   ;;                             parenthesized_expression subscript)))
   :hook ((python-base-mode yaml-mode) . indent-bars-mode))
 
-;; (unless (is-android-system)
-;;   (use-package aidermacs
-;;     :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
-;;     :config
-;;     (setq aidermacs-args '("--model" "anthropic/claude-3-5-sonnet-20241022"))
-;;     (setenv "ANTHROPIC_API_KEY" anthropic-api-key)
-;;     (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)))
+(unless (is-android-system)
+  (use-package aidermacs
+    :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
+    :config
+    (setq aidermacs-args
+          '("--model"
+            "ollama_chat/qwq:32b"
+            "--no-auto-commits"
+            "--no-git"))
+    ;; (setq aidermacs-auto-accept-architect t)
+    (setenv "OLLAMA_API_BASE" "http://mahmooz2:11434")
+    (setq aidermacs-extra-args '("--thinking-tokens" "16k"))
+    ;; set the `aidermacs-config-file` variable in your emacs config:
+    ;; (setq aidermacs-config-file "/path/to/your/project/.aider.conf.yml")
+    ;; *or*, include the `--config` or `-c` flag in `aidermacs-extra-args`:
+    ;; (setq aidermacs-extra-args '("--config" "/path/to/your/project/.aider.conf.yml"))
+    (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)))
 
 ;; (use-package elysium
 ;;   :custom

@@ -38,12 +38,13 @@
     ;; avoid using savannah?
     (require 'elpaca-menu-elpa)
     (setf (alist-get 'packages-url (alist-get 'gnu elpaca-menu-elpas))
-          ;; "https://git.savannah.gnu.org/gitweb/?p=emacs/elpa.git;a=blob_plain;f=elpa-packages;hb=HEAD"
-          "https://github.com/emacs-straight/gnu-elpa-mirror.git"
+          "https://raw.githubusercontent.com/emacsmirror/gnu_elpa/refs/heads/main/elpa-packages"
+          (alist-get 'remote (alist-get 'gnu elpaca-menu-elpas))
+          "https://github.com/emacsmirror/gnu_elpa"
           (alist-get 'packages-url (alist-get 'nongnu elpaca-menu-elpas))
-          ;; "https://git.savannah.gnu.org/gitweb/?p=emacs/nongnu.git;a=blob_plain;f=elpa-packages;hb=HEAD"
-          "https://github.com/emacsmirror/nongnu_elpa.git"
-          )
+          "https://raw.githubusercontent.com/emacsmirror/nongnu_elpa/refs/heads/main/elpa-packages"
+          (alist-get 'remote (alist-get 'nongnu elpaca-menu-elpas))
+          "https://github.com/emacsmirror/nongnu_elpa")
 
     (elpaca-generate-autoloads "elpaca" repo)
     (load "./elpaca-autoloads")))

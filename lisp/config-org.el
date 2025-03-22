@@ -180,9 +180,9 @@
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images, actually dont use org-persist at all because
   ;; after long usage it causes a huge delay on the killing of org buffers
-  (setq org-latex-preview-cache 'temp)
-  (setq org-element-cache-persistent nil)
-  (setq org-element-use-cache nil)
+  ;; (setq org-latex-preview-cache 'temp)
+  ;; (setq org-element-cache-persistent nil)
+  ;; (setq org-element-use-cache nil)
 
   (setq org-latex-default-packages-alist nil)
   ;; dont export with table of contents unless i want you to
@@ -589,6 +589,7 @@ your browser does not support the video tag.
           (next-line)
           (this-line)
           (this-element)
+          (next-line-element)
           (next-line-begin)
           (stop)
           (inserted))
@@ -600,12 +601,15 @@ your browser does not support the video tag.
           (save-excursion
             (setq next-line-begin (1+ (pos-eol)))
             (goto-char next-line-begin)
-            (setq next-line (buffer-substring (pos-bol) (pos-eol)))))
+            (setq next-line (buffer-substring (pos-bol) (pos-eol)))
+            (setq next-line-element (org-element-at-point))))
         ;; after each sentence
         ;; also if next line is tikzpicture we need to create a line break
         (when (or (and (not (point-on-last-line-p))
                        (string-suffix-p "." this-line) ;; dot to denote end of sentence and new line?
                        (equal (org-element-type (org-element-at-point)) 'paragraph) ;; or maybe it deserves a new line simply if its a text line?
+                       (not (equal (org-element-type next-line-element) 'plain-list))
+                       (not (equal (org-element-type next-line-element) 'headline))
                        (not (string-prefix-p "#+" next-line))
                        (not (string-prefix-p "\\" next-line)))
                   (and (not (point-on-last-line-p))
@@ -787,7 +791,7 @@ holding contextual information."
   ;; this function sometimes tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
   (defun org-latex-preview--failure-callback-advice (orig-func &rest args)
     (ignore-errors (apply orig-func args)))
-  (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
+  ;; (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
 
   ;; modified it to remove --bbox=preview, to prevent long latex previews from getting cut off
   (plist-put (alist-get 'dvisvgm org-latex-preview-process-alist)
@@ -1468,7 +1472,7 @@ implies no special alignment."
     (map-org-dir-elements *notes-dir* ":forexport:" 'headline
                           (lambda (_) (org-export-heading-html)))
     ;; (export-entries-page)
-    (export-all-org-files :html-p t :continue-on-error t)
+    (export-all-org-files :html-p t :continue-on-error nil)
     (generate-and-save-website-search-data)
     (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
 
@@ -1478,7 +1482,7 @@ implies no special alignment."
          (should-export-org-file-function (lambda (_) t))
          ;; (files-to-export (collect-org-files-to-export))
          (files-to-export (list-note-files)))
-    (export-all-org-files :pdf-p t :async nil :continue-on-error t)))
+    (export-all-org-files :pdf-p t :async nil :continue-on-error nil)))
 
 (defun export-all-org-files-to-html-local ()
   (interactive)
