@@ -408,10 +408,10 @@
 ;;     (dired-do-shell-command command num-files local-tmp-files)))
 
 (defun log-file-visit ()
-  "Log each file visit with a Unix timestamp to a specific log file."
+  "log each file visit with a unix timestamp to a specific log file."
   (when buffer-file-name
     (let ((file buffer-file-name)
-          (timestamp (format "%.0f" (float-time))))
+          (timestamp (float-time)))
       (with-temp-buffer
         (insert (format "%s:%s\n" timestamp file))
         (append-to-file (point-min) (point-max) (from-brain "visit-log"))))))

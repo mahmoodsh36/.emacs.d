@@ -512,7 +512,7 @@
 \newcommand{\majo}{\refdef[blk:def-bool-func-sym]{\mathsf{Maj}}}
 \newcommand{\bigoheq}{\approx}
 \newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
-\newcommand{\compcom}{\mathsf{C}} % communication complexity
+\newcommand{\compcom}{\refdef[blk:def-comm-comp]{\mathsf{C}}} % communication complexity
 \newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\mathsf{SAT}}}
 \newcommand{\compdspace}{\refdef[blk:def-space]{\mathsf{DSPACE}}}
 \newcommand{\compnspace}{\refdef[blk:def-space]{\mathsf{NSPACE}}}
@@ -893,7 +893,7 @@
 }
 % function definition with domain and codomain
 \newcommand{\funcdc}[3]{%
-  #1 \colon #2 \to #3
+  #1 \refdef[blk:def-func]{\colon} #2 \refdef[blk:def-func]{\to} #3
 }
 % function definition with variable and value
 \newcommand{\funcd}[3]{%
