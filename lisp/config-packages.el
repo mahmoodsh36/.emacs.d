@@ -1172,7 +1172,8 @@
                      :host "mahmooz2:11434"
                      :stream t
                      ;; :models '("mistral:latest")
-                     :models '("qwq:32b")
+                     ;; :models '("qwq:32b")
+                     :models '("deepseek-r1:32b")
                      ;; :models '("codellama:13b-instruct")
                      )
      ;; Llama.cpp offers an OpenAI compatible API

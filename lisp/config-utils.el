@@ -580,4 +580,9 @@ prompt the user for a coding system."
       (concat (md5 obj) "-" postfix)
     (md5 obj)))
 
+(defun ensure-dir (dirpath)
+  "ensure that DIRPATH exists, creating it if necessary."
+  (unless (file-directory-p dirpath)
+    (make-directory dirpath t)))
+
 (provide 'config-utils)

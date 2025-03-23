@@ -654,6 +654,56 @@
        :fsm (gptel-make-fsm :handlers gptel-send--handlers))
      (switch-to-buffer-other-window "gptel-code")
      (gptel-context-remove-all))))
+(led-kbd
+ "; y"
+ (lambda ()
+   (interactive)
+   (my-gptel "deepseek-r1:32b")))
+
+(defun my-gptel (name &optional _ initial interactivep)
+  (interactive
+   (let* ((backend (default-value 'gptel-backend))
+          (backend-name
+           (format "*%s*" (gptel-backend-name backend))))
+     (list (read-buffer
+            "Create or choose gptel buffer: "
+            backend-name nil                         ; DEFAULT and REQUIRE-MATCH
+            (lambda (b)                                   ; PREDICATE
+              ;; NOTE: buffer check is required (#450)
+              (and-let* ((buf (get-buffer (or (car-safe b) b))))
+                (buffer-local-value 'gptel-mode buf))))
+           (condition-case nil
+               (gptel--get-api-key
+                (gptel-backend-key backend))
+             ((error user-error)
+              (setq gptel-api-key
+                    (read-passwd
+                     (format "%s API key: " backend-name)))))
+           (and (use-region-p)
+                (buffer-substring (region-beginning)
+                                  (region-end)))
+           t)))
+  (with-current-buffer (get-buffer-create name)
+    (ensure-dir (from-brain "gptel/"))
+    (set-visited-file-name (from-brain (join-path "gptel/" (current-time-string))))
+    (cond ;Set major mode
+     ((eq major-mode gptel-default-mode))
+     ((eq gptel-default-mode 'text-mode)
+      (text-mode)
+      (visual-line-mode 1))
+     (t (funcall gptel-default-mode)))
+    (gptel--sanitize-model :backend (default-value 'gptel-backend)
+                           :model (default-value 'gptel-model)
+                           :shoosh nil)
+    (unless gptel-mode (gptel-mode 1))
+    (goto-char (point-max))
+    (skip-chars-backward "\t\r\n")
+    (if (bobp) (insert (or initial (gptel-prompt-prefix-string))))
+    (display-buffer (current-buffer) gptel-display-buffer-action)
+    (message "Send your query with %s!"
+             (substitute-command-keys "\\[gptel-send]"))
+    (enter-append-if-evil)
+    (current-buffer)))
 
 (led-kbd "; a" 'open-auto-tex)
 
