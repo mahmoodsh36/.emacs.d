@@ -240,7 +240,7 @@
 % \setlength{\parindent}{0pt}
 
 % some needed operators to not lose my sanity
-\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\spn}{\refdef[blk:def-span]{span}}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\range}{range}
 \DeclareMathOperator{\img}{Im}
@@ -348,6 +348,10 @@
 \newcommand{\textboolxor}{\refdef{\mathsf{XOR}}}
 \newcommand{\modd}{\text{mod}\,}
 \newcommand{\boolcliq}{\refdef[blk:def-cliq-bool]{\textsc{CLIQUE}}}
+\newcommand{\categ}{\refdef[blk:def-category]{\mathscr{C}}}
+\DeclareMathOperator{\domn}{\refdef[blk:def-func-dom]{domain}}
+\DeclareMathOperator{\codomn}{\refdef[blk:def-func-codom]{codomain}}
+\newcommand{\ndoset}{\refdef[blk:def-endo]{End}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -522,6 +526,9 @@
 \newcommand{\compnlspace}{\refdef[blk:def-lspace]{\mathsf{NL}}}
 \newcommand{\comptsat}{\mathsf{3SAT}}
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
+\NewDocumentCommand\vectrans{mmO{}}{[#1]_{#2}^{#3}}
+\NewDocumentCommand\transmat{mm}{T_{#1}^{#2}}
+\newcommand{\idmat}{\refdef[blk:def-id-mat]{I}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -893,7 +900,7 @@
 }
 % function definition with domain and codomain
 \newcommand{\funcdc}[3]{%
-  #1 \refdef[blk:def-func]{\colon} #2 \refdef[blk:def-func]{\to} #3
+  #1 \refdef[blk:def-func]{\colon} #2 \,\refdef[blk:def-func]{\to}\, #3
 }
 % function definition with variable and value
 \newcommand{\funcd}[3]{%

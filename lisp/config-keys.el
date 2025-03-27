@@ -481,6 +481,11 @@
 
 ;; dired keys
 (led-kbd "s ." 'my-xdg-open-file)
+(general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
+(general-define-key :states '(normal) :keymaps 'dired-mode-map "o"
+                    (lambda ()
+                      (interactive)
+                      (my-dired-sort "date")))
 
 ;; pdf tools keys, make j,k navigation update the location bookmarked (hey atleast it works)
 (general-define-key :states 'normal :keymaps 'pdf-view-mode-map "j"
@@ -590,8 +595,6 @@
 
 (led-kbd "; p" 'new-xournalpp)
 (led-kbd "; u" 'my-open-at-point)
-
-(general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 
 ;; run a specific program on a specific file (works for dired too)
 (defun start-program-on-current-file (program-name &optional args)

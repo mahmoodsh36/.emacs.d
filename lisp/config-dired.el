@@ -45,14 +45,11 @@
 ;;   :ensure ( :fetcher url :url "https://www.emacswiki.org/emacs/dired-sort-menu.el"))
 
 ;; alternative? https://wilkesley.org/~ian/xah/emacs/dired_sort.html
-(defun xah-dired-sort ()
-  "Sort dired dir listing in different ways.
-Prompt for a choice.
-URL `http://ergoemacs.org/emacs/dired_sort.html'
-Version 2015-07-30"
+(defun my-dired-sort (&optional default-sort-by)
   (interactive)
   (let (-sort-by -arg)
-    (setq -sort-by (completing-read "Sort by:" '( "date" "size" "name" "dir")))
+    (setq -sort-by (or default-sort-by
+                       (completing-read "sort by:" '( "date" "size" "name" "dir"))))
     (cond
      ((equal -sort-by "name") (setq -arg "-Al --si --time-style long-iso "))
      ((equal -sort-by "date") (setq -arg "-Al --si --time-style long-iso -t"))
