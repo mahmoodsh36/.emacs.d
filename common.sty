@@ -527,8 +527,15 @@
 \newcommand{\comptsat}{\mathsf{3SAT}}
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
 \NewDocumentCommand\vectrans{mmO{}}{[#1]_{#2}^{#3}}
-\NewDocumentCommand\transmat{mm}{T_{#1}^{#2}}
+\NewDocumentCommand{\transmat}{mg}{%
+  \IfNoValueTF{#2}{%
+    T_{#1}%
+  }{%
+    T_{#1}^{#2}%
+  }%
+}
 \newcommand{\idmat}{\refdef[blk:def-id-mat]{I}}
+\newcommand{\directsum}{\refdef[blk:def-direct-sum]{\oplus}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

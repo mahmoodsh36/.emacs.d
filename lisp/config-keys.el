@@ -645,6 +645,7 @@
  "; c"
  (lambda ()
    (interactive)
+   (require 'gptel-context)
    (when-let ((gptel--system-message "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
               (prompt (read-string "prompt: ")))
      (gptel-context-remove-all)
