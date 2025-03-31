@@ -293,7 +293,7 @@
   ;; dont show equation numbers, they sometimes mess up the preview by causing it to be cut off
   (setq org-latex-preview-numbered nil)
   ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
-  (setq org-latex-compiler "lualatex")
+  ;; (setq org-latex-compiler "lualatex")
   ;; make org-agenda open up in the current window
   (setq org-agenda-window-setup 'current-window)
   ;; dont prompt for downloading remote files on export
@@ -1500,12 +1500,12 @@ implies no special alignment."
          ;; (files-to-export (collect-org-files-to-export))
          (files-to-export (list-note-files)))
     (message "collected %s files to export" (length files-to-export))
-    ;; (map-org-dir-elements
-    ;;  *notes-dir*
-    ;;  ":forexport:"
-    ;;  'headline
-    ;;  (lambda (_) (org-export-heading-html)))
-    ;; (export-all-org-files :html-p t :continue-on-error t)
+    (map-org-dir-elements
+     *notes-dir*
+     ":forexport:"
+     'headline
+     (lambda (_) (org-export-heading-html)))
+    (export-all-org-files :html-p t :continue-on-error nil)
     (generate-and-save-website-search-data)
     (export-html-as-org-file "search" (org-file-contents (from-template "search.html")))))
 

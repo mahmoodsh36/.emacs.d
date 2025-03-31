@@ -526,16 +526,6 @@
 \newcommand{\compnlspace}{\refdef[blk:def-lspace]{\mathsf{NL}}}
 \newcommand{\comptsat}{\mathsf{3SAT}}
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
-\NewDocumentCommand\vectrans{mmO{}}{[#1]_{#2}^{#3}}
-\NewDocumentCommand{\transmat}{mg}{%
-  \IfNoValueTF{#2}{%
-    T_{#1}%
-  }{%
-    T_{#1}^{#2}%
-  }%
-}
-\newcommand{\idmat}{\refdef[blk:def-id-mat]{I}}
-\newcommand{\directsum}{\refdef[blk:def-direct-sum]{\oplus}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -744,6 +734,15 @@
 \endgroup}
 \newcommand\matinv[1]{{#1}^{\refdef[blk:def-mat-inv]{-1}}}
 \newcommand{\tenselm}[2]{{#1}_{#2}} % to denote the element at specific indicies of a tensor
+\NewDocumentCommand\vectrans{mmO{}}{[#1]_{#2}^{#3}}
+\NewDocumentCommand{\transmat}{mg}{%
+  \IfNoValueTF{#2}{%
+    T_{#1}%
+  }{%
+    T_{#1}^{#2}%
+  }%
+}
+\newcommand{\directsum}{\refdef[blk:def-direct-sum]{\oplus}}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
@@ -832,6 +831,8 @@
 \newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{pdeg}}}
 \newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{rbdeg}}} % real boolean degree
 \newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{abdeg}}} % approximate boolean degree
+\newcommand{\funcmat}[1]{[#1]} % the matrix of a linear transformation
+\newcommand{\colvecmat}[1]{[#1]} % column vectors placed into a matrix
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
