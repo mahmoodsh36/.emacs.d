@@ -292,7 +292,7 @@
 \newcommand{\vctlen}[1]{\refdef[blk:def-euclid-norm]{|}#1\refdef[blk:def-euclid-norm]{|}} % vector euclidean norm or length or whatever you'd wanna call it.
 \newcommand{\card}[1]{\left\lvert #1 \right\rvert} % set cardinality
 \newcommand{\scomp}[1]{\overline{#1}} % set complement
-\DeclarePairedDelimiter{\tupl}{{\refdef[blk:1701442956]{(}}}{{\refdef[blk:1701442956]{)}}}  % godel number pairing notation
+\DeclarePairedDelimiter{\tupl}{(}{)}
 \newcommand\softmax{\refdef[blk:blk-softmax]{\operatorname{softmax}}}
 \newcommand\powset{\refdef[blk:def-pow-set]{\mathcal{P}}}
 \newcommand\sigmoid{\refdef[blk:def-sigmoid]{\operatorname{\sigma}}}
@@ -753,7 +753,7 @@
   \renewcommand\given{\givensymbol{\vert}}%
   #1%
 }
-\newcommand{\set}{\Set*}
+\newcommand{\set}{\Set}
 
 % for karnaughmap package
 \define@cmdkey{karnaughmap}{dontcare}[\phi]{} % change default dontcare symbol, doesnt work?
@@ -833,6 +833,7 @@
 \newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{abdeg}}} % approximate boolean degree
 \newcommand{\funcmat}[1]{[#1]} % the matrix of a linear transformation
 \newcommand{\colvecmat}[1]{[#1]} % column vectors placed into a matrix
+\newcommand{\basis}{\text{basis}}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption

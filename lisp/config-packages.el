@@ -1172,8 +1172,7 @@
      ;;                 :host "mahmooz2:11434"
      ;;                 :stream t
      ;;                 ;; :models '("mistral:latest")
-     ;;                 ;; :models '("qwq:32b")
-     ;;                 :models '("deepseek-r1:32b")
+     ;;                 ;; :models '("deepseek-r1:32b")
      ;;                 ;; :models '("codellama:13b-instruct")
      ;;                 )
      ;; Llama.cpp offers an OpenAI compatible API
@@ -1182,7 +1181,7 @@
                      :stream t
                      :protocol "http"
                      :host "mahmooz2:8080"
-                     :models '("EXAONE-Deep-32B-Q4_K_M.gguf"))
+                     :models '("artowski--DeepSeek-R1-Distill-Qwen-32B-GGUF.gguf"))
      ;; gptel-model 'gemini
      ;; gptel-backend (gptel-make-gemini "Gemini"
      ;;                 :key (getenv "GEMINI_API_KEY")
