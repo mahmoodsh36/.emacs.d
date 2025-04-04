@@ -619,6 +619,12 @@
    (start-program-on-current-file "okular")))
 
 (led-kbd
+ "; ."
+ (lambda ()
+   (interactive)
+   (start-program-on-current-file "thunar")))
+
+(led-kbd
  "; v"
  (lambda ()
    (interactive)

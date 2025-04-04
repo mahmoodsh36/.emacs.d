@@ -2296,4 +2296,66 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun auto-tex-file-for (filepath)
   (from-data (format "nougat/%s.tex" (file-name-base filepath))))
 
+;; "integration" with cltpt
+;; (defun my-preprocess-latex-1 (latex-str)
+;;   (with-temp-file "/tmp/my.org"
+;;     (insert latex-str))
+;;   (call-process "sbcl"
+;;                 nil
+;;                 "*mycmd out*"
+;;                 nil
+;;                 "--load" "/home/mahmooz/work/cl-tools/myloader.lisp"
+;;                 "--eval" "(in-package :cltpt)"
+;;                 "--eval" "(cltpt::my-macro-handler-file \"/tmp/my.org\")"
+;;                 "--eval" "(cl-user::quit)")
+;;   (with-temp-buffer
+;;     (insert-file-contents "/tmp/result.org")
+;;     (buffer-string)))
+(defun my-create-tex-file-advice (fn p-info fragments a-options)
+  (let (my-fragments)
+    (dolist (fragment (reverse fragments))
+      (let ((modified-fragment (cl-copy-tree fragment t)))
+        (plist-put modified-fragment
+                   :string (my-preprocess-latex
+                            (plist-get modified-fragment :string)))
+        (push modified-fragment my-fragments)))
+    (funcall fn p-info my-fragments a-options)))
+(defun my-preprocess-latex (latex-str)
+  (if (sly-connected-p)
+      ;; we need to ignore first line which is inserted by org-latex-preview for theming
+      (let* ((parts (split-string latex-str "\n"))
+             (processed (cltpt-export-to-latex (string-join (cdr parts) "\n"))))
+        (concat (car parts) "\n" processed))
+    latex-str))
+(defun cltpt-export-to-latex (&optional mystr)
+  (let* ((mystr (or mystr (buffer-substring-no-properties (point-min) (point-max))))
+         (filepath (make-temp-file "my-latex-preview-custom"))
+         ;; (filepath (make-temp-file "/tmp/test2.org"))
+         (mycode (format "(princ (cltpt::export-org-snippet-to-latex \"%s\"))" filepath)))
+    (with-temp-file
+        filepath
+      (insert mystr))
+    ;; (sly-eval '(slynk:eval-and-grab-output "(princ (+ 1 1))"))
+    (destructuring-bind (output result)
+        (sly-eval `(slynk:eval-and-grab-output ,mycode))
+      output)))
+(with-eval-after-load 'org-latex-preview
+  (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
+
+(defun copy-latex-preview-image-path ()
+  "copy the latex preview at point for external use"
+  (interactive)
+  (let ((preview-image
+         (cl-loop for ov in (overlays-at (point))
+                  for img = (overlay-get ov 'preview-image)
+                  when img return img)))
+    (if preview-image
+        (let ((file (plist-get (cdr preview-image) :file)))
+          (if file
+              (progn
+                (kill-new file)
+                (message "copied preview image path: %s" file))
+            (message "no :file property found in preview-image.")))
+      (message "no preview image overlay at point."))))
+
 (provide 'config-org)

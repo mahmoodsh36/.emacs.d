@@ -411,29 +411,3 @@
         (insert (format "%s:%s\n" timestamp file))
         (append-to-file (point-min) (point-max) (from-brain "visit-log"))))))
 (add-hook 'find-file-hook 'log-file-visit)
-
-(defun my-preprocess-latex (latex-str)
-  (with-temp-file "/tmp/my.org"
-    (insert latex-str))
-  (call-process "sbcl"
-                nil
-                "*mycmd out*"
-                nil
-                "--load" "/home/mahmooz/work/cl-tools/myloader.lisp"
-                "--eval" "(in-package :cltpt)"
-                "--eval" "(cltpt::my-macro-handler-file \"/tmp/my.org\")"
-                "--eval" "(cl-user::quit)")
-  (with-temp-buffer
-    (insert-file-contents "/tmp/result.org")
-    (buffer-string)))
-(defun my-create-tex-file-advice (fn p-info fragments a-options)
-  (let (my-fragments)
-    (dolist (fragment (reverse fragments))
-      (let ((modified-fragment (cl-copy-tree fragment t)))
-        (plist-put modified-fragment
-                   :string (my-preprocess-latex
-                            (plist-get modified-fragment :string)))
-        (push modified-fragment my-fragments)))
-    (funcall fn p-info my-fragments a-options)))
-;; (advice-add #'org-latex-preview--create-tex-file
-;;             :around #'my-create-tex-file-advice)

@@ -743,6 +743,9 @@
   }%
 }
 \newcommand{\directsum}{\refdef[blk:def-direct-sum]{\oplus}}
+\newcommand{\colvecmat}[1]{[#1]} % column vectors placed into a matrix as its row vectors
+\newcommand{\basis}{\text{basis}}
+\newcommand{\funcmat}[1]{[#1]} % the matrix of a linear transformation
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
@@ -831,9 +834,6 @@
 \newcommand{\polydeg}{\refdef[blk:def-multi-poly]{\operatorname{pdeg}}}
 \newcommand{\rbdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{rbdeg}}} % real boolean degree
 \newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{abdeg}}} % approximate boolean degree
-\newcommand{\funcmat}[1]{[#1]} % the matrix of a linear transformation
-\newcommand{\colvecmat}[1]{[#1]} % column vectors placed into a matrix
-\newcommand{\basis}{\text{basis}}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
