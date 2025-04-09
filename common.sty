@@ -544,7 +544,7 @@
 \renewcommand{\emptyset}{\varnothing}
 
 % other macros/symbols
-\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n (was this ever relevant?!)
+\newcommand{\nrange}[1]{[#1]} % [n] to denote 0,1,...,n (was this ever relevant?! probably not.)
 \newcommand{\brange}[1]{[#1]} % [n] to denote 1,...,n (i found this notation in several books, including \ref{blk:1731676381.9014068})
 \newcommand{\equivrel}{\mathrel{\refdef[blk:def-equiv-relation]{\sim}}}
 \newcommand{\fcomp}{\mathrel{\refdef[blk:def-func-comp]{\circ}}}
@@ -735,7 +735,7 @@
 \newcommand\matinv[1]{{#1}^{\refdef[blk:def-mat-inv]{-1}}}
 \newcommand{\tenselm}[2]{{#1}_{#2}} % to denote the element at specific indicies of a tensor
 \NewDocumentCommand\vectrans{mmO{}}{[#1]_{#2}^{#3}}
-\NewDocumentCommand{\transmat}{mg}{%
+\NewDocumentCommand{\transmat}{mg}{% for basis transformation?
   \IfNoValueTF{#2}{%
     T_{#1}%
   }{%
@@ -746,6 +746,8 @@
 \newcommand{\colvecmat}[1]{[#1]} % column vectors placed into a matrix as its row vectors
 \newcommand{\basis}{\text{basis}}
 \newcommand{\funcmat}[1]{[#1]} % the matrix of a linear transformation
+\newcommand{\subspace}{\refdef[blk:def-vector-subspace]{\le}}
+\newcommand{\echelon}[1]{\refdef[blk:def-echelon]{\widetilde{#1}}}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists

@@ -1181,7 +1181,7 @@
                      :stream t
                      :protocol "http"
                      :host "mahmooz2:8080"
-                     :models '("artowski--DeepSeek-R1-Distill-Qwen-32B-GGUF.gguf"))
+                     :models '("QwQ-32B-Q4_K_M.gguf"))
      ;; gptel-model 'gemini
      ;; gptel-backend (gptel-make-gemini "Gemini"
      ;;                 :key (getenv "GEMINI_API_KEY")
