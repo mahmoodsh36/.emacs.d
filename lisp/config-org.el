@@ -794,13 +794,13 @@ holding contextual information."
   ;; (advice-add #'org-latex-preview--failure-callback :around #'org-latex-preview--failure-callback-advice)
 
   ;; modified it to remove --bbox=preview, to prevent long latex previews from getting cut off
-  (plist-put (alist-get 'dvisvgm org-latex-preview-process-alist)
-             :image-converter
-             (list
-              (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
-                      (if (>= org-latex-preview--dvisvgm3-minor-version 2)
-                          " -v3 --message='processing page {?pageno}: output written to {?svgfile}'" "")
-                      " -o %B-%%9p.svg %f")))
+  ;; (plist-put (alist-get 'dvisvgm org-latex-preview-process-alist)
+  ;;            :image-converter
+  ;;            (list
+  ;;             (concat "dvisvgm --page=1- --optimize --clipjoin --relative --no-fonts"
+  ;;                     (if (>= org-latex-preview--dvisvgm3-minor-version 2)
+  ;;                         " -v3 --message='processing page {?pageno}: output written to {?svgfile}'" "")
+  ;;                     " -o %B-%%9p.svg %f")))
 
   ;; org inserts inline height value, override that, it causes problems with big latex previews on smaller screens where the previews take more height than they need because their width was decreased (using max-width: 100%) but their height wasnt
   (defun my-latex-preview-filter (transcoded-text backend channel)
@@ -2339,8 +2339,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (destructuring-bind (output result)
         (sly-eval `(slynk:eval-and-grab-output ,mycode))
       output)))
-(with-eval-after-load 'org-latex-preview
-  (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
+;; (with-eval-after-load 'org-latex-preview
+;;   (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
 
 (defun copy-latex-preview-image-path ()
   "copy the latex preview at point for external use"

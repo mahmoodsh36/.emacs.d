@@ -1180,7 +1180,7 @@
      gptel-backend (gptel-make-openai "llama-cpp"
                      :stream t
                      :protocol "http"
-                     :host "mahmooz2:8080"
+                     :host "mahmooz2-2:5000"
                      :models '("QwQ-32B-Q4_K_M.gguf"))
      ;; gptel-model 'gemini
      ;; gptel-backend (gptel-make-gemini "Gemini"
