@@ -243,7 +243,7 @@
 \DeclareMathOperator{\spn}{\refdef[blk:def-span]{span}}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\range}{range}
-\DeclareMathOperator{\img}{Im}
+\DeclareMathOperator{\img}{img}
 \DeclareMathOperator{\adj}{adj}
 \newcommand\dif[1]{\:\mathrm{d}#1}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
@@ -336,7 +336,7 @@
 \newcommand{\boolrestrict}{\refdef[blk:not-bool-restrict]{\mathcal{R}}}
 \newcommand{\fboolrestrict}[2]{#1\refdef[blk:def-bool-restrict]{|}_{#2}}
 \newcommand{\andreev}{\refdef[blk:def-andreev]{\mathsf{And}}}
-\newcommand{\logb}{\refdef[blk:def-log]{\operatorname{log}}} % binary log, for boolean complexity mostly
+\newcommand{\logb}{\refdef[blk:def-log]{\operatorname{log}_2}} % binary log, for boolean complexity mostly
 % define \lhs for "left-hand side" in text or "L.H.S." in math.
 \newcommand{\lhs}{\relax\ifmmode\mathrm{L.H.S.}\else{}left-hand side\xspace\fi}
 % define \rhs for "right-hand side" in text or "R.H.S." in math.
@@ -516,7 +516,6 @@
 \newcommand{\majo}{\refdef[blk:def-bool-func-sym]{\mathsf{Maj}}}
 \newcommand{\bigoheq}{\approx}
 \newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
-\newcommand{\compcom}{\refdef[blk:def-comm-comp]{\mathsf{C}}} % communication complexity
 \newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\mathsf{SAT}}}
 \newcommand{\compdspace}{\refdef[blk:def-space]{\mathsf{DSPACE}}}
 \newcommand{\compnspace}{\refdef[blk:def-space]{\mathsf{NSPACE}}}
@@ -528,6 +527,11 @@
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
 \newcommand{\booldisj}{\refdef[blk:def-disj-func]{\mathsf{Disj}}}
 \newcommand{\protorect}{\refdef[blk:lem-cc-1]{R}}
+\newcommand{\dcomm}{\refdef[blk:def-comm-comp]{\mathsf{C}}} % deterministic communication complexity
+% \newcommand{\ncomm}{}
+\newcommand{\protolen}[1]{\refdef[blk:def-proto-len]{\|#1\|}}
+\newcommand{\booleq}{\refdef[blk:def-booleq]{\texttt{EQ}}}
+\newcommand{\boolgt}{\texttt{GT}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -848,6 +852,9 @@
 \newcommand{\abdeg}{\refdef[blk:def-bool-func-real-degree]{\mathsf{abdeg}}} % approximate boolean degree
 \newcommand{\polyvecspace}{\refdef{P}}
 \newcommand{\trace}{\operatorname{tr}}
+\newcommand\matcol[2]{{#1}^{#2}}
+\newcommand\matrow[2]{{#1}_{#2}}
+\newcommand\matcel[3]{{#1}_{#2}^{#3}}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
