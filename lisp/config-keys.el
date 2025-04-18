@@ -670,24 +670,21 @@
    (interactive)
    (when-let* ((all-models
                 (list
-                 "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
                  "Qwen/QwQ-32B"
+                 "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
                  "THUDM/GLM-Z1-32B-0414"))
                (mymodel (completing-read "model" all-models))
                (backend
-                (gptel-make-openai "vllm"
+                (gptel-make-openai "llama-cpp" ;; "vllm"
                   :stream t
                   :protocol "http"
                   :host "mahmooz2:5000"
                   :models all-models)))
-     (let ((gptel-model mymodel))
-       (my-gptel backend)))))
+     (setq gptel-model mymodel)
+     (setq gptel-backend backend)
+     (my-gptel backend))))
 
 (defun my-gptel (backend &optional _ initial interactivep)
-  (interactive
-   (let* ((backend (or backend (default-value 'gptel-backend)))
-          (backend-name
-           (format "*%s*" (gptel-backend-name backend))))))
   (with-current-buffer (get-buffer-create "gptel")
     (ensure-dir (from-brain "gptel/"))
     (set-visited-file-name (from-brain (join-path "gptel/" (current-time-string))))
@@ -697,8 +694,9 @@
       (text-mode)
       (visual-line-mode 1))
      (t (funcall gptel-default-mode)))
+    (message "here %s" backend)
     (gptel--sanitize-model :backend backend
-                           :model (default-value 'gptel-model)
+                           :model gptel-model
                            :shoosh nil)
     (unless gptel-mode (gptel-mode 1))
     (goto-char (point-max))

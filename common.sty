@@ -855,6 +855,13 @@
 \newcommand\matcol[2]{{#1}^{#2}}
 \newcommand\matrow[2]{{#1}_{#2}}
 \newcommand\matcel[3]{{#1}_{#2}^{#3}}
+\NewDocumentCommand{\charpoly}{gg}{%
+  \IfValueTF{#1}{
+    \IfValueTF{#2}{
+    p_{#1}(#2)
+    }{p_{#1}(\lambda)}
+  }{p(\lambda)}%
+}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption
