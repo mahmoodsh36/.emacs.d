@@ -1167,26 +1167,7 @@
 (unless (is-android-system)
   (use-package gptel
     :config
-    (setq
-     ;; gptel-backend (gptel-make-ollama "ollama"
-     ;;                 :host "mahmooz2:11434"
-     ;;                 :stream t
-     ;;                 ;; :models '("mistral:latest")
-     ;;                 ;; :models '("deepseek-r1:32b")
-     ;;                 ;; :models '("codellama:13b-instruct")
-     ;;                 )
-     ;; Llama.cpp offers an OpenAI compatible API
-     gptel-default-mode 'org-mode
-     gptel-backend (gptel-make-openai "llama-cpp"
-                     :stream t
-                     :protocol "http"
-                     :host "mahmooz2-2:5000"
-                     :models '("QwQ-32B-Q4_K_M.gguf"))
-     ;; gptel-model 'gemini
-     ;; gptel-backend (gptel-make-gemini "Gemini"
-     ;;                 :key (getenv "GEMINI_API_KEY")
-     ;;                 :stream t)
-     )))
+    (setq gptel-default-mode 'org-mode)))
 
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import

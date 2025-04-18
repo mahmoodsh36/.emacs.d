@@ -1109,7 +1109,7 @@ implies no special alignment."
          (html-filename (file-name-nondirectory (org-file-html-out-file linked-file))))
     (format "https://mahmoodsh36.github.io/%s\\#%s" html-filename blk-id)))
 
-;; code for centering LaTeX preview
+;; code for centering LaTeX preview provided by karthink
 (use-package org-latex-preview
   :ensure nil
   :after org-latex-preview
@@ -1147,9 +1147,9 @@ implies no special alignment."
                     #'my/org-latex-preview-center)
       (remove-hook 'org-latex-preview-overlay-open-functions
                    #'my/org-latex-preview-uncenter)))
-  (add-hook 'org-mode-hook 'org-latex-preview-center-mode)
+  ;; (add-hook 'org-mode-hook 'org-latex-preview-center-mode)
   ;; do we really want this following line?
-  (add-to-list 'org-latex-preview-overlay-update-functions 'my/org-latex-preview-center)
+  ;; (add-to-list 'org-latex-preview-overlay-update-functions 'my/org-latex-preview-center)
   )
 
 ;; insert a blank line between everything in exports

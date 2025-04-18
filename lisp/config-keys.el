@@ -668,32 +668,27 @@
  "; y"
  (lambda ()
    (interactive)
-   (my-gptel "deepseek-r1:32b")))
+   (when-let* ((all-models
+                (list
+                 "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
+                 "Qwen/QwQ-32B"
+                 "THUDM/GLM-Z1-32B-0414"))
+               (mymodel (completing-read "model" all-models))
+               (backend
+                (gptel-make-openai "vllm"
+                  :stream t
+                  :protocol "http"
+                  :host "mahmooz2:5000"
+                  :models all-models)))
+     (let ((gptel-model mymodel))
+       (my-gptel backend)))))
 
-(defun my-gptel (name &optional _ initial interactivep)
+(defun my-gptel (backend &optional _ initial interactivep)
   (interactive
-   (let* ((backend (default-value 'gptel-backend))
+   (let* ((backend (or backend (default-value 'gptel-backend)))
           (backend-name
-           (format "*%s*" (gptel-backend-name backend))))
-     (list (read-buffer
-            "Create or choose gptel buffer: "
-            backend-name nil                         ; DEFAULT and REQUIRE-MATCH
-            (lambda (b)                                   ; PREDICATE
-              ;; NOTE: buffer check is required (#450)
-              (and-let* ((buf (get-buffer (or (car-safe b) b))))
-                (buffer-local-value 'gptel-mode buf))))
-           (condition-case nil
-               (gptel--get-api-key
-                (gptel-backend-key backend))
-             ((error user-error)
-              (setq gptel-api-key
-                    (read-passwd
-                     (format "%s API key: " backend-name)))))
-           (and (use-region-p)
-                (buffer-substring (region-beginning)
-                                  (region-end)))
-           t)))
-  (with-current-buffer (get-buffer-create name)
+           (format "*%s*" (gptel-backend-name backend))))))
+  (with-current-buffer (get-buffer-create "gptel")
     (ensure-dir (from-brain "gptel/"))
     (set-visited-file-name (from-brain (join-path "gptel/" (current-time-string))))
     (cond ;Set major mode
@@ -702,7 +697,7 @@
       (text-mode)
       (visual-line-mode 1))
      (t (funcall gptel-default-mode)))
-    (gptel--sanitize-model :backend (default-value 'gptel-backend)
+    (gptel--sanitize-model :backend backend
                            :model (default-value 'gptel-model)
                            :shoosh nil)
     (unless gptel-mode (gptel-mode 1))
