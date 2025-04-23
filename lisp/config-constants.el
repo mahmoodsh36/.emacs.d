@@ -6,6 +6,8 @@
 
 (defconst *data-dir* (file-truename "~/data"))
 
+(defconst *work-dir* (file-truename "~/work"))
+
 ;; used in my elisp scripts for launching mpv
 (defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
 

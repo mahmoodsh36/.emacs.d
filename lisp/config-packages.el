@@ -1409,4 +1409,7 @@ Cancel the previous one if present."
 
 ;;     (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 256))
 
+(use-package mcp
+  :elpaca (:host github :repo "lizqwerscott/mcp.el"))
+
 (provide 'config-packages)

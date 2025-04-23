@@ -671,15 +671,18 @@
    (when-let* ((all-models
                 (list
                  "Qwen/QwQ-32B"
-                 "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
-                 "THUDM/GLM-Z1-32B-0414"))
+                 "THUDM/GLM-Z1-32B-0414"
+                 "THUDM/GLM-Z1-9B-0414"
+                 "THUDM/GLM-Z1-Rumination-32B-0414"
+                 "mistralai/Mistral-Small-3.1-24B-Instruct-2503"))
                (mymodel (completing-read "model" all-models))
                (backend
-                (gptel-make-openai "llama-cpp" ;; "vllm"
+                (gptel-make-openai "koboldcpp" ;; "vllm"
                   :stream t
                   :protocol "http"
                   :host "mahmooz2:5000"
                   :models all-models)))
+     (setq gptel-max-tokens (expt 2 16)) ;; needed to make it work with koboldcpp..
      (setq gptel-model mymodel)
      (setq gptel-backend backend)
      (my-gptel backend))))

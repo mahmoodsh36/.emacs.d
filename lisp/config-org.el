@@ -2293,8 +2293,13 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (if (file-exists-p (auto-tex-file-for buffer-file-name))
       (find-file (auto-tex-file-for buffer-file-name))
     (message "no tex file.")))
+;; (defun auto-tex-file-for (filepath)
+;;   (from-data (format "nougat/%s.tex" (file-name-base filepath))))
 (defun auto-tex-file-for (filepath)
-  (from-data (format "nougat/%s.tex" (file-name-base filepath))))
+  (file-truename
+   (join-path
+    (from-work "ai_scripts/out-qwen2.5-vl-7b/")
+    (format "%s.tex" (file-name-base filepath)))))
 
 ;; "integration" with cltpt
 ;; (defun my-preprocess-latex-1 (latex-str)
@@ -2312,6 +2317,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 ;;     (insert-file-contents "/tmp/result.org")
 ;;     (buffer-string)))
 (defun my-create-tex-file-advice (fn p-info fragments a-options)
+  ;; (message "here %s" (car fragments))
   (let (my-fragments)
     (dolist (fragment (reverse fragments))
       (let ((modified-fragment (cl-copy-tree fragment t)))
@@ -2339,8 +2345,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (destructuring-bind (output result)
         (sly-eval `(slynk:eval-and-grab-output ,mycode))
       output)))
-;; (with-eval-after-load 'org-latex-preview
-;;   (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
+(with-eval-after-load 'org-latex-preview
+  (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
 
 (defun copy-latex-preview-image-path ()
   "copy the latex preview at point for external use"

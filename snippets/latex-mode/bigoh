@@ -2,4 +2,4 @@
 # name: big oh
 # key: oh
 # --
-\bigoh($0)
+\bigoh$0

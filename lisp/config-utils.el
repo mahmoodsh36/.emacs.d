@@ -88,6 +88,9 @@
   "return `filename', prefixed by the path to the brain dir"
   (file-truename (join-path *brain-dir* filename)))
 
+(defun from-work (filename)
+  (file-truename (join-path *work-dir* filename)))
+
 (defun from-emacsd (filename)
   "return `filename', prefixed by the path to the emacs config dir"
   (file-truename (join-path user-emacs-directory filename)))
