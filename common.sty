@@ -518,12 +518,17 @@
 \newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
 \newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\mathsf{SAT}}}
 \newcommand{\compdspace}{\refdef[blk:def-space]{\mathsf{DSPACE}}}
+\newcommand{\dspace}{\compdspace}
 \newcommand{\compnspace}{\refdef[blk:def-space]{\mathsf{NSPACE}}}
+\newcommand{\nspace}{\compnspace}
 \newcommand{\comppspace}{\refdef[blk:def-pspace]{\mathsf{PSPACE}}}
+\newcommand{\pspace}{\comppspace}
 \newcommand{\compnpspace}{\refdef[blk:def-pspace]{\mathsf{NPSPACE}}}
+\newcommand{\npspace}{\compnpspace}
 \newcommand{\complspace}{\refdef[blk:def-lspace]{\mathsf{L}}}
+\newcommand{\nlspace}{\compnlspace}
 \newcommand{\compnlspace}{\refdef[blk:def-lspace]{\mathsf{NL}}}
-\newcommand{\comptsat}{\mathsf{3SAT}}
+\newcommand{\nlspace}{\compnlspace}
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
 \newcommand{\booldisj}{\refdef[blk:def-disj-func]{\mathsf{Disj}}}
 \newcommand{\protorect}{\refdef[blk:lem-cc-1]{R}}
@@ -532,6 +537,19 @@
 \newcommand{\protolen}[1]{\refdef[blk:def-proto-len]{\|#1\|}}
 \newcommand{\booleq}{\refdef[blk:def-booleq]{\texttt{EQ}}}
 \newcommand{\boolgt}{\texttt{GT}}
+\newcommand{\boolfrank}{\refdef[blk:def-boolrank]{\text{rank}}}
+\newcommand{\boolfmat}{\refdef[blk:dum-comm-10]{M}}
+\newcommand{\protopartnum}{\refdef[blk:def-proto-cover.1]{C^P}}
+\newcommand{\boolfpartnum}{\refdef[blk:def-proto-cover.2]{C^D}}
+\newcommand{\boolfcovnum}{\refdef[blk:def-proto-cover.3]{C}}
+\newcommand{\boolfcovnumz}{\refdef[blk:def-proto-cover.4]{C^z}}
+\newcommand{\dstconn}{\refdef[blk:def-dstconn]{\mathsf{DSTCONN}}}
+\newcommand{\codstconn}{\refdef[blk:def-codstconn]{\mathsf{co{-}DSTCONN}}}
+\newcommand{\tqbf}{\refdef[blk:the-tqbf]{\mathsf{TQBF}}}
+\newcommand{\compco}[1]{\mathsf{co}{-}{#1}}
+\newcommand{\conlspace}{\compco\nlspace}
+\newcommand{\composat}{\refdef[blk:def-2sat]{\mathsf{2SAT}}}
+\newcommand{\comptsat}{\refdef[blk:def-3sat]{\mathsf{3SAT}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

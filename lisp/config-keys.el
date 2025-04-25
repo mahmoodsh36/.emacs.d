@@ -677,12 +677,12 @@
                  "mistralai/Mistral-Small-3.1-24B-Instruct-2503"))
                (mymodel (completing-read "model" all-models))
                (backend
-                (gptel-make-openai "koboldcpp" ;; "vllm"
+                (gptel-make-openai "llama-cpp" ;; "vllm"
                   :stream t
                   :protocol "http"
                   :host "mahmooz2:5000"
                   :models all-models)))
-     (setq gptel-max-tokens (expt 2 16)) ;; needed to make it work with koboldcpp..
+     (setq gptel-max-tokens (expt 2 18)) ;; needed to make it work with koboldcpp..
      (setq gptel-model mymodel)
      (setq gptel-backend backend)
      (my-gptel backend))))

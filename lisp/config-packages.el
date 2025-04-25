@@ -1410,6 +1410,64 @@ Cancel the previous one if present."
 ;;     (minuet-set-optional-options minuet-openai-fim-compatible-options :max_tokens 256))
 
 (use-package mcp
-  :elpaca (:host github :repo "lizqwerscott/mcp.el"))
+  :elpaca (:host github :repo "lizqwerscott/mcp.el")
+  :config
+  (setq mcp-hub-servers
+        `(
+          ("filesystem" . (:command "mcp-server-filesystem" :args ,(file-truename "~/.mcp")))
+          ;; ("everything" . (:command "mcp-server-everything"))
+          ("fetch" . (:command "mcp-server-fetch" :args ("mcp-server-fetch")))
+          ("mcp-tavily-search" . (:command "npx" :args ("-y" "mcp-tavily-search")))
+          ;; ("mcp-wolfram-alpha" . (:command "uvx" :args ("mcp-wolfram-alpha")))
+          ;; ("mcp-server-searxng" . (:command "uvx" :args ("mcp-searxng")
+          ;;                                   :env (:SEARXNG_URL "https://searx.mahmoodsh.com/")))
+          ("mcp-server-time" . (:command "mcp-server-time"
+                                         :args ("--local-timezone" "Asia/Jerusalem")))
+          ("mcp-server-sqlite" . (:command "mcp-server-sqlite" ("--db-path" ,(file-truename "~/.mcp/db"))))
+          ("mcp-server-sequential-thinking" . (:command "mcp-server-sequential-thinking"))
+          ;; ("mcp-server-playwright" . (:command "mcp-server-playwright"))
+          ;; ("mcp-server-git" . (:command "mcp-server-git"))
+
+          ;; ("qdrant" . (:url "http://localhost:8000/sse"))
+          ;; ("graphlit" . (:command "npx"
+          ;;                :args ("-y" "graphlit-mcp-server")
+          ;;                :env (
+          ;;                      :GRAPHLIT_ORGANIZATION_ID "your-organization-id"
+          ;;                      :GRAPHLIT_ENVIRONMENT_ID "your-environment-id"
+          ;;                      :GRAPHLIT_JWT_SECRET "your-jwt-secret")))
+          ))
+  ;; (add-hook 'after-init-hook #'mcp-hub-start-all-server)
+  )
+
+;; from https://github.com/lizqwerscott/mcp.el
+(defun gptel-mcp-register-tool ()
+  (interactive)
+  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+    (mapcar #'(lambda (tool)
+                (apply #'gptel-make-tool
+                       tool))
+            tools)))
+(defun gptel-mcp-use-tool ()
+  (interactive)
+  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+    (mapcar #'(lambda (tool)
+                (let ((path (list (plist-get tool :category)
+                                  (plist-get tool :name))))
+                  (push (gptel-get-tool path)
+                        gptel-tools)))
+            tools)))
+(defun gptel-mcp-close-use-tool ()
+  (interactive)
+  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+    (mapcar #'(lambda (tool)
+                (let ((path (list (plist-get tool :category)
+                                  (plist-get tool :name))))
+                  (setq gptel-tools
+                        (cl-remove-if #'(lambda (tool)
+                                          (equal path
+                                                 (list (gptel-tool-category tool)
+                                                       (gptel-tool-name tool))))
+                                      gptel-tools))))
+            tools)))
 
 (provide 'config-packages)
