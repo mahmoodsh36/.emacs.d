@@ -526,7 +526,7 @@
 \newcommand{\compnpspace}{\refdef[blk:def-pspace]{\mathsf{NPSPACE}}}
 \newcommand{\npspace}{\compnpspace}
 \newcommand{\complspace}{\refdef[blk:def-lspace]{\mathsf{L}}}
-\newcommand{\nlspace}{\compnlspace}
+\newcommand{\lspace}{\complspace}
 \newcommand{\compnlspace}{\refdef[blk:def-lspace]{\mathsf{NL}}}
 \newcommand{\nlspace}{\compnlspace}
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
@@ -542,7 +542,12 @@
 \newcommand{\protopartnum}{\refdef[blk:def-proto-cover.1]{C^P}}
 \newcommand{\boolfpartnum}{\refdef[blk:def-proto-cover.2]{C^D}}
 \newcommand{\boolfcovnum}{\refdef[blk:def-proto-cover.3]{C}}
-\newcommand{\boolfcovnumz}{\refdef[blk:def-proto-cover.4]{C^z}}
+\newcommand{\boolfcovnumz}[1]{\refdef[blk:def-proto-cover.4]{C^{#1}}}
+\NewDocumentCommand{\boolfcovnumz}{g}{%
+  \IfValueTF{#1}{
+    C^z
+  }{C^{#1}}
+}
 \newcommand{\dstconn}{\refdef[blk:def-dstconn]{\mathsf{DSTCONN}}}
 \newcommand{\codstconn}{\refdef[blk:def-codstconn]{\mathsf{co{-}DSTCONN}}}
 \newcommand{\tqbf}{\refdef[blk:the-tqbf]{\mathsf{TQBF}}}
@@ -550,6 +555,9 @@
 \newcommand{\conlspace}{\compco\nlspace}
 \newcommand{\composat}{\refdef[blk:def-2sat]{\mathsf{2SAT}}}
 \newcommand{\comptsat}{\refdef[blk:def-3sat]{\mathsf{3SAT}}}
+\newcommand{\ncommo}{\refdef[blk:def-ncomm]{N^1}}
+\newcommand{\ncommz}{\refdef[blk:def-ncomm]{N^0}}
+\newcommand{\ncomm}{\refdef[blk:def-ncomm]{N}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}

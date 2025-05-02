@@ -2345,8 +2345,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
     (destructuring-bind (output result)
         (sly-eval `(slynk:eval-and-grab-output ,mycode))
       output)))
-(with-eval-after-load 'org-latex-preview
-  (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
+;; (with-eval-after-load 'org-latex-preview
+;;   (advice-add #'org-latex-preview--create-tex-file :around #'my-create-tex-file-advice))
 
 (defun copy-latex-preview-image-path ()
   "copy the latex preview at point for external use"

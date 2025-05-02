@@ -671,6 +671,8 @@
    (when-let* ((all-models
                 (list
                  "Qwen/QwQ-32B"
+                 "Qwen/Qwen3-14B"
+                 "Qwen/Qwen3-32B"
                  "THUDM/GLM-Z1-32B-0414"
                  "THUDM/GLM-Z1-9B-0414"
                  "THUDM/GLM-Z1-Rumination-32B-0414"
@@ -682,7 +684,7 @@
                   :protocol "http"
                   :host "mahmooz2:5000"
                   :models all-models)))
-     (setq gptel-max-tokens (expt 2 18)) ;; needed to make it work with koboldcpp..
+     ;; (setq gptel-max-tokens (expt 2 18)) ;; needed to make it work with koboldcpp..
      (setq gptel-model mymodel)
      (setq gptel-backend backend)
      (my-gptel backend))))

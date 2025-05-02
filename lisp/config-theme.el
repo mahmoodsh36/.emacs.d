@@ -2,7 +2,7 @@
   ;; (set-face-attribute 'default nil :font "Monaspace Radon Var" :weight 'normal :height 120)
   ;; (set-face-attribute 'fixed-pitch nil :font "Monaspace Krypton Var" :weight 'normal :height 120)
   ;; (set-face-attribute 'variable-pitch nil :font "Monaspace Neon Var" :weight 'normal :height 1.2)
-  (set-face-attribute 'default nil :font "iosevka" :weight 'normal :height 100)
+  (set-face-attribute 'default nil :font "iosevka" :weight 'normal :height 110)
   ;; this font makes hebrew text unreadable, gotta disable it
   ;; (add-to-list 'face-ignored-fonts "Noto Rashi Hebrew")
   )
