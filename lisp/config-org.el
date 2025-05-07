@@ -2298,7 +2298,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun auto-tex-file-for (filepath)
   (file-truename
    (join-path
-    (from-work "ai_scripts/out-qwen2.5-vl-7b/")
+    (from-work "ai_scripts/pdf_to_latex1/out-qwen2.5-vl-7b/")
     (format "%s.tex" (file-name-base filepath)))))
 
 ;; "integration" with cltpt
