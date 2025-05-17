@@ -83,7 +83,6 @@
   (let ((outfile (latex-out-file))
         (is-beamer (car (cdar (org-collect-keywords '("latex_class")))))
         (org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}")))
-
     (when (or (file-newer-than-file-p buffer-file-name outfile)
               force)
       (clean-latex-files outfile)
@@ -96,7 +95,7 @@
 
 (cl-defun compile-latex-file (path &optional (async t))
   ;; for biber we need a different set of commands, for cross-references we need to compile twice
-  (let ((args (list "-interaction=nonstopmode" "-shell-escape" (format "-output-directory=%s" (file-truename (get-latex-cache-dir-path))) path)))
+  (let ((args (list "-interaction=nonstopmode" "-shell-escape" "--synctex=1" (format "-output-directory=%s" (file-truename (get-latex-cache-dir-path))) path)))
     (if async
         (apply #'start-process (append (list "latex" "latex" org-latex-compiler) args))
       (apply #'call-process (append (list org-latex-compiler nil nil nil) args)))))
@@ -284,6 +283,9 @@
   ;; (setq org-latex-preview-preamble "\\documentclass[ignorerest=true,varwidth=true,float=true,crop=true,preview=true,multi=true]{standalone}[PACKAGES]\\usepackage{\\string~/.emacs.d/private}")
   (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}"  "\\usepackage{\\string~/.emacs.d/private}")) ;; use my ~/.emacs.d/common.sty
   ;; (setq org-latex-preview-preamble "\\documentclass{article}\n\\usepackage{\\string~/.emacs.d/common}\\usepackage{\\string~/.emacs.d/private}")
+  ;; bigger font size
+  (let ((article-class (alist-get "article" org-latex-classes nil nil 'string=)))
+    (setcar article-class "\\documentclass[14pt]{extarticle}"))
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; dont export headlines with tags
@@ -2221,10 +2223,10 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
            (funcall func)))
        files))))
 
-(defun grab-all ()
+(cl-defun grab-all (dirpath &optional (recursion-depth 1))
   (map-org-files
-   (list-note-files)
-   'org-element-parse-buffer))
+   (directory-files dirpath t ".*\.org")
+   (lambda () (org-element-parse-buffer 1))))
 
 (defun new-xournalpp ()
   (interactive)
@@ -2298,7 +2300,8 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun auto-tex-file-for (filepath)
   (file-truename
    (join-path
-    (from-work "ai_scripts/pdf_to_latex1/out-qwen2.5-vl-7b/")
+    ;; (from-work "ai_scripts/pdf_to_latex1/out-qwen2.5-vl-7b/")
+    (from-data "nougat")
     (format "%s.tex" (file-name-base filepath)))))
 
 ;; "integration" with cltpt

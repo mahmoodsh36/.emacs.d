@@ -480,6 +480,7 @@
 \newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\mathsf{CDepth}}}
 \newcommand{\coNP}{\refdef[blk:def-conp]{\mathsf{coNP}}}
 \newcommand{\compdtime}{\refdef[blk:def-dtime]{\mathsf{DTIME}}}
+\newcommand{\compntime}{\refdef[blk:def-ntime]{\mathsf{NTIME}}}
 \newcommand{\compEXP}{\mathsf{EXP}}
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
@@ -542,7 +543,7 @@
 \newcommand{\protopartnum}{\refdef[blk:def-proto-cover.1]{C^P}}
 \newcommand{\boolfpartnum}{\refdef[blk:def-proto-cover.2]{C^D}}
 \newcommand{\boolfcovnum}{\refdef[blk:def-proto-cover.3]{C}}
-\newcommand{\boolfcovnumz}[1]{\refdef[blk:def-proto-cover.4]{C^{#1}}}
+% \newcommand{\boolfcovnumz}[1]{\refdef[blk:def-proto-cover.4]{C^{#1}}}
 \NewDocumentCommand{\boolfcovnumz}{g}{%
   \IfValueTF{#1}{
     C^z
@@ -788,6 +789,7 @@
 \newcommand{\leftmatfunc}[1]{L_{#1}} % from \ref{blk:1744291740.7674541}
 \newcommand{\eigval}{\lambda}
 \newcommand{\eigspc}{E}
+\newcommand{\matdiag}{\operatorname{diag}}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
