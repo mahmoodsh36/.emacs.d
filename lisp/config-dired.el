@@ -181,4 +181,16 @@
       (setq counter (1+ counter)))
     filename))
 
+;; https://emacs.stackexchange.com/questions/60661/how-to-duplicate-a-file-in-dired
+(defun dired-duplicate-this-file ()
+  (interactive)
+  (let* ((this  (dired-get-filename t))
+         (ctr   1)
+         (new   (format "%s[%d]" this ctr)))
+    (while (file-exists-p new)
+      (setq ctr  (1+ ctr)
+            new  (format "%s[%d]" this ctr)))
+    (dired-copy-file this new nil))
+  (revert-buffer))
+
 (provide 'config-dired)

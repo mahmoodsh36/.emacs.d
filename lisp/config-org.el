@@ -181,7 +181,7 @@
   ;; after long usage it causes a huge delay on the killing of org buffers
   ;; (setq org-latex-preview-cache 'temp)
   ;; (setq org-element-cache-persistent nil)
-  ;; (setq org-element-use-cache nil)
+  (setq org-element-use-cache nil)
 
   (setq org-latex-default-packages-alist nil)
   ;; dont export with table of contents unless i want you to
@@ -2300,9 +2300,17 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun auto-tex-file-for (filepath)
   (file-truename
    (join-path
+
     ;; (from-work "ai_scripts/pdf_to_latex1/out-qwen2.5-vl-7b/")
+
     (from-data "nougat")
-    (format "%s.tex" (file-name-base filepath)))))
+    (format "%s.tex" (file-name-base filepath))
+
+    ;; (from-data "mineru")
+    ;; (file-name-base filepath)
+    ;; "auto"
+    ;; (format "%s.md" (file-name-base filepath))
+    )))
 
 ;; "integration" with cltpt
 ;; (defun my-preprocess-latex-1 (latex-str)
