@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: exercise block
+# key: [b
+# --
+#+begin_exercise
+$0
+#+end_exercise
