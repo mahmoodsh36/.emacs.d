@@ -285,7 +285,7 @@
 \newcommand{\incr}[1]{#1\texttt{+{}+}} % decrement of a number
 \newcommand{\sucfunc}{\brm{s}} % successor function
 \newcommand{\prefunc}{\brm{p}} % predecessor function (do i need this one?)
-\newcommand{\halt}{\refdef[blk:the-halt]{\mathsf{HALT}}} % operator for the halting problem
+\newcommand{\halt}{\refdef[blk:the-halt]{\langname{HALT}}} % operator for the halting problem
 \newcommand{\converges}[1]{#1 \refdef[blk:def-program-conv]{\downarrow}}
 \newcommand{\convergesto}[2]{\left. #1 \right\downarrow=#2}
 \newcommand{\diverges}[1]{#1 \refdef[blk:def-program-div]{\uparrow}}
@@ -352,6 +352,11 @@
 \DeclareMathOperator{\domn}{\refdef[blk:def-func-dom]{domain}}
 \DeclareMathOperator{\codomn}{\refdef[blk:def-func-codom]{codomain}}
 \newcommand{\ndoset}{\refdef[blk:def-endo]{End}}
+\newcommand{\langname}[1]{\texttt{#1}}
+\newcommand{\compxclass}[1]{\mathsf{#1}}
+\newcommand{\compclass}[1]{\mathsf{#1}}
+\newcommand{\compxclsorcl}[2]{{#1}^{\refdef[blk:def-compx-orc]{+}#2}}
+\newcommand{\orcl}{\compxclsorcl}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -440,6 +445,7 @@
 \newcommand{\turingreduce}[2]{#1 \operatorname{\refdef[blk:def-turing-reduc]{\le}} #2}
 \newcommand{\turingreduc}{\operatorname{\refdef[blk:def-turing-reduc]{\le}}}
 \newcommand{\turingreducep}[2]{#1 \operatorname{\refdef[blk:def-poly-reduc]{\le_p}} #2}
+\newcommand{\turingreducel}{\operatorname{\refdef[blk:def-log-reduc]{\le_l}}}
 \newcommand{\ereduce}{\operatorname{\refdef[blk:def-turing-reduc]{\le}}}
 \DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\mathsf{L}}}
 \DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\mathsf{L}}}
@@ -447,17 +453,17 @@
 \NewDocumentCommand\albet{o}{\refdef[blk:def-alphabet]{\IfNoValueTF{#1}{\Sigma}{#1}}} % alphabet symbol
 \newcommand{\albt}[1]{\set{#1}}
 \newcommand{\fordset}{\refdef[blk:1724262093.0556488]{\omega}} % the set of all finite ordinals
-\newcommand{\compW}{\refdef[blk:not-comp-W]{\mathsf{W}}}
-\newcommand{\compK}{\refdef[blk:not-comp-K]{\mathsf{K}}}
-\newcommand{\compKo}{\refdef[blk:not-comp-K0]{\mathsf{K0}}}
-\newcommand{\compTot}{\refdef[blk:def-comp-tot]{\mathsf{Tot}}} % set of total computable functions
-\newcommand{\compRE}{\refdef[blk:def-recur-enum]{\mathsf{RE}}} % set of recursively enumerable sets
-\newcommand{\compcoRE}{\refdef[blk:def-corecur-enum]{\mathsf{co-RE}}}
+\newcommand{\compW}{\refdef[blk:not-comp-W]{\compclass{W}}}
+\newcommand{\compK}{\refdef[blk:not-comp-K]{\compclass{K}}}
+\newcommand{\compKo}{\refdef[blk:not-comp-K0]{\compclass{K0}}}
+\newcommand{\compTot}{\refdef[blk:def-comp-tot]{\compclass{Tot}}} % set of total computable functions
+\newcommand{\compRE}{\refdef[blk:def-recur-enum]{\compclass{RE}}} % set of recursively enumerable sets
+\newcommand{\compcoRE}{\refdef[blk:def-corecur-enum]{\compclass{co-RE}}}
 \newcommand{\compN}{\refdef[blk:not-omega-natural-numbers]{\omega}}
-\newcommand{\compR}{\refdef[blk:def-comp-set]{R}} % set of recursive sets
+\newcommand{\compR}{\refdef[blk:def-comp-set]{\compclass{R}}} % set of recursive sets
 \newcommand{\turmach}{\refdef[blk:def-tur]{\mathscr{M}}} % turing machine
-\newcommand{\polylangs}{\refdef[blk:def-polylang]{\mathsf{P}}} % \refdef[blk:20240308T125435]{polynomial time decidable languages}
-\newcommand{\npolylangs}{\refdef[blk:def-np]{\mathsf{NP}}}
+\newcommand{\polylangs}{\refdef[blk:def-polylang]{\compxclass{P}}} % \refdef[blk:20240308T125435]{polynomial time decidable languages}
+\newcommand{\npolylangs}{\refdef[blk:def-np]{\compxclass{NP}}}
 % aliases for the 2 commands above
 \newcommand{\compP}{\polylangs}
 \newcommand{\compp}{\polylangs}
@@ -475,13 +481,15 @@
 \newcommand{\emptytrans}{\refdef[blk:blk:1704361386]{\varepsilon}}
 \newcommand{\emptystr}{\refdef[blk:1700420189]{\varepsilon}}
 \newcommand{\automatontrans}[2]{\mathrel{\refdef[blk:tat-dfa-config]{\sststile{#1}{#2}}}}
-\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\mathsf{P}_{/\mathsf{poly}}}}
+\newcommand{\ppoly}{\refdef[blk:def-ppoly]{\langname{P}_{/\langname{poly}}}}
 \newcommand{\csize}{\refdef[blk:def-bool-circ-class]{\mathsf{CSize}}}
 \newcommand{\cdepth}{\refdef[blk:def-bool-circ-class]{\mathsf{CDepth}}}
-\newcommand{\coNP}{\refdef[blk:def-conp]{\mathsf{coNP}}}
-\newcommand{\compdtime}{\refdef[blk:def-dtime]{\mathsf{DTIME}}}
-\newcommand{\compntime}{\refdef[blk:def-ntime]{\mathsf{NTIME}}}
-\newcommand{\compEXP}{\mathsf{EXP}}
+\newcommand{\coNP}{\refdef[blk:def-conp]{\compxclass{coNP}}}
+\newcommand{\compconp}{\coNP}
+\newcommand{\compdtime}{\refdef[blk:def-dtime]{\compxclass{DTIME}}}
+\newcommand{\compntime}{\refdef[blk:def-ntime]{\compxclass{NTIME}}}
+\newcommand{\compEXP}{\compxclass{EXP}}
+\newcommand{\compexp}{\compEXP}
 \newcommand{\albetpow}[2]{{#1}^{#2}} % the power of an alphabet (set of strings of specific length whose symbols are in the alphabet)
 \newcommand{\symbolpow}[2]{{#1}^{#2}} % a symbol repeated
 \newcommand{\repcomp}[2]{{#1}^{#2}} % repeated composition of a function
@@ -506,8 +514,8 @@
 \newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FDepth}}}
 \newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FSize{-}Depth}}}
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{UnbSize{-}Depth}}}
-\newcommand{\compAC}{\refdef[blk:def-ac]{\mathsf{AC}}}
-\newcommand{\compACC}{\refdef[blk:def-acc]{\mathsf{ACC}}}
+\newcommand{\compAC}{\refdef[blk:def-ac]{\classname{AC}}}
+\newcommand{\compACC}{\refdef[blk:def-acc]{\classname{ACC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 \newcommand{\booldist}{\refdef[blk:def-bool-dist]{\mathsf{dist}}}
@@ -516,19 +524,20 @@
 \newcommand{\thresh}{\refdef[blk:def-thresh]{\mathsf{Th}}}
 \newcommand{\majo}{\refdef[blk:def-bool-func-sym]{\mathsf{Maj}}}
 \newcommand{\bigoheq}{\approx}
-\newcommand{\compTC}{\refdef[blk:def-tc]{\mathsf{TC}}}
-\newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\mathsf{SAT}}}
-\newcommand{\compdspace}{\refdef[blk:def-space]{\mathsf{DSPACE}}}
+\newcommand{\compTC}{\refdef[blk:def-tc]{\classname{TC}}}
+\newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\langname{SAT}}}
+\newcommand{\compdspace}{\refdef[blk:def-space]{\compxclass{DSPACE}}}
 \newcommand{\dspace}{\compdspace}
-\newcommand{\compnspace}{\refdef[blk:def-space]{\mathsf{NSPACE}}}
+\newcommand{\compnspace}{\refdef[blk:def-space]{\compxclass{NSPACE}}}
 \newcommand{\nspace}{\compnspace}
-\newcommand{\comppspace}{\refdef[blk:def-pspace]{\mathsf{PSPACE}}}
+\newcommand{\comppspace}{\refdef[blk:def-pspace]{\compxclass{PSPACE}}}
 \newcommand{\pspace}{\comppspace}
-\newcommand{\compnpspace}{\refdef[blk:def-pspace]{\mathsf{NPSPACE}}}
+\newcommand{\compnpspace}{\refdef[blk:def-pspace]{\compxclass{NPSPACE}}}
 \newcommand{\npspace}{\compnpspace}
-\newcommand{\complspace}{\refdef[blk:def-lspace]{\mathsf{L}}}
+\newcommand{\complspace}{\refdef[blk:def-lspace]{\compxclass{L}}}
 \newcommand{\lspace}{\complspace}
-\newcommand{\compnlspace}{\refdef[blk:def-lspace]{\mathsf{NL}}}
+\newcommand{\compnlspace}{\refdef[blk:def-lspace]{\compxclass{NL}}}
+\newcommand{\compnl}{\compnlspace}
 \newcommand{\nlspace}{\compnlspace}
 \newcommand{\proto}{\refdef[blk:def-proto]{\Pi}}
 \newcommand{\booldisj}{\refdef[blk:def-disj-func]{\mathsf{Disj}}}
@@ -549,16 +558,22 @@
     C^z
   }{C^{#1}}
 }
-\newcommand{\dstconn}{\refdef[blk:def-dstconn]{\mathsf{DSTCONN}}}
-\newcommand{\codstconn}{\refdef[blk:def-codstconn]{\mathsf{co{-}DSTCONN}}}
-\newcommand{\tqbf}{\refdef[blk:def-tqbf]{\mathsf{TQBF}}}
-\newcommand{\compco}[1]{\mathsf{co}{-}{#1}}
+\newcommand{\dstconn}{\refdef[blk:def-dstconn]{\langname{DSTCONN}}}
+\newcommand{\codstconn}{\refdef[blk:def-codstconn]{\langname{co{-}DSTCONN}}}
+\newcommand{\tqbf}{\refdef[blk:def-tqbf]{\langname{TQBF}}}
+\newcommand{\compco}[1]{\langname{co}{-}{#1}}
 \newcommand{\conlspace}{\compco\nlspace}
-\newcommand{\composat}{\refdef[blk:def-2sat]{\mathsf{2SAT}}}
-\newcommand{\comptsat}{\refdef[blk:def-3sat]{\mathsf{3SAT}}}
+\newcommand{\composat}{\refdef[blk:def-2sat]{\langname{2SAT}}}
+\newcommand{\comptsat}{\refdef[blk:def-3sat]{\langname{3SAT}}}
 \newcommand{\ncommo}{\refdef[blk:def-ncomm]{N^1}}
 \newcommand{\ncommz}{\refdef[blk:def-ncomm]{N^0}}
 \newcommand{\ncomm}{\refdef[blk:def-ncomm]{N}}
+\newcommand{\polyhl}[1]{\refdef[blk:def-polyh]{\Sigma_{#1}^{p}}}
+\newcommand{\polyhcol}[1]{\refdef[blk:def-polyh]{\Pi_{#1}^{p}}}
+\newcommand{\polyh}{\refdef[blk:def-polyh]{\compxclass{PH}}}
+\newcommand{\compconl}{\compco{\compnlspace}}
+\newcommand{\compnexp}{\compxclass{NEXP}}
+\newcommand{\poly}{\operatorname{poly}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -785,11 +800,11 @@
 \newcommand{\echelon}[1]{\refdef[blk:def-echelon]{\widetilde{#1}}}
 \newcommand{\sbasis}{\refdef[blk:def-basis-stand]{S}}
 \newcommand{\matsim}{\refdef[blk:def-matr-sim]{\sim}}
-\newcommand{\matspace}{M}
+\newcommand{\matspace}{\refdef{M}}
 \newcommand{\leftmatfunc}[1]{L_{#1}} % from \ref{blk:1744291740.7674541}
-\newcommand{\eigval}{\lambda}
-\newcommand{\eigspc}{E}
-\newcommand{\matdiag}{\operatorname{diag}}
+\newcommand{\eigval}{\refdef{\lambda}}
+\newcommand{\eigspc}{\refdef{E}}
+\newcommand{\matdiag}{\refdef{\operatorname{diag}}}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists
@@ -886,10 +901,19 @@
 \NewDocumentCommand{\charpoly}{gg}{%
   \IfValueTF{#1}{
     \IfValueTF{#2}{
-    p_{#1}(#2)
-    }{p_{#1}(\lambda)}
-  }{p(\lambda)}%
+    \refdef{\Delta}_{#1}(#2)
+    }{\refdef{\Delta}_{#1}(\lambda)}
+  }{\refdef{\Delta}(\lambda)}%
 }
+\NewDocumentCommand{\minpoly}{gg}{%
+  \IfValueTF{#1}{
+    \IfValueTF{#2}{
+    \refdef[blk:def-minpoly]{m}_{#1}(#2)
+    }{\refdef[blk:def-minpoly]{m}_{#1}(x)}
+  }{\refdef[blk:def-minpoly]{m}(x)}%
+}
+\newcommand{\indset}{\refdef[blk:def-indset]{\langname{INDSET}}}
+\newcommand{\vsrestrict}[2]{{#1}\refdef[blk:def-vs-restrict]{|}_{#2}}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption

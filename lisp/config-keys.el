@@ -596,6 +596,25 @@
 (led-kbd "; p" 'new-xournalpp)
 (led-kbd "; u" 'my-open-at-point)
 
+(defun open-matching-file-from-region ()
+  "Open a file matching the glob pattern in the current region."
+  (interactive)
+  (if (use-region-p)
+      (let* ((pattern (buffer-substring-no-properties (region-beginning) (region-end)))
+             (files (file-expand-wildcards pattern)))
+        (cond
+         ((null files)
+          (message "No files match: %s" pattern))
+         ((= (length files) 1)
+          (find-file (car files)))
+         (t
+          (let ((file (completing-read "Multiple matches, choose one: " files nil t)))
+            (find-file file)))))
+    (message "No active region")))
+;; opens them in emacs, handles asterisks.
+(led-kbd "; U" 'open-matching-file-from-region)
+
+
 ;; run a specific program on a specific file (works for dired too)
 (defun start-program-on-current-file (program-name &optional args)
   (interactive)
