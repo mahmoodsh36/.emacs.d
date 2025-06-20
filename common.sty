@@ -357,6 +357,8 @@
 \newcommand{\compclass}[1]{\mathsf{#1}}
 \newcommand{\compxclsorcl}[2]{{#1}^{\refdef[blk:def-compx-orc]{+}#2}}
 \newcommand{\orcl}{\compxclsorcl}
+\newcommand{\conjug}{\overline}
+\newcommand{\orthocomp}[1]{{#1}^{\refdef[blk:def-ortho-comp]{\perp}}}
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -458,9 +460,11 @@
 \newcommand{\compKo}{\refdef[blk:not-comp-K0]{\compclass{K0}}}
 \newcommand{\compTot}{\refdef[blk:def-comp-tot]{\compclass{Tot}}} % set of total computable functions
 \newcommand{\compRE}{\refdef[blk:def-recur-enum]{\compclass{RE}}} % set of recursively enumerable sets
+\newcommand{\compre}{\compRE}
 \newcommand{\compcoRE}{\refdef[blk:def-corecur-enum]{\compclass{co-RE}}}
 \newcommand{\compN}{\refdef[blk:not-omega-natural-numbers]{\omega}}
 \newcommand{\compR}{\refdef[blk:def-comp-set]{\compclass{R}}} % set of recursive sets
+\newcommand{\compr}{\compR}
 \newcommand{\turmach}{\refdef[blk:def-tur]{\mathscr{M}}} % turing machine
 \newcommand{\polylangs}{\refdef[blk:def-polylang]{\compxclass{P}}} % \refdef[blk:20240308T125435]{polynomial time decidable languages}
 \newcommand{\npolylangs}{\refdef[blk:def-np]{\compxclass{NP}}}
@@ -555,8 +559,8 @@
 % \newcommand{\boolfcovnumz}[1]{\refdef[blk:def-proto-cover.4]{C^{#1}}}
 \NewDocumentCommand{\boolfcovnumz}{g}{%
   \IfValueTF{#1}{
-    C^z
-  }{C^{#1}}
+    \refdef{C}^{#1}
+  }{\refdef{C}^z}
 }
 \newcommand{\dstconn}{\refdef[blk:def-dstconn]{\langname{DSTCONN}}}
 \newcommand{\codstconn}{\refdef[blk:def-codstconn]{\langname{co{-}DSTCONN}}}
@@ -574,6 +578,12 @@
 \newcommand{\compconl}{\compco{\compnlspace}}
 \newcommand{\compnexp}{\compxclass{NEXP}}
 \newcommand{\poly}{\operatorname{poly}}
+\newcommand{\commp}{\refdef[blk:def-comm-p]{\compxclass{P^{cc}}}}
+\newcommand{\commnp}{\refdef[blk:def-comm-p]{\compxclass{NP^{cc}}}}
+\newcommand{\commconp}{\refdef[blk:def-comm-p]{\compxclass{coNP^{cc}}}}
+\newcommand{\polylog}{\operatorname{polylog}}
+\newcommand{\boolneq}{\texttt{NEQ}}
+\newcommand{\boolsi}{\refdef[blk:def-boolsi]{\texttt{SI}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -679,6 +689,8 @@
     \newtheorem{proposition}{proposition}
     \newtheorem{notation}{notation}
     \newtheorem{my_part}{part}
+    \newtheorem{hint}{hint}
+    \newtheorem{exercise}{exercise}
     \counterwithin{my_part}{solution}
     % \newenvironment{note}
     % {\begin{bclogo}[logo=\bcinfo, couleurBarre=orange, couleur=lightgray]{ note}}

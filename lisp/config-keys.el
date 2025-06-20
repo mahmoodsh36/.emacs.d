@@ -482,6 +482,7 @@
 ;; dired keys
 (led-kbd "s ." 'my-xdg-open-file)
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
+(general-define-key :states '(normal) :keymaps 'dired-mode-map "." 'my-xdg-open-file)
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "o"
                     (lambda ()
                       (interactive)
@@ -689,6 +690,7 @@
    (interactive)
    (when-let* ((all-models
                 (list
+                 "XiaomiMiMo/MiMo-VL-7B-RL"
                  "Qwen/QwQ-32B"
                  "Qwen/Qwen3-14B"
                  "Qwen/Qwen3-32B"

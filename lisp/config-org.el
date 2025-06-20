@@ -2298,23 +2298,27 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 ;; (defun auto-tex-file-for (filepath)
 ;;   (from-data (format "nougat/%s.tex" (file-name-base filepath))))
 (defun auto-tex-file-for (filepath)
-  (file-truename
-   (join-path
+  (let ((myfile (cl-find-if
+                 (lambda (x) (file-exists-p x))
+                 (list
+                  (join-path
+                   (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
+                   (format "%s.tex" (file-name-base filepath)))
+                  (join-path
+                   (from-data "mineru")
+                   (file-name-base filepath)
+                   "auto"
+                   (format "%s.md" (file-name-base filepath)))
 
-    (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
-    (format "%s.tex" (file-name-base filepath))
+                  (join-path
+                   (from-data "nougat")
+                   (format "%s.tex" (file-name-base filepath)))
 
-    ;; (from-data "nougat")
-    ;; (format "%s.tex" (file-name-base filepath))
-
-    ;; (from-data "dolphin/markdown")
-    ;; (format "%s.md" (file-name-base filepath))
-
-    ;; (from-data "mineru")
-    ;; (file-name-base filepath)
-    ;; "auto"
-    ;; (format "%s.md" (file-name-base filepath))
-    )))
+                  ;; (from-data "dolphin/markdown")
+                  ;; (format "%s.md" (file-name-base filepath))
+                  ))))
+    (when myfile
+      (file-truename myfile))))
 
 ;; "integration" with cltpt
 ;; (defun my-preprocess-latex-1 (latex-str)

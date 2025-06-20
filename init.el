@@ -411,3 +411,5 @@
         (insert (format "%s:%s\n" timestamp file))
         (append-to-file (point-min) (point-max) (from-brain "visit-log"))))))
 (add-hook 'find-file-hook 'log-file-visit)
+
+;; (add-hook 'kill-emacs-hook 'debug 99)

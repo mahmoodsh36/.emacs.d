@@ -47,7 +47,16 @@
 ;; sometimes useful for refactoring old tex notes
 (defun replace-dollar-signs ()
   (interactive)
-  (replace-regexp "\\$\\(.*?\\)\\$" "\\\\(\\1\\\\)"))
+  ;; replace $$...$$ with \[...\]
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\\$\\$\\([^$]*?\\)\\$\\$" nil t)
+      (replace-match "\\\\[\\1\\\\]" nil nil)))
+  ;; replace $...$ with \(...\)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\\([^$]\\|^\\)\\$\\([^$]*?\\)\\$" nil t)
+      (replace-match (concat (match-string 1) "\\\\(\\2\\\\)") nil nil))))
 
 ;; from https://emacs.stackexchange.com/questions/58073/how-to-find-inheritance-of-modes
 (defun derived-modes (mode)
