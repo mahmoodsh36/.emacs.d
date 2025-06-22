@@ -200,10 +200,6 @@
   :config
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-(use-package lua-mode
-  :config
-  (setq lua-indent-level 2))
-
 ;; package to help making http requests
 (use-package request)
 
@@ -1476,10 +1472,41 @@ Cancel the previous one if present."
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   :config
+  (setf lua-indent-level 2)
   (when (executable-find "lua-language-server")
     (require 'eglot)
     (add-to-list 'eglot-server-programs
                  `(lua-mode . ("lua-language-server")))
     (add-hook 'lua-mode-hook 'eglot-ensure)))
+
+(use-package macher
+  :ensure (:host github :repo "kmontag/macher")
+  :hook
+  ;; add the current file to the gptel context when making macher requests.
+  (macher-before-send
+   .
+   (lambda ()
+     (when-let* ((filename (buffer-file-name))
+                 ((not (file-directory-p filename))))
+       (gptel-add-file filename))))
+  :config
+  ;; adjust buffer positioning to taste.
+  (add-to-list
+   'display-buffer-alist
+   '("\\*macher:.*\\*"
+     (display-buffer-in-side-window)
+     (side . bottom)))
+  (add-to-list
+   'display-buffer-alist
+   '("\\*macher-patch:.*\\*"
+     (display-buffer-in-side-window)
+     (side . right)))
+  ;; customize patch display action. The 'macher-context' struct
+  ;; contains data from the current request, including the contents of
+  ;; any files that were edited.
+  (setopt macher-patch-ready-function
+          (lambda (macher-context)
+            (ediff-patch-file nil (current-buffer))))
+  )
 
 (provide 'config-packages)
