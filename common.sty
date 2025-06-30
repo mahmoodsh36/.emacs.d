@@ -359,6 +359,7 @@
 \newcommand{\orcl}{\compxclsorcl}
 \newcommand{\conjug}{\overline}
 \newcommand{\orthocomp}[1]{{#1}^{\refdef[blk:def-ortho-comp]{\perp}}}
+\newcommand{\charfunc}[1]{\refdef[blk:def-char-function-set]{\brm{1}}_{#1}} % characteristic function of a set
 
 % graph theory?
 \newcommand{\grap}[1][G]{\refdef[blk:def-graph]{#1}}
@@ -449,6 +450,7 @@
 \newcommand{\turingreducep}[2]{#1 \operatorname{\refdef[blk:def-poly-reduc]{\le_p}} #2}
 \newcommand{\turingreducel}{\operatorname{\refdef[blk:def-log-reduc]{\le_l}}}
 \newcommand{\ereduce}{\operatorname{\refdef[blk:def-turing-reduc]{\le}}}
+\newcommand{\ccreduce}{\operatorname{\refdef[blk:def-reduc-rect]{\le_{cc}}}}
 \DeclareMathOperator{\machlang}{\refdef[blk:blk-mach-lang]{\mathsf{L}}}
 \DeclareMathOperator{\proglang}{\refdef[blk:blk-prog-lang]{\mathsf{L}}}
 \DeclareMathOperator{\univmach}{\refdef[blk:blk-S-uni-mach]{\mathscr{U}}}
@@ -512,14 +514,14 @@
 \newcommand{\leafsize}{\refdef[blk:not-leafsize]{\mathsf{LeafSize}}}
 \newcommand{\implics}{\refdef[blk:def-implicant]{\mathsf{I}}} % implicants
 \newcommand{\pimplics}{\refdef[blk:def-implicant-p]{\mathsf{PI}}}
-\newcommand{\compNC}{\refdef[blk:def-nc]{\mathsf{NC}}}
+\newcommand{\compNC}{\refdef[blk:def-nc]{\compxclass{NC}}}
 \newcommand{\csizedepth}{\refdef[blk:def-bool-circ-class]{\mathsf{Size{-}Depth}}}
 \newcommand{\fsize}{\refdef[blk:not-bool-circ-class]{\mathsf{FSize}}}
 \newcommand{\fdepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FDepth}}}
 \newcommand{\fsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{FSize{-}Depth}}}
 \newcommand{\cunbsizedepth}{\refdef[blk:not-bool-circ-class]{\mathsf{UnbSize{-}Depth}}}
-\newcommand{\compAC}{\refdef[blk:def-ac]{\classname{AC}}}
-\newcommand{\compACC}{\refdef[blk:def-acc]{\classname{ACC}}}
+\newcommand{\compAC}{\refdef[blk:def-ac]{\compxclass{AC}}}
+\newcommand{\compACC}{\refdef[blk:def-acc]{\compxclass{ACC}}}
 \newcommand{\tildoh}{\tilde\bigoh}
 \newcommand{\boolblkcompose}{\mathop{\refdef[blk:def-bool-blk-compose]{\diamond}}}
 \newcommand{\booldist}{\refdef[blk:def-bool-dist]{\mathsf{dist}}}
@@ -528,7 +530,7 @@
 \newcommand{\thresh}{\refdef[blk:def-thresh]{\mathsf{Th}}}
 \newcommand{\majo}{\refdef[blk:def-bool-func-sym]{\mathsf{Maj}}}
 \newcommand{\bigoheq}{\approx}
-\newcommand{\compTC}{\refdef[blk:def-tc]{\classname{TC}}}
+\newcommand{\compTC}{\refdef[blk:def-tc]{\compxclass{TC}}}
 \newcommand{\compsat}{\refdef[blk:1718023728.5033107]{\langname{SAT}}}
 \newcommand{\compdspace}{\refdef[blk:def-space]{\compxclass{DSPACE}}}
 \newcommand{\dspace}{\compdspace}
@@ -584,6 +586,10 @@
 \newcommand{\polylog}{\operatorname{polylog}}
 \newcommand{\boolneq}{\texttt{NEQ}}
 \newcommand{\boolsi}{\refdef[blk:def-boolsi]{\texttt{SI}}}
+\newcommand{\commbpp}{\refdef[blk:def-comm-p]{\compxclass{BPP^{cc}}}}
+\newcommand{\commrp}{\refdef[blk:def-comm-p]{\compxclass{RP^{cc}}}}
+\newcommand{\commrndcst}{\refdef[blk:def-comm-rnd-cst]{R}}
+\newcommand{\commdiscr}{\refdef[blk:def-comm-discr]{Disc}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
