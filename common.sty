@@ -565,7 +565,6 @@
   }{\refdef{C}^z}
 }
 \newcommand{\dstconn}{\refdef[blk:def-dstconn]{\langname{DSTCONN}}}
-\newcommand{\codstconn}{\refdef[blk:def-codstconn]{\langname{co{-}DSTCONN}}}
 \newcommand{\tqbf}{\refdef[blk:def-tqbf]{\langname{TQBF}}}
 \newcommand{\compco}[1]{\langname{co}{-}{#1}}
 \newcommand{\conlspace}{\compco\nlspace}
@@ -590,6 +589,11 @@
 \newcommand{\commrp}{\refdef[blk:def-comm-p]{\compxclass{RP^{cc}}}}
 \newcommand{\commrndcst}{\refdef[blk:def-comm-rnd-cst]{R}}
 \newcommand{\commdiscr}{\refdef[blk:def-comm-discr]{Disc}}
+\newcommand{\compbpp}{\refdef[blk:def-bpp]{\compxclass{BPP}}}
+\newcommand{\comprp}{\refdef[blk:def-rp]{\compxclass{RP}}}
+\newcommand{\compzpp}{\refdef[blk:def-zpp]{\compxclass{ZPP}}}
+\newcommand{\compip}{\refdef[blk:def-ip]{\compxclass{IP}}}
+\newcommand{\compdip}{\refdef{\compxclass{dIP}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -819,10 +823,12 @@
 \newcommand{\sbasis}{\refdef[blk:def-basis-stand]{S}}
 \newcommand{\matsim}{\refdef[blk:def-matr-sim]{\sim}}
 \newcommand{\matspace}{\refdef{M}}
+\newcommand{\matspc}{\matspace}
 \newcommand{\leftmatfunc}[1]{L_{#1}} % from \ref{blk:1744291740.7674541}
 \newcommand{\eigval}{\refdef{\lambda}}
 \newcommand{\eigspc}{\refdef{E}}
 \newcommand{\matdiag}{\refdef{\operatorname{diag}}}
+\newcommand{\adjop}[1]{{#1}^{\refdef[blk:def-adjop]{\ast}}}
 
 % from https://tex.stackexchange.com/questions/329170/how-to-do-multiple-lines-within-brace
 \providecommand\given{} % ensure it exists

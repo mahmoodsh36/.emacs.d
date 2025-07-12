@@ -2301,13 +2301,18 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (let ((myfile (cl-find-if
                  (lambda (x) (file-exists-p x))
                  (list
+                  ;; (join-path
+                  ;;  (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
+                  ;;  (format "%s.tex" (file-name-base filepath)))
+                  ;; (join-path
+                  ;;  (from-data "mineru")
+                  ;;  (file-name-base filepath)
+                  ;;  "auto"
+                  ;;  (format "%s.md" (file-name-base filepath)))
+
                   (join-path
-                   (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
-                   (format "%s.tex" (file-name-base filepath)))
-                  (join-path
-                   (from-data "mineru")
+                   (from-data "monkeyocr")
                    (file-name-base filepath)
-                   "auto"
                    (format "%s.md" (file-name-base filepath)))
 
                   (join-path
