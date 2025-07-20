@@ -594,6 +594,11 @@
 \newcommand{\compzpp}{\refdef[blk:def-zpp]{\compxclass{ZPP}}}
 \newcommand{\compip}{\refdef[blk:def-ip]{\compxclass{IP}}}
 \newcommand{\compdip}{\refdef{\compxclass{dIP}}}
+\newcommand{\compam}{\refdef[blk:def-comp-am]{\compxclass{AM}}}
+\newcommand{\compma}{\refdef[blk:def-comp-am]{\compxclass{MA}}}
+\newcommand{\nppoly}{\refdef[blk:def-nppoly]{\langname{NP}_{/\langname{poly}}}}
+\newcommand{\comppcp}{\refdef{\compxclass{PCP}}}
+\newcommand{\compmip}{\refdef{\compxclass{MIP}}}
 
 % some symbols for cryptography notation (Gen,Enc,Dec), and others
 \DeclareMathOperator{\Gen}{Gen}
@@ -938,6 +943,8 @@
 }
 \newcommand{\indset}{\refdef[blk:def-indset]{\langname{INDSET}}}
 \newcommand{\vsrestrict}[2]{{#1}\refdef[blk:def-vs-restrict]{|}_{#2}}
+\DeclareMathOperator{\realpart}{Re}
+\DeclareMathOperator{\imagpart}{Im}
 
 \ExplSyntaxOn
     \NewDocumentEnvironment{myenv}{mmO{}o} % #1 is for type, #2 is for label, #3 for title, #4 is for caption

@@ -179,9 +179,9 @@
   (setq org-export-with-broken-links 'mark)
   ;; dont cache latex preview images, actually dont use org-persist at all because
   ;; after long usage it causes a huge delay on the killing of org buffers
-  (setq org-latex-preview-cache 'temp)
-  (setq org-element-cache-persistent nil)
-  (setq org-element-use-cache nil)
+  ;; (setq org-latex-preview-cache 'temp)
+  ;; (setq org-element-cache-persistent nil)
+  ;; (setq org-element-use-cache nil)
 
   (setq org-latex-default-packages-alist nil)
   ;; dont export with table of contents unless i want you to
@@ -294,7 +294,7 @@
   (setq org-list-allow-alphabetical t)
   ;; dont show equation numbers, they sometimes mess up the preview by causing it to be cut off
   (setq org-latex-preview-numbered nil)
-  ;; ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
+  ;; tell org latex previews to use lualatex, its better (i need it for some tikz functionalities)
   (setq org-latex-compiler "lualatex")
   ;; make org-agenda open up in the current window
   (setq org-agenda-window-setup 'current-window)
@@ -546,8 +546,8 @@ your browser does not support the video tag.
   (add-to-list 'org-export-before-processing-functions 'my-org-preprocess)
 
   (defmacro org-with-modifications (element-type &rest body)
-    "Iterate over Org ELEMENT-TYPE and modify them, adjusting positions automatically.
-   Handles both insertions and deletions."
+    "iterate over Org ELEMENT-TYPE and modify them, adjusting positions automatically.
+handles both insertions and deletions."
     `(let ((offset 0))
        (org-element-map (org-element-parse-buffer) ,element-type
          (lambda (elm)
@@ -557,7 +557,7 @@ your browser does not support the video tag.
              (save-excursion
                (goto-char modified-pos)
                ,@body)
-             ;; Calculate how much the buffer size has changed (inserted or deleted)
+             ;; calculate how much the buffer size has changed (inserted or deleted)
              (let ((buffer-size-delta (- (point-max) initial-buffer-size)))
                (setq offset (+ offset buffer-size-delta))))))))
 
