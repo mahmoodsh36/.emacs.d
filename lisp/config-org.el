@@ -284,8 +284,8 @@
   (setq org-latex-packages-alist (list "\\usepackage{\\string~/.emacs.d/common}"  "\\usepackage{\\string~/.emacs.d/private}")) ;; use my ~/.emacs.d/common.sty
   ;; (setq org-latex-preview-preamble "\\documentclass{article}\n\\usepackage{\\string~/.emacs.d/common}\\usepackage{\\string~/.emacs.d/private}")
   ;; bigger font size
-  (let ((article-class (alist-get "article" org-latex-classes nil nil 'string=)))
-    (setcar article-class "\\documentclass[14pt]{extarticle}"))
+  ;; (let ((article-class (alist-get "article" org-latex-classes nil nil 'string=)))
+  ;;   (setcar article-class "\\documentclass[14pt]{extarticle}"))
   ;; export to html using dvisvgm
   (setq org-html-with-latex 'dvisvgm)
   ;; dont export headlines with tags
@@ -1181,23 +1181,24 @@ implies no special alignment."
           (setf old-point current-point)
           (setf current-point (point))))))
   (org-content))
-;; (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks)
+;; (with-eval-after-load 'org
+;;   (add-hook 'org-mode-hook 'org-babel-fold-all-latex-src-blocks))
 
-(defun org-fold-all-answer-blocks ()
+(defun org-fold-all-hint-blocks ()
   "toggle visibility of answer special blocks, i.e. #+begin_answer"
   (interactive)
   (save-excursion
     (beginning-of-buffer)
-    (let ((old-point nil)
+    (let ((old-point)
           (current-point (point)))
       (while (not (eq old-point current-point))
-        (progn
-          (if (string= (org-element-property :type (org-element-at-point)) "answer")
-              (org-cycle))
-          (org-next-block 1)
-          (setf old-point current-point)
-          (setf current-point (point)))))))
-;; (add-hook 'org-mode-hook 'org-fold-all-answer-blocks)
+        (if (string= (org-element-property :type (org-element-at-point)) "hint")
+            (org-cycle))
+        (ignore-errors (org-next-block 1))
+        (setf old-point current-point)
+        (setf current-point (point))))))
+(with-eval-after-load 'org
+  (add-hook 'org-mode-hook 'org-fold-all-hint-blocks))
 
 (defun org-current-headline-name ()
   "get the name of the current headline"

@@ -446,7 +446,7 @@
 (global-set-key (kbd "C-x k") 'kill-this-buffer-volatile)
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
-(led-kbd "s b" #'ein:run)
+;; (led-kbd "s b" #'ein:run)
 (led-kbd "s o" #'insert-random-string)
 (led-kbd "s y" #'avy-goto-char)
 (led-kbd "s x" #'save-buffers-kill-terminal)

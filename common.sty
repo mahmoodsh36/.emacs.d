@@ -236,6 +236,11 @@
   by ?
 }
 
+% for inline pseudocode?
+\NewDocumentCommand{\code}{m}{
+  \texttt{#1}
+}
+
 % no space before paragraph (is this desired?)
 % \setlength{\parindent}{0pt}
 
@@ -271,7 +276,7 @@
 \newcommand{\textiff}{\textop{iff}}
 \newcommand{\textthen}{\textop{then}}
 \newcommand{\textgoto}{\textop{goto}}
-\newcommand{\textelse}{\textop{else}}
+\newcommand{\textelse}{\algop{else}}
 \newcommand{\textloop}{\textop{loop}}
 \newcommand{\textstop}{\textop{stop}}
 \newcommand{\textfor}{\algop{for}}
@@ -320,7 +325,8 @@
 \newcommand{\algcominline}[1]{\text{ \textcolor{darkorange}{/*} #1 \textcolor{darkorange}{*/}}}
 \newcommand{\algspace}{\quad}
 \newcommand{\algop}[1]{\textop{\textcolor{darkorange}{#1}}}
-\newcommand{\algnull}{\algop{null}}
+\newcommand{\algnil}{\algop{nil}}
+\newcommand{\algnull}{\algnil}
 \newcommand{\subgraph}{\refdef[def-subgraph]{\subseteq}}
 \newcommand{\inducegraph}[2]{#1[#2]}
 % for placing equal signs over operators

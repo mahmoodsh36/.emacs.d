@@ -743,7 +743,7 @@
   (add-hook 'kill-emacs-hook #'persp-state-save))
 
 ;; emacs-ipython-notebook
-(use-package ein)
+;; (use-package ein)
 
 ;; zeal docs
 (use-package zeal-at-point)
