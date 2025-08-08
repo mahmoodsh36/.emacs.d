@@ -997,7 +997,7 @@ If LINK is not found, just return it as is."
                 (latex-link
                  (if desc
                      (format "\\hyperref[%s]{%s}" link desc)
-                   (format "\\cref{%s}" link)))
+                   (format "\\ref{%s}" link)))
                 (desc (or desc link)))
            (when (not (equal buffer-file-name linked-file))
              (setq latex-link (format "\\href{%s}{%s}" (url-for-blk-id link) (or desc link))))
@@ -1197,8 +1197,21 @@ implies no special alignment."
         (ignore-errors (org-next-block 1))
         (setf old-point current-point)
         (setf current-point (point))))))
+(defun org-fold-all-src-blocks ()
+  (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (let ((old-point)
+          (current-point (point)))
+      (while (not (eq old-point current-point))
+        (if (string= (org-element-type (org-element-at-point)) 'src-block)
+            (org-cycle))
+        (ignore-errors (org-next-block 1))
+        (setf old-point current-point)
+        (setf current-point (point))))))
 (with-eval-after-load 'org
-  (add-hook 'org-mode-hook 'org-fold-all-hint-blocks))
+  (add-hook 'org-mode-hook 'org-fold-all-hint-blocks)
+  (add-hook 'org-mode-hook 'org-fold-all-src-blocks))
 
 (defun org-current-headline-name ()
   "get the name of the current headline"
@@ -2302,23 +2315,23 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
   (let ((myfile (cl-find-if
                  (lambda (x) (file-exists-p x))
                  (list
-                  ;; (join-path
-                  ;;  (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
-                  ;;  (format "%s.tex" (file-name-base filepath)))
-                  ;; (join-path
-                  ;;  (from-data "mineru")
-                  ;;  (file-name-base filepath)
-                  ;;  "auto"
-                  ;;  (format "%s.md" (file-name-base filepath)))
-
                   (join-path
-                   (from-data "monkeyocr")
+                   (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
+                   (format "%s.tex" (file-name-base filepath)))
+                  (join-path
+                   (from-data "mineru")
                    (file-name-base filepath)
+                   "auto"
                    (format "%s.md" (file-name-base filepath)))
 
-                  (join-path
-                   (from-data "nougat")
-                   (format "%s.tex" (file-name-base filepath)))
+                  ;; (join-path
+                  ;;  (from-data "monkeyocr")
+                  ;;  (file-name-base filepath)
+                  ;;  (format "%s.md" (file-name-base filepath)))
+
+                  ;; (join-path
+                  ;;  (from-data "nougat")
+                  ;;  (format "%s.tex" (file-name-base filepath)))
 
                   ;; (from-data "dolphin/markdown")
                   ;; (format "%s.md" (file-name-base filepath))
