@@ -150,6 +150,7 @@ It is meant to be added to `org-export-before-parsing-hook'."
                              (plist-get (car (blk-find-by-id (substring orig-link 6 -2))) :filepath)
                            buffer-file-name)))
           (when (and (org-element-type-p link 'link)
+                     src-file
                      (string-equal "attachment"
                                    (org-element-property :type link)))
             (let* ((description (and (org-element-contents-begin link)
