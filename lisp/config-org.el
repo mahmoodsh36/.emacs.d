@@ -35,7 +35,7 @@
   "enable org mode latex previews for current emacs session"
   (interactive)
   (setq *enable-latex-previews* t)
-  (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+  (add-hook 'org-mode-hook 'org-latex-preview-mode)
   (setq org-startup-with-latex-preview t))
 
 (defun disable-latex-previews ()

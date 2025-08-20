@@ -65,6 +65,9 @@
     ;; the package annoyingly binds O to another function so here im just restoring it
     (general-define-key :states 'normal :keymaps 'override "O" 'evil-open-above)
 
+    ;; org rebinds } to something else, bind it back
+    (general-define-key :states 'normal :keymaps 'override "}" 'evil-forward-paragraph)
+
     ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
     ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
     ;; (general-define-key :states 'normal :keymaps 'override "o"

@@ -690,6 +690,7 @@
     % \newtheorem{entailment}{entailment}
     \newtheorem{corollary}{corollary}
     % \newtheorem*{proof}{Proof}
+    \newtheorem*{proof_sketch}{proof sketch}
     \newtheorem{lemma}{lemma}
     \newtheorem{question}{question}
     \newtheorem{remark}{remark}
@@ -1121,3 +1122,11 @@
 \NewDocumentCommand{\forallx}{m m}{\quantifier{\forall}{#1}{#2}}
 \NewDocumentCommand{\existsx}{m m}{\quantifier{\exists}{#1}{#2}}
 \NewDocumentCommand{\existsunique}{m m}{\quantifier{\exists!}{#1}{#2}}
+
+% \boxslash equivalent with backslash
+\newcommand{\boxbackslash}{%
+  \mathrel{\tikz[baseline=-0.5ex]{%
+    \draw (0,0) rectangle (0.6em,0.6em);
+    \draw (0.6em,0) -- (0,0.6em);
+  }}%
+}

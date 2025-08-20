@@ -720,7 +720,6 @@
       (text-mode)
       (visual-line-mode 1))
      (t (funcall gptel-default-mode)))
-    (message "here %s" backend)
     (gptel--sanitize-model :backend backend
                            :model gptel-model
                            :shoosh nil)
