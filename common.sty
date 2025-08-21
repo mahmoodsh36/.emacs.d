@@ -820,7 +820,7 @@
 \newcommand{\tenselm}[2]{{#1}_{#2}} % to denote the element at specific indicies of a tensor
 % \NewDocumentCommand\coordvec{mmO{}}{\refdef[blk:def-vec-coord]{[#1]_{#2}^{#3}}} % coordinate vector
 \NewDocumentCommand\coordvec{mm}{\refdef[blk:def-vec-coord]{[#1]_{#2}}} % coordinate vector
-\NewDocumentCommand{\idtrans}{mm}{[I]_{#1}^{#2}} % for identity transformation, basis to basis
+\NewDocumentCommand{\idtrans}{mm}{\refdef[blk:the-id-trans-mat]{[I]}_{#1}^{#2}} % for identity transformation, basis to basis
 \NewDocumentCommand{\transmat}{mmg}{% for general transformations?
   \IfNoValueTF{#3}{%
     [#1]_{#2}%
