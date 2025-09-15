@@ -67,6 +67,7 @@
 
     ;; org rebinds } to something else, bind it back
     (general-define-key :states 'normal :keymaps 'override "}" 'evil-forward-paragraph)
+    (general-define-key :states 'normal :keymaps 'override "{" 'evil-backward-paragraph)
 
     ;; for some reason these keys act weirdly in org mode with xenops so im gonna rebind them..
     ;; (general-define-key :states 'normal :keymaps 'org-mode-map "p" 'evil-paste-after)
