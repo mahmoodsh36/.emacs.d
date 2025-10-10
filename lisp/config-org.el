@@ -2316,6 +2316,9 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
                  (lambda (x) (file-exists-p x))
                  (list
                   (join-path
+                   (from-work "ai_scripts/pdf_to_latex/out-maverick/")
+                   (format "%s.tex" (file-name-base filepath)))
+                  (join-path
                    (from-work "ai_scripts/pdf_to_latex/out-qwen2.5-vl-7b/")
                    (format "%s.tex" (file-name-base filepath)))
                   (join-path

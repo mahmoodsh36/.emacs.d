@@ -537,28 +537,45 @@
 
 (use-package vimrc-mode)
 
-(use-package sly
-  :ensure (:host github :repo "joaotavora/sly")
-  :config
-  (setq inferior-lisp-program "")
-  (setq sly-lisp-implementations
-        `((sbcl ("sbcl"
-                 "--dynamic-space-size" "12GB"
-                 "--load"
-                 ,(join-path (expand-file-name "~/work/cl-tools/myloader.lisp"))))
-          (clisp ("clisp"))
-          (ecl ("ecl"))
-          (cmucl ("cmucl"))
-          (ccl ("ccl"))
-          (maxima ("rmaxima" "-r" "to_lisp();"))))
-  ;; dont truncate my outputs!
-  (setq sly-truncate-lines nil)
-  (setq-default sly-truncate-lines nil)
-  ;; make org babel use sly instead of slime
-  (setq org-babel-lisp-eval-fn #'sly-eval)
-  (setq sly-mrepl-history-file-name (from-brain "sly_history"))
-  ;; i think this increases history file size
-  (setq comint-input-ring-size 1000000))
+;; whether to use slime/sly
+(if *use-sly*
+    (use-package sly
+      :ensure (:host github :repo "joaotavora/sly")
+      :config
+      (setq inferior-lisp-program "")
+      (setq sly-lisp-implementations
+            `((sbcl ("sbcl"
+                     "--dynamic-space-size" "12GB"
+                     "--load"
+                     ,(join-path (expand-file-name "~/work/cl-tools/myloader.lisp"))))
+              (clisp ("clisp"))
+              (ecl ("ecl"))
+              (cmucl ("cmucl"))
+              (ccl ("ccl"))
+              (maxima ("rmaxima" "-r" "to_lisp();"))))
+      ;; dont truncate my outputs!
+      (setq sly-truncate-lines nil)
+      (setq-default sly-truncate-lines nil)
+      ;; make org babel use sly instead of slime
+      (setq org-babel-lisp-eval-fn #'sly-eval)
+      (setq sly-mrepl-history-file-name (from-brain "sly_history"))
+      ;; i think this increases history file size
+      (setq comint-input-ring-size 1000000))
+  (use-package slime
+    :config
+    (setq inferior-lisp-program "")
+    (setq slime-lisp-implementations
+          `((sbcl ("sbcl"
+                   "--dynamic-space-size" "12GB"
+                   "--load"
+                   ,(join-path (expand-file-name "~/work/cl-tools/myloader.lisp"))))
+            (clisp ("clisp"))
+            (ecl ("ecl"))
+            (cmucl ("cmucl"))
+            (ccl ("ccl"))
+            (maxima ("rmaxima" "-r" "to_lisp();"))))
+    ;; i think this increases history file size
+    (setq comint-input-ring-size 1000000)))
 ;; (use-package slime
 ;;   :config
 ;;   (setq inferior-lisp-program "")

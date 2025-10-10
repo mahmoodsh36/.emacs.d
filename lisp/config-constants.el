@@ -32,4 +32,6 @@
 ;; if i need more recursion depth
 ;; (setq max-lisp-eval-depth 10000)
 
+(defvar *use-sly* t)
+
 (provide 'config-constants)
