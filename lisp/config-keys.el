@@ -673,71 +673,64 @@
    (let ((gptel--system-message "you are a brilliant mathematician, you excel at solving problems. you are also an assistant living in emacs, respond concisely"))
      (goto-char (point-max))
      (gptel-send))))
-(led-kbd
- "; c"
- (lambda ()
-   (interactive)
-   (require 'gptel-context)
-   (when-let ((gptel--system-message "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
-              (prompt (read-string "prompt: ")))
-     (gptel-context-remove-all)
-     (gptel-context--add-region (current-buffer) (point-min) (point-max) t)
-     (gptel-request prompt
-       :buffer (get-buffer-create "gptel-code")
-       :position 0
-       :stream t
-       :system gptel--system-message
-       :fsm (gptel-make-fsm :handlers gptel-send--handlers))
-     (switch-to-buffer-other-window "gptel-code")
-     (gptel-context-remove-all))))
-(led-kbd
- "; y"
- (lambda ()
-   (interactive)
-   (when-let* ((all-models
-                (list
-                 "XiaomiMiMo/MiMo-VL-7B-RL"
-                 "Qwen/QwQ-32B"
-                 "Qwen/Qwen3-14B"
-                 "Qwen/Qwen3-32B"
-                 "THUDM/GLM-Z1-32B-0414"
-                 "THUDM/GLM-Z1-9B-0414"
-                 "THUDM/GLM-Z1-Rumination-32B-0414"
-                 "mistralai/Mistral-Small-3.1-24B-Instruct-2503"))
-               (mymodel (completing-read "model" all-models))
-               (backend
-                (gptel-make-openai "llama-cpp" ;; "vllm"
-                  :stream t
-                  :protocol "http"
-                  :host "mahmooz2:5000"
-                  :models all-models)))
-     ;; (setq gptel-max-tokens (expt 2 18)) ;; needed to make it work with koboldcpp..
-     (setq gptel-model mymodel)
-     (setq gptel-backend backend)
-     (my-gptel backend))))
+;; (led-kbd
+;;  "; c"
+;;  (lambda ()
+;;    (interactive)
+;;    (require 'gptel-context)
+;;    (when-let ((gptel--system-message "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+;;               (prompt (read-string "prompt: ")))
+;;      (gptel-context-remove-all)
+;;      (gptel-context--add-region (current-buffer) (point-min) (point-max) t)
+;;      (gptel-request prompt
+;;        :buffer (get-buffer-create "gptel-code")
+;;        :position 0
+;;        :stream t
+;;        :system gptel--system-message
+;;        :fsm (gptel-make-fsm :handlers gptel-send--handlers))
+;;      (switch-to-buffer-other-window "gptel-code")
+;;      (gptel-context-remove-all))))
+;; (led-kbd
+;;  "; y"
+;;  (lambda ()
+;;    (interactive)
+;;    (when-let* ((all-models
+;;                 (list
+;;                  "Qwen/QwQ-32B"))
+;;                (mymodel (completing-read "model" all-models))
+;;                (backend
+;;                 (gptel-make-openai "llama-cpp" ;; "vllm"
+;;                   :stream t
+;;                   :protocol "http"
+;;                   :host "mahmooz2:5000"
+;;                   :models all-models)))
+;;      ;; (setq gptel-max-tokens (expt 2 18)) ;; needed to make it work with koboldcpp..
+;;      (setq gptel-model mymodel)
+;;      (setq gptel-backend backend)
+;;      (my-gptel backend))))
 
-(defun my-gptel (backend &optional _ initial interactivep)
-  (with-current-buffer (get-buffer-create "gptel")
-    (ensure-dir (from-brain "gptel/"))
-    (set-visited-file-name (from-brain (join-path "gptel/" (current-time-string))))
-    (cond ;Set major mode
-     ((eq major-mode gptel-default-mode))
-     ((eq gptel-default-mode 'text-mode)
-      (text-mode)
-      (visual-line-mode 1))
-     (t (funcall gptel-default-mode)))
-    (gptel--sanitize-model :backend backend
-                           :model gptel-model
-                           :shoosh nil)
-    (unless gptel-mode (gptel-mode 1))
-    (goto-char (point-max))
-    (skip-chars-backward "\t\r\n")
-    (if (bobp) (insert (or initial (gptel-prompt-prefix-string))))
-    (display-buffer (current-buffer) gptel-display-buffer-action)
-    (message "Send your query with %s!"
-             (substitute-command-keys "\\[gptel-send]"))
-    (enter-append-if-evil)
-    (current-buffer)))
+;; (defun my-gptel (backend &optional _ initial interactivep)
+;;   (with-current-buffer (get-buffer-create "gptel")
+;;     (ensure-dir (from-brain "gptel/"))
+;;     (set-visited-file-name (from-brain (join-path "gptel/" (current-time-string))))
+;;     (cond ;Set major mode
+;;      ((eq major-mode gptel-default-mode))
+;;      ((eq gptel-default-mode 'text-mode)
+;;       (text-mode)
+;;       (visual-line-mode 1))
+;;      (t (funcall gptel-default-mode)))
+;;     (gptel--sanitize-model :backend backend
+;;                            :model gptel-model
+;;                            :shoosh nil)
+;;     (unless gptel-mode (gptel-mode 1))
+;;     (goto-char (point-max))
+;;     (skip-chars-backward "\t\r\n")
+;;     (if (bobp) (insert (or initial (gptel-prompt-prefix-string))))
+;;     (display-buffer (current-buffer) gptel-display-buffer-action)
+;;     (message "Send your query with %s!"
+;;              (substitute-command-keys "\\[gptel-send]"))
+;;     (enter-append-if-evil)
+;;     (current-buffer)))
 
 (led-kbd "; a" 'open-auto-tex)
 

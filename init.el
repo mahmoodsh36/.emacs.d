@@ -90,9 +90,9 @@
 ;;(setf (elt (car (cdr (cdr (assoc 'newline-mark whitespace-display-mappings)))) 0) ?⤸)
 (global-whitespace-mode) ;; for functions to act on visual lines rather than actual lines
 ;; relative line numbers
-;; (add-hook 'prog-mode-hook
-;;           (lambda ()
-;;             (setq display-line-numbers 'relative)))
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (setq display-line-numbers 'relative)))
 ;; disable annoying local variable prompt
 (setq enable-local-variables :all)
 ;; stop always inserting a newline at the end of a file

@@ -1177,10 +1177,38 @@
 (use-package org-timeblock
   :after 'org)
 
+(defun get-env-var-from-script (var)
+  "return the value of environment variable VAR defined in ~/brain/moredots/env.sh."
+  (let ((script "~/brain/moredots/env.sh"))
+    (string-trim
+     (shell-command-to-string
+      (format "bash -c 'source %s >/dev/null 2>&1; echo -n \"$%s\"'"
+              script
+              var)))))
+
 (unless (is-android-system)
   (use-package gptel
     :config
-    (setq gptel-default-mode 'org-mode)))
+    (setq gptel-default-mode 'org-mode)
+    (setf gptel-backend
+          (gptel-make-openai "nvidia"
+            :host "integrate.api.nvidia.com"
+            :protocol "https"
+            :endpoint "/v1/chat/completions"
+            :key (lambda () (get-env-var-from-script "NVIDIA_API_KEY"))
+            :stream t
+            :models '(qwen/qwen3-coder-480b-a35b-instruct
+                      deepseek-ai/deepseek-v3_1-terminus
+                      bytedance/seed-oss-36b-instruct
+                      openai/gpt-oss-120b
+                      qwen/qwen3-235b-a22b))))
+
+  (use-package gptel-autocomplete
+    :ensure ( :fetcher github :repo "JDNdeveloper/gptel-autocomplete")
+    :config
+    (setq gptel-autocomplete-temperature 0.1)
+    (setq gptel-autocomplete-before-context-lines 100)
+    (setq gptel-autocomplete-after-context-lines 20)))
 
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import
@@ -1453,35 +1481,35 @@ Cancel the previous one if present."
   )
 
 ;; from https://github.com/lizqwerscott/mcp.el
-(defun gptel-mcp-register-tool ()
-  (interactive)
-  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
-    (mapcar #'(lambda (tool)
-                (apply #'gptel-make-tool
-                       tool))
-            tools)))
-(defun gptel-mcp-use-tool ()
-  (interactive)
-  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
-    (mapcar #'(lambda (tool)
-                (let ((path (list (plist-get tool :category)
-                                  (plist-get tool :name))))
-                  (push (gptel-get-tool path)
-                        gptel-tools)))
-            tools)))
-(defun gptel-mcp-close-use-tool ()
-  (interactive)
-  (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
-    (mapcar #'(lambda (tool)
-                (let ((path (list (plist-get tool :category)
-                                  (plist-get tool :name))))
-                  (setq gptel-tools
-                        (cl-remove-if #'(lambda (tool)
-                                          (equal path
-                                                 (list (gptel-tool-category tool)
-                                                       (gptel-tool-name tool))))
-                                      gptel-tools))))
-            tools)))
+;; (defun gptel-mcp-register-tool ()
+;;   (interactive)
+;;   (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+;;     (mapcar #'(lambda (tool)
+;;                 (apply #'gptel-make-tool
+;;                        tool))
+;;             tools)))
+;; (defun gptel-mcp-use-tool ()
+;;   (interactive)
+;;   (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+;;     (mapcar #'(lambda (tool)
+;;                 (let ((path (list (plist-get tool :category)
+;;                                   (plist-get tool :name))))
+;;                   (push (gptel-get-tool path)
+;;                         gptel-tools)))
+;;             tools)))
+;; (defun gptel-mcp-close-use-tool ()
+;;   (interactive)
+;;   (let ((tools (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+;;     (mapcar #'(lambda (tool)
+;;                 (let ((path (list (plist-get tool :category)
+;;                                   (plist-get tool :name))))
+;;                   (setq gptel-tools
+;;                         (cl-remove-if #'(lambda (tool)
+;;                                           (equal path
+;;                                                  (list (gptel-tool-category tool)
+;;                                                        (gptel-tool-name tool))))
+;;                                       gptel-tools))))
+;;             tools)))
 
 (use-package lua-mode
   :init
@@ -1496,34 +1524,42 @@ Cancel the previous one if present."
                  `(lua-mode . ("lua-language-server")))
     (add-hook 'lua-mode-hook 'eglot-ensure)))
 
-(use-package macher
-  :ensure (:host github :repo "kmontag/macher")
-  :hook
-  ;; add the current file to the gptel context when making macher requests.
-  (macher-before-send
-   .
-   (lambda ()
-     (when-let* ((filename (buffer-file-name))
-                 ((not (file-directory-p filename))))
-       (gptel-add-file filename))))
-  :config
-  ;; adjust buffer positioning to taste.
-  (add-to-list
-   'display-buffer-alist
-   '("\\*macher:.*\\*"
-     (display-buffer-in-side-window)
-     (side . bottom)))
-  (add-to-list
-   'display-buffer-alist
-   '("\\*macher-patch:.*\\*"
-     (display-buffer-in-side-window)
-     (side . right)))
-  ;; customize patch display action. The 'macher-context' struct
-  ;; contains data from the current request, including the contents of
-  ;; any files that were edited.
-  (setopt macher-patch-ready-function
-          (lambda (macher-context)
-            (ediff-patch-file nil (current-buffer))))
-  )
+;; (use-package macher
+;;   :ensure (:host github :repo "kmontag/macher")
+;;   :hook
+;;   ;; add the current file to the gptel context when making macher requests.
+;;   (macher-before-send
+;;    .
+;;    (lambda ()
+;;      (when-let* ((filename (buffer-file-name))
+;;                  ((not (file-directory-p filename))))
+;;        (gptel-add-file filename))))
+;;   :config
+;;   ;; adjust buffer positioning to taste.
+;;   (add-to-list
+;;    'display-buffer-alist
+;;    '("\\*macher:.*\\*"
+;;      (display-buffer-in-side-window)
+;;      (side . bottom)))
+;;   (add-to-list
+;;    'display-buffer-alist
+;;    '("\\*macher-patch:.*\\*"
+;;      (display-buffer-in-side-window)
+;;      (side . right)))
+;;   ;; customize patch display action. The 'macher-context' struct
+;;   ;; contains data from the current request, including the contents of
+;;   ;; any files that were edited.
+;;   (setopt macher-patch-ready-function
+;;           (lambda (macher-context)
+;;             (ediff-patch-file nil (current-buffer))))
+;;   )
+
+;; agent-shell
+(use-package shell-maker
+  :ensure t)
+;; (use-package acp
+;;   :vc (:url "https://github.com/xenodium/acp.el"))
+;; (use-package agent-shell
+;;   :vc (:url "https://github.com/xenodium/agent-shell"))
 
 (provide 'config-packages)

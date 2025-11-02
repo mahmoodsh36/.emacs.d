@@ -1417,7 +1417,7 @@ implies no special alignment."
   (car
    (map-org-files
     filepath
-    (lambda ()
+    (lambda (orgfile)
       (org-element-map (org-element-parse-buffer) 'link
         (lambda (mylink)
           (let ((filepath
@@ -2170,7 +2170,7 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
 (defun my-new-todo ()
   (interactive)
   (let* ((todo-files (org-files-with-tag "todo"))
-         (titles (map-org-files todo-files (lambda () (org-get-keyword "title"))))
+         (titles (map-org-files todo-files (lambda (orgfile) (org-get-keyword "title"))))
          (selected-title (completing-read "file " titles))
          (selected-idx (cl-position selected-title titles :test 'equal))
          (selected-todo-file (when selected-idx (elt todo-files selected-idx)))
@@ -2234,13 +2234,13 @@ KEYWORDS is a list of keyword strings, like '(\"TITLE\" \"AUTHOR\")."
        (lambda (orgfile)
          (insert-file-contents orgfile nil nil nil t)
          (let ((major-mode 'org-mode))
-           (funcall func)))
+           (funcall func orgfile)))
        files))))
 
 (cl-defun grab-all (dirpath &optional (recursion-depth 1))
   (map-org-files
    (directory-files dirpath t ".*\.org")
-   (lambda () (org-element-parse-buffer 1))))
+   (lambda (orgfile) (org-element-parse-buffer 1))))
 
 (defun new-xournalpp ()
   (interactive)
