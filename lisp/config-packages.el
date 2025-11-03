@@ -268,22 +268,22 @@
   )
 
 ;; auto expand snippets, https://github.com/joaotavora/yasnippet/issues/998
-(setq my-yas-auto-expand nil)
-(defun toggle-yas-auto-expand ()
-  (interactive)
-  (setq my-yas-auto-expand (not my-yas-auto-expand))
-  (if my-yas-auto-expand
-      (add-to-list 'yas-key-syntaxes 'yas-longest-key-from-whitespace)
-    (setq yas-key-syntaxes (cl-delete 'yas-longest-key-from-whitespace yas-key-syntaxes :test 'equal)))
-  (message "my-yas-auto-expand set to %s" my-yas-auto-expand))
-(defun my-yas-try-expanding-auto-snippets ()
-  (when (and (boundp 'yas-minor-mode)
-             yas-minor-mode
-             my-yas-auto-expand
-             (cl-member this-command '(self-insert-command org-self-insert-command)))
-    ;; (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
-    (yas-expand)))
-(add-hook 'post-command-hook #'my-yas-try-expanding-auto-snippets)
+;; (setq my-yas-auto-expand nil)
+;; (defun toggle-yas-auto-expand ()
+;;   (interactive)
+;;   (setq my-yas-auto-expand (not my-yas-auto-expand))
+;;   (if my-yas-auto-expand
+;;       (add-to-list 'yas-key-syntaxes 'yas-longest-key-from-whitespace)
+;;     (setq yas-key-syntaxes (cl-delete 'yas-longest-key-from-whitespace yas-key-syntaxes :test 'equal)))
+;;   (message "my-yas-auto-expand set to %s" my-yas-auto-expand))
+;; (defun my-yas-try-expanding-auto-snippets ()
+;;   (when (and (boundp 'yas-minor-mode)
+;;              yas-minor-mode
+;;              my-yas-auto-expand
+;;              (cl-member this-command '(self-insert-command org-self-insert-command)))
+;;     ;; (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+;;     (yas-expand)))
+;; (add-hook 'post-command-hook #'my-yas-try-expanding-auto-snippets)
 
 ;; highlight errors in code
 ;; (use-package flycheck
@@ -1146,9 +1146,9 @@
 (use-package ob-mongo
   :config
   (setq ob-mongo:default-mongo-executable "mongosh"))
-(use-package inf-mongo
-  :config
-  (setq inf-mongo-command "mongosh"))
+;; (use-package inf-mongo
+;;   :config
+;;   (setq inf-mongo-command "mongosh"))
 
 ;; (use-package macrursors
 ;;   :config

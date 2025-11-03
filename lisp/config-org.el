@@ -782,13 +782,13 @@ holding contextual information."
               (format "\\end{%s}" type))))
 
   ;; enforce some default keywords for all org buffers (in a hacky way)
-  (defun my-org-collect-keywords-advice (orig-func &rest args)
-    (let ((old-buffer (current-buffer)))
-      (with-temp-buffer
-        (insert-buffer-substring old-buffer)
-        (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n#+setupfile: ~/brain/private.org\n")
-        (apply orig-func args))))
-  (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
+  ;; (defun my-org-collect-keywords-advice (orig-func &rest args)
+  ;;   (let ((old-buffer (current-buffer)))
+  ;;     (with-temp-buffer
+  ;;       (insert-buffer-substring old-buffer)
+  ;;       (insert "\n#+setupfile: ~/.emacs.d/setup.org\n#+include: ~/brain/private.org\n#+setupfile: ~/brain/private.org\n")
+  ;;       (apply orig-func args))))
+  ;; (advice-add #'org-collect-keywords :around #'my-org-collect-keywords-advice)
 
   ;; this function sometimes tries to select a killed buffer and it causes an async error that cant be caught, so im modifying it to ignore errors
   (defun org-latex-preview--failure-callback-advice (orig-func &rest args)
