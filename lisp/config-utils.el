@@ -552,9 +552,17 @@ prompt the user for a coding system."
                 (if (derived-mode-p 'dired-mode)
                     (dired-get-filename nil t)
                   buffer-file-name))))
-    (if (locate-file "open.sh" exec-path)
-        (call-process-shell-command (format "open.sh %s" (shell-quote-argument file) (shell-quote-argument file)))
-      (call-process-shell-command (format "xdg-open %s" (shell-quote-argument file) (shell-quote-argument file))))))
+    ;; (if (locate-file "open.sh" exec-path)
+    ;;     (call-process-shell-command
+    ;;      (format "open.sh %s" (shell-quote-argument file)))
+    ;;   (call-process-shell-command
+    ;;    (format "xdg-open %s" (shell-quote-argument file))))
+    (call-process-shell-command
+     (format "%s %s"
+             (if (is-darwin)
+                 "open"
+               "xdg-open")
+             (shell-quote-argument file)))))
 
 (defun plist-keys (plist)
   "Return a list of keys in PLIST."
@@ -596,5 +604,8 @@ prompt the user for a coding system."
   "ensure that DIRPATH exists, creating it if necessary."
   (unless (file-directory-p dirpath)
     (make-directory dirpath t)))
+
+(defun is-darwin ()
+  (eq system-type 'darwin))
 
 (provide 'config-utils)

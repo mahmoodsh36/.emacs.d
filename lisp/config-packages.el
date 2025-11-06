@@ -320,7 +320,7 @@
 ;; (use-package dart-mode)
 
 ;; pdf viewer
-(when (not (is-android-system))
+(when (not (or (is-android-system) (eq system-type 'darwin)))
   (use-package pdf-tools
     :ensure (:host github :repo "vedang/pdf-tools")
     :after (org org-latex-preview)
@@ -547,7 +547,9 @@
             `((sbcl ("sbcl"
                      "--dynamic-space-size" "12GB"
                      "--load"
-                     ,(join-path (expand-file-name "~/work/cl-tools/myloader.lisp"))))
+                     ,(join-path
+                       (getenv "WORK_DIR")
+                       "/cl-tools/myloader.lisp")))
               (clisp ("clisp"))
               (ecl ("ecl"))
               (cmucl ("cmucl"))
@@ -568,7 +570,9 @@
           `((sbcl ("sbcl"
                    "--dynamic-space-size" "12GB"
                    "--load"
-                   ,(join-path (expand-file-name "~/work/cl-tools/myloader.lisp"))))
+                   ,(join-path
+                     (getenv "WORK_DIR")
+                     "/cl-tools/myloader.lisp")))
             (clisp ("clisp"))
             (ecl ("ecl"))
             (cmucl ("cmucl"))

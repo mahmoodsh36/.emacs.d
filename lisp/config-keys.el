@@ -14,7 +14,7 @@
 (led-kbd "d g" (lambda () (interactive) (dired "~/work/blog/")))
 (led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
 (led-kbd "d e" (lambda () (interactive) (dired (from-brain "pen/"))))
-(led-kbd "d t" (lambda () (interactive) (dired "~/othermusic")))
+(led-kbd "d t" (lambda () (interactive) (dired (concat (getenv "VOL_DIR") "/othermusic"))))
 
 (led-kbd "f f" 'find-file)
 (led-kbd "f v" 'find-alternate-file)

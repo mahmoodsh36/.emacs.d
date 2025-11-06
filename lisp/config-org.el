@@ -460,8 +460,8 @@ your browser does not support the video tag.
            ;; force org-xopp to regenerate the image with the dimensions we want
            ;; (org-xopp-imagemagick-extra-args nil)
            ;; (org-xopp-regenerate-only-on-change nil)
-           (image-filepath nil)
-           (caption-above-p nil))
+           (image-filepath)
+           (caption-above-p))
       (if (equal link-type "xopp-figure")
           (progn
             (setq image-filepath (car (org-xopp-generate-figures link-path)))
@@ -483,7 +483,9 @@ your browser does not support the video tag.
                       (forward-line))
                   (goto-char (point-max))
                   (forward-line -1))
-                (insert (format "\\caption{\\label{%s}%s}" (or link-name "")(or link-caption "")))
+                (insert (format "\\caption{\\label{%s}%s}"
+                                (or link-name "")
+                                (or link-caption "")))
                 (buffer-string))))
         (funcall fn link desc info))))
   (advice-add #'org-latex-link :around #'my-org-latex-link-advice)

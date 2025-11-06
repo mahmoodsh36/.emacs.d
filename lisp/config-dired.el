@@ -28,6 +28,10 @@
 (use-package dired-k)
 (use-package dired-filter)
 
+(when (eq system-type 'darwin)
+  (require 'ls-lisp)
+  (setq ls-lisp-use-insert-directory-program nil))
+
 (use-package dired-recent
   :config
   (dired-recent-mode 1))

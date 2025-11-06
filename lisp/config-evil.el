@@ -147,7 +147,7 @@
       (evil-set-initial-state 'eat-mode 'emacs)
       (evil-set-initial-state 'nov-mode 'emacs)
       ;; (evil-set-initial-state 'sldb-mode 'emacs) ;; for slime
-      (evil-set-initial-state 'sly-db-mode 'emacs)
+      ;; (evil-set-initial-state 'sly-db-mode 'emacs)
       ;; (evil-set-initial-state 'sly-inspector-mode 'emacs)
       (evil-set-initial-state 'vterm-mode 'emacs)
       ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
