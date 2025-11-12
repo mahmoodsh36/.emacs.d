@@ -1,7 +1,7 @@
 ;; configure/setup some keybindings
 
 (led-kbd "d w" (lambda () (interactive) (dired "~/dl/")))
-(led-kbd "d a" (lambda () (interactive) (dired "~/data/")))
+(led-kbd "d a" (lambda () (interactive) (dired (getenv "DATA_DIR"))))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (led-kbd "d b" (lambda () (interactive) (dired *brain-dir*)))
 (led-kbd "d n" (lambda () (interactive) (dired *notes-dir*)))

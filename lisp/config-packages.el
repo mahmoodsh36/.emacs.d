@@ -1183,7 +1183,7 @@
 
 (defun get-env-var-from-script (var)
   "return the value of environment variable VAR defined in ~/brain/moredots/env.sh."
-  (let ((script "~/brain/moredots/env.sh"))
+  (let ((script (from-brain "moredots/env.sh")))
     (string-trim
      (shell-command-to-string
       (format "bash -c 'source %s >/dev/null 2>&1; echo -n \"$%s\"'"
