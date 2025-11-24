@@ -487,7 +487,7 @@
 
 ;; dired keys
 (led-kbd "s ." 'my-xdg-open-file)
-(general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
+;; (general-define-key :states '(normal) :keymaps 'dired-mode-map "C" 'dired-rsync)
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "." 'my-xdg-open-file)
 (general-define-key :states '(normal) :keymaps 'dired-mode-map "o"
                     (lambda ()
