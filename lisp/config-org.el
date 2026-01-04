@@ -170,7 +170,7 @@
   ;; make g++ compile with std=c++17 flag
   (setq org-babel-C++-compiler "g++ -std=c++17")
   ;; make org babel default to python3
-  (setq org-babel-python-command "python3")
+  (setq org-babel-python-command "python")
   ;; increase org table max lines
   (setq org-table-convert-region-max-lines 10000)
   ;; to increase depth of the imenu in treemacs

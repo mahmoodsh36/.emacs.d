@@ -18,7 +18,11 @@
 (use-package dired-narrow)
 (use-package dired-list)
 (use-package dired-collapse)
-(use-package dired-rsync)
+(use-package dired-rsync
+  :config
+  ;; rsync on macos doesnt have this option, we replace it with one available to both rsync on linux and mac
+  (setq dired-rsync-options
+        (string-replace "--info=progress2" "--progress" dired-rsync-options)))
 
 (use-package dired-du)
 ;; (use-package dired-single)
@@ -196,5 +200,19 @@
             new  (format "%s[%d]" this ctr)))
     (dired-copy-file this new nil))
   (revert-buffer))
+
+;; unzip errors out on mac. https://github.com/CocoaPods/CocoaPods/issues/7711
+;; we use ditto instead.
+(with-eval-after-load 'dired-aux
+  ;; remove existing .zip handler
+  (setq dired-compress-file-suffixes
+        (cl-remove-if
+         (lambda (elt)
+           (string-match-p "\\\\.zip\\'" (car elt)))
+         dired-compress-file-suffixes))
+  (add-to-list
+   'dired-compress-file-suffixes
+   '("\\.zip\\'" ""
+     "mkdir -p %o && ditto -V -x -k --sequesterRsrc --rsrc %i %o")))
 
 (provide 'config-dired)

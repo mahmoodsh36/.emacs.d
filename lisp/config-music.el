@@ -77,7 +77,7 @@
                    (lambda (filepath)
                      (string-match "\\.\\(spotdl\\|lrc\\|jpg\\|json\\)$" filepath))
                    (directory-files-recursively *music-dir* "")))))
-    (call-process "open.sh" nil 0 nil
+    (call-process "mpv" nil 0 nil
                   (expand-file-name my-file))
     ;; (browse-url (expand-file-name my-file))
     ))
