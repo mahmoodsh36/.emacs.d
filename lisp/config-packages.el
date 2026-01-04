@@ -548,7 +548,7 @@
                      "--dynamic-space-size" "12GB"
                      "--load"
                      ,(join-path
-                       (getenv "WORK_DIR")
+                       (my-getenv "WORK_DIR")
                        "/cl-tools/myloader.lisp")))
               (clisp ("clisp"))
               (ecl ("ecl"))
@@ -567,12 +567,12 @@
     :config
     (setq inferior-lisp-program "")
     (setq slime-lisp-implementations
-          `((sbcl ("sbcl"
-                   "--dynamic-space-size" "12GB"
-                   "--load"
-                   ,(join-path
-                     (getenv "WORK_DIR")
-                     "/cl-tools/myloader.lisp")))
+           `((sbcl ("sbcl"
+                    "--dynamic-space-size" "12GB"
+                    "--load"
+                    ,(join-path
+                      (my-getenv "WORK_DIR")
+                      "/cl-tools/myloader.lisp")))
             (clisp ("clisp"))
             (ecl ("ecl"))
             (cmucl ("cmucl"))

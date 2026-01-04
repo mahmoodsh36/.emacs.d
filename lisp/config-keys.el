@@ -1,7 +1,7 @@
 ;; configure/setup some keybindings
 
 (led-kbd "d w" (lambda () (interactive) (dired "~/Downloads/")))
-(led-kbd "d a" (lambda () (interactive) (dired (getenv "DATA_DIR"))))
+(led-kbd "d a" (lambda () (interactive) (dired (my-getenv "DATA_DIR"))))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))
 (led-kbd "d b" (lambda () (interactive) (dired *brain-dir*)))
 (led-kbd "d n" (lambda () (interactive) (dired *notes-dir*)))
@@ -14,7 +14,7 @@
 (led-kbd "d g" (lambda () (interactive) (dired "~/work/blog/")))
 (led-kbd "d m" (lambda () (interactive) (dired *music-dir*)))
 (led-kbd "d e" (lambda () (interactive) (dired (from-brain "pen/"))))
-(led-kbd "d t" (lambda () (interactive) (dired (concat (getenv "VOL_DIR") "/othermusic"))))
+(led-kbd "d t" (lambda () (interactive) (dired (concat (my-getenv "VOL_DIR") "/othermusic"))))
 
 (led-kbd "f f" 'find-file)
 (led-kbd "f v" 'find-alternate-file)
@@ -337,12 +337,12 @@
 (led-kbd "l x b" 'julia-snail-send-buffer-file :keymaps 'julia-mode-map)
 (led-kbd "s j"
          (lambda () (interactive)
-           (let ((julia-snail-extensions '(repl-history formatter ob-julia))
-                 (default-directory *brain-dir*)
-                 ;; (julia-snail-executable (join-path (getenv "WORK_DIR")
-                 ;;                                    "myjulia"
-                 ;;                                    "myjulia.sh"))
-                 (julia-snail-executable "julia")
+            (let ((julia-snail-extensions '(repl-history formatter ob-julia))
+                  (default-directory *brain-dir*)
+                  ;; (julia-snail-executable (join-path (my-getenv "WORK_DIR")
+                  ;;                                   "myjulia"
+                  ;;                                   "myjulia.sh"))
+                  (julia-snail-executable "julia")
                  )
              (julia-snail))))
 

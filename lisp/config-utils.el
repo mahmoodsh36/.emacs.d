@@ -608,4 +608,25 @@ prompt the user for a coding system."
 (defun is-darwin ()
   (eq system-type 'darwin))
 
+(defun source-zsh-env ()
+  "Source environment variables from login zsh shell."
+  (interactive)
+  (let ((env-output (shell-command-to-string "zsh -l -c 'env'")))
+    (dolist (line (split-string env-output "\n" t))
+      (when (string-match "^\\([^=]+\\)=\\(.*\\)$" line)
+        (let ((var (match-string 1 line))
+              (val (match-string 2 line)))
+          (setenv var val)
+          (when (string= var "PATH")
+            (setq exec-path (split-string val path-separator))))))))
+
+(defun my-getenv (var)
+  "Get environment variable VAR, sourcing from zsh if needed."
+  (or (getenv var)
+      (progn
+        (source-zsh-env)
+        (getenv var))))
+
+(source-zsh-env)
+
 (provide 'config-utils)

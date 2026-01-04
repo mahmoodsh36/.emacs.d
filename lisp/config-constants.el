@@ -1,6 +1,6 @@
 ;; path where all my notes etc go
 (defconst *brain-dir*
-  (or (getenv "BRAIN_DIR")
+  (or (my-getenv "BRAIN_DIR")
       (file-truename "~/brain")))
 (defconst *notes-dir* (concat *brain-dir* "/notes"))
 
@@ -9,18 +9,18 @@
 (defconst *work-dir* (file-truename "~/work"))
 
 ;; used in my elisp scripts for launching mpv
-(defconst *music-dir* (concat (getenv "MUSIC_DIR") "/"))
+(defconst *music-dir* (concat (my-getenv "MUSIC_DIR") "/"))
 
 (defconst *personal-website-url* "https://mahmoodsheikh36.github.io")
 
 (defconst *bibtex-file* (from-brain "bib.bib"))
 
 ;; where my html exports go to, for my blog or whatever
-(defconst *static-html-dir* (concat (getenv "BLOG_DIR") "/"))
+(defconst *static-html-dir* (concat (my-getenv "BLOG_DIR") "/"))
 (defconst *html-static-route* "/")
 (ignore-errors (mkdir *static-html-dir*)) ;; ensure it exists
 ;; where "template" html files go
-(defconst *template-html-dir* (join-path (getenv "WORK_DIR") "template"))
+(defconst *template-html-dir* (join-path (my-getenv "WORK_DIR") "template"))
 
 ;;(defconst *leader-key* "C-z");;"SPC")
 ;; (global-set-key (kbd "<SPC>") (make-sparse-keymap))
