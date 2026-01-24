@@ -85,7 +85,7 @@
 (led-kbd "r i" #'blk-insert)
 ;; (led-kbd "r c" 'org-id-get-create)
 (led-kbd "r o" #'blk-open-at-point)
-(led-kbd "r a" #'org-attach :keymaps 'org-mode-map)
+;; (led-kbd "r a" #'org-attach :keymaps 'org-mode-map)
 ;; (led-kbd "r A" #'org-attach-open :keymaps 'org-mode-map)
 (led-kbd "r A" #'open-storage-dir-for-current-org-buffer :keymaps 'org-mode-map)
 (led-kbd "r l" #'org-roam-alias-add :keymaps 'org-mode-map)
@@ -124,6 +124,23 @@
 ;; (general-define-key :keymaps 'override "/" 'swiper)
 (led-kbd "c" "C-c C-c" :keymaps 'org-mode-map)
 (led-kbd "a N" #'today-entry-text-simple)
+
+;; function to open attach dir
+(defun open-identifier-dir ()
+  (interactive)
+  (let ((ident (org-get-keyword "identifier")))
+    (if (not ident)
+        (message "no #+identifier found in this buffer.")
+      ;; construct the path: org-attach-id-dir + identifier
+      (let ((dir-path (expand-file-name ident org-attach-id-dir)))
+        (if (file-directory-p dir-path)
+            (dired dir-path)
+          (if (y-or-n-p (format "directory %s does not exist. create it? " dir-path))
+              (progn
+                (make-directory dir-path t)
+                (dired dir-path))
+            (message "directory not opened.")))))))
+(led-kbd "r a" #'open-identifier-dir :keymaps 'org-mode-map)
 
 ;; keys to search for files
 (led-kbd "f b"
