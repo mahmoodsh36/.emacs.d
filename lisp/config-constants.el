@@ -2,11 +2,15 @@
 (defconst *brain-dir*
   (or (my-getenv "BRAIN_DIR")
       (file-truename "~/brain")))
-(defconst *notes-dir* (concat *brain-dir* "/notes"))
+(defconst *notes-dir* (join-path *brain-dir* "/notes"))
 
-(defconst *data-dir* (file-truename "~/data"))
+(defconst *vol-dir*
+  (or (my-getenv "VOLUME_DIR")
+      (file-truename "~/")))
 
-(defconst *work-dir* (file-truename "~/work"))
+(defconst *data-dir* (join-path *vol-dir* "data"))
+
+(defconst *work-dir* (join-path *vol-dir* "work"))
 
 ;; used in my elisp scripts for launching mpv
 (defconst *music-dir* (concat (my-getenv "MUSIC_DIR") "/"))
