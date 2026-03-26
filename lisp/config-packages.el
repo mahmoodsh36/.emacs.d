@@ -1566,4 +1566,11 @@ Cancel the previous one if present."
 ;; (use-package agent-shell
 ;;   :vc (:url "https://github.com/xenodium/agent-shell"))
 
+;; (use-package git-gutter
+;;   :ensure t)
+(use-package git-gutter-fringe
+  :ensure t
+  :config
+  (global-git-gutter-mode))
+
 (provide 'config-packages)
