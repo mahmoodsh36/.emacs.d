@@ -1009,7 +1009,10 @@
   ;;   :remap 'LaTeX-mode
   ;;   :url "https://github.com/latex-lsp/tree-sitter-latex"
   ;;   :ext "\\.tex\\'"))
-  (global-treesit-auto-mode))
+  ;; global-treesit-auto-mode rebuilds the full remap alist on every find-file (97% of open time)
+  ;; treesit-auto-add-to-auto-mode-alist already handles mode remapping at startup
+  ;; (global-treesit-auto-mode)
+  )
 
 ;; library for working with time stamps easily
 (use-package ts)
