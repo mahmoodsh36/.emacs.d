@@ -202,9 +202,6 @@
 (led-kbd "w m"
          (lambda () (interactive)
            (when window-system (set-frame-size (selected-frame) 180 50))))
-;; (led-kbd "s d" (lambda () (interactive) (switch-to-theme 'stimmung-themes-dark) (set-themed-pdf t)))
-;; (led-kbd "s l" (lambda () (interactive) (switch-to-theme 'stimmung-themes-light) (set-themed-pdf nil)))
-;; (led-kbd "s d" (lambda () (interactive) (switch-to-theme 'ef-melissa-dark) (set-themed-pdf t)))
 (defun switch-to-dark-theme ()
   (interactive)
   (switch-to-theme 'ef-dream)
@@ -370,15 +367,6 @@
 ;;                       (interactive)
 ;;                       (end-of-line)
 ;;                       (call-interactively 'newline))) ;; call newline interactively for proper indentation in code
-;; (led-kbd "w v" #'split-window-right)
-;; (led-kbd "w s" #'split-window-below)
-;; (led-kbd "w o" #'other-window)
-;; (led-kbd "w c" #'delete-window)
-;; (led-kbd "w t" #'recenter)
-;; (led-kbd "w f" #'windmove-right)
-;; (led-kbd "w b" #'windmove-left)
-;; (led-kbd "w n" #'windmove-down)
-;; (led-kbd "w p" #'windmove-up)
 (led-kbd "v" #'open-current-document-this-window :keymaps '(org-mode-map TeX-mode-map latex-mode-map))
 (led-kbd "V" #'open-current-document :keymaps '(org-mode-map TeX-mode-map latex-mode-map))
 (general-define-key :states 'normal :keymaps 'override
@@ -424,8 +412,6 @@
      (call-interactively 'eros-eval-last-sexp))))
 
 (led-kbd "t" #'treemacs)
-;; (keymap-global-set "C-a" #'back-to-indentation)
-;; (keymap-global-set "M-m" #'beginning-of-line)
 
 ;; multiple cursors keys
 ;; (keymap-global-set (led ", e") #'mc/edit-lines)
@@ -440,10 +426,6 @@
 
 ;; (keymap-global-set "C-h" #'indent-according-to-mode)
 
-;; perspective keys
-;; (led-kbd "s 1" (lambda () (interactive) (persp-switch "main")))
-;; (led-kbd "s 2" (lambda () (interactive) (persp-switch "college")))
-;; (led-kbd "s 3" (lambda () (interactive) (persp-switch "agenda")))
 (led-kbd "0" (lambda () (interactive) (persp-switch "agenda")))
 (led-kbd "1" (lambda () (interactive) (persp-switch "main")))
 (led-kbd "2" (lambda () (interactive) (persp-switch "work2")))
@@ -451,12 +433,7 @@
 (led-kbd "4" (lambda () (interactive) (persp-switch "work4")))
 (led-kbd "s c" #'persp-switch)
 
-(led-kbd "s z" #'zeal-at-point)
 (led-kbd "s f" #'devdocs-lookup)
-
-;; bind esc to c-g to make it cancel stuff
-;; (general-define-key :states 'override :keymaps 'override "ESC" (general-simulate-key "C-g"))
-;; (general-define-key :states 'override :keymaps 'override "<escape>" (general-simulate-key "C-g"))
 
 ;; c-x c-l to complete line like vim
 (defun my-expand-lines ()
@@ -469,7 +446,6 @@
 (global-set-key (kbd "C-x k") 'kill-this-buffer-volatile)
 (global-set-key (kbd "C-x K") 'kill-buffer-and-window)
 
-;; (led-kbd "s b" #'ein:run)
 (led-kbd "s o" #'insert-random-string)
 (led-kbd "s y" #'avy-goto-char)
 (led-kbd "s x" #'save-buffers-kill-terminal)
@@ -574,33 +550,6 @@
 ;; annoyingly some modes dont handle it newline indentation properly..
 ;; (general-define-key :states 'normal :keymaps 'prog-mode-hook "o" 'my-insert-newline-same-indentation)
 
-;; set of common tasks that i need to run
-(defvar my-sys-commands
-  (list '(:cmd "cp --delete ~/brain $HOME_SERVER_ADDR:/home/mahmooz/ -e 'ssh -i ~/brain/keys/hetzner1'" :title "sync brain to $HOME_SERVER_ADDR")
-        '(:cmd "$WORK_DIR/nixos/upgrade.sh" :title "upgrade nixos")
-        '(:cmd "c ~/brain/; export_notes_html.el; c ~/work/blog; git commit -a -m 'reexport'; git push" :title "reexport blog")))
-
-(defun my-sys-prompt ()
-  (interactive)
-  (let ((vertico-sort-function nil)
-        (completion-extra-properties
-          '(:annotation-function
-            (lambda (k)
-              (let ((command))
-                (dolist (other-command my-sys-commands)
-                  (when (equal (plist-get other-command :title) k)
-                    (setq command other-command)))
-                (format "\t%s" (plist-get command :cmd)))))))
-    (let ((chosen-title (completing-read "task: " (mapcar (lambda (sys-command) (plist-get sys-command :title)) my-sys-commands))))
-      (let ((command))
-        (dolist (other-command my-sys-commands)
-          (when (equal (plist-get other-command :title) chosen-title)
-            (setq command other-command)))
-        (when command
-          (new-shell-with-cmd (plist-get command :cmd)))))))
-
-;; (led-kbd "; k" #'my-sys-prompt)
-
 (evil-set-initial-state 'org-agenda-mode 'normal)
 
 (led-kbd "; o"
@@ -678,76 +627,6 @@
  (lambda ()
    (interactive)
    (start-program-on-current-file "mpv" (list "--no-video" "--force-window"))))
-
-(led-kbd "; L" 'gptel-menu)
-(led-kbd
- "; l"
- (lambda ()
-   (interactive)
-   ;; (setq gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window)))
-   ;; (let ((gptel-display-buffer-action `(nil (body-function . ,#'display-buffer-no-window))))
-   ;;   (call-interactively 'gptel-menu))
-   (let ((gptel--system-message "you are a brilliant mathematician, you excel at solving problems. you are also an assistant living in emacs, respond concisely"))
-     (goto-char (point-max))
-     (gptel-send))))
-;; (led-kbd
-;;  "; c"
-;;  (lambda ()
-;;    (interactive)
-;;    (require 'gptel-context)
-;;    (when-let ((gptel--system-message "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
-;;               (prompt (read-string "prompt: ")))
-;;      (gptel-context-remove-all)
-;;      (gptel-context--add-region (current-buffer) (point-min) (point-max) t)
-;;      (gptel-request prompt
-;;        :buffer (get-buffer-create "gptel-code")
-;;        :position 0
-;;        :stream t
-;;        :system gptel--system-message
-;;        :fsm (gptel-make-fsm :handlers gptel-send--handlers))
-;;      (switch-to-buffer-other-window "gptel-code")
-;;      (gptel-context-remove-all))))
-;; (led-kbd
-;;  "; y"
-;;  (lambda ()
-;;    (interactive)
-;;    (when-let* ((all-models
-;;                 (list
-;;                  "Qwen/QwQ-32B"))
-;;                (mymodel (completing-read "model" all-models))
-;;                (backend
-;;                 (gptel-make-openai "llama-cpp" ;; "vllm"
-;;                   :stream t
-;;                   :protocol "http"
-;;                   :host "mahmooz2:5000"
-;;                   :models all-models)))
-;;      ;; (setq gptel-max-tokens (expt 2 18)) ;; needed to make it work with koboldcpp..
-;;      (setq gptel-model mymodel)
-;;      (setq gptel-backend backend)
-;;      (my-gptel backend))))
-
-;; (defun my-gptel (backend &optional _ initial interactivep)
-;;   (with-current-buffer (get-buffer-create "gptel")
-;;     (ensure-dir (from-brain "gptel/"))
-;;     (set-visited-file-name (from-brain (join-path "gptel/" (current-time-string))))
-;;     (cond ;Set major mode
-;;      ((eq major-mode gptel-default-mode))
-;;      ((eq gptel-default-mode 'text-mode)
-;;       (text-mode)
-;;       (visual-line-mode 1))
-;;      (t (funcall gptel-default-mode)))
-;;     (gptel--sanitize-model :backend backend
-;;                            :model gptel-model
-;;                            :shoosh nil)
-;;     (unless gptel-mode (gptel-mode 1))
-;;     (goto-char (point-max))
-;;     (skip-chars-backward "\t\r\n")
-;;     (if (bobp) (insert (or initial (gptel-prompt-prefix-string))))
-;;     (display-buffer (current-buffer) gptel-display-buffer-action)
-;;     (message "Send your query with %s!"
-;;              (substitute-command-keys "\\[gptel-send]"))
-;;     (enter-append-if-evil)
-;;     (current-buffer)))
 
 (led-kbd "; a" 'open-auto-tex)
 

@@ -7,30 +7,14 @@
 ;;   :config
 ;;   (diredp-toggle-find-file-reuse-dir 1))
 
-(use-package diredfl)
-(use-package dired-hacks-utils)
 ;; (use-package dired-avfs)
-(use-package dired-rainbow)
-(use-package dired-filter)
-(use-package dired-open)
 (use-package dired-subtree)
-(use-package dired-ranger)
-(use-package dired-narrow)
-(use-package dired-list)
 (use-package dired-collapse)
 (use-package dired-rsync
   :config
   ;; rsync on macos doesnt have this option, we replace it with one available to both rsync on linux and mac
   (setq dired-rsync-options
         (string-replace "--info=progress2" "--progress" dired-rsync-options)))
-
-(use-package dired-du)
-;; (use-package dired-single)
-(use-package diredful)
-;; (use-package dired-quick-sort)
-(use-package dired-narrow)
-(use-package dired-k)
-(use-package dired-filter)
 
 (when (eq system-type 'darwin)
   (require 'ls-lisp)
@@ -44,13 +28,6 @@
   :ensure ( :host github :repo "karthink/dired-hist")
   :config
   (dired-hist-mode 1))
-
-;; (use-package filetree
-;;   :ensure ( :host github :repo "knpatel401/filetree"))
-
-;; elpaca doesnt support :fetcher url
-;; (use-package dired-sort-menu
-;;   :ensure ( :fetcher url :url "https://www.emacswiki.org/emacs/dired-sort-menu.el"))
 
 ;; alternative? https://wilkesley.org/~ian/xah/emacs/dired_sort.html
 (defun my-dired-sort (&optional default-sort-by)
