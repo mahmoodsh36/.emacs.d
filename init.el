@@ -270,45 +270,15 @@
 (require 'config-blk)
 (require 'config-treesitter)
 
-;; open agenda on startup
-(add-hook 'elpaca-after-init-hook
-          (lambda ()
-            (require 'config-keys)
-            ;; (with-eval-after-load-all
-            ;; '(evil general)
-            (when (file-exists-p persp-state-default-file)
-              (persp-state-load persp-state-default-file)
-              (persp-switch "main"))
-            ;; (switch-to-theme 'minimal-light)
-            ;; (switch-to-theme 'darktooth-darker)
-            ;; (switch-to-theme 'ample-flat)
-            ;; (switch-to-theme 'ample-light)
-            ;; (switch-to-theme 'ample)
-            ;; (switch-to-theme 'acme)
-            ;; (switch-to-theme 'doom-gruvbox-light)
-            ;; (switch-to-theme 'stimmung-themes-light)
-            ;; (switch-to-theme 'stimmung-themes-dark)
-            ;; (switch-to-theme 'ef-tritanopia-dark)
-            ;; (switch-to-theme 'ef-melissa-dark)
+;; block until all queued packages are installed/loaded
+(elpaca-wait)
 
-            ;; (switch-to-light-theme)
-            ;; (switch-to-dark-theme)
-            (when my-current-theme
-              (switch-to-theme my-current-theme))
-            ;; (switch-to-theme 'ef-autumn)
-            ;; (switch-to-theme 'poet-dark)
-            ;; (switch-to-theme 'modus-operandi-tinted)
-            ;; (switch-to-theme 'ef-melissa-light)
-            ;; (switch-to-theme 'gruvbox-dark-hard)
-
-            ;; (switch-to-theme 'gruvbox-light-soft)
-            ;; (switch-to-theme 'modus-operandi)
-            ;; (switch-to-theme 'modus-vivendi)
-            ;; (switch-to-tango-theme)
-            ;; (set-face-background hl-line-face "PeachPuff3")
-            ;; (switch-to-theme 'doom-sourcerer)
-            ;;(switch-to-darktooth-theme)
-            ))
+(require 'config-keys)
+(when (file-exists-p persp-state-default-file)
+  (persp-state-load persp-state-default-file)
+  (persp-switch "main"))
+(when my-current-theme
+  (switch-to-theme my-current-theme))
 
 ;; disable repeat-mode
 ;; (repeat-mode -1)

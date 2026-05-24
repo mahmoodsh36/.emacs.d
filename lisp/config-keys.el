@@ -1,5 +1,7 @@
 ;; configure/setup some keybindings
 
+(require 'general)
+
 (led-kbd "d w" (lambda () (interactive) (dired "~/Downloads/")))
 (led-kbd "d a" (lambda () (interactive) (dired (my-getenv "DATA_DIR"))))
 (led-kbd "d l" (lambda () (interactive) (dired (get-latex-cache-dir-path))))

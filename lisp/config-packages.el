@@ -24,9 +24,6 @@
 ;; makes binding keys less painful
 (use-package general)
 
-(use-package nix-mode
-  :mode "\\.nix\\'")
-
 ;; epub reader
 (use-package nov
   :config
@@ -297,34 +294,6 @@
   (setq keyfreq-file (from-brain "emacs_keyfreq")))
 
 (use-package avy)
-
-(use-package embark
-  :ensure t
-  :bind
-  (("C-." . embark-act)         ;; pick some comfortable binding
-   ;;("C-;" . embark-dwim)        ;; good alternative: M-.
-   ;; ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-   )
-  :init
-  ;; optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  ;; hide the mode line of the embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none))))
-  ;; not sure why defining this map doesnt work as intended tho
-  (defvar-keymap embark-file-map
-    :doc "custom file actions"
-    :parent embark-general-map
-    "k" #'kill-this-buffer)
-  )
-
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; evaulation overlay for elisp
 (use-package eros
