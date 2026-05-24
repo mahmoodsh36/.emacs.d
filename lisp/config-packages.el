@@ -84,6 +84,7 @@
 ;; im sticking with company for now as corfu keeps crashing with org mode, plus slime doesnt work with corfu (for now)
 (setq completion-ignore-case t) ;; case-insensitivity
 (use-package corfu
+  :ensure (corfu :ref "856171ac98c3aaa629caa011be7cd3a9405e6e0f") ;; pin to before "Require Compat 31"
   :init
   (global-corfu-mode)
   :custom
@@ -126,6 +127,7 @@
 
 ;; https://github.com/minad/cape
 (use-package cape
+  :ensure (cape :ref "2e15e1909754752f66096dde1b8d639d6eb25f35") ;; pin to before "Require Compat 31"
   :init
   ;; somehow the value isnt really set but the completions work according to this list lol
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -649,6 +651,7 @@
 
 ;; vertico config
 (use-package vertico
+  :ensure (vertico :ref "e4338c5bae2c725be2940726be170bc034af3b6c") ;; pin to before "Require Compat 31"
   :config
   (vertico-mode)
   ;; display vertico in different buffer
@@ -669,6 +672,7 @@
 ;; enable recursive minibuffers
 (setq enable-recursive-minibuffers t)
 (use-package orderless
+  :ensure (orderless :ref "3a2a32181f7a5bd7b633e40d89de771a5dd88cc7") ;; pin to before "Require Compat 31"
   :config
   (setq read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t)
@@ -689,9 +693,11 @@
   ;; tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
-(use-package consult)
+(use-package consult
+  :ensure (consult :ref "45fdad7b234141ea572267024c8f4b08dd2e1022")) ;; pin to before "Require Compat 31"
 
 (use-package marginalia
+  :ensure (marginalia :ref "4a0628dfdf944a5d307d31d2a514825cc5386986") ;; pin to before "Require Compat 31"
   :config
   (marginalia-mode))
 
