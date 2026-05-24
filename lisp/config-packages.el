@@ -714,17 +714,17 @@
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 
-;; (if (file-exists-p "/home/mahmooz/work/org-xopp/")
+(if (file-exists-p "/home/mahmooz/work/org-xopp/")
     (use-package org-xopp
       :after (org)
       :load-path "/home/mahmooz/work/org-xopp/"
       :config
       (org-xopp-setup))
-  ;; (use-package org-xopp
-  ;;   :after (org)
-  ;;   :ensure ( :host github :repo "mahmoodsh36/org-xopp" :files (:defaults "*.sh"))
-  ;;   :config
-  ;;   (org-xopp-setup)))
+    (use-package org-xopp
+      :after (org)
+      :ensure ( :host github :repo "mahmoodsh36/org-xopp" :files (:defaults "*.sh"))
+      :config
+      (org-xopp-setup)))
 
 (use-package colorful-mode
   :ensure ( :host github :repo "DevelopmentCool2449/colorful-mode")
