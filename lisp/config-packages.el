@@ -637,30 +637,6 @@
               script
               var)))))
 
-(unless (is-android-system)
-  (use-package gptel
-    :config
-    (setq gptel-default-mode 'org-mode)
-    (setf gptel-backend
-          (gptel-make-openai "nvidia"
-            :host "integrate.api.nvidia.com"
-            :protocol "https"
-            :endpoint "/v1/chat/completions"
-            :key (lambda () (get-env-var-from-script "NVIDIA_API_KEY"))
-            :stream t
-            :models '(qwen/qwen3-coder-480b-a35b-instruct
-                      deepseek-ai/deepseek-v3_1-terminus
-                      bytedance/seed-oss-36b-instruct
-                      openai/gpt-oss-120b
-                      qwen/qwen3-235b-a22b))))
-
-  (use-package gptel-autocomplete
-    :ensure ( :fetcher github :repo "JDNdeveloper/gptel-autocomplete")
-    :config
-    (setq gptel-autocomplete-temperature 0.1)
-    (setq gptel-autocomplete-before-context-lines 100)
-    (setq gptel-autocomplete-after-context-lines 20)))
-
 ;; convert other formats to org using pandoc
 (use-package org-pandoc-import
   :elpaca (:host github
@@ -695,9 +671,9 @@
       :config
       (org-xopp-setup)))
 
-(use-package colorful-mode
-  :ensure ( :host github :repo "DevelopmentCool2449/colorful-mode")
-  :hook (prog-mode text-mode))
+;; (use-package colorful-mode
+;;   :ensure ( :host github :repo "DevelopmentCool2449/colorful-mode")
+;;   :hook (prog-mode text-mode))
 
 ;; actual smooth scrolling?
 (use-package ultra-scroll

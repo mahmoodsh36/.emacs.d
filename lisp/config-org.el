@@ -622,7 +622,7 @@ handles both insertions and deletions."
                            (string-prefix-p "\\begin{alg}" next-line))))
           (goto-char (pos-eol))
           (unless (get-text-property (point) 'read-only)
-            (insert (case export-backend
+            (insert (cl-case export-backend
                       (latex "\\\\")
                       (html "\n"))))
           (setq inserted t))

@@ -301,7 +301,6 @@
       (fundamental-mode)
       (which-function-mode -1)
       (when (fboundp 'linum-mode) (linum-mode 0))
-      (lsp-mode 0)
       )))
 (add-hook 'find-file-hook #'conditional-disable-modes)
 

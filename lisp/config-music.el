@@ -3,7 +3,7 @@
   (let ((album-titles
          (apply
           #'cl-concatenate
-          (list*
+          (cl-list*
            'list
            (mapcar
             (lambda (dir)
@@ -23,7 +23,7 @@
   (let ((album-titles
          (apply
           #'cl-concatenate
-          (list*
+          (cl-list*
            'list
            (mapcar
             (lambda (dir)
@@ -43,7 +43,7 @@
 ;;   (let ((album-titles
 ;;          (apply
 ;;           #'cl-concatenate
-;;           (list*
+;;           (cl-list*
 ;;            'list
 ;;            (mapcar
 ;;             (lambda (dir)
