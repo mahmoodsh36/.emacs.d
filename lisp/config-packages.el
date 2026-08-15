@@ -2,15 +2,9 @@
 (when (not (is-android-system))
   (use-package auctex
     :ensure '(auctex
-              :pre-build (("./autogen.sh")
-                          ("./configure"
-                           "--without-texmf-dir"
-                           "--with-packagelispdir=./"
-                           "--with-packagedatadir=./")
-                          ("make"))
-              :build (:not elpaca--compile-info) ;; Make will take care of this step
-              :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style")
-              :version (lambda (_) (require 'tex-site) AUCTeX-version))
+              ;; upstream dropped autotools, GNUmakefile's elpa target generates everything now
+              :pre-build (("make" "elpa"))
+              :files ("*.el" "doc/*.info*" "etc" "images" "latex" "style"))
     :hook
     (LaTeX-mode . turn-on-prettify-symbols-mode)
     (LaTeX-mode . reftex-mode)
