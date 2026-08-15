@@ -246,43 +246,6 @@
 ;; small flash when evaluating a sexp
 ;; (use-package eval-sexp-fu)
 
-;; pdf viewer
-(when (not (or (is-android-system) (eq system-type 'darwin)))
-  (use-package pdf-tools
-    :ensure (:host github :repo "vedang/pdf-tools")
-    :after (org org-latex-preview)
-    :config
-    (pdf-tools-install t)
-    (add-hook 'pdf-view-mode-hook 'pdf-view-themed-minor-mode))
-
-  (with-eval-after-load 'pdf-tools
-    ;; workaround for pdf-tools not reopening to last-viewed page of the pdf:
-    ;; https://github.com/politza/pdf-tools/issues/18#issuecomment-269515117
-    (defun brds/pdf-set-last-viewed-bookmark ()
-      (interactive)
-      (when (eq major-mode 'pdf-view-mode)
-        (bookmark-set (brds/pdf-generate-bookmark-name))))
-    (defun brds/pdf-jump-last-viewed-bookmark ()
-      (bookmark-set "fake") ; this is new
-      (when
-          (brds/pdf-has-last-viewed-bookmark)
-        (bookmark-jump (brds/pdf-generate-bookmark-name))))
-    (defun brds/pdf-has-last-viewed-bookmark ()
-      (assoc
-       (brds/pdf-generate-bookmark-name) bookmark-alist))
-    (defun brds/pdf-generate-bookmark-name ()
-      (concat "PDF-LAST-VIEWED: " (buffer-file-name)))
-    (defun brds/pdf-set-all-last-viewed-bookmarks ()
-      (dolist (buf (buffer-list))
-        (with-current-buffer buf
-          (brds/pdf-set-last-viewed-bookmark))))
-    (add-hook 'kill-buffer-hook 'brds/pdf-set-last-viewed-bookmark)
-    (add-hook 'pdf-view-mode-hook 'brds/pdf-jump-last-viewed-bookmark)
-    (unless noninteractive  ; as `save-place-mode' does
-      (add-hook 'kill-emacs-hook #'brds/pdf-set-all-last-viewed-bookmarks))
-    )
-  )
-
 ;; provides syntax highlighting when exporting from org mode to html
 (use-package htmlize)
 
@@ -528,11 +491,6 @@
   (add-to-list 'consult-buffer-sources persp-consult-source)
   (setq persp-state-default-file (from-brain "emacs_persp"))
   (add-hook 'kill-emacs-hook #'persp-state-save))
-
-;; links to specific pdf pages from org mode
-(when (not (is-android-system))
-  (use-package org-pdftools
-    :after 'org))
 
 ;; for offline docs
 (use-package devdocs
